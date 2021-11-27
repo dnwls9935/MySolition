@@ -1,9 +1,9 @@
-// ../cpp/Form.cpp : 구현 파일입니다.
+// Form.cpp : 구현 파일입니다.
 //
 
 #include "stdafx.h"
-#include "../default/Tool.h"
-#include "../header/Form.h"
+#include "Tool.h"
+#include "Form.h"
 
 
 // Form
@@ -13,7 +13,6 @@ IMPLEMENT_DYNCREATE(Form, CFormView)
 Form::Form()
 	: CFormView(IDD_FORM)
 {
-
 }
 
 Form::~Form()
@@ -23,6 +22,7 @@ Form::~Form()
 void Form::DoDataExchange(CDataExchange* pDX)
 {
 	CFormView::DoDataExchange(pDX);
+	DDX_Control(pDX, IDC_TAB1, tabCtrl);
 }
 
 BEGIN_MESSAGE_MAP(Form, CFormView)
@@ -47,3 +47,22 @@ void Form::Dump(CDumpContext& dc) const
 
 
 // Form 메시지 처리기입니다.
+
+
+void Form::OnInitialUpdate()
+{
+	CFormView::OnInitialUpdate();
+
+	CSize scrollSize(0, 0);
+	SetScrollSizes(MM_TEXT, scrollSize);
+
+	CString tab1 = _T("Effect");
+
+	tabCtrl.InsertItem(1, tab1);
+
+	RECT pRcTemp;
+	tabCtrl.GetWindowRect(&pRcTemp);
+
+	// 이펙트탭
+
+}

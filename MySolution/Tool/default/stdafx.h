@@ -36,9 +36,8 @@
 
 
 
-#include "EngineExport.h"
-
-
+#include <d3d9.h>
+#include <d3dx9.h>
 
 
 
@@ -51,3 +50,5 @@
 #pragma comment(linker,"/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 #endif
 #endif
+
+

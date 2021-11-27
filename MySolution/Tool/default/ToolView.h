@@ -3,7 +3,9 @@
 //
 
 #pragma once
+
 class CToolDoc;
+class CMainFrame;
 class CToolView : public CView
 {
 protected: // serialization에서만 만들어집니다.
@@ -16,6 +18,8 @@ public:
 
 // 작업입니다.
 public:
+	CMainFrame* mainFrm;
+	HINSTANCE			g_hInst;
 	LPDIRECT3DDEVICE9	directX9Device;
 
 // 재정의입니다.

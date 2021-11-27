@@ -16,7 +16,7 @@ public:
 
 // 작업입니다.
 public:
-	CSplitterWnd	mainSplitter;
+	CSplitterWnd mainSpliiter;
 
 // 재정의입니다.
 public:

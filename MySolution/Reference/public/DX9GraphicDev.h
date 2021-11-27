@@ -20,10 +20,6 @@ public:
 private:
 	LPDIRECT3DDEVICE9			directX9Device;
 
-
-	LPDIRECT3D9			m_pSDK;
-	LPDIRECT3DDEVICE9	m_pGraphicDev;
-
 public:
 	void Free() override;
 };

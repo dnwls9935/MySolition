@@ -6,8 +6,8 @@
 #include "Tool.h"
 
 #include "MainFrm.h"
+#include "Form.h"
 #include "ToolView.h"
-#include "..\header\Form.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -103,11 +103,13 @@ void CMainFrame::Dump(CDumpContext& dc) const
 
 BOOL CMainFrame::OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext)
 {
-	mainSplitter.CreateStatic(this, 1, 2);
-	mainSplitter.CreateView(0, 0, RUNTIME_CLASS(Form), CSize(300, 300), pContext);
+	mainSpliiter.CreateStatic(this, 1, 2);
 
-	mainSplitter.CreateView(0, 1, RUNTIME_CLASS(CToolView), CSize(1920, 1080), pContext);
-	mainSplitter.SetColumnInfo(0, 300, 10);
+	mainSpliiter.CreateView(0, 0, RUNTIME_CLASS(Form), CSize(400, 300), pContext);
+	mainSpliiter.CreateView(0, 1, RUNTIME_CLASS(CToolView), CSize(300, 600), pContext);
+
+	mainSpliiter.SetColumnInfo(0, 400, 100); //가로 크기를 재조정 해주는 함수.
+
 
 	return TRUE;
 }
