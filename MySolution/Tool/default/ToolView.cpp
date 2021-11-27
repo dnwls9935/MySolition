@@ -13,6 +13,8 @@
 #include "ToolView.h"
 #include "MainFrm.h"
 
+
+#include "EngineInclude.h"
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -39,6 +41,7 @@ CToolView::CToolView()
 
 CToolView::~CToolView()
 {
+	EngineRelease();
 }
 
 BOOL CToolView::PreCreateWindow(CREATESTRUCT& cs)
@@ -54,11 +57,16 @@ BOOL CToolView::PreCreateWindow(CREATESTRUCT& cs)
 void CToolView::OnDraw(CDC* /*pDC*/)
 {
 	CToolDoc* pDoc = GetDocument();
-	ASSERT_VALID(pDoc);
+	/*ASSERT_VALID(pDoc);
 	if (!pDoc)
-		return;
+		return;*/
 
 	// TODO: 여기에 원시 데이터에 대한 그리기 코드를 추가합니다.
+
+
+	Engine::DirectX9RenderBegin(D3DXCOLOR(1.f, 1.f, 0.f ,1.f));
+
+	Engine::DirectX9RenderEnd();
 }
 
 
@@ -117,6 +125,8 @@ void CToolView::OnInitialUpdate()
 	int iGapX = rcMain.right - rcView.right;
 	int iGapY = rcMain.bottom - rcView.bottom;
 	pMain->SetWindowPos(nullptr, 0, 0, 1280 + iGapX, 720 + iGapY, SWP_NOMOVE);
+
+	Engine::ReadyDirectX9Device(CView::m_hWnd, WINMODE::MODE_WIN, 1280, 720, &directX9Device);
 
 	// TODO: 여기에 특수화된 코드를 추가 및/또는 기본 클래스를 호출합니다.
 }

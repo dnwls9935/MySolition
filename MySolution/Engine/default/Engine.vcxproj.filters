@@ -13,10 +13,25 @@
     <Filter Include="01. Utility\00. SuperBase">
       <UniqueIdentifier>{c0443b95-f65a-4db2-afbb-54025ea6e24e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="00. System\00. GraphicDevice">
+      <UniqueIdentifier>{0f877748-887d-4f52-9c6d-f790819209ef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. System\00. GraphicDevice\00. DirectX9">
+      <UniqueIdentifier>{51e44062-73d0-4c60-b348-a129b51b6faa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. System\00. GraphicDevice\01. DirectX11">
+      <UniqueIdentifier>{b20bf552-efa4-4f41-9389-fca342b70c90}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="98, Export">
+      <UniqueIdentifier>{f31d5434-ecbf-4660-804a-1c385a80c286}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\cpp\SuperBase.cpp">
       <Filter>01. Utility\00. SuperBase</Filter>
+    </ClCompile>
+    <ClCompile Include="..\cpp\DX9GraphicDev.cpp">
+      <Filter>00. System\00. GraphicDevice\00. DirectX9</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -35,5 +50,19 @@
     <ClInclude Include="..\header\EngineFunction.h">
       <Filter>99. Include</Filter>
     </ClInclude>
+    <ClInclude Include="..\header\DX9GraphicDev.h">
+      <Filter>00. System\00. GraphicDevice\00. DirectX9</Filter>
+    </ClInclude>
+    <ClInclude Include="..\header\EngineEnum.h">
+      <Filter>99. Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\header\EngineExport.h">
+      <Filter>98, Export</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\header\EngineExport.inl">
+      <Filter>98, Export</Filter>
+    </None>
   </ItemGroup>
 </Project>

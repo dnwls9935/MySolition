@@ -16,6 +16,7 @@ public:
 
 // 작업입니다.
 public:
+	LPDIRECT3DDEVICE9	directX9Device;
 
 // 재정의입니다.
 public:
