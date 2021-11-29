@@ -12,11 +12,6 @@
 #include "ToolDoc.h"
 #include "ToolView.h"
 
-#include "EngineExport.h"
-#include "EngineInclude.h"
-#include "ClientDefines.h"
-#include "MainFrm.h"
-
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -43,7 +38,6 @@ CToolView::CToolView()
 
 CToolView::~CToolView()
 {
-	Engine::EngineRelease();
 }
 
 BOOL CToolView::PreCreateWindow(CREATESTRUCT& cs)
@@ -58,13 +52,12 @@ BOOL CToolView::PreCreateWindow(CREATESTRUCT& cs)
 
 void CToolView::OnDraw(CDC* /*pDC*/)
 {
-	//CToolDoc* pDoc = GetDocument();
-	//ASSERT_VALID(pDoc);
-	//if (!pDoc)
-	//	return;
+	CToolDoc* pDoc = GetDocument();
+	ASSERT_VALID(pDoc);
+	if (!pDoc)
+		return;
 
-	Engine::DirectX9RenderBegin(D3DXCOLOR(1.f, 1.f, 0.f, 1.f));
-	Engine::DirectX9RenderEnd();
+	// TODO: 여기에 원시 데이터에 대한 그리기 코드를 추가합니다.
 }
 
 
@@ -109,31 +102,3 @@ CToolDoc* CToolView::GetDocument() const // 디버그되지 않은 버전은 인라인으로 지
 
 
 // CToolView 메시지 처리기
-
-
-void CToolView::OnInitialUpdate()
-{
-	CView::OnInitialUpdate();
-
-	RECT pRcMain = {};
-	mainFrm  = dynamic_cast<CMainFrame*>(AfxGetApp()->GetMainWnd());
-	mainFrm->GetWindowRect(&pRcMain);
-
-	SetRect(&pRcMain, 0, 0, pRcMain.right - pRcMain.left,
-			pRcMain.bottom - pRcMain.top);
-
-	RECT pRcView = {};
-	GetClientRect(&pRcView);
-
-	_int pGapX = pRcMain.right - pRcView.right;
-	_int pGapY = pRcMain.bottom - pRcView.bottom;
-
-	mainFrm->SetWindowPos(nullptr, 0, 0, g_WIN_WIDTH + pGapX,
-							g_WIN_HEIGHT + pGapY, SWP_NOMOVE);
-
-	g_hInst = AfxGetInstanceHandle();
-
-	Engine::ReadyDirectX9Device(m_hWnd, WINMODE::MODE_WIN, g_WIN_WIDTH, g_WIN_HEIGHT, &directX9Device);
-
-
-}

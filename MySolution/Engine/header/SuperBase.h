@@ -1,10 +1,10 @@
 #pragma once
 
-#include "EngineInclude.h"
+#include "EngineIncludeh.h"
 
 BEGIN(Engine)
 
-class DLL_MODE SuperBase abstract
+class ENGINE_DLL SuperBase abstract
 {
 protected:
 	SuperBase();
@@ -15,7 +15,7 @@ public:
 	unsigned long Release();
 
 private:
-	unsigned long dwRefCnt = 0;
+	unsigned long	refCnt = 0;
 
 public:
 	virtual void Free() = 0;

@@ -1,6 +1,8 @@
-#pragma once
+#ifndef Engine_Typedef_h__
+#define Engine_Typedef_h__
 
-namespace Engine {
+namespace Engine
+{
 	typedef		bool						_bool;
 
 	typedef		signed char					_byte;
@@ -19,5 +21,6 @@ namespace Engine {
 
 	typedef		float						_float;
 	typedef		double						_double;
-
 }
+
+#endif // Engine_Typedef_h__

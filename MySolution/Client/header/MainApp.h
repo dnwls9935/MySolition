@@ -1,24 +1,29 @@
 #pragma once
 
-#include "ClientDefines.h"
+#include "ClientDefine.h"
 #include "SuperBase.h"
 
-BEGIN(Client)
+BEGIN(Engine)
+class GameInstance;
+END
+
 class MainApp final : public SuperBase
 {
 private:
 	MainApp();
-	virtual ~MainApp();
+	virtual ~MainApp() = default;
 
 public:
-	HRESULT NativeConstruct();
-	_int Tick(const _double _deltaTime);
-	_int Process(const _double _deltaTime);
-	HRESULT Render();
+	HRESULT				NativeConstruct();
+	_int				Tick(_double _timeDelta);
+	_int				LateTick(_double _timeDelta);
+	HRESULT				Render();
+	
+private:
+	GameInstance*			gameInstance = nullptr;
 
 public:
 	static MainApp* Create();
 	void Free() override;
 };
 
-END

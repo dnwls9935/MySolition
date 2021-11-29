@@ -1,24 +1,26 @@
 #include "..\header\SuperBase.h"
 
-
-SuperBase::SuperBase()
-	: dwRefCnt(0)
+Engine::SuperBase::SuperBase()
+	: refCnt(0)
 {
+
 }
 
-unsigned long SuperBase::AddRef()
+unsigned long Engine::SuperBase::AddRef()
 {
-	return ++dwRefCnt;
+	return ++refCnt;
 }
 
-unsigned long SuperBase::Release()
+unsigned long Engine::SuperBase::Release()
 {
-	if (0 == dwRefCnt) {
+	if (0 == refCnt)
+	{
 		Free();
 		delete this;
 		return 0;
 	}
-	else
-		return dwRefCnt--;
+	else 
+		return refCnt--;
+
 	return 0;
 }

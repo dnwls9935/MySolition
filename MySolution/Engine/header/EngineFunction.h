@@ -2,56 +2,70 @@
 
 namespace Engine {
 	template<typename T>
-	void	SafeDelete(T& _Pointer)
+	void	Safe_Delete(T& Pointer)
 	{
-		if (nullptr != _Pointer)
+		if (nullptr != Pointer)
 		{
-			delete _Pointer;
-			_Pointer = nullptr;
+			delete Pointer;
+			Pointer = nullptr;
 		}
 	}
 
 	template<typename T>
-	void	SafeDeleteArray(T& _ArrayPointer)
+	void	Safe_Delete_Array(T& Pointer)
 	{
-		if (nullptr != _ArrayPointer)
+		if (nullptr != Pointer)
 		{
-			delete[] _ArrayPointer;
-			_ArrayPointer = nullptr;
+			delete[] Pointer;
+			Pointer = nullptr;
 		}
 	}
 
 	template<typename T>
-	unsigned long SafeRelease(T& _Instance)
+	unsigned long Safe_AddRef(T& pInstance)
 	{
-		unsigned long dwRefCnt = 0;
+		unsigned long		dwRefCnt = 0;
 
-		if (nullptr != _Instance)
+		if (nullptr != pInstance)
+			dwRefCnt = pInstance->AddRef();
+
+		return dwRefCnt;
+	}
+
+	template<typename T>
+	unsigned long Safe_Release(T& pInstance)
+	{
+		unsigned long		dwRefCnt = 0;
+
+		if (nullptr != pInstance)
 		{
-			dwRefCnt = _Instance->Release();
+			dwRefCnt = pInstance->Release();
 
 			if (0 == dwRefCnt)
-				_Instance = nullptr;
+				pInstance = nullptr;
 		}
 
 		return dwRefCnt;
 	}
 
-	class TagFinder {
+	class CTag_Finder
+	{
 	public:
-		TagFinder(const wchar_t* _tag) : targetTag(_tag) { };
-		~TagFinder() {};
+		explicit CTag_Finder(const wchar_t* pTag) : m_pTargetTag(pTag) {}
+		~CTag_Finder(void) {}
 
 	public:
 		template<typename T>
-		bool	operator()(const T& pair)
+		bool		operator()(const T& pair)
 		{
-			if (0 == lstrcat(targetTag.pair.first))
-				return TRUE;
-			return FALSE;
+			if (0 == lstrcmpW(m_pTargetTag, pair.first))
+				return true;
+
+			return false;
 		}
 
 	private:
-		const wchar_t*			targetTag = nullptr;
+		const wchar_t*		m_pTargetTag = nullptr;
 	};
+
 }

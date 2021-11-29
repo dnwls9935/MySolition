@@ -1,44 +1,33 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
+    <Filter Include="00. Utility">
+      <UniqueIdentifier>{f06226d1-e3cd-49cb-800e-4d4ea652309b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. System">
+      <UniqueIdentifier>{866e8c38-a6b7-4d15-a15b-79962a0786b1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. Utility\00. GameInstance">
+      <UniqueIdentifier>{3a8868db-ce17-483a-b042-2fe33a746e2c}</UniqueIdentifier>
+    </Filter>
     <Filter Include="99. Include">
-      <UniqueIdentifier>{5f90bfde-92ef-4df3-a3c0-ba7cd29b7e07}</UniqueIdentifier>
+      <UniqueIdentifier>{130b76f7-20f7-4a73-822b-3f871297b4c3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="00. System">
-      <UniqueIdentifier>{3eab10cc-5934-47ee-baae-9261d0983a25}</UniqueIdentifier>
+    <Filter Include="01. System\00. GraphicDevice">
+      <UniqueIdentifier>{3c25452d-33a9-427e-a612-59f8c978bb03}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01. Utility">
-      <UniqueIdentifier>{7215a07c-55f9-4368-bdb2-9f197243f164}</UniqueIdentifier>
+    <Filter Include="00. Utility\99. SuperBase">
+      <UniqueIdentifier>{628a4058-132a-4f51-9c34-1e4bd9c63c25}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01. Utility\00. SuperBase">
-      <UniqueIdentifier>{c0443b95-f65a-4db2-afbb-54025ea6e24e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="00. System\00. GraphicDevice">
-      <UniqueIdentifier>{0f877748-887d-4f52-9c6d-f790819209ef}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="00. System\00. GraphicDevice\00. DirectX9">
-      <UniqueIdentifier>{51e44062-73d0-4c60-b348-a129b51b6faa}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="00. System\00. GraphicDevice\01. DirectX11">
-      <UniqueIdentifier>{b20bf552-efa4-4f41-9389-fca342b70c90}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="98, Export">
-      <UniqueIdentifier>{f31d5434-ecbf-4660-804a-1c385a80c286}</UniqueIdentifier>
-    </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="..\cpp\SuperBase.cpp">
-      <Filter>01. Utility\00. SuperBase</Filter>
-    </ClCompile>
-    <ClCompile Include="..\cpp\DX9GraphicDev.cpp">
-      <Filter>00. System\00. GraphicDevice\00. DirectX9</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\header\SuperBase.h">
-      <Filter>01. Utility\00. SuperBase</Filter>
+      <Filter>00. Utility\99. SuperBase</Filter>
     </ClInclude>
-    <ClInclude Include="..\header\EngineInclude.h">
+    <ClInclude Include="..\header\EngineIncludeh.h">
+      <Filter>99. Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\header\EngineFunction.h">
       <Filter>99. Include</Filter>
     </ClInclude>
     <ClInclude Include="..\header\EngineDefines.h">
@@ -47,22 +36,22 @@
     <ClInclude Include="..\header\EngineTypedef.h">
       <Filter>99. Include</Filter>
     </ClInclude>
-    <ClInclude Include="..\header\EngineFunction.h">
-      <Filter>99. Include</Filter>
+    <ClInclude Include="..\header\DX11GraphicDev.h">
+      <Filter>01. System\00. GraphicDevice</Filter>
     </ClInclude>
-    <ClInclude Include="..\header\DX9GraphicDev.h">
-      <Filter>00. System\00. GraphicDevice\00. DirectX9</Filter>
-    </ClInclude>
-    <ClInclude Include="..\header\EngineEnum.h">
-      <Filter>99. Include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\header\EngineExport.h">
-      <Filter>98, Export</Filter>
+    <ClInclude Include="..\header\GameInstance.h">
+      <Filter>00. Utility\00. GameInstance</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\header\EngineExport.inl">
-      <Filter>98, Export</Filter>
-    </None>
+    <ClCompile Include="..\cpp\SuperBase.cpp">
+      <Filter>00. Utility\99. SuperBase</Filter>
+    </ClCompile>
+    <ClCompile Include="..\cpp\DX11GraphicDev.cpp">
+      <Filter>01. System\00. GraphicDevice</Filter>
+    </ClCompile>
+    <ClCompile Include="..\cpp\GameInstance.cpp">
+      <Filter>00. Utility\00. GameInstance</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

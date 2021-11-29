@@ -1,48 +1,56 @@
 #include "stdafx.h"
 #include "..\header\MainApp.h"
 
-Client::MainApp::MainApp()
+#include "GameInstance.h"
+
+MainApp::MainApp()
+	: gameInstance(GameInstance::GetInstance())
 {
+	Safe_AddRef(gameInstance);
 }
 
-Client::MainApp::~MainApp()
+HRESULT MainApp::NativeConstruct()
 {
+	if (nullptr == gameInstance)
+		return E_FAIL;
 
-}
 
-HRESULT Client::MainApp::NativeConstruct()
-{
+	if (FAILED(gameInstance->InitializeEngine()))
+		return E_FAIL;
+
+
 	return S_OK;
 }
 
-Engine::_int Client::MainApp::Tick(const _double _deltaTime)
+Engine::_int MainApp::Tick(_double _timeDelta)
 {
 	return 0;
 }
 
-Engine::_int Client::MainApp::Process(const _double _deltaTime)
+Engine::_int MainApp::LateTick(_double _timeDelta)
 {
 	return 0;
 }
 
-HRESULT Client::MainApp::Render()
+HRESULT MainApp::Render()
 {
 	return S_OK;
 }
 
-Client::MainApp* Client::MainApp::Create()
+MainApp* MainApp::Create()
 {
-	MainApp* pInstance = new MainApp;
+	MainApp* pInstance = new MainApp();
 	if (FAILED(pInstance->NativeConstruct()))
 	{
-		MSGBOX("MainApp Create Error");
-		SafeRelease(pInstance);
+		MSGBOX("Failed to Creating MainApp");
+		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-void Client::MainApp::Free()
+void MainApp::Free()
 {
-
+	Safe_Release(gameInstance);
+	GameInstance::ReleaseEngine();
 }
