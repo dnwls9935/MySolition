@@ -14,10 +14,8 @@ HRESULT MainApp::NativeConstruct()
 	if (nullptr == gameInstance)
 		return E_FAIL;
 
-
-	if (FAILED(gameInstance->InitializeEngine()))
+	if (FAILED(gameInstance->InitializeEngine(g_hWnd, DX11GraphicDev::WINMODE::MODE_WIN, g_WIN_WIDTH, g_WIN_HEIGHT)))
 		return E_FAIL;
-
 
 	return S_OK;
 }
@@ -34,6 +32,20 @@ Engine::_int MainApp::LateTick(_double _timeDelta)
 
 HRESULT MainApp::Render()
 {
+	if (nullptr == gameInstance)
+		return E_FAIL;
+
+	if (FAILED(gameInstance->ClearBackBufferView(XMFLOAT4(0.f, 0.f, 1.f, 1.f))))
+		return E_FAIL;
+	if (FAILED(gameInstance->ClearDepthStencilView()))
+		return E_FAIL;
+
+
+
+
+	if (FAILED(gameInstance->Present()))
+		return E_FAIL;
+
 	return S_OK;
 }
 

@@ -2,6 +2,10 @@
 
 #include <d3d11.h>
 #include <typeinfo>
+#include <DirectXMath.h>
+#include <DirectXPackedVector.h>
+
+using namespace DirectX;
 
 #ifdef _DEBUG
 

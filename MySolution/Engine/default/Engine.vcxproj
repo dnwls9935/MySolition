@@ -112,6 +112,10 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>d3d11.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -150,6 +154,10 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>d3d11.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\header\DX11GraphicDev.h" />
@@ -158,11 +166,13 @@
     <ClInclude Include="..\header\EngineIncludeh.h" />
     <ClInclude Include="..\header\EngineTypedef.h" />
     <ClInclude Include="..\header\GameInstance.h" />
+    <ClInclude Include="..\header\Level.h" />
     <ClInclude Include="..\header\SuperBase.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\cpp\DX11GraphicDev.cpp" />
     <ClCompile Include="..\cpp\GameInstance.cpp" />
+    <ClCompile Include="..\cpp\Level.cpp" />
     <ClCompile Include="..\cpp\SuperBase.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -14,11 +14,25 @@ private:
 	virtual ~DX11GraphicDev() = default;
 
 public:
-	HRESULT				ReadyDX11Device();
+	HRESULT				ReadyDX11Device(HWND _hWnd, WINMODE _mode, _uint _width, _uint _height);
+	HRESULT				ClearBackBufferView(XMFLOAT4 _color);
+	HRESULT				ClearDepthStencilView();
+	HRESULT				Present();
 
 private:
-	//ID3D11Device*					dx11Device;
-	//ID3D11DeviceContext*			dx11DeviceContext;
+	HRESULT				ReadySwapChain(HWND _hWnd, WINMODE _mode, _uint _width, _uint _height);
+	HRESULT				ReadyBackBufferView();
+	HRESULT				ReadyDepthStencilView(_uint _width, _uint _height);
+
+private:
+	ID3D11Device*					dx11Device = nullptr;
+	ID3D11DeviceContext*			dx11DeviceContext = nullptr;
+
+	IDXGISwapChain*					dx11SwapChain = nullptr;
+	ID3D11RenderTargetView*			dx11RenderTargetView = nullptr;
+	ID3D11DepthStencilView*			dx11DepthStencilView = nullptr;
+
+	
 
 public:
 	void Free() override;

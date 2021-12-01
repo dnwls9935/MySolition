@@ -12,9 +12,15 @@ private:
 	virtual ~GameInstance() = default;
 
 public:
-	HRESULT				InitializeEngine();
+	HRESULT				InitializeEngine(HWND _hWnd, DX11GraphicDev::WINMODE _mode, _uint _width, _uint _height);
 	_int				TickEngine(_double _timeDelta);
 	_int				LateTick(_double _timeDelta);
+
+	/* 장치초기화(DX11) */
+	HRESULT				ClearBackBufferView(XMFLOAT4 _color);
+	HRESULT				ClearDepthStencilView();
+	HRESULT				Present();
+
 
 
 private:
