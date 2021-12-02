@@ -18,9 +18,16 @@ public:
 	_int				Tick(_double _timeDelta);
 	_int				LateTick(_double _timeDelta);
 	HRESULT				Render();
-	
+
+private:
+	HRESULT				SetUpLVL(LVL _nextLevel);
+	/*HRESULT				ReadyComponentProtoType();
+	HRESULT				ReadyGameObjectProtoType();
+	*/
 private:
 	GameInstance*			gameInstance = nullptr;
+	ID3D11Device*			dx11Device = nullptr;
+	ID3D11DeviceContext*	dx11DeviceContext = nullptr;
 
 public:
 	static MainApp* Create();

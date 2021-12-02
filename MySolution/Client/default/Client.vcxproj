@@ -162,6 +162,9 @@ call $(SolutionDir)"Update.bat"</Command>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\header\ClientDefine.h" />
+    <ClInclude Include="..\header\Loader.h" />
+    <ClInclude Include="..\header\Loading.h" />
+    <ClInclude Include="..\header\Logo.h" />
     <ClInclude Include="..\header\MainApp.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="Resource.h" />
@@ -169,6 +172,9 @@ call $(SolutionDir)"Update.bat"</Command>
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\cpp\Loader.cpp" />
+    <ClCompile Include="..\cpp\Loading.cpp" />
+    <ClCompile Include="..\cpp\Logo.cpp" />
     <ClCompile Include="..\cpp\MainApp.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="stdafx.cpp">

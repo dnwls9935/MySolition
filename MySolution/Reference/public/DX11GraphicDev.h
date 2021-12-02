@@ -14,7 +14,7 @@ private:
 	virtual ~DX11GraphicDev() = default;
 
 public:
-	HRESULT				ReadyDX11Device(HWND _hWnd, WINMODE _mode, _uint _width, _uint _height);
+	HRESULT				ReadyDX11Device(HWND _hWnd, WINMODE _mode, _uint _width, _uint _height, ID3D11Device** _dx11DeviceOut, ID3D11DeviceContext** _dx11DeviceContextOut);
 	HRESULT				ClearBackBufferView(XMFLOAT4 _color);
 	HRESULT				ClearDepthStencilView();
 	HRESULT				Present();

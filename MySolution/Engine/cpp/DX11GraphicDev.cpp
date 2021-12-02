@@ -8,7 +8,7 @@ DX11GraphicDev::DX11GraphicDev()
 }
 
 
-HRESULT DX11GraphicDev::ReadyDX11Device(HWND _hWnd, DX11GraphicDev::WINMODE _mode, _uint _width, _uint _height)
+HRESULT DX11GraphicDev::ReadyDX11Device(HWND _hWnd, DX11GraphicDev::WINMODE _mode, _uint _width, _uint _height, ID3D11Device** _dx11DeviceOut, ID3D11DeviceContext** _dx11DeviceContextOut)
 {
 	_uint pFlag = 0;
 
@@ -46,13 +46,20 @@ HRESULT DX11GraphicDev::ReadyDX11Device(HWND _hWnd, DX11GraphicDev::WINMODE _mod
 
 	pDx11ViewPort.TopLeftX = 0;
 	pDx11ViewPort.TopLeftY = 0;
-	pDx11ViewPort.Width = _width;
-	pDx11ViewPort.Height = _height;
+	pDx11ViewPort.Width = (_float)_width;
+	pDx11ViewPort.Height = (_float)_height;
 	pDx11ViewPort.MinDepth = 0.f;
 	pDx11ViewPort.MaxDepth = 1.f;
 
 	/* 뷰포트 설정값 지정 */
 	dx11DeviceContext->RSSetViewports(1, &pDx11ViewPort);
+
+	*_dx11DeviceOut = dx11Device;
+	*_dx11DeviceContextOut = dx11DeviceContext;
+
+	Safe_AddRef(dx11Device);
+	Safe_AddRef(dx11DeviceContext);
+
 
 	return S_OK;
 }
@@ -134,7 +141,7 @@ HRESULT Engine::DX11GraphicDev::ReadySwapChain(HWND _hWnd, WINMODE _mode, _uint 
 	pSwapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT; // BackBuffer의 용도를 서술하는 곳, 후면버퍼에 렌더링을 할 것이므로 "표면 또는 리소스를 출력 렌더링 대상으로 사용 합니다."라는 의미
 	pSwapChainDesc.BufferCount = 1;
 	pSwapChainDesc.OutputWindow = _hWnd; // 출력 윈도우 핸들
-	pSwapChainDesc.Windowed = FALSE; // 창 or 전체 모드
+	pSwapChainDesc.Windowed = (_int)_mode; // 창 or 전체 모드
 	pSwapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD; // 출력 후 BackBuffer의 내용을 지워라!
 
 	if (FAILED(pFactory->CreateSwapChain(dx11Device, &pSwapChainDesc, &dx11SwapChain)))

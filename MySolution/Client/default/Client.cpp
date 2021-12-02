@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "Client.h"
 #include "MainApp.h"
+#include "GameInstance.h"
 
 #define MAX_LOADSTRING 100
 
@@ -53,6 +54,14 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	if (nullptr == pMainApp)
 		return FALSE;
 
+	GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
+	if (FAILED(pGameInstance->ReadyTimer(TEXT("Default"))))
+		return FALSE;
+	if (FAILED(pGameInstance->ReadyTimer(TEXT("60fps"))))
+		return FALSE;
+
+	_double timerAcc = 0.0;
+
 	// 기본 메시지 루프입니다.
 	while (true)
 	{
@@ -68,13 +77,27 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 			}
 		}
 
-		if (0 > pMainApp->Tick(0.0))
-			break;
+		pGameInstance->UpdateTimeDelta(TEXT("Default"));
+		timerAcc += pGameInstance->GetTimeDelta(TEXT("Default"));
 
-		if (FAILED(pMainApp->Render()))
-			break;
+		if (timerAcc >= 1.0 / 60.0)
+		{
+			timerAcc = 0.0;
+
+			pGameInstance->UpdateTimeDelta(TEXT("60fps"));
+			if (0 > pMainApp->Tick(pGameInstance->GetTimeDelta(TEXT("60fps"))))
+				break;
+
+			if (0 > pMainApp->LateTick(pGameInstance->GetTimeDelta(TEXT("60fps"))))
+				break;
+
+			if (FAILED(pMainApp->Render()))
+				break;
+		}
+
 	}
 
+	RELEASE_INSTANCE(GameInstance);
 	Safe_Release(pMainApp);
 
 	return (int)msg.wParam;

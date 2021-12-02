@@ -7,6 +7,13 @@
 
 using namespace DirectX;
 
+#include <map>
+#include <list>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
 #ifdef _DEBUG
 
 #define _CRTDBG_MAP_ALLOC

@@ -22,6 +22,21 @@
     <Filter Include="00. Utility\01. Level">
       <UniqueIdentifier>{903a40a8-6416-409b-b0fe-f8c73ffe2dad}</UniqueIdentifier>
     </Filter>
+    <Filter Include="00. Utility\01. Level\Manager">
+      <UniqueIdentifier>{e9915c54-9d77-4a1f-9a4f-c598f8577fe7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. System\01. Time">
+      <UniqueIdentifier>{f58021ff-f309-4dce-8322-34ff7c98705e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. System\01. Time\Manager">
+      <UniqueIdentifier>{ca150332-7974-4d19-8d1b-7bd7981530fc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. Utility\02. GameObj">
+      <UniqueIdentifier>{41711982-abd8-4d68-8670-d7a00df14189}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. Utility\02. GameObj\Manager">
+      <UniqueIdentifier>{3ac7903b-83e2-411f-8cfe-9105a15ed2ae}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\header\SuperBase.h">
@@ -45,7 +60,24 @@
     <ClInclude Include="..\header\GameInstance.h">
       <Filter>00. Utility\00. GameInstance</Filter>
     </ClInclude>
-    <ClInclude Include="..\header\Level.h" />
+    <ClInclude Include="..\header\LevelManager.h">
+      <Filter>00. Utility\01. Level\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\header\Level.h">
+      <Filter>00. Utility\01. Level</Filter>
+    </ClInclude>
+    <ClInclude Include="..\header\Time.h">
+      <Filter>01. System\01. Time</Filter>
+    </ClInclude>
+    <ClInclude Include="..\header\TimeManager.h">
+      <Filter>01. System\01. Time\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\header\GameObj.h">
+      <Filter>00. Utility\02. GameObj</Filter>
+    </ClInclude>
+    <ClInclude Include="..\header\GameObjManager.h">
+      <Filter>00. Utility\02. GameObj\Manager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\cpp\SuperBase.cpp">
@@ -57,6 +89,23 @@
     <ClCompile Include="..\cpp\GameInstance.cpp">
       <Filter>00. Utility\00. GameInstance</Filter>
     </ClCompile>
-    <ClCompile Include="..\cpp\Level.cpp" />
+    <ClCompile Include="..\cpp\LevelManager.cpp">
+      <Filter>00. Utility\01. Level\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\cpp\Level.cpp">
+      <Filter>00. Utility\01. Level</Filter>
+    </ClCompile>
+    <ClCompile Include="..\cpp\Time.cpp">
+      <Filter>01. System\01. Time</Filter>
+    </ClCompile>
+    <ClCompile Include="..\cpp\TimeManager.cpp">
+      <Filter>01. System\01. Time\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\cpp\GameObj.cpp">
+      <Filter>00. Utility\02. GameObj</Filter>
+    </ClCompile>
+    <ClCompile Include="..\cpp\GameObjManager.cpp">
+      <Filter>00. Utility\02. GameObj\Manager</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

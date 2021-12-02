@@ -10,6 +10,18 @@
     <Filter Include="98. include">
       <UniqueIdentifier>{c616d2d8-a8c3-4dda-860e-51878d85abc9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01. Level">
+      <UniqueIdentifier>{1a0b49ae-2f4e-434f-b3a6-5e42e10fc376}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Level\00. Logo">
+      <UniqueIdentifier>{cf79e394-b553-4618-8681-72d2b23aa6ea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Level\01. Loading">
+      <UniqueIdentifier>{da5ea6fd-6eff-4a22-b986-8d9c733a3f32}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Level\01. Loading\Loader">
+      <UniqueIdentifier>{b6ead00a-1b14-460e-97f7-68b07486c97a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -30,6 +42,15 @@
     <ClInclude Include="..\header\MainApp.h">
       <Filter>00. MainApp</Filter>
     </ClInclude>
+    <ClInclude Include="..\header\Logo.h">
+      <Filter>01. Level\00. Logo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\header\Loading.h">
+      <Filter>01. Level\01. Loading</Filter>
+    </ClInclude>
+    <ClInclude Include="..\header\Loader.h">
+      <Filter>01. Level\01. Loading\Loader</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -40,6 +61,15 @@
     </ClCompile>
     <ClCompile Include="..\cpp\MainApp.cpp">
       <Filter>00. MainApp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\cpp\Logo.cpp">
+      <Filter>01. Level\00. Logo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\cpp\Loading.cpp">
+      <Filter>01. Level\01. Loading</Filter>
+    </ClCompile>
+    <ClCompile Include="..\cpp\Loader.cpp">
+      <Filter>01. Level\01. Loading\Loader</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

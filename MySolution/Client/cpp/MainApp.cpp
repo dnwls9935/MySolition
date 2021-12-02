@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "..\header\MainApp.h"
-
 #include "GameInstance.h"
+#include "Loading.h"
 
 MainApp::MainApp()
 	: gameInstance(GameInstance::GetInstance())
@@ -14,7 +14,11 @@ HRESULT MainApp::NativeConstruct()
 	if (nullptr == gameInstance)
 		return E_FAIL;
 
-	if (FAILED(gameInstance->InitializeEngine(g_hWnd, DX11GraphicDev::WINMODE::MODE_WIN, g_WIN_WIDTH, g_WIN_HEIGHT)))
+	if (FAILED(gameInstance->InitializeEngine(g_hWnd, DX11GraphicDev::WINMODE::MODE_WIN, g_WIN_WIDTH, g_WIN_HEIGHT, &dx11Device, &dx11DeviceContext)))
+		return E_FAIL;
+
+
+	if (FAILED(SetUpLVL(LVL::LVL_LOGO)))
 		return E_FAIL;
 
 	return S_OK;
@@ -22,11 +26,21 @@ HRESULT MainApp::NativeConstruct()
 
 Engine::_int MainApp::Tick(_double _timeDelta)
 {
+	if (nullptr == gameInstance)
+		return -1;
+
+	gameInstance->TickEngine(_timeDelta);
+
 	return 0;
 }
 
 Engine::_int MainApp::LateTick(_double _timeDelta)
 {
+	if (nullptr == gameInstance)
+		return -1;
+
+	gameInstance->LateTick(_timeDelta);
+
 	return 0;
 }
 
@@ -40,10 +54,26 @@ HRESULT MainApp::Render()
 	if (FAILED(gameInstance->ClearDepthStencilView()))
 		return E_FAIL;
 
-
-
+	if (FAILED(gameInstance->Render()))
+		return E_FAIL;
 
 	if (FAILED(gameInstance->Present()))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT MainApp::SetUpLVL(LVL _nextLevel)
+{
+	if (nullptr == gameInstance)
+		return E_FAIL;
+
+	HRESULT hr = 0;
+	if (_nextLevel == LVL::LVL_LOGO ||
+		_nextLevel == LVL::LVL_GAMEPLAY)
+		hr = gameInstance->OpenLVL(Loading::Create(dx11Device, dx11DeviceContext, _nextLevel));
+
+	if (FAILED(hr))
 		return E_FAIL;
 
 	return S_OK;

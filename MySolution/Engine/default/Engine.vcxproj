@@ -166,14 +166,24 @@
     <ClInclude Include="..\header\EngineIncludeh.h" />
     <ClInclude Include="..\header\EngineTypedef.h" />
     <ClInclude Include="..\header\GameInstance.h" />
+    <ClInclude Include="..\header\GameObj.h" />
+    <ClInclude Include="..\header\GameObjManager.h" />
     <ClInclude Include="..\header\Level.h" />
+    <ClInclude Include="..\header\LevelManager.h" />
     <ClInclude Include="..\header\SuperBase.h" />
+    <ClInclude Include="..\header\Time.h" />
+    <ClInclude Include="..\header\TimeManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\cpp\DX11GraphicDev.cpp" />
     <ClCompile Include="..\cpp\GameInstance.cpp" />
+    <ClCompile Include="..\cpp\GameObj.cpp" />
+    <ClCompile Include="..\cpp\GameObjManager.cpp" />
     <ClCompile Include="..\cpp\Level.cpp" />
+    <ClCompile Include="..\cpp\LevelManager.cpp" />
     <ClCompile Include="..\cpp\SuperBase.cpp" />
+    <ClCompile Include="..\cpp\Time.cpp" />
+    <ClCompile Include="..\cpp\TimeManager.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
