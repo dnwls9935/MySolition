@@ -14,6 +14,9 @@ HRESULT Client::Loading::NativeConstruct(LVL _nextLVL)
 	if (FAILED(__super::NativeConstruct()))
 		return E_FAIL;
 
+	if (FAILED(ReadyBackGround(TEXT("BackGround"))))
+		return E_FAIL;
+
 
 	nextLVL = _nextLVL;
 	
@@ -22,7 +25,7 @@ HRESULT Client::Loading::NativeConstruct(LVL _nextLVL)
 		return E_FAIL;
 
 	return S_OK;
-}
+} 
 
 Engine::_int Client::Loading::Tick(_double _timeDelta)
 {
@@ -71,6 +74,18 @@ HRESULT Client::Loading::OpenLevel()
 	}
 
 	if (FAILED(pGameInstance->OpenLVL(pLevel)))
+		return E_FAIL;
+
+	RELEASE_INSTANCE(GameInstance);
+
+	return S_OK;
+}
+
+HRESULT Loading::ReadyBackGround(const _tchar * _layerTag)
+{
+	GameInstance* pGameInstance = GET_INSTANCE(GameInstance);
+
+	if (FAILED(pGameInstance->Add_GameObj((_int)LVL::LVL_LOADING, _layerTag, TEXT("Proto_Background"))))
 		return E_FAIL;
 
 	RELEASE_INSTANCE(GameInstance);

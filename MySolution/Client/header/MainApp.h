@@ -16,14 +16,13 @@ private:
 public:
 	HRESULT				NativeConstruct();
 	_int				Tick(_double _timeDelta);
-	_int				LateTick(_double _timeDelta);
 	HRESULT				Render();
 
 private:
 	HRESULT				SetUpLVL(LVL _nextLevel);
-	/*HRESULT				ReadyComponentProtoType();
+	HRESULT				ReadyComponentProtoType();
 	HRESULT				ReadyGameObjectProtoType();
-	*/
+
 private:
 	GameInstance*			gameInstance = nullptr;
 	ID3D11Device*			dx11Device = nullptr;

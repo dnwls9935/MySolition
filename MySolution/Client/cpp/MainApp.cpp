@@ -2,6 +2,7 @@
 #include "..\header\MainApp.h"
 #include "GameInstance.h"
 #include "Loading.h"
+#include "Backgound.h"
 
 MainApp::MainApp()
 	: gameInstance(GameInstance::GetInstance())
@@ -14,7 +15,13 @@ HRESULT MainApp::NativeConstruct()
 	if (nullptr == gameInstance)
 		return E_FAIL;
 
-	if (FAILED(gameInstance->InitializeEngine(g_hWnd, DX11GraphicDev::WINMODE::MODE_WIN, g_WIN_WIDTH, g_WIN_HEIGHT, &dx11Device, &dx11DeviceContext)))
+	if (FAILED(gameInstance->InitializeEngine(g_hWnd, (_int)LVL::LVL_END , DX11GraphicDev::WINMODE::MODE_WIN, g_WIN_WIDTH, g_WIN_HEIGHT, &dx11Device, &dx11DeviceContext)))
+		return E_FAIL;
+
+	if (FAILED(ReadyComponentProtoType()))
+		return E_FAIL;
+
+	if (FAILED(ReadyGameObjectProtoType()))
 		return E_FAIL;
 
 
@@ -30,16 +37,6 @@ Engine::_int MainApp::Tick(_double _timeDelta)
 		return -1;
 
 	gameInstance->TickEngine(_timeDelta);
-
-	return 0;
-}
-
-Engine::_int MainApp::LateTick(_double _timeDelta)
-{
-	if (nullptr == gameInstance)
-		return -1;
-
-	gameInstance->LateTick(_timeDelta);
 
 	return 0;
 }
@@ -74,6 +71,22 @@ HRESULT MainApp::SetUpLVL(LVL _nextLevel)
 		hr = gameInstance->OpenLVL(Loading::Create(dx11Device, dx11DeviceContext, _nextLevel));
 
 	if (FAILED(hr))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT MainApp::ReadyComponentProtoType()
+{
+	return S_OK;
+}
+
+HRESULT MainApp::ReadyGameObjectProtoType()
+{
+	if (nullptr == gameInstance)
+		return E_FAIL;
+
+	if (FAILED(gameInstance->Add_ProtoObj(TEXT("Proto_Background"), Backgound::Create(dx11Device, dx11DeviceContext))))
 		return E_FAIL;
 
 	return S_OK;

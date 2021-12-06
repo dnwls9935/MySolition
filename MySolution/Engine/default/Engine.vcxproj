@@ -168,6 +168,7 @@
     <ClInclude Include="..\header\GameInstance.h" />
     <ClInclude Include="..\header\GameObj.h" />
     <ClInclude Include="..\header\GameObjManager.h" />
+    <ClInclude Include="..\header\Layer.h" />
     <ClInclude Include="..\header\Level.h" />
     <ClInclude Include="..\header\LevelManager.h" />
     <ClInclude Include="..\header\SuperBase.h" />
@@ -179,6 +180,7 @@
     <ClCompile Include="..\cpp\GameInstance.cpp" />
     <ClCompile Include="..\cpp\GameObj.cpp" />
     <ClCompile Include="..\cpp\GameObjManager.cpp" />
+    <ClCompile Include="..\cpp\Layer.cpp" />
     <ClCompile Include="..\cpp\Level.cpp" />
     <ClCompile Include="..\cpp\LevelManager.cpp" />
     <ClCompile Include="..\cpp\SuperBase.cpp" />

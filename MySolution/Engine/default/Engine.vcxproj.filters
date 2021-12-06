@@ -37,6 +37,9 @@
     <Filter Include="00. Utility\02. GameObj\Manager">
       <UniqueIdentifier>{3ac7903b-83e2-411f-8cfe-9105a15ed2ae}</UniqueIdentifier>
     </Filter>
+    <Filter Include="00. Utility\02. GameObj\Layer">
+      <UniqueIdentifier>{1b30f7d6-3be6-4855-928d-7ce38b2de08d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\header\SuperBase.h">
@@ -78,6 +81,9 @@
     <ClInclude Include="..\header\GameObjManager.h">
       <Filter>00. Utility\02. GameObj\Manager</Filter>
     </ClInclude>
+    <ClInclude Include="..\header\Layer.h">
+      <Filter>00. Utility\02. GameObj\Layer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\cpp\SuperBase.cpp">
@@ -106,6 +112,9 @@
     </ClCompile>
     <ClCompile Include="..\cpp\GameObjManager.cpp">
       <Filter>00. Utility\02. GameObj\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\cpp\Layer.cpp">
+      <Filter>00. Utility\02. GameObj\Layer</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

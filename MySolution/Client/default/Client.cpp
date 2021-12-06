@@ -88,9 +88,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 			if (0 > pMainApp->Tick(pGameInstance->GetTimeDelta(TEXT("60fps"))))
 				break;
 
-			if (0 > pMainApp->LateTick(pGameInstance->GetTimeDelta(TEXT("60fps"))))
-				break;
-
 			if (FAILED(pMainApp->Render()))
 				break;
 		}

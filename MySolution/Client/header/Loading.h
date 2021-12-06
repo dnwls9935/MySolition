@@ -20,6 +20,7 @@ public:
 
 private:
 	HRESULT		OpenLevel();
+	HRESULT		ReadyBackGround(const _tchar* _layerTag);
 	
 private:
 	LVL			nextLVL = LVL::LVL_END;

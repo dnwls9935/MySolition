@@ -13,7 +13,14 @@ protected:
 
 public:
 	virtual HRESULT		NativeConstructProtoType();
-	virtual HRESULT		NativeConstruct();
+	virtual HRESULT		NativeConstruct(void* _arg);
+	virtual _int		Tick(_double _timeDelta);
+	virtual _int		LateTick(_double _timeDelta);
+
+protected:
+	ID3D11Device*		 dx11Device;
+	ID3D11DeviceContext* dx11DeviceContext;
+
 
 public:
 	virtual GameObj*	Clone(void* _arg) = 0;

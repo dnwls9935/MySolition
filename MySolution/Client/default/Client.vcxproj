@@ -161,6 +161,7 @@ call $(SolutionDir)"Update.bat"</Command>
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\header\Backgound.h" />
     <ClInclude Include="..\header\ClientDefine.h" />
     <ClInclude Include="..\header\Loader.h" />
     <ClInclude Include="..\header\Loading.h" />
@@ -172,6 +173,7 @@ call $(SolutionDir)"Update.bat"</Command>
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\cpp\Backgound.cpp" />
     <ClCompile Include="..\cpp\Loader.cpp" />
     <ClCompile Include="..\cpp\Loading.cpp" />
     <ClCompile Include="..\cpp\Logo.cpp" />

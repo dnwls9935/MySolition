@@ -22,6 +22,12 @@
     <Filter Include="01. Level\01. Loading\Loader">
       <UniqueIdentifier>{b6ead00a-1b14-460e-97f7-68b07486c97a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. Object">
+      <UniqueIdentifier>{0a47ed36-3f50-41ab-bb55-7f37e271b31a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object\00. Background">
+      <UniqueIdentifier>{d49ffbf2-1f2b-4975-9762-32bc668baa08}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -51,6 +57,9 @@
     <ClInclude Include="..\header\Loader.h">
       <Filter>01. Level\01. Loading\Loader</Filter>
     </ClInclude>
+    <ClInclude Include="..\header\Backgound.h">
+      <Filter>02. Object\00. Background</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -70,6 +79,9 @@
     </ClCompile>
     <ClCompile Include="..\cpp\Loader.cpp">
       <Filter>01. Level\01. Loading\Loader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\cpp\Backgound.cpp">
+      <Filter>02. Object\00. Background</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
