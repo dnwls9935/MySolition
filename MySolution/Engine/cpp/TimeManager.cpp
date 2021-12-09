@@ -1,5 +1,5 @@
 #include "..\header\TimeManager.h"
-#include "Time.h"
+#include "Timer.h"
 IMPLEMENT_SINGLETON(TimeManager)
 
 TimeManager::TimeManager()
@@ -8,7 +8,7 @@ TimeManager::TimeManager()
 
 _double TimeManager::GetTimeDelta(const _tchar * _timerTag)
 {
-	Time* pInstance = FindTimer(_timerTag);
+	Timer* pInstance = FindTimer(_timerTag);
 	if (nullptr == pInstance)
 		return 0.0;
 
@@ -17,7 +17,7 @@ _double TimeManager::GetTimeDelta(const _tchar * _timerTag)
 
 void TimeManager::UpdateTimeDelta(const _tchar * _timerTag)
 {
-	Time* pInstance = FindTimer(_timerTag);
+	Timer* pInstance = FindTimer(_timerTag);
 	if (nullptr == pInstance)
 		return;
 
@@ -26,11 +26,11 @@ void TimeManager::UpdateTimeDelta(const _tchar * _timerTag)
 
 HRESULT TimeManager::ReadyTimer(const _tchar * _timerTag)
 {
-	Time* pInstance = FindTimer(_timerTag);
+	Timer* pInstance = FindTimer(_timerTag);
 	if (nullptr != pInstance)
 		return E_FAIL;
 
-	pInstance = Time::Create();
+	pInstance = Timer::Create();
 	if (nullptr == pInstance)
 		return E_FAIL;
 
@@ -39,7 +39,7 @@ HRESULT TimeManager::ReadyTimer(const _tchar * _timerTag)
 	return S_OK;
 }
 
-Time * TimeManager::FindTimer(const _tchar * _timerTag)
+Timer * TimeManager::FindTimer(const _tchar * _timerTag)
 {
 	auto iter = find_if(mapTimer.begin(), mapTimer.end(), CTag_Finder(_timerTag));
 	if (mapTimer.end() == iter)

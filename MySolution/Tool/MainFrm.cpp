@@ -6,6 +6,8 @@
 #include "Tool.h"
 
 #include "MainFrm.h"
+#include "ToolView.h"
+#include "Form.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -47,24 +49,24 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	if (CFrameWnd::OnCreate(lpCreateStruct) == -1)
 		return -1;
 
-	if (!m_wndToolBar.CreateEx(this, TBSTYLE_FLAT, WS_CHILD | WS_VISIBLE | CBRS_TOP | CBRS_GRIPPER | CBRS_TOOLTIPS | CBRS_FLYBY | CBRS_SIZE_DYNAMIC) ||
-		!m_wndToolBar.LoadToolBar(IDR_MAINFRAME))
-	{
-		TRACE0("도구 모음을 만들지 못했습니다.\n");
-		return -1;      // 만들지 못했습니다.
-	}
+	//if (!m_wndToolBar.CreateEx(this, TBSTYLE_FLAT, WS_CHILD | WS_VISIBLE | CBRS_TOP | CBRS_GRIPPER | CBRS_TOOLTIPS | CBRS_FLYBY | CBRS_SIZE_DYNAMIC) ||
+	//	!m_wndToolBar.LoadToolBar(IDR_MAINFRAME))
+	//{
+	//	TRACE0("도구 모음을 만들지 못했습니다.\n");
+	//	return -1;      // 만들지 못했습니다.
+	//}
 
-	if (!m_wndStatusBar.Create(this))
-	{
-		TRACE0("상태 표시줄을 만들지 못했습니다.\n");
-		return -1;      // 만들지 못했습니다.
-	}
-	m_wndStatusBar.SetIndicators(indicators, sizeof(indicators)/sizeof(UINT));
+	//if (!m_wndStatusBar.Create(this))
+	//{
+	//	TRACE0("상태 표시줄을 만들지 못했습니다.\n");
+	//	return -1;      // 만들지 못했습니다.
+	//}
+	//m_wndStatusBar.SetIndicators(indicators, sizeof(indicators)/sizeof(UINT));
 
-	// TODO: 도구 모음을 도킹할 수 없게 하려면 이 세 줄을 삭제하십시오.
-	m_wndToolBar.EnableDocking(CBRS_ALIGN_ANY);
-	EnableDocking(CBRS_ALIGN_ANY);
-	DockControlBar(&m_wndToolBar);
+	//// TODO: 도구 모음을 도킹할 수 없게 하려면 이 세 줄을 삭제하십시오.
+	//m_wndToolBar.EnableDocking(CBRS_ALIGN_ANY);
+	//EnableDocking(CBRS_ALIGN_ANY);
+	//DockControlBar(&m_wndToolBar);
 
 
 	return 0;
@@ -97,3 +99,22 @@ void CMainFrame::Dump(CDumpContext& dc) const
 
 // CMainFrame 메시지 처리기
 
+
+
+BOOL CMainFrame::OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext)
+{
+	// TODO: 여기에 특수화된 코드를 추가 및/또는 기본 클래스를 호출합니다.
+
+	mainSpliiter.CreateStatic(this, 1, 2); //몇개로 분할할지 16x16 초과할 수 없다, 1행의 2열
+												  //m_tSecondSplitter.CreateStatic(&m_tMainSplitter, 2, 1, WS_CHILD | WS_VISIBLE, m_tMainSplitter.IdFromRowCol(0, 0));
+
+												  //##3번째 인자에서 MFCToolView* pView = new CMFCToolView //CMFCToolView : public부분이 protected라서 사용불가
+	mainSpliiter.CreateView(0, 0, RUNTIME_CLASS(Form), CSize(400, 300), pContext);
+	mainSpliiter.CreateView(0, 1, RUNTIME_CLASS(CToolView), CSize(300, 600), pContext);
+
+	//m_tMainSplitter 크기를 지정안해줘서 창이 안보인다.
+	mainSpliiter.SetColumnInfo(0, 400, 100); //가로 크기를 재조정 해주는 함수.
+
+
+	return CFrameWnd::OnCreateClient(lpcs, pContext);
+}

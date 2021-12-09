@@ -9,7 +9,11 @@
 #define ENGINE_DLL _declspec(dllimport)
 #endif
 
+#ifdef _AFX
+#define MSGBOX(MESSAGE) AfxMessageBox(MESSAGE)
+#else
 #define MSGBOX(MESSAGE) MessageBox(0, TEXT(MESSAGE), TEXT("Error"), MB_OK)
+#endif
 
 #define NO_COPY(CLASSNAME)										\
 		private:												\

@@ -51,6 +51,10 @@ HRESULT MainApp::Render()
 	if (FAILED(gameInstance->ClearDepthStencilView()))
 		return E_FAIL;
 
+
+	if (FAILED(rendering->RenderingGroup()))
+		return E_FAIL;
+
 	if (FAILED(gameInstance->Render()))
 		return E_FAIL;
 
@@ -78,6 +82,10 @@ HRESULT MainApp::SetUpLVL(LVL _nextLevel)
 
 HRESULT MainApp::ReadyComponentProtoType()
 {
+	gameInstance->AddProtoType(dx11Device, dx11DeviceContext);
+	
+	rendering = static_cast<Rendering*>(gameInstance->CloneComponent(TEXT("Component_Rendering_Proto")));
+
 	return S_OK;
 }
 
@@ -106,6 +114,9 @@ MainApp* MainApp::Create()
 
 void MainApp::Free()
 {
+	Safe_Release(rendering);
+	Safe_Release(dx11Device);
+	Safe_Release(dx11DeviceContext);
 	Safe_Release(gameInstance);
 	GameInstance::ReleaseEngine();
 }

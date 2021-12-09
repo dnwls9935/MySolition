@@ -18,8 +18,9 @@ public:
 	_int		Tick(_double _timeDelta);
 	_int		LateTick(_double _timeDelta);
 	
+	HRESULT			ClearObj(_uint _releaseLVL);
 private:
-	class GameObj* FindProto(const _tchar* _protoTag);
+	class GameObj*	FindProto(const _tchar* _protoTag);
 
 private:
 	unordered_map<const _tchar*, class GameObj*> umapProtoContainer;

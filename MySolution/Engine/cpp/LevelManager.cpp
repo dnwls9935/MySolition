@@ -1,5 +1,6 @@
 #include "..\header\LevelManager.h"
 #include "Level.h"
+#include "GameObjManager.h"
 
 IMPLEMENT_SINGLETON(LevelManager)
 
@@ -13,9 +14,13 @@ HRESULT Engine::LevelManager::OpenLVL(class Level* pLVL)
 	if (nullptr == pLVL)
 		return E_FAIL;
 
-	Safe_Release(currentLVL);
+	GameObjManager* gameObjManager = GET_INSTANCE(GameObjManager);
 
+	if(nullptr != currentLVL) gameObjManager->ClearObj(currentLVL->GetLevelID());
+
+	Safe_Release(currentLVL);
 	currentLVL = pLVL;
+	RELEASE_INSTANCE(GameObjManager);
 
 	return S_OK;
 }

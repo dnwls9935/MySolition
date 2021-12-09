@@ -19,6 +19,7 @@ HRESULT Client::Loading::NativeConstruct(LVL _nextLVL)
 
 
 	nextLVL = _nextLVL;
+	levelID = (_int)LVL::LVL_LOADING;
 	
 	loader = Loader::Create(dx11Device, dx11DeviceContext, nextLVL);
 	if (nullptr == loader)

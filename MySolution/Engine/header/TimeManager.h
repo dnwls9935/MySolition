@@ -17,10 +17,10 @@ public:
 	HRESULT					ReadyTimer(const _tchar* _timerTag);
 
 private:
-	class Time*			FindTimer(const _tchar* _timerTag);
+	class Timer*			FindTimer(const _tchar* _timerTag);
 
 private:
-	map<const _tchar*, Time*>			mapTimer;
+	map<const _tchar*, Timer*>			mapTimer;
 
 
 public:

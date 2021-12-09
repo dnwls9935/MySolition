@@ -16,11 +16,17 @@ public:
 	virtual HRESULT		NativeConstruct(void* _arg);
 	virtual _int		Tick(_double _timeDelta);
 	virtual _int		LateTick(_double _timeDelta);
+	virtual HRESULT		Render();
+
+protected:
+	HRESULT AddComponent(const _tchar* _protoTag, const _tchar* _tag, class Component** _out, void* _arg = nullptr);
 
 protected:
 	ID3D11Device*		 dx11Device;
 	ID3D11DeviceContext* dx11DeviceContext;
 
+	unordered_map<const _tchar*, class Component*> umapComponent;
+	typedef	unordered_map<const _tchar*, class Component*> OBJCOMPONENTS;
 
 public:
 	virtual GameObj*	Clone(void* _arg) = 0;

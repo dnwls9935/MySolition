@@ -7,9 +7,6 @@
     <Filter Include="99. Default">
       <UniqueIdentifier>{f2c9182a-512b-462d-b84c-317f2dcd6a24}</UniqueIdentifier>
     </Filter>
-    <Filter Include="98. include">
-      <UniqueIdentifier>{c616d2d8-a8c3-4dda-860e-51878d85abc9}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01. Level">
       <UniqueIdentifier>{1a0b49ae-2f4e-434f-b3a6-5e42e10fc376}</UniqueIdentifier>
     </Filter>
@@ -27,6 +24,12 @@
     </Filter>
     <Filter Include="02. Object\00. Background">
       <UniqueIdentifier>{d49ffbf2-1f2b-4975-9762-32bc668baa08}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="97. Shader">
+      <UniqueIdentifier>{2552f817-51af-4ead-b7f7-c91b1317736b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="98. include">
+      <UniqueIdentifier>{c616d2d8-a8c3-4dda-860e-51878d85abc9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -101,5 +104,10 @@
     <Text Include="ReadMe.txt">
       <Filter>99. Default</Filter>
     </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\bin\Shader\ShaderRect.hlsl">
+      <Filter>97. Shader</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

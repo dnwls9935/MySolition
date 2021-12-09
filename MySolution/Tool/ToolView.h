@@ -3,7 +3,8 @@
 //
 
 #pragma once
-
+#include "EngineIncludeh.h"
+#include "GameInstance.h"
 
 class CToolView : public CView
 {
@@ -13,10 +14,20 @@ protected: // serialization에서만 만들어집니다.
 
 // 특성입니다.
 public:
-	CToolDoc* GetDocument() const;
+	class CToolDoc* GetDocument() const;
 
 // 작업입니다.
 public:
+	class CMainFrame*		mainFrame = nullptr;;
+	class Form*				form = nullptr;
+
+	class GameInstance*			gameInstance = nullptr;
+	ID3D11Device*			dx11Device = nullptr;
+	ID3D11DeviceContext*			dx11DeviceContext = nullptr;
+
+private:
+	HRESULT		SettingBasic();
+	HRESULT		SettingDevice();
 
 // 재정의입니다.
 public:
@@ -40,6 +51,8 @@ protected:
 // 생성된 메시지 맵 함수
 protected:
 	DECLARE_MESSAGE_MAP()
+public:
+	virtual void OnInitialUpdate();
 };
 
 #ifndef _DEBUG  // ToolView.cpp의 디버그 버전

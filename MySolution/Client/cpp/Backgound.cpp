@@ -1,5 +1,6 @@
-#include "stdafx.h"
+ #include "stdafx.h"
 #include "..\header\Backgound.h"
+
 #include "GameInstance.h"
 
 Backgound::Backgound(ID3D11Device * _dx11Device, ID3D11DeviceContext * _dx11DeviceContext)
@@ -25,7 +26,10 @@ HRESULT Backgound::NativeConstruct(void* _arg)
 	if (FAILED(__super::NativeConstruct(_arg)))
 		return E_FAIL;
 
-	if (FAILED(AddComponent()))
+	if (FAILED(__super::AddComponent(TEXT("Component_Rendering_Proto"), TEXT("Rendering"), (Component**)&renderingCom)))
+		return E_FAIL;
+
+	if (FAILED(__super::AddComponent(TEXT("Component_RectBuffer_Proto"), TEXT("RectBuffer"), (Component**)&bufferCom)))
 		return E_FAIL;
 
 	return S_OK;
@@ -33,18 +37,37 @@ HRESULT Backgound::NativeConstruct(void* _arg)
 
 Engine::_int Backgound::Tick(_double _timeDelta)
 {
+	if (FAILED(__super::Tick(_timeDelta)))
+		return E_FAIL;
+
 	return 0;
 }
 
 Engine::_int Backgound::LateTick(_double _timeDelta)
 {
+	if (FAILED(__super::LateTick(_timeDelta)))
+		return E_FAIL;
+
+	if (nullptr != renderingCom)
+		renderingCom->AddRenderingGroup(Rendering::RENDERING_ID::RENDER_PRIORITY, this);
+
 	return 0;
 }
 
-HRESULT Backgound::AddComponent()
-{
+HRESULT Backgound::Render()
+{/*
+	bufferCom->SetUpValueOnShader("worldMatrix", &XMMatrixIdentity(), sizeof(_float)*16);
+	bufferCom->SetUpValueOnShader("viewMatrix", &XMMatrixIdentity(), sizeof(_float) * 16);
+	bufferCom->SetUpValueOnShader("projMatrix", &XMMatrixIdentity(), sizeof(_float) * 16);*/
+	bufferCom->SetUpValueOnShader("g_WorldMatrix", &XMMatrixIdentity(), sizeof(_float) * 16);
+	bufferCom->SetUpValueOnShader("g_ViewMatrix", &XMMatrixIdentity(), sizeof(_float) * 16);
+	bufferCom->SetUpValueOnShader("g_ProjMatrix", &XMMatrixIdentity(), sizeof(_float) * 16);
+
+	bufferCom->Render(0);
+
 	return S_OK;
 }
+
 
 Backgound * Backgound::Create(ID3D11Device * _dx11Device, ID3D11DeviceContext * _dx11DeviceContext)
 {
@@ -73,4 +96,7 @@ Backgound* Backgound::Clone(void* _arg)
 void Backgound::Free()
 {
 	__super::Free();
+
+	Safe_Release(renderingCom);
+	Safe_Release(bufferCom);
 }

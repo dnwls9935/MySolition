@@ -10,7 +10,10 @@ rmdir /s /q .\Client\default\x64
 rmdir /s /q .\Engine\default\Debug
 rmdir /s /q .\Engine\default\x64
 
-rmdir /s /q .\Tool\default\x64
+rmdir /s /q .\Tool\x64
+
+rmdir /s /q .\x64
+rmdir /s /q .\.vs
 
 del /f /q .\Client\bin\Client.exe
 del /f /q .\Client\bin\Client.ilk

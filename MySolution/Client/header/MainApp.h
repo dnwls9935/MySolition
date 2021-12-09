@@ -5,6 +5,7 @@
 
 BEGIN(Engine)
 class GameInstance;
+class Rendering;
 END
 
 class MainApp final : public SuperBase
@@ -27,6 +28,8 @@ private:
 	GameInstance*			gameInstance = nullptr;
 	ID3D11Device*			dx11Device = nullptr;
 	ID3D11DeviceContext*	dx11DeviceContext = nullptr;
+	Rendering*				rendering = nullptr;
+
 
 public:
 	static MainApp* Create();

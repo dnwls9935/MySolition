@@ -11,6 +11,8 @@ HRESULT Client::Logo::NativeConstruct()
 	if (FAILED(__super::NativeConstruct()))
 		return E_FAIL;
 
+	levelID = (_uint)LVL::LVL_LOGO;
+
 	return S_OK;
 }
 

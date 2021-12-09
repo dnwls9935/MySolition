@@ -1,83 +1,110 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="00. MainFrm">
-      <UniqueIdentifier>{cff0ef6a-ef68-4460-91bc-df79c71b484b}</UniqueIdentifier>
+    <Filter Include="MainFrame">
+      <UniqueIdentifier>{ad3d268f-04e9-4b26-86d9-fec088c81e41}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01. Document">
-      <UniqueIdentifier>{0615a9a8-9aeb-4c83-b9ef-02174c83bad4}</UniqueIdentifier>
+    <Filter Include="Document">
+      <UniqueIdentifier>{5ce2064d-e5b5-4618-bc0b-658ac477966b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. View">
-      <UniqueIdentifier>{ac8a0407-9266-4f84-8e0c-1a2e1f47b6ee}</UniqueIdentifier>
+    <Filter Include="View">
+      <UniqueIdentifier>{ec60cbd5-2161-4db5-8f66-1767f0943adb}</UniqueIdentifier>
     </Filter>
-    <Filter Include="99. Default">
-      <UniqueIdentifier>{b0f00b6b-425a-46b5-a7f1-f07318958612}</UniqueIdentifier>
+    <Filter Include="Default">
+      <UniqueIdentifier>{446acc3f-cf21-45c3-8518-beb56f8fd8c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Default\리소스 파일">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Default\소스 파일">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Default\헤더 파일">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="View\Form">
+      <UniqueIdentifier>{c1ba46bd-d9ad-4e13-aaee-18f6dd06bb81}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include">
+      <UniqueIdentifier>{81d8d866-54e9-4e21-be7a-4d810f040b06}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="MainFrm.h">
-      <Filter>00. MainFrm</Filter>
-    </ClInclude>
-    <ClInclude Include="ToolView.h">
-      <Filter>02. View</Filter>
-    </ClInclude>
-    <ClInclude Include="ToolDoc.h">
-      <Filter>01. Document</Filter>
-    </ClInclude>
-    <ClInclude Include="Resource.h">
-      <Filter>99. Default</Filter>
+    <ClInclude Include="Tool.h">
+      <Filter>Default\헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="stdafx.h">
-      <Filter>99. Default</Filter>
+      <Filter>Default\헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="targetver.h">
-      <Filter>99. Default</Filter>
+      <Filter>Default\헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Tool.h">
-      <Filter>99. Default</Filter>
+    <ClInclude Include="Resource.h">
+      <Filter>Default\헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="MainFrm.h">
+      <Filter>MainFrame</Filter>
+    </ClInclude>
+    <ClInclude Include="ToolDoc.h">
+      <Filter>Document</Filter>
+    </ClInclude>
+    <ClInclude Include="ToolView.h">
+      <Filter>View</Filter>
+    </ClInclude>
+    <ClInclude Include="Form.h">
+      <Filter>View\Form</Filter>
+    </ClInclude>
+    <ClInclude Include="Include.h">
+      <Filter>Include</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="MainFrm.cpp">
-      <Filter>00. MainFrm</Filter>
-    </ClCompile>
-    <ClCompile Include="ToolView.cpp">
-      <Filter>02. View</Filter>
-    </ClCompile>
-    <ClCompile Include="ToolDoc.cpp">
-      <Filter>01. Document</Filter>
+    <ClCompile Include="Tool.cpp">
+      <Filter>Default\소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
-      <Filter>99. Default</Filter>
+      <Filter>Default\소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Tool.cpp">
-      <Filter>99. Default</Filter>
+    <ClCompile Include="MainFrm.cpp">
+      <Filter>MainFrame</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="res\Tool.ico">
-      <Filter>99. Default</Filter>
-    </Image>
-    <Image Include="res\Toolbar.bmp">
-      <Filter>99. Default</Filter>
-    </Image>
-    <Image Include="res\ToolDoc.ico">
-      <Filter>99. Default</Filter>
-    </Image>
+    <ClCompile Include="ToolDoc.cpp">
+      <Filter>Document</Filter>
+    </ClCompile>
+    <ClCompile Include="ToolView.cpp">
+      <Filter>View</Filter>
+    </ClCompile>
+    <ClCompile Include="Form.cpp">
+      <Filter>View\Form</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Tool.rc">
-      <Filter>99. Default</Filter>
+      <Filter>Default\리소스 파일</Filter>
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\Tool.rc2">
-      <Filter>99. Default</Filter>
+      <Filter>Default\리소스 파일</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Image Include="res\ToolDoc.ico">
+      <Filter>Default\리소스 파일</Filter>
+    </Image>
+    <Image Include="res\Tool.ico">
+      <Filter>Default\리소스 파일</Filter>
+    </Image>
+    <Image Include="res\Toolbar.bmp">
+      <Filter>Default\리소스 파일</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
     <Text Include="ReadMe.txt">
-      <Filter>99. Default</Filter>
+      <Filter>Default</Filter>
     </Text>
   </ItemGroup>
 </Project>

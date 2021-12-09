@@ -16,6 +16,7 @@ public:
 
 // 작업입니다.
 public:
+	CSplitterWnd mainSpliiter;
 
 // 재정의입니다.
 public:
@@ -38,6 +39,7 @@ protected:
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	DECLARE_MESSAGE_MAP()
 
+	virtual BOOL OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext);
 };
 
 

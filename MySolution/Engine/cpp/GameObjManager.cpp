@@ -46,7 +46,7 @@ HRESULT GameObjManager::Add_GameObj(_uint _lvl, const _tchar * _layerTag, const 
 		if (FAILED(pLayer->AddObj(cloneProtoObj)))
 			return E_FAIL;
 
-		umapGameObjContainer->insert(LAYERS::value_type(_layerTag, pLayer));
+		umapGameObjContainer[_lvl].insert(LAYERS::value_type(_layerTag, pLayer));
 	}
 	else {
 		if (FAILED(pair->second->AddObj(cloneProtoObj)))
@@ -94,6 +94,18 @@ GameObj * GameObjManager::FindProto(const _tchar * _protoTag)
 		return nullptr;
 
 	return pair->second;
+}
+
+HRESULT GameObjManager::ClearObj(_uint _releaseLVL)
+{
+	if (_releaseLVL >= levelNum)
+		return E_FAIL;
+
+	for (auto& iter : umapGameObjContainer[_releaseLVL])
+		Safe_Release(iter.second);
+
+	umapGameObjContainer[_releaseLVL].clear();
+	return S_OK;
 }
 
 void GameObjManager::Free()

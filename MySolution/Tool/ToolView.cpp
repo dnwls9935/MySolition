@@ -11,6 +11,10 @@
 
 #include "ToolDoc.h"
 #include "ToolView.h"
+#include "MainFrm.h"
+#include "Form.h"
+#include "ClientDefine.h"
+
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -18,7 +22,8 @@
 
 
 // CToolView
-
+HWND	g_hWnd;
+HINSTANCE	g_hInst;
 IMPLEMENT_DYNCREATE(CToolView, CView)
 
 BEGIN_MESSAGE_MAP(CToolView, CView)
@@ -33,11 +38,12 @@ END_MESSAGE_MAP()
 CToolView::CToolView()
 {
 	// TODO: 여기에 생성 코드를 추가합니다.
-
+	//RELEASE_INSTANCE(GameInstance);
 }
 
 CToolView::~CToolView()
 {
+
 }
 
 BOOL CToolView::PreCreateWindow(CREATESTRUCT& cs)
@@ -49,6 +55,49 @@ BOOL CToolView::PreCreateWindow(CREATESTRUCT& cs)
 }
 
 // CToolView 그리기
+
+HRESULT CToolView::SettingBasic()
+{
+	mainFrame = dynamic_cast<CMainFrame*>(AfxGetApp()->GetMainWnd());
+	if (nullptr == mainFrame)
+	{
+		MSGBOX(L"Failed to Get MainFrame");
+		return E_FAIL;
+	}
+
+	form = dynamic_cast<Form*>(mainFrame->mainSpliiter.GetPane(0, 0));
+	if (nullptr == form)
+	{
+		MSGBOX(L"Failed to Get Form");
+		return E_FAIL;
+	}
+
+	RECT mainRect = {};
+	mainFrame->GetWindowRect(&mainRect);
+
+	SetRect(&mainRect, 0, 0, mainRect.right - mainRect.left, mainRect.bottom - mainRect.top);
+	RECT viewRect = {};
+	GetClientRect(&viewRect);
+
+	int width = mainRect.right - viewRect.right;
+	int height = mainRect.bottom - viewRect.bottom;
+	mainFrame->SetWindowPos(nullptr, 0, 0, g_WIN_WIDTH + width, g_WIN_HEIGHT + height, SWP_NOMOVE);
+
+	g_hWnd = m_hWnd;
+	g_hInst = AfxGetInstanceHandle();
+
+	return S_OK;
+}
+
+HRESULT CToolView::SettingDevice()
+{
+	gameInstance = GET_INSTANCE(GameInstance);
+
+	if (FAILED(gameInstance->InitializeEngineForTool(g_hWnd, DX11GraphicDev::WINMODE::MODE_WIN, g_WIN_WIDTH, g_WIN_HEIGHT, &dx11Device, &dx11DeviceContext)))
+		return E_FAIL;
+
+	return S_OK;
+}
 
 void CToolView::OnDraw(CDC* /*pDC*/)
 {
@@ -102,3 +151,16 @@ CToolDoc* CToolView::GetDocument() const // 디버그되지 않은 버전은 인라인으로 지
 
 
 // CToolView 메시지 처리기
+
+
+void CToolView::OnInitialUpdate()
+{
+	CView::OnInitialUpdate();
+
+	if (FAILED(SettingBasic()))
+		return;
+
+
+
+	// TODO: 여기에 특수화된 코드를 추가 및/또는 기본 클래스를 호출합니다.
+}

@@ -7,7 +7,9 @@ GameInstance::GameInstance()
 	, levelManager(LevelManager::GetInstance())
 	, timeManager(TimeManager::GetInstance())
 	, gameObjectManager(GameObjManager::GetInstance())
+	, componentManager(ComponentManager::GetInstance())
 {
+	Safe_AddRef(componentManager);
 	Safe_AddRef(dx11GraphicDev);
 	Safe_AddRef(levelManager);
 	Safe_AddRef(timeManager);
@@ -98,7 +100,7 @@ HRESULT Engine::GameInstance::OpenLVL(class Level* pLVL)
 {
 	if (nullptr == levelManager)
 		return E_FAIL;
-
+	
 	return levelManager->OpenLVL(pLVL);
 }
 
@@ -142,6 +144,39 @@ HRESULT GameInstance::Add_GameObj(_uint _lvl, const _tchar * _layerTag, const _t
 	return gameObjectManager->Add_GameObj(_lvl, _layerTag, _protoTag, _arg);
 }
 
+HRESULT GameInstance::AddProtoType(ID3D11Device* _dx11Device, ID3D11DeviceContext* _dx11DeviceContext)
+{
+	if (nullptr == componentManager)
+		return E_FAIL;
+
+	return componentManager->AddProtoType(_dx11Device, _dx11DeviceContext);
+}
+
+Component * GameInstance::CloneComponent(const _tchar * _tag, void * _arg)
+{
+	if (nullptr == componentManager)
+		return nullptr;
+
+	return componentManager->CloneComponent(_tag, _arg);
+}
+
+HRESULT GameInstance::ProcessingRenderingComponent()
+{
+
+	return S_OK;
+}
+
+HRESULT GameInstance::InitializeEngineForTool(HWND _hWnd, DX11GraphicDev::WINMODE _mode, _uint _width, _uint _height, ID3D11Device ** _dx11DeviceOut, ID3D11DeviceContext ** _dx11DeviceContextOut)
+{
+	if (nullptr == dx11GraphicDev)
+		return E_FAIL;
+
+	if (FAILED(dx11GraphicDev->ReadyDX11Device(_hWnd, _mode, _width, _height, _dx11DeviceOut, _dx11DeviceContextOut)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
 void GameInstance::ReleaseEngine()
 {
 	if (0 != GameInstance::GetInstance()->DestroyInstance())
@@ -152,6 +187,9 @@ void GameInstance::ReleaseEngine()
 
 	if (0 != GameObjManager::GetInstance()->DestroyInstance())
 		MSGBOX("Failed to Release GameObjManager");
+
+	if (0 != ComponentManager::GetInstance()->DestroyInstance())
+		MSGBOX("Failed to Release ComponentManager");
 
 	if (0 != TimeManager::GetInstance()->DestroyInstance())
 		MSGBOX("Failed to Release TimeManager");
@@ -164,6 +202,7 @@ void GameInstance::ReleaseEngine()
 
 void GameInstance::Free()
 {
+	Safe_Release(componentManager);
 	Safe_Release(gameObjectManager);
 	Safe_Release(timeManager);
 	Safe_Release(levelManager);
