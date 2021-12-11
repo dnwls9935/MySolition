@@ -4,7 +4,7 @@
 
 BEGIN(Engine)
 
-class RectBuffer final : public VIBuffer
+class ENGINE_DLL RectBuffer final : public VIBuffer
 {
 private:
 	explicit RectBuffer(ID3D11Device* _dx11Device, ID3D11DeviceContext* _dx11DeviceContext);

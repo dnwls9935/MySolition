@@ -13,15 +13,18 @@ private:
 	virtual ~ComponentManager() = default;
 
 public:
-	HRESULT		AddProtoType(ID3D11Device* _dx11Device, ID3D11DeviceContext* _dx11DeviceContext);
-	class Component*	CloneComponent(const _tchar* _tag, void* _arg);
+	HRESULT		ReserveManager(_uint	_numLVL);
+	HRESULT		AddProtoType(_uint _numLVL, const _tchar* _protoTag, class Component* _protoComponent);
+	class Component*	CloneComponent(_uint _numLVL, const _tchar* _tag, void* _arg);
 
 private:
-	class Component*	FindComponent(const _tchar* _tag);
+	class Component*	FindComponent(_uint _numLVL, const _tchar* _tag);
 
 private:
-	unordered_map<const _tchar*, class Component*> umapProtoContainer;
+	unordered_map<const _tchar*, class Component*>* umapProtoContainer = nullptr;
 	typedef unordered_map<const _tchar*, class Component*> COMPONENTS;
+
+	_uint		numLVL;
 
 public:
 	virtual void Free() override;

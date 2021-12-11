@@ -55,6 +55,9 @@
     <Filter Include="00. Utility\03. Component\VIBuffer\RectBuffer">
       <UniqueIdentifier>{94e982e1-564f-4b87-bc50-8776b238264c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="00. Utility\03. Component\Texture">
+      <UniqueIdentifier>{cdb04b2f-041a-418a-b06b-b383aa61723a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\header\SuperBase.h">
@@ -117,6 +120,9 @@
     <ClInclude Include="..\header\Timer.h">
       <Filter>01. System\01. Time</Filter>
     </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>00. Utility\03. Component\Texture</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\cpp\SuperBase.cpp">
@@ -163,6 +169,9 @@
     </ClCompile>
     <ClCompile Include="..\cpp\Timer.cpp">
       <Filter>01. System\01. Time</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>00. Utility\03. Component\Texture</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

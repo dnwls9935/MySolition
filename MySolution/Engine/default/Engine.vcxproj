@@ -110,7 +110,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>d3d11.lib;dxguid.lib;effects11d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;dxguid.lib;effects11d.lib;DirectXTexd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>../ThirdPartyLibrarys/</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
@@ -153,8 +153,8 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>d3d11.lib;dxguid.lib;effects11.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>../Librarys/</AdditionalLibraryDirectories>
+      <AdditionalDependencies>d3d11.lib;dxguid.lib;effects11.lib;DirectXTex.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../ThirdPartyLibrarys/</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>
@@ -182,6 +182,7 @@
     <ClInclude Include="..\header\TimeManager.h" />
     <ClInclude Include="..\header\Timer.h" />
     <ClInclude Include="..\header\VIBuffer.h" />
+    <ClInclude Include="Texture.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\cpp\Component.cpp" />
@@ -199,6 +200,7 @@
     <ClCompile Include="..\cpp\TimeManager.cpp" />
     <ClCompile Include="..\cpp\Timer.cpp" />
     <ClCompile Include="..\cpp\VIBuffer.cpp" />
+    <ClCompile Include="Texture.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

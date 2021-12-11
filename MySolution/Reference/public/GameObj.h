@@ -19,7 +19,7 @@ public:
 	virtual HRESULT		Render();
 
 protected:
-	HRESULT AddComponent(const _tchar* _protoTag, const _tchar* _tag, class Component** _out, void* _arg = nullptr);
+	HRESULT AddComponent(_uint _numLVL, const _tchar* _protoTag, const _tchar* _tag, class Component** _out, void* _arg = nullptr);
 
 protected:
 	ID3D11Device*		 dx11Device;

@@ -27,6 +27,9 @@ HRESULT GameInstance::InitializeEngine(HWND _hWnd,_uint _lvlEnd, DX11GraphicDev:
 	if (FAILED(gameObjectManager->ReserveManager(_lvlEnd)))
 		return E_FAIL;
 
+	if (FAILED(componentManager->ReserveManager(_lvlEnd)))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -144,20 +147,20 @@ HRESULT GameInstance::Add_GameObj(_uint _lvl, const _tchar * _layerTag, const _t
 	return gameObjectManager->Add_GameObj(_lvl, _layerTag, _protoTag, _arg);
 }
 
-HRESULT GameInstance::AddProtoType(ID3D11Device* _dx11Device, ID3D11DeviceContext* _dx11DeviceContext)
+HRESULT GameInstance::AddProtoType(_uint _numLVL, const _tchar* _protoTag, class Component* _protoComponent)
 {
 	if (nullptr == componentManager)
 		return E_FAIL;
 
-	return componentManager->AddProtoType(_dx11Device, _dx11DeviceContext);
+	return componentManager->AddProtoType(_numLVL, _protoTag, _protoComponent);
 }
 
-Component * GameInstance::CloneComponent(const _tchar * _tag, void * _arg)
+Component * GameInstance::CloneComponent(_uint _numLVL, const _tchar * _tag, void * _arg)
 {
 	if (nullptr == componentManager)
 		return nullptr;
 
-	return componentManager->CloneComponent(_tag, _arg);
+	return componentManager->CloneComponent(_numLVL, _tag, _arg);
 }
 
 HRESULT GameInstance::ProcessingRenderingComponent()

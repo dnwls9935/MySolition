@@ -89,7 +89,7 @@ HRESULT Rendering::RenderingAlpha()
 	return S_OK;
 }
 
-Component * Rendering::Create(ID3D11Device * _dx11Device, ID3D11DeviceContext * _dx11DeviceContext)
+Rendering * Rendering::Create(ID3D11Device * _dx11Device, ID3D11DeviceContext * _dx11DeviceContext)
 {
 	Rendering* pInstance = new Rendering(_dx11Device, _dx11DeviceContext);
 

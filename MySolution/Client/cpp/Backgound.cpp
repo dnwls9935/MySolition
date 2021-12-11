@@ -26,10 +26,10 @@ HRESULT Backgound::NativeConstruct(void* _arg)
 	if (FAILED(__super::NativeConstruct(_arg)))
 		return E_FAIL;
 
-	if (FAILED(__super::AddComponent(TEXT("Component_Rendering_Proto"), TEXT("Rendering"), (Component**)&renderingCom)))
+	if (FAILED(__super::AddComponent((_uint)LVL::LVL_STATIC, TEXT("ProtoType_Component_Rendering"), TEXT("Component_Rendering"), (Component**)&renderingCom)))
 		return E_FAIL;
 
-	if (FAILED(__super::AddComponent(TEXT("Component_RectBuffer_Proto"), TEXT("RectBuffer"), (Component**)&bufferCom)))
+	if (FAILED(__super::AddComponent((_uint)LVL::LVL_STATIC,TEXT("ProtoType_Component_RectBuffer"), TEXT("Component_RectBuffer"), (Component**)&bufferCom)))
 		return E_FAIL;
 
 	return S_OK;

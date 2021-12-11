@@ -82,9 +82,17 @@ HRESULT MainApp::SetUpLVL(LVL _nextLevel)
 
 HRESULT MainApp::ReadyComponentProtoType()
 {
-	gameInstance->AddProtoType(dx11Device, dx11DeviceContext);
-	
-	rendering = static_cast<Rendering*>(gameInstance->CloneComponent(TEXT("Component_Rendering_Proto")));
+	if (nullptr == gameInstance)
+		return E_FAIL;
+
+	if (FAILED(gameInstance->AddProtoType((_uint)LVL::LVL_STATIC, TEXT("ProtoType_Component_Rendering"), rendering = Rendering::Create(dx11Device, dx11DeviceContext))))
+		return E_FAIL;
+
+	if (FAILED(gameInstance->AddProtoType((_uint)LVL::LVL_STATIC, TEXT("ProtoType_Component_RectBuffer"), RectBuffer::Create(dx11Device, dx11DeviceContext, TEXT("../bin/Shader/ShaderRect.hlsl")))))
+		return E_FAIL;
+
+	/*if (FAILED(gameInstance->AddProtoType((_uint)LVL::LVL_STATIC, TEXT("ProtoType_Component_Rendering"), rendering = Rendering::Create(dx11Device, dx11DeviceContext))))
+		return E_FAIL;*/
 
 	return S_OK;
 }

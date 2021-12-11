@@ -29,7 +29,7 @@ private:
 	typedef list<class GameObj*>		RENDERGROUP;
 
 public:
-	static Component*	Create(ID3D11Device* _dx11Device, ID3D11DeviceContext* _dx11DeviceContext);
+	static Rendering*	Create(ID3D11Device* _dx11Device, ID3D11DeviceContext* _dx11DeviceContext);
 	virtual Component* Clone(void* _arg) override;
 	virtual void Free() override;
 };

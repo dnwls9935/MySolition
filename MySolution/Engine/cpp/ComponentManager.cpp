@@ -9,21 +9,33 @@ ComponentManager::ComponentManager()
 }
 
 
-HRESULT ComponentManager::AddProtoType(ID3D11Device* _dx11Device, ID3D11DeviceContext* _dx11DeviceContext)
+HRESULT ComponentManager::ReserveManager(_uint _numLVL)
 {
-	/* 원본을 알아서 다 넣어주고 클라이언트에선 다 뽑아가자 */
-	/* Component_Rendering_Proto = Rendering Component */
-	umapProtoContainer.insert( COMPONENTS::value_type(TEXT("Component_Rendering_Proto"), Rendering::Create(_dx11Device, _dx11DeviceContext)));
+	if (nullptr != umapProtoContainer)
+		return E_FAIL;
 
-	umapProtoContainer.insert(COMPONENTS::value_type(TEXT("Component_RectBuffer_Proto"), RectBuffer::Create(_dx11Device, _dx11DeviceContext, L"../../Client/bin/Shader/ShaderRect.hlsl")));
+	umapProtoContainer = new COMPONENTS[_numLVL];
 
+	numLVL = _numLVL;
 
 	return S_OK;
 }
 
-Component * ComponentManager::CloneComponent(const _tchar * _tag, void* _arg)
+HRESULT ComponentManager::AddProtoType(_uint _numLVL, const _tchar* _protoTag, class Component* _protoComponent)
 {
-	Component* protoTypeComponent = FindComponent(_tag);
+	if (nullptr == umapProtoContainer ||
+		nullptr != FindComponent(_numLVL, _protoTag) ||
+		_numLVL >= numLVL)
+		return E_FAIL;
+	
+	umapProtoContainer[_numLVL].insert(COMPONENTS::value_type(_protoTag, _protoComponent));
+
+	return S_OK;
+}
+
+Component * ComponentManager::CloneComponent(_uint _numLVL, const _tchar * _tag, void* _arg)
+{
+	Component* protoTypeComponent = FindComponent(_numLVL, _tag);
 	if (nullptr == protoTypeComponent)
 		return nullptr;
 
@@ -34,10 +46,10 @@ Component * ComponentManager::CloneComponent(const _tchar * _tag, void* _arg)
 	return component;
 }
 
-Component * ComponentManager::FindComponent(const _tchar * _tag)
+Component * ComponentManager::FindComponent(_uint _numLVL, const _tchar * _tag)
 {
-	auto iter = find_if(umapProtoContainer.begin(), umapProtoContainer.end(), CTag_Finder(_tag));
-	if (umapProtoContainer.end() == iter)
+	auto iter = find_if(umapProtoContainer[_numLVL].begin(), umapProtoContainer[_numLVL].end(), CTag_Finder(_tag));
+	if (umapProtoContainer[_numLVL].end() == iter)
 		return nullptr;
 
 	return iter->second;
@@ -45,10 +57,13 @@ Component * ComponentManager::FindComponent(const _tchar * _tag)
 
 void ComponentManager::Free()
 {
-	for (auto& pair : umapProtoContainer)
-		Safe_Release(pair.second);
-	
-	umapProtoContainer.clear();
+	for (_uint i = 0; i < numLVL; i++)
+	{
+		for (auto& pair : umapProtoContainer[i])
+			Safe_Release(pair.second);
 
-	//Safe_Delete_Array(umapProtoContainer);
+		umapProtoContainer[i].clear();
+	}
+
+	Safe_Delete_Array(umapProtoContainer);
 }

@@ -39,8 +39,8 @@ public:
 	HRESULT		Add_GameObj(_uint _lvl, const _tchar* _layerTag, const _tchar* _protoTag, void* _arg = nullptr);
 
 	/* ComponentManager */
-	HRESULT		AddProtoType(ID3D11Device* _dx11Device, ID3D11DeviceContext* _dx11DeviceContext);
-	class Component*	CloneComponent(const _tchar* _tag, void* _arg = nullptr);
+	HRESULT		AddProtoType(_uint _numLVL, const _tchar* _protoTag, class Component* _protoComponent);
+	class Component*	CloneComponent(_uint _numLVL, const _tchar* _tag, void* _arg);
 	/* Component - Renderer */
 	HRESULT		ProcessingRenderingComponent();
 

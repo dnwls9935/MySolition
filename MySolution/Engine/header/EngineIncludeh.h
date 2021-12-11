@@ -9,6 +9,7 @@
 
 #include "d3dx11effect.h"
 #include "d3dcompiler.h"
+#include "DirectXTex.h"
 
 using namespace DirectX;
 

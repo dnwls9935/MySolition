@@ -43,20 +43,25 @@ HRESULT GameObj::Render()
 	return S_OK;
 }
 
-HRESULT GameObj::AddComponent(const _tchar * _protoTag, const _tchar * _tag, Component** _out, void* _arg)
+HRESULT GameObj::AddComponent(_uint _numLVL, const _tchar * _protoTag, const _tchar * _tag, Component** _out, void* _arg)
 {
+	auto iter = find_if(umapComponent.begin(), umapComponent.end(), CTag_Finder(_tag));
+	if (umapComponent.end() != iter)
+		return E_FAIL;
+	
 	GameInstance* gameInstance = GET_INSTANCE(GameInstance);
 
-	// gameInstance->CloneComponent(protoTag, default (void*)) 안에서 클론 처리함
-	Component* component = gameInstance->CloneComponent(_protoTag, _arg);
-
-	RELEASE_INSTANCE(GameInstance);
-
-	if (nullptr == component)
+	Component* pComponent = gameInstance->CloneComponent(_numLVL, _protoTag, _arg);
+	if (nullptr == pComponent)
 		return E_FAIL;
 
-	*_out = component;
+	umapComponent.emplace(_tag, pComponent);
 
+	*_out = pComponent;
+
+	Safe_AddRef(pComponent);
+
+	RELEASE_INSTANCE(GameInstance);
 
 	return S_OK;
 }
@@ -64,6 +69,11 @@ HRESULT GameObj::AddComponent(const _tchar * _protoTag, const _tchar * _tag, Com
 
 void Engine::GameObj::Free()
 {
+	for (auto& pair : umapComponent)
+		Safe_Release(pair.second);
+
+	umapComponent.clear();
+
 	Safe_Release(dx11Device);
 	Safe_Release(dx11DeviceContext);
 }
