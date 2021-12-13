@@ -19,7 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{6417B18C-3B9F-4C28-AD01-D71E7761F11A}</ProjectGuid>
+    <ProjectGuid>{B0233BC4-97D8-4AF2-A164-3B4CFF2E34DA}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>Engine</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
@@ -74,14 +74,14 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>..\bin\</OutDir>
+    <OutDir>..\Bin\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>..\bin\</OutDir>
+    <OutDir>..\Bin\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -105,7 +105,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;_USRDLL;ENGINE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>../header/</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../public/</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -113,10 +113,6 @@
       <AdditionalDependencies>d3d11.lib;dxguid.lib;effects11d.lib;DirectXTexd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>../ThirdPartyLibrarys/</AdditionalLibraryDirectories>
     </Link>
-    <PostBuildEvent>
-      <Command>
-      </Command>
-    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -146,7 +142,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;_USRDLL;ENGINE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>../header/</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../public/</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -156,51 +152,47 @@
       <AdditionalDependencies>d3d11.lib;dxguid.lib;effects11.lib;DirectXTex.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>../ThirdPartyLibrarys/</AdditionalLibraryDirectories>
     </Link>
-    <PostBuildEvent>
-      <Command>
-      </Command>
-    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\header\Component.h" />
-    <ClInclude Include="..\header\ComponentManager.h" />
-    <ClInclude Include="..\header\DX11GraphicDev.h" />
-    <ClInclude Include="..\header\EngineDefines.h" />
-    <ClInclude Include="..\header\EngineFunction.h" />
-    <ClInclude Include="..\header\EngineIncludeh.h" />
-    <ClInclude Include="..\header\EngineStruct.h" />
-    <ClInclude Include="..\header\EngineTypedef.h" />
-    <ClInclude Include="..\header\GameInstance.h" />
-    <ClInclude Include="..\header\GameObj.h" />
-    <ClInclude Include="..\header\GameObjManager.h" />
-    <ClInclude Include="..\header\Layer.h" />
-    <ClInclude Include="..\header\Level.h" />
-    <ClInclude Include="..\header\LevelManager.h" />
-    <ClInclude Include="..\header\RectBuffer.h" />
-    <ClInclude Include="..\header\Rendering.h" />
-    <ClInclude Include="..\header\SuperBase.h" />
-    <ClInclude Include="..\header\TimeManager.h" />
-    <ClInclude Include="..\header\Timer.h" />
-    <ClInclude Include="..\header\VIBuffer.h" />
-    <ClInclude Include="Texture.h" />
+    <ClInclude Include="..\public\Base.h" />
+    <ClInclude Include="..\public\Component.h" />
+    <ClInclude Include="..\public\Component_Manager.h" />
+    <ClInclude Include="..\public\Engine_Defines.h" />
+    <ClInclude Include="..\public\Engine_Function.h" />
+    <ClInclude Include="..\public\Engine_Macro.h" />
+    <ClInclude Include="..\public\Engine_Struct.h" />
+    <ClInclude Include="..\public\Engine_Typedef.h" />
+    <ClInclude Include="..\public\GameInstance.h" />
+    <ClInclude Include="..\public\GameObject.h" />
+    <ClInclude Include="..\public\Graphic_Device.h" />
+    <ClInclude Include="..\public\Layer.h" />
+    <ClInclude Include="..\public\Level.h" />
+    <ClInclude Include="..\public\Level_Manager.h" />
+    <ClInclude Include="..\public\Object_Manager.h" />
+    <ClInclude Include="..\public\Renderer.h" />
+    <ClInclude Include="..\public\Texture.h" />
+    <ClInclude Include="..\public\Timer.h" />
+    <ClInclude Include="..\public\Timer_Manager.h" />
+    <ClInclude Include="..\public\VIBuffer.h" />
+    <ClInclude Include="..\public\VIBuffer_Rect.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\cpp\Component.cpp" />
-    <ClCompile Include="..\cpp\ComponentManager.cpp" />
-    <ClCompile Include="..\cpp\DX11GraphicDev.cpp" />
-    <ClCompile Include="..\cpp\GameInstance.cpp" />
-    <ClCompile Include="..\cpp\GameObj.cpp" />
-    <ClCompile Include="..\cpp\GameObjManager.cpp" />
-    <ClCompile Include="..\cpp\Layer.cpp" />
-    <ClCompile Include="..\cpp\Level.cpp" />
-    <ClCompile Include="..\cpp\LevelManager.cpp" />
-    <ClCompile Include="..\cpp\RectBuffer.cpp" />
-    <ClCompile Include="..\cpp\Rendering.cpp" />
-    <ClCompile Include="..\cpp\SuperBase.cpp" />
-    <ClCompile Include="..\cpp\TimeManager.cpp" />
-    <ClCompile Include="..\cpp\Timer.cpp" />
-    <ClCompile Include="..\cpp\VIBuffer.cpp" />
-    <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="..\private\Base.cpp" />
+    <ClCompile Include="..\private\Component.cpp" />
+    <ClCompile Include="..\private\Component_Manager.cpp" />
+    <ClCompile Include="..\private\GameInstance.cpp" />
+    <ClCompile Include="..\private\GameObject.cpp" />
+    <ClCompile Include="..\private\Graphic_Device.cpp" />
+    <ClCompile Include="..\private\Layer.cpp" />
+    <ClCompile Include="..\private\Level.cpp" />
+    <ClCompile Include="..\private\Level_Manager.cpp" />
+    <ClCompile Include="..\private\Object_Manager.cpp" />
+    <ClCompile Include="..\private\Renderer.cpp" />
+    <ClCompile Include="..\private\Texture.cpp" />
+    <ClCompile Include="..\private\Timer.cpp" />
+    <ClCompile Include="..\private\Timer_Manager.cpp" />
+    <ClCompile Include="..\private\VIBuffer.cpp" />
+    <ClCompile Include="..\private\VIBuffer_Rect.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

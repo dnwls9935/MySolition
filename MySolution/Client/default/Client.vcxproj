@@ -19,7 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{80F9BC77-454F-4C82-9167-00352B39A511}</ProjectGuid>
+    <ProjectGuid>{0CB793B8-6AEA-4CDE-A356-B17C8DB231F0}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>Client</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
@@ -74,14 +74,14 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>../bin/</OutDir>
+    <OutDir>..\bin\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>../bin/</OutDir>
+    <OutDir>..\bin\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -103,20 +103,18 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>../header/;../../Reference/public/;../Default/</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../public/;../../Reference/public/;../Default/</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>../../Reference/private/</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Engine.lib;d3d11.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../../Reference/private/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Engine.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
-    <PostBuildEvent>
-      <Command>cd $(SolutionDir)
-call $(SolutionDir)"Update.bat"</Command>
-    </PostBuildEvent>
     <FxCompile>
       <ShaderType>Effect</ShaderType>
+    </FxCompile>
+    <FxCompile>
       <ShaderModel>5.0</ShaderModel>
     </FxCompile>
   </ItemDefinitionGroup>
@@ -146,22 +144,20 @@ call $(SolutionDir)"Update.bat"</Command>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>../header/;../../Reference/public/;../Default/</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../public/;../../Reference/public/;../Default/</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>../../Reference/private/</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Engine.lib;d3d11.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../../Reference/private/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Engine.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
-    <PostBuildEvent>
-      <Command>cd $(SolutionDir)
-call $(SolutionDir)"Update.bat"</Command>
-    </PostBuildEvent>
     <FxCompile>
       <ShaderType>Effect</ShaderType>
+    </FxCompile>
+    <FxCompile>
       <ShaderModel>5.0</ShaderModel>
     </FxCompile>
   </ItemDefinitionGroup>
@@ -169,23 +165,23 @@ call $(SolutionDir)"Update.bat"</Command>
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\header\Backgound.h" />
-    <ClInclude Include="..\header\ClientDefine.h" />
-    <ClInclude Include="..\header\Loader.h" />
-    <ClInclude Include="..\header\Loading.h" />
-    <ClInclude Include="..\header\Logo.h" />
-    <ClInclude Include="..\header\MainApp.h" />
+    <ClInclude Include="..\public\BackGround.h" />
+    <ClInclude Include="..\public\Client_Defines.h" />
+    <ClInclude Include="..\public\Level_Loading.h" />
+    <ClInclude Include="..\public\Level_Logo.h" />
+    <ClInclude Include="..\public\Loader.h" />
+    <ClInclude Include="..\public\MainApp.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\cpp\Backgound.cpp" />
-    <ClCompile Include="..\cpp\Loader.cpp" />
-    <ClCompile Include="..\cpp\Loading.cpp" />
-    <ClCompile Include="..\cpp\Logo.cpp" />
-    <ClCompile Include="..\cpp\MainApp.cpp" />
+    <ClCompile Include="..\private\BackGround.cpp" />
+    <ClCompile Include="..\private\Level_Loading.cpp" />
+    <ClCompile Include="..\private\Level_Logo.cpp" />
+    <ClCompile Include="..\private\Loader.cpp" />
+    <ClCompile Include="..\private\MainApp.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -202,7 +198,7 @@ call $(SolutionDir)"Update.bat"</Command>
     <Image Include="small.ico" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="..\bin\Shader\ShaderRect.hlsl" />
+    <FxCompile Include="..\bin\ShaderFiles\Shader_Rect.hlsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
