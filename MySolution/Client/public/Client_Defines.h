@@ -13,6 +13,7 @@ static const unsigned int g_iWinCY = 720;
 /* map<const _tchar*, Cdata*>		Data[LEVEL_END] */ 	
 enum LEVEL { LEVEL_STATIC, LEVEL_LOADING, LEVEL_LOGO, LEVEL_GAMEPLAY, LEVEL_END };
 
+extern HINSTANCE g_hInst;
 extern HWND g_hWnd;
 
 namespace Client {}

@@ -4,6 +4,7 @@
 #include "GameInstance.h"
 #include "Level_Loading.h"
 #include "BackGround.h"
+#include "Engine_Struct.h"
 
 CMainApp::CMainApp()
 	: m_pGameInstance(CGameInstance::GetInstance())
@@ -16,8 +17,9 @@ HRESULT CMainApp::NativeConstruct()
 {
 	if (nullptr == m_pGameInstance)
 		return E_FAIL;
+	
 
-	if (FAILED(m_pGameInstance->Initialize_Engine(g_hWnd, LEVEL_END, CGraphic_Device::MODE_WIN, g_iWinCX, g_iWinCY, &m_pDevice, &m_pDeviceContext)))
+	if (FAILED(m_pGameInstance->Initialize_Engine(g_hInst, g_hWnd, LEVEL_END, CGraphic_Device::MODE_WIN, g_iWinCX, g_iWinCY, &m_pDevice, &m_pDeviceContext)))
 		return E_FAIL;
 
 	if (FAILED(Ready_Component_Prototype()))
@@ -53,11 +55,9 @@ HRESULT CMainApp::Render()
 	if (FAILED(m_pGameInstance->Clear_DepthStencil_View()))
 		return E_FAIL;	
 
-	/* 내 게임을 구성하는객체들의 렌더함수르리 호출하낟. */
 	if (FAILED(m_pRenderer->Draw_RenderGroup()))
 		return E_FAIL;
 
-	/* 내 게임내의 기타등ㄷ응을 렌더링하낟. */
 	if (FAILED(m_pGameInstance->Render_Engine()))
 		return E_FAIL;
 
@@ -101,12 +101,16 @@ HRESULT CMainApp::Ready_Component_Prototype()
 
 	Safe_AddRef(m_pRenderer);
 
+	/* For.Prototype_Component_Transform */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Transform"), CTransform::Create(m_pDevice, m_pDeviceContext))))
+		return E_FAIL;
+
 	/* For.Prototype_Component_VIBuffer_Rect */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Rect"), CVIBuffer_Rect::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/ShaderFiles/Shader_Rect.hlsl")))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Texture_Loading */
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Loading"), CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Textures/Default%d.jpg"), 2))))
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Loading"), CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Menumap/Texture2D/Blood_Flipbook_Dif.tga")))))
 		return E_FAIL;
 
 	return S_OK;

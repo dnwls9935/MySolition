@@ -1,0 +1,152 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="00.MainFrm">
+      <UniqueIdentifier>{5fb6cff9-a61d-4433-9f8b-d3d4f03e3319}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Document">
+      <UniqueIdentifier>{a6db85b6-541b-4bb3-a028-1e309c34261a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.View">
+      <UniqueIdentifier>{629019c7-eda2-4888-9d2d-6490e2033cae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="99.Default">
+      <UniqueIdentifier>{82439338-e692-4222-a4bb-3e57465c8b62}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.View\Form">
+      <UniqueIdentifier>{f8acb68f-b2ca-4d07-8bbf-60d72624cdde}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.View\Form\Map">
+      <UniqueIdentifier>{b8b3754f-1276-44cc-b15e-646f9575e7ea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.View\Form\UI">
+      <UniqueIdentifier>{d94b451a-05cd-4b27-ac30-6275ad29388c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.View\Form\Effect">
+      <UniqueIdentifier>{649c05ec-acd2-4d21-9033-83f4ca6d59ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object">
+      <UniqueIdentifier>{74f963e1-2ae1-4916-a77b-240a17186ca2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object\ToolTerrain">
+      <UniqueIdentifier>{3a10f6a6-0be2-449a-b1b9-ac26a1953d79}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object\ToolCamera">
+      <UniqueIdentifier>{40051a64-c748-4a55-84cf-d877e6c4271f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object\ToolEffect">
+      <UniqueIdentifier>{38694a2c-e9d1-4bed-ae6f-ca1c801ab3e1}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="MainFrm.h">
+      <Filter>00.MainFrm</Filter>
+    </ClInclude>
+    <ClInclude Include="ToolDoc.h">
+      <Filter>01.Document</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>99.Default</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>99.Default</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>99.Default</Filter>
+    </ClInclude>
+    <ClInclude Include="Tool.h">
+      <Filter>99.Default</Filter>
+    </ClInclude>
+    <ClInclude Include="Form.h">
+      <Filter>02.View\Form</Filter>
+    </ClInclude>
+    <ClInclude Include="TapMap.h">
+      <Filter>02.View\Form\Map</Filter>
+    </ClInclude>
+    <ClInclude Include="ToolDefines.h">
+      <Filter>99.Default</Filter>
+    </ClInclude>
+    <ClInclude Include="ToolView.h">
+      <Filter>02.View</Filter>
+    </ClInclude>
+    <ClInclude Include="ToolTerrain.h">
+      <Filter>Object\ToolTerrain</Filter>
+    </ClInclude>
+    <ClInclude Include="ToolCamera.h">
+      <Filter>Object\ToolCamera</Filter>
+    </ClInclude>
+    <ClInclude Include="TapUI.h">
+      <Filter>02.View\Form\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="TapEffect.h">
+      <Filter>02.View\Form\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="ToolRect.h">
+      <Filter>Object\ToolEffect</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="MainFrm.cpp">
+      <Filter>00.MainFrm</Filter>
+    </ClCompile>
+    <ClCompile Include="ToolDoc.cpp">
+      <Filter>01.Document</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>99.Default</Filter>
+    </ClCompile>
+    <ClCompile Include="Tool.cpp">
+      <Filter>99.Default</Filter>
+    </ClCompile>
+    <ClCompile Include="Form.cpp">
+      <Filter>02.View\Form</Filter>
+    </ClCompile>
+    <ClCompile Include="TapMap.cpp">
+      <Filter>02.View\Form\Map</Filter>
+    </ClCompile>
+    <ClCompile Include="ToolView.cpp">
+      <Filter>02.View</Filter>
+    </ClCompile>
+    <ClCompile Include="ToolTerrain.cpp">
+      <Filter>Object\ToolTerrain</Filter>
+    </ClCompile>
+    <ClCompile Include="ToolCamera.cpp">
+      <Filter>Object\ToolCamera</Filter>
+    </ClCompile>
+    <ClCompile Include="TapUI.cpp">
+      <Filter>02.View\Form\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="TapEffect.cpp">
+      <Filter>02.View\Form\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="ToolRect.cpp">
+      <Filter>Object\ToolEffect</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\Tool.ico">
+      <Filter>99.Default</Filter>
+    </Image>
+    <Image Include="res\Toolbar.bmp">
+      <Filter>99.Default</Filter>
+    </Image>
+    <Image Include="res\ToolDoc.ico">
+      <Filter>99.Default</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Tool.rc">
+      <Filter>99.Default</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\Tool.rc2">
+      <Filter>99.Default</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt">
+      <Filter>99.Default</Filter>
+    </Text>
+  </ItemGroup>
+</Project>

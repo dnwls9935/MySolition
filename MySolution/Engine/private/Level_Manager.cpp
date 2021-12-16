@@ -14,8 +14,11 @@ HRESULT CLevel_Manager::Open_Level(_uint iLevelIndex, CLevel * pOpenLevel)
 	if (nullptr == pOpenLevel)
 		return E_FAIL;
 
-	if (FAILED(Clear_Managers()))
-		return E_FAIL;
+	if (0 != m_iCurrentLevelID)
+	{
+		if (FAILED(Clear_Managers()))
+			return E_FAIL;
+	}
 
 	Safe_Release(m_pCurrentLevel);
 

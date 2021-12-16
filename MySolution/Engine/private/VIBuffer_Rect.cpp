@@ -18,12 +18,6 @@ HRESULT CVIBuffer_Rect::NativeConstruct_Prototype(const _tchar* pShaderFilePath)
 
 	ZeroMemory(&m_VBDesc, sizeof(D3D11_BUFFER_DESC));
 
-	/*
-	UINT CPUAccessFlags;
-	UINT MiscFlags;
-	UINT StructureByteStride;
-	*/
-
 	/* D3D11_BUFFER_DESC */
 	m_iStride = sizeof(VTXTEX);
 	m_iNumVertices = 4;
@@ -65,6 +59,7 @@ HRESULT CVIBuffer_Rect::NativeConstruct_Prototype(const _tchar* pShaderFilePath)
 	m_iNumPrimitive = 2;
 	m_iNumIndicesFigure = 3;
 	m_ePrimitiveTopology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+	m_eFormat = DXGI_FORMAT_R16_UINT;
 
 	m_IBDesc.ByteWidth = m_IndicesByteLength * m_iNumPrimitive;
 	m_IBDesc.Usage = D3D11_USAGE_IMMUTABLE;

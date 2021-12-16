@@ -38,7 +38,8 @@ protected: /* For.IndexBuffer */
 	D3D11_SUBRESOURCE_DATA		m_IBSubresourceData;
 	_uint						m_IndicesByteLength = 0; /* 도형하나를 그리기위한인덱스들의 byte크기 */
 	_uint						m_iNumPrimitive = 0; /* 도형의 갯수 */
-	_uint						m_iNumIndicesFigure = 0; /* 도형하나를 그리기위한 인덱스 갯수. */
+	_uint						m_iNumIndicesFigure = 0; /* 도형하나를 그리기위한 인덱스 갯수. */	
+	DXGI_FORMAT					m_eFormat;
 	D3D11_PRIMITIVE_TOPOLOGY	m_ePrimitiveTopology;
 
 private:

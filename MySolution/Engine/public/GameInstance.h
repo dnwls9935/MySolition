@@ -1,10 +1,12 @@
 #pragma once
 
 #include "Graphic_Device.h"
+#include "Input_Device.h"
 #include "Level_Manager.h"
 #include "Timer_Manager.h"
 #include "Object_Manager.h"
 #include "Component_Manager.h"
+#include "PipeLine.h"
 
 BEGIN(Engine)
 
@@ -16,8 +18,9 @@ public:
 	virtual ~CGameInstance() = default;
 
 public:
-	HRESULT Initialize_Engine(HWND hWnd, _uint iNumLevel, CGraphic_Device::WINMODE eWinMode, _uint iWinCX, _uint iWinCY, ID3D11Device** ppDeviceOut, ID3D11DeviceContext** ppDeviceContextOut);
+	HRESULT CGameInstance::Initialize_Engine(HINSTANCE hInst, HWND hWnd, _uint iNumLevel, CGraphic_Device::WINMODE eWinMode, _uint iWinCX, _uint iWinCY, ID3D11Device** ppDeviceOut, ID3D11DeviceContext** ppDeviceContextOut);
 	_int Tick_Engine(_double TimeDelta);
+	_int Tick_Engine_For_Tool(_double TimeDelta);
 
 	/* 엔진에 정의되어있는 매니져객체들을 통해 디버깅적 요소들을 출력한다.  */
 	/* 게임의 구성요소들은 렌더러를 통해 렌더하낟. */
@@ -45,6 +48,16 @@ public: /* For.Object_Manager*/
 public: /* For.Component_Manager */
 	HRESULT Add_Prototype(_uint iLevelIndex, const _tchar* pPrototypeTag, class CComponent* pPrototype);
 	CComponent* Clone_Component(_uint iLevelIndex, const _tchar* pPrototypeTag, void* pArg);
+
+public: /* For.PipeLine */
+	_fmatrix Get_Transform(CPipeLine::TRANSFORMSTATEMATRIX eType);
+	_fvector Get_CamPosition();
+	void Set_Transform(CPipeLine::TRANSFORMSTATEMATRIX eType, _fmatrix TransformMatrix);
+
+public: /* for.Input_Device */
+	_byte Get_DIKeyState(_ubyte byKeyID) const;
+	_long Get_MouseMoveState(CInput_Device::MOUSEMOVESTATE eMoveState) const;
+	_byte Get_MouseButtonState(CInput_Device::MOUSEBUTTONSTATE eButtonState) const;
 	
 private:
 	CGraphic_Device*			m_pGraphic_Device = nullptr;		
@@ -52,6 +65,8 @@ private:
 	CTimer_Manager*				m_pTimer_Manager = nullptr;
 	CObject_Manager*			m_pObject_Manager = nullptr;
 	CComponent_Manager*			m_pComponent_Manager = nullptr;
+	CPipeLine*					m_pPipeLine = nullptr;
+	CInput_Device*				m_pInput_Device = nullptr;
 public:
 
 	static void Release_Engine();

@@ -9,7 +9,11 @@ CGameInstance::CGameInstance()
 	, m_pTimer_Manager(CTimer_Manager::GetInstance())
 	, m_pObject_Manager(CObject_Manager::GetInstance())
 	, m_pComponent_Manager(CComponent_Manager::GetInstance())
+	, m_pPipeLine(CPipeLine::GetInstance())
+	, m_pInput_Device(CInput_Device::GetInstance())
 {
+	Safe_AddRef(m_pInput_Device);
+	Safe_AddRef(m_pPipeLine);
 	Safe_AddRef(m_pComponent_Manager);
 	Safe_AddRef(m_pObject_Manager);
 	Safe_AddRef(m_pTimer_Manager);
@@ -17,9 +21,9 @@ CGameInstance::CGameInstance()
 	Safe_AddRef(m_pGraphic_Device);
 }
 
-HRESULT CGameInstance::Initialize_Engine(HWND hWnd, _uint iNumLevel, CGraphic_Device::WINMODE eWinMode, _uint iWinCX, _uint iWinCY, ID3D11Device** ppDeviceOut, ID3D11DeviceContext** ppDeviceContextOut)
+HRESULT CGameInstance::Initialize_Engine(HINSTANCE hInst, HWND hWnd, _uint iNumLevel, CGraphic_Device::WINMODE eWinMode, _uint iWinCX, _uint iWinCY, ID3D11Device** ppDeviceOut, ID3D11DeviceContext** ppDeviceContextOut)
 {
-	if (nullptr == m_pGraphic_Device || 
+	if (nullptr == m_pGraphic_Device ||
 		nullptr == m_pObject_Manager)
 		return E_FAIL;
 
@@ -30,26 +34,63 @@ HRESULT CGameInstance::Initialize_Engine(HWND hWnd, _uint iNumLevel, CGraphic_De
 		return E_FAIL;
 
 	if (FAILED(m_pComponent_Manager->Reserve_Manager(iNumLevel)))
-		return E_FAIL;	
+		return E_FAIL;
+
+	if (FAILED(m_pInput_Device->Ready_Input_Device(hInst, hWnd)))
+		return E_FAIL;
 
 	return S_OK;
 }
-
 _int CGameInstance::Tick_Engine(_double TimeDelta)
 {
 	if (nullptr == m_pLevel_Manager ||
-		 nullptr == m_pObject_Manager)
+		nullptr == m_pObject_Manager || 
+		nullptr == m_pPipeLine ||
+		nullptr == m_pInput_Device)
 		return -1;
 
 	_int	iProgress = 0;
 
+	if (FAILED(m_pInput_Device->SetUp_InputDeviceState()))
+		return -1;
+
+#ifndef _MFC_VER
 	iProgress = m_pLevel_Manager->Tick(TimeDelta);
 	if (0 > iProgress)
+		return -1;
+#endif // !_AFX
+
+	iProgress = m_pObject_Manager->Tick(TimeDelta);
+	if (0 > iProgress)
+		return -1;
+
+	m_pPipeLine->Update_PipeLine();
+	
+	iProgress = m_pObject_Manager->LateTick(TimeDelta);
+	if (0 > iProgress)
+		return -1;
+
+	return _int();
+}
+
+_int CGameInstance::Tick_Engine_For_Tool(_double TimeDelta)
+{
+	if (nullptr == m_pLevel_Manager ||
+		nullptr == m_pObject_Manager ||
+		nullptr == m_pPipeLine ||
+		nullptr == m_pInput_Device)
+		return -1;
+
+	_int	iProgress = 0;
+
+	if (FAILED(m_pInput_Device->SetUp_InputDeviceState()))
 		return -1;
 
 	iProgress = m_pObject_Manager->Tick(TimeDelta);
 	if (0 > iProgress)
 		return -1;
+
+	m_pPipeLine->Update_PipeLine();
 
 	iProgress = m_pObject_Manager->LateTick(TimeDelta);
 	if (0 > iProgress)
@@ -166,6 +207,54 @@ CComponent * CGameInstance::Clone_Component(_uint iLevelIndex, const _tchar * pP
 	return m_pComponent_Manager->Clone_Component(iLevelIndex, pPrototypeTag, pArg);
 }
 
+_fmatrix CGameInstance::Get_Transform(CPipeLine::TRANSFORMSTATEMATRIX eType)
+{
+	if (nullptr == m_pPipeLine)
+		return XMMatrixIdentity();
+
+	return m_pPipeLine->Get_Transform(eType);
+}
+
+_fvector CGameInstance::Get_CamPosition()
+{
+	if (nullptr == m_pPipeLine)
+		return XMVectorZero();
+
+	return m_pPipeLine->Get_CamPosition();
+}
+
+void CGameInstance::Set_Transform(CPipeLine::TRANSFORMSTATEMATRIX eType, _fmatrix TransformMatrix)
+{
+	if (nullptr == m_pPipeLine)
+		return;
+
+	m_pPipeLine->Set_Transform(eType, TransformMatrix);
+}
+
+_byte CGameInstance::Get_DIKeyState(_ubyte byKeyID) const
+{
+	if (nullptr == m_pInput_Device)
+		return 0;
+
+	return m_pInput_Device->Get_DIKState(byKeyID);	
+}
+
+_long CGameInstance::Get_MouseMoveState(CInput_Device::MOUSEMOVESTATE eMoveState) const
+{
+	if (nullptr == m_pInput_Device)
+		return 0;
+
+	return m_pInput_Device->Get_MouseMoveState(eMoveState);
+}
+
+_byte CGameInstance::Get_MouseButtonState(CInput_Device::MOUSEBUTTONSTATE eButtonState) const
+{
+	if (nullptr == m_pInput_Device)
+		return 0;
+
+	return m_pInput_Device->Get_MouseButtonState(eButtonState);
+}
+
 void CGameInstance::Release_Engine()
 {
 
@@ -181,8 +270,14 @@ void CGameInstance::Release_Engine()
 	if (0 != CComponent_Manager::GetInstance()->DestroyInstance())
 		MSGBOX("Failed to Release CComponent_Manager");
 
+	if (0 != CPipeLine::GetInstance()->DestroyInstance())
+		MSGBOX("Failed to Release CPipeLine");
+
 	if (0 != CTimer_Manager::GetInstance()->DestroyInstance())
 		MSGBOX("Failed to Release CTimer_Manager");
+
+	if (0 != CInput_Device::GetInstance()->DestroyInstance())
+		MSGBOX("Failed to Release CInput_Device");
 
 	if (0 != CGraphic_Device::GetInstance()->DestroyInstance())
 		MSGBOX("Failed to Release CGraphic_Device");
@@ -190,6 +285,8 @@ void CGameInstance::Release_Engine()
 
 void CGameInstance::Free()
 {
+	Safe_Release(m_pInput_Device);
+	Safe_Release(m_pPipeLine);
 	Safe_Release(m_pComponent_Manager);
 	Safe_Release(m_pObject_Manager);
 	Safe_Release(m_pTimer_Manager);

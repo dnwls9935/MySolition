@@ -24,6 +24,7 @@ CVIBuffer::CVIBuffer(const CVIBuffer & rhs)
 	, m_ePrimitiveTopology(rhs.m_ePrimitiveTopology)
 	, m_pEffect(rhs.m_pEffect)
 	, m_EffectDescs(rhs.m_EffectDescs)
+	, m_eFormat(rhs.m_eFormat)
 {
 	Safe_AddRef(m_pVB);
 	Safe_AddRef(m_pIB);
@@ -58,11 +59,11 @@ HRESULT CVIBuffer::Render(_uint iPassIndex)
 		return E_FAIL;
 
 	ID3D11Buffer*		pVertexBuffers[] = {
-		m_pVB	
+		m_pVB
 	};
 
 	_uint				iStrides[] = {
-		m_iStride	
+		m_iStride
 	};
 
 	_uint				iOffsets[] = {
@@ -71,8 +72,8 @@ HRESULT CVIBuffer::Render(_uint iPassIndex)
 
 	/* 그려야할 버텍싀버퍼들을 장치에 바인드한다. */
 	m_pDeviceContext->IASetVertexBuffers(0, 1, pVertexBuffers, iStrides, iOffsets);
-	m_pDeviceContext->IASetIndexBuffer(m_pIB, DXGI_FORMAT_R16_UINT, 0);
-	m_pDeviceContext->IASetPrimitiveTopology(m_ePrimitiveTopology);	
+	m_pDeviceContext->IASetIndexBuffer(m_pIB, m_eFormat, 0);
+	m_pDeviceContext->IASetPrimitiveTopology(m_ePrimitiveTopology);
 	m_pDeviceContext->IASetInputLayout(m_EffectDescs[iPassIndex]->pInputLayout);
 
 
@@ -113,7 +114,7 @@ HRESULT CVIBuffer::SetUp_TextureOnShader(const char * pConstantName, CTexture * 
 HRESULT CVIBuffer::Create_VertexBuffer()
 {
 	if (nullptr == m_pDevice)
-		return E_FAIL;	
+		return E_FAIL;
 
 	/* 메모리 버퍼를 생성하낟. */
 	if (FAILED(m_pDevice->CreateBuffer(&m_VBDesc, &m_VBSubresourceData, &m_pVB)))
@@ -148,7 +149,7 @@ HRESULT CVIBuffer::Compile_ShaderFiles(const _tchar * pShaderFilePath, D3D11_INP
 	ID3DBlob*			pCompileErrorMessage = nullptr;
 
 	if (FAILED(D3DCompileFromFile(pShaderFilePath, nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, nullptr, "fx_5_0", iFlag, 0, &pShaderByteCodes, &pCompileErrorMessage)))
-		return E_FAIL;	
+		return E_FAIL;
 
 	if (FAILED(D3DX11CreateEffectFromMemory(pShaderByteCodes->GetBufferPointer(), pShaderByteCodes->GetBufferSize(), 0, m_pDevice, &m_pEffect)))
 		return E_FAIL;
@@ -169,7 +170,7 @@ HRESULT CVIBuffer::Compile_ShaderFiles(const _tchar * pShaderFilePath, D3D11_INP
 		EFFECTDESC*		pEffectDesc = new EFFECTDESC;
 		ZeroMemory(pEffectDesc, sizeof(EFFECTDESC));
 
-		pEffectDesc->pPass = pTechnique->GetPassByIndex(i);	
+		pEffectDesc->pPass = pTechnique->GetPassByIndex(i);
 
 		D3DX11_PASS_DESC			PassDesc;
 
@@ -190,8 +191,8 @@ void CVIBuffer::Free()
 
 	for (auto& pEffectDesc : m_EffectDescs)
 	{
+		/*Safe_Release(pEffectDesc->pPass);*/
 		Safe_Release(pEffectDesc->pInputLayout);
-		Safe_Release(pEffectDesc->pPass);
 	}
 
 	if (false == m_isCloned)
@@ -201,9 +202,9 @@ void CVIBuffer::Free()
 		for (auto& pEffectDesc : m_EffectDescs)
 			Safe_Delete(pEffectDesc);
 		m_EffectDescs.clear();
-	}	
-	
-	Safe_Release(m_pEffect);	
+	}
+
+	Safe_Release(m_pEffect);
 	Safe_Release(m_pIB);
 	Safe_Release(m_pVB);
 }

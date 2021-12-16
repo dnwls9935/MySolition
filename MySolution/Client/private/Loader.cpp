@@ -1,5 +1,8 @@
 #include "stdafx.h"
 #include "..\public\Loader.h"
+#include "Terrain.h"
+#include "Camera_Dynamic.h"
+#include "GameInstance.h"
 
 CLoader::CLoader(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: m_pDevice(pDevice)
@@ -12,7 +15,7 @@ CLoader::CLoader(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 _uint APIENTRY Thread_Main(void* pArg)
 {
 	CLoader*		pLoader = (CLoader*)pArg;
-
+	CoInitializeEx(NULL, COINIT_MULTITHREADED);
 	EnterCriticalSection(&pLoader->Get_CriticalSection());
 
 	HRESULT			hr = 0;
@@ -23,7 +26,7 @@ _uint APIENTRY Thread_Main(void* pArg)
 		hr = pLoader->Loading_ForLogo();
 		break;
 	case LEVEL_GAMEPLAY:
-		hr = pLoader->Loading_ForLogo();
+		hr = pLoader->Loading_ForGamePlay();
 		break;
 	}
 
@@ -31,7 +34,7 @@ _uint APIENTRY Thread_Main(void* pArg)
 		return -1;
 
 	LeaveCriticalSection(&pLoader->Get_CriticalSection());
-
+	CoUninitialize();
 	return 0;
 }
 
@@ -55,13 +58,10 @@ HRESULT CLoader::Loading_ForLogo()
 	/* 컴포넌트 원형을 생성한다. */
 	wsprintf(m_szLoading, TEXT("버퍼를 생성한다. "));
 
-	for (_uint i = 0; i < 999999999; ++i)
-		_uint iData = 10;
+
 
 	wsprintf(m_szLoading, TEXT("텍스쳐를 생성한다. "));
 
-	for (_uint i = 0; i < 999999999; ++i)
-		_uint iData = 10;
 
 	/* 객체원형을 생성한다. */
 	
@@ -76,6 +76,29 @@ HRESULT CLoader::Loading_ForLogo()
 
 HRESULT CLoader::Loading_ForGamePlay()
 {
+	CGameInstance*	pGameInstance = GET_INSTANCE(CGameInstance);
+
+	/* 컴포넌트 원형 생성한다. */
+	wsprintf(m_szLoading, TEXT("버퍼를 생성한다. "));
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Terrain"), CVIBuffer_Terrain::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/ShaderFiles/Shader_Terrain.hlsl"), TEXT("../Bin/Resources/Textures/Terrain/Height.bmp")))))
+		return E_FAIL;
+
+	wsprintf(m_szLoading, TEXT("텍스쳐를 생성한다. "));
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Terrain"), CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Textures/Terrain/rrr.png")))))
+		return E_FAIL;
+
+
+	/* 객체원형을 생성한다. */
+	wsprintf(m_szLoading, TEXT("객체를 생성한다. "));	
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Terrain"), CTerrain::Create(m_pDevice, m_pDeviceContext))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Camera"), CCamera_Dynamic::Create(m_pDevice, m_pDeviceContext))))
+		return E_FAIL;
+
+	wsprintf(m_szLoading, TEXT("로딩이 완료되었습니다. "));
+
+	m_isFinished = true;
+	RELEASE_INSTANCE(CGameInstance);
 	return S_OK;
 }
 

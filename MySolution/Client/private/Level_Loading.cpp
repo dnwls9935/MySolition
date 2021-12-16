@@ -2,7 +2,7 @@
 #include "..\public\Level_Loading.h"
 #include "Loader.h"
 #include "Level_Logo.h"
-//#include "Level_GamePlay.h"
+#include "Level_GamePlay.h"
 #include "GameInstance.h"
 
 CLevel_Loading::CLevel_Loading(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
@@ -46,7 +46,7 @@ _int CLevel_Loading::Tick(_double TimeDelta)
 	/* 로더야 다했냐? */
 	if (true == m_pLoader->Get_Finished())
 	{
-		if (GetKeyState(VK_SPACE) < 0)
+		if (GetKeyState(VK_RETURN) < 0)
 		{
 			if (FAILED(Open_Level()))
 				return -1;
@@ -102,6 +102,7 @@ HRESULT CLevel_Loading::Open_Level()
 		pLevel = CLevel_Logo::Create(m_pDevice, m_pDeviceContext);
 		break;
 	case LEVEL_GAMEPLAY:
+		pLevel = CLevel_GamePlay::Create(m_pDevice, m_pDeviceContext);
 		break;
 	}
 

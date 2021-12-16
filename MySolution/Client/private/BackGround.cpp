@@ -20,7 +20,7 @@ HRESULT CBackGround::NativeConstruct_Prototype()
 
 	/* AWS, PlayFab, GameBase, µÚ³¡(BackEnd) */
 
-	m_ProjMatrix = XMMatrixOrthographicLH(g_iWinCX, g_iWinCY, 0.f, 1.f);	
+	m_ProjMatrix = XMMatrixOrthographicLH((_float)g_iWinCX, (_float)g_iWinCY, 0.f, 1.f);
 	m_WorldMatrix = XMMatrixIdentity();
 
 	return S_OK;
@@ -35,14 +35,9 @@ HRESULT CBackGround::NativeConstruct(void * pArg)
 	if (FAILED(SetUp_Components()))
 		return E_FAIL;
 
-	m_WorldMatrix.r[0] = XMVectorSet(g_iWinCX, 0.f, 0.f, 0.f);
-	m_WorldMatrix.r[1] = XMVectorSet(0.0f, g_iWinCY, 0.f, 0.f);
+	m_WorldMatrix.r[0] = XMVectorSet((_float)g_iWinCX, 0.f, 0.f, 0.f);
+	m_WorldMatrix.r[1] = XMVectorSet(0.0f, (_float)g_iWinCY, 0.f, 0.f);
 	m_WorldMatrix.r[2] = XMVectorSet(0.0f, 0.f, 1.f, 0.f);
-	
-
-
-
-
 
 	return S_OK;
 }

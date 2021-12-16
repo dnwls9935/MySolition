@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "..\public\Level_Logo.h"
+#include "GameInstance.h"
+#include "Level_Loading.h"
 
 
 CLevel_Logo::CLevel_Logo(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
@@ -19,6 +21,22 @@ _int CLevel_Logo::Tick(_double TimeDelta)
 {
 	if (0 > (__super::Tick(TimeDelta)))
 		return -1;
+
+	if (GetKeyState(VK_SPACE) < 0)
+	{
+		CGameInstance*	pGameInstance = GET_INSTANCE(CGameInstance);
+
+		if (FAILED(pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pDeviceContext, LEVEL_GAMEPLAY))))
+		{
+			RELEASE_INSTANCE(CGameInstance);
+			return -1;
+		}
+
+		RELEASE_INSTANCE(CGameInstance);
+		return 0;
+	}
+
+	
 
 	return _int(0);
 }
