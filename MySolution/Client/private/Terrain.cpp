@@ -58,7 +58,10 @@ HRESULT CTerrain::Render()
 	m_pVIBufferCom->SetUp_ValueOnShader("g_ViewMatrix", &XMMatrixTranspose(pGameInstance->Get_Transform(CPipeLine::D3DTS_VIEW)), sizeof(_matrix));
 	m_pVIBufferCom->SetUp_ValueOnShader("g_ProjMatrix", &XMMatrixTranspose(pGameInstance->Get_Transform(CPipeLine::D3DTS_PROJECTION)), sizeof(_matrix));
 
-	m_pVIBufferCom->SetUp_TextureOnShader("g_DiffuseTexture", m_pTextureCom, 0);
+	m_pVIBufferCom->SetUp_TextureOnShader("g_DiffuseSourTexture", m_pTextureCom, 0);
+	m_pVIBufferCom->SetUp_TextureOnShader("g_DiffuseDestTexture", m_pTextureCom, 1);
+	m_pVIBufferCom->SetUp_TextureOnShader("g_FilterColor", m_pFilterTexCom[0]);
+	m_pVIBufferCom->SetUp_TextureOnShader("g_BrushColor", m_pFilterTexCom[1]);
 
 	m_pVIBufferCom->SetUp_ValueOnShader("g_vCamPosition", (void*)&pGameInstance->Get_CamPosition(), sizeof(_vector));
 
@@ -85,6 +88,10 @@ HRESULT CTerrain::SetUp_Components()
 
 	/* Com_Texture */
 	if (FAILED(__super::SetUp_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Terrain"), TEXT("Com_Texture"), (CComponent**)&m_pTextureCom)))
+		return E_FAIL;
+	if (FAILED(__super::SetUp_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Filter"), TEXT("Com_Filter"), (CComponent**)&m_pFilterTexCom[0])))
+		return E_FAIL;
+	if (FAILED(__super::SetUp_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Brush"), TEXT("Com_Brush"), (CComponent**)&m_pFilterTexCom[1])))
 		return E_FAIL;
 
 	return S_OK;
@@ -119,6 +126,10 @@ CGameObject * CTerrain::Clone(void * pArg)
 void CTerrain::Free()
 {
 	__super::Free();
+
+
+	for (auto& pTexture : m_pFilterTexCom)
+		Safe_Release(pTexture);
 
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pTextureCom);

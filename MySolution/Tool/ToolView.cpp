@@ -87,7 +87,7 @@ HRESULT CToolView::RenderEnd()
 HRESULT CToolView::ReadyProtoAll()
 {
 	/* 컴포넌트 원형 생성한다. */
-	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_VIBuffer_Terrain"), CVIBuffer_Terrain::Create(dx11Device, dx11DeviceContext, TEXT("../Client/Bin/ShaderFiles/Shader_Terrain.hlsl"), TEXT("../Client/Bin/Resources/Textures/Terrain/Height.bmp")))))
+	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_VIBuffer_Terrain"), CVIBuffer_Terrain::Create(dx11Device, dx11DeviceContext, TEXT("../Client/Bin/ShaderFiles/Shader_Terrain.hlsl")/*, TEXT("../Client/Bin/Resources/Textures/Terrain/Height.bmp")*/))))
 		return E_FAIL;
 	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Transform"), CTransform::Create(dx11Device, dx11DeviceContext))))
 		return E_FAIL;
@@ -104,6 +104,17 @@ HRESULT CToolView::ReadyProtoAll()
 		return E_FAIL;
 	if (FAILED(gameInstance->Add_Prototype(TEXT("Prototype_GameObject_Rect"), ToolRect::Create(dx11Device, dx11DeviceContext))))
 		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CToolView::SetTerrain(const _tchar * _shader, _uint _x, _uint _z, const _tchar * _heightMap)
+{
+	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_VIBuffer_Terrain"), CVIBuffer_Terrain::Create(dx11Device, dx11DeviceContext,_shader, _x, _z, _heightMap))))
+		return E_FAIL;
+	if (FAILED(gameInstance->Add_Prototype(TEXT("Prototype_GameObject_Terrain"), ToolTerrain::Create(dx11Device, dx11DeviceContext))))
+		return E_FAIL;
+
 
 	return S_OK;
 }
@@ -258,7 +269,7 @@ HRESULT CToolView::ReadyLayer()
 
 HRESULT CToolView::ReadyTexture()
 {
-	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Texture_Terrain"), CTexture::Create(dx11Device, dx11DeviceContext, TEXT("../Client/Bin/Resources/Textures/Terrain/rrr.png")))))
+	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Texture_Terrain"), CTexture::Create(dx11Device, dx11DeviceContext, TEXT("../Client/Bin/Resources/Textures/Terrain/Grass_%d.tga"), 2))))
 		return E_FAIL;
 
 	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Texture_Moon_Comp"), CTexture::Create(dx11Device, dx11DeviceContext, TEXT("../Client/Bin/Resources/Menumap/Texture2D/Moon_Comp.tga")))))
@@ -271,7 +282,7 @@ HRESULT CToolView::ReadyTexture()
 		return E_FAIL;
 	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Texture_MoonBase02a_Emis"), CTexture::Create(dx11Device, dx11DeviceContext, TEXT("../Client/Bin/Resources/Menumap/Texture2D/MoonBase02a_Emis.tga")))))
 		return E_FAIL;
-	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Texture_MoonBase02a_Nrm.tga"), CTexture::Create(dx11Device, dx11DeviceContext, TEXT("../Client/Bin/Resources/Menumap/Texture2D/MoonBase02a_Nrm.tga")))))
+	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Texture_MoonBase02a_Nrm"), CTexture::Create(dx11Device, dx11DeviceContext, TEXT("../Client/Bin/Resources/Menumap/Texture2D/MoonBase02a_Nrm.tga")))))
 		return E_FAIL;
 
 

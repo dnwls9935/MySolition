@@ -38,6 +38,8 @@ public:
 	HRESULT		RenderEnd();
 	HRESULT		ReadyProtoAll();	
 
+	HRESULT		SetTerrain(const _tchar* _shader, _uint _x, _uint _z, const _tchar* _heightMap);
+
 private:
 	HRESULT	ReadyLayer();
 	HRESULT	ReadyTexture();
@@ -47,7 +49,6 @@ private:
 	HRESULT ReadyObjectLayer(const _tchar* _layerTag);
 	HRESULT ReadyEffectLayer(const _tchar* _layerTag);
 
-	
 
 // 재정의입니다.
 public:
@@ -58,7 +59,7 @@ protected:
 	virtual void OnBeginPrinting(CDC* pDC, CPrintInfo* pInfo);
 	virtual void OnEndPrinting(CDC* pDC, CPrintInfo* pInfo);
 
-// 구현입니다.
+	// 구현입니다.
 public:
 	virtual ~CToolView();
 #ifdef _DEBUG

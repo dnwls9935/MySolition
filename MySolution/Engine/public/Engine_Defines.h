@@ -13,6 +13,7 @@
 #include "d3dx11effect.h"
 #include "d3dcompiler.h"
 #include "DirectXTex.h"
+#include "directxcollision.h"
 
 
 #include <vector>
@@ -23,6 +24,7 @@
 
 using namespace std;
 using namespace DirectX;
+using namespace DirectX::TriangleTests;
 
 #ifndef _AFX
 #ifdef _DEBUG

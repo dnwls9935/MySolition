@@ -143,9 +143,15 @@ CTransform * CTransform::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pD
 
 CComponent * CTransform::Clone(void * pArg)
 {
-	AddRef();
+	CTransform*		pInstance = new CTransform(*this);
 
-	return this;
+	if (FAILED(pInstance->NativeConstruct(pArg)))
+	{
+		MSGBOX("Failed to Clone CTransform");
+		Safe_Release(pInstance);
+	}
+
+	return pInstance;
 }
 
 void CTransform::Free()

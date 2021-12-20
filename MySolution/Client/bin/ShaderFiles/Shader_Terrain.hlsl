@@ -1,3 +1,4 @@
+#include "Shader_RenderState.hpp"
 
 cbuffer Matrices
 {
@@ -9,6 +10,11 @@ cbuffer Matrices
 cbuffer CamDesc
 {
 	vector		g_vCamPosition;
+};
+
+cbuffer	BrushDesc {
+	vector		g_vBrushPos = {20.f, 0.f, 10.f, 1.f};
+	float		g_fRadius = 5.f;
 };
 
 cbuffer LightDesc
@@ -26,7 +32,10 @@ cbuffer MtrlDesc
 	vector		g_vMtrlSpecular = vector(1.f, 1.f, 1.f, 1.f);
 };
 
-texture2D	g_DiffuseTexture;
+texture2D	g_DiffuseSourTexture;
+texture2D	g_DiffuseDestTexture;
+texture2D	g_FilterColor;
+texture2D	g_BrushColor;
 
 sampler DefaultSampler = sampler_state
 {
@@ -48,6 +57,7 @@ struct VS_OUT
 	float2		vTexUV : TEXCOORD0;
 	float		fShade : TEXCOORD1;
 	float		fSpecular : TEXCOORD2;
+	float4		vWorldPos	: WORLDPOS;
 };
 
 
@@ -61,7 +71,7 @@ VS_OUT VS_MAIN(VS_IN In)
 	matWVP = mul(matWV, g_ProjMatrix);
 
 	Out.vPosition = mul(vector(In.vPosition, 1.f), matWVP);
-	Out.vTexUV = In.vTexUV * 20.f;
+	Out.vTexUV = In.vTexUV;
 
 	vector		vWorldNormal = mul(vector(In.vNormal, 0.f), g_WorldMatrix);
 	vector		vWorldPosition = mul(vector(In.vPosition, 1.f), g_WorldMatrix);
@@ -73,6 +83,7 @@ VS_OUT VS_MAIN(VS_IN In)
 
 	Out.fSpecular = pow(saturate(dot(normalize(vReflect) * -1.f, normalize(vLook))), 30.f);
 
+	Out.vWorldPos = vWorldPosition;
 
 	return Out;
 }
@@ -83,6 +94,7 @@ struct PS_IN
 	float2		vTexUV : TEXCOORD0;
 	float		fShade : TEXCOORD1;
 	float		fSpecular : TEXCOORD2;
+	float4		vWorldPos	: WORLDPOS;
 };
 
 struct PS_OUT
@@ -94,9 +106,22 @@ PS_OUT PS_MAIN(PS_IN In)
 {
 	PS_OUT		Out = (PS_OUT)0;
 
-	vector	vMtrlDiffuse = g_DiffuseTexture.Sample(DefaultSampler, In.vTexUV);
+	vector	vSourDiffuse = g_DiffuseSourTexture.Sample(DefaultSampler, In.vTexUV * 10.f);
+	vector	vDestDiffuse = g_DiffuseDestTexture.Sample(DefaultSampler, In.vTexUV * 20.f);
+	vector	vFilterColor = g_FilterColor.Sample(DefaultSampler, In.vTexUV);
+	vector	vBrushColor = (vector)0;
 
-	Out.vColor = (g_vLightDiffuse * vMtrlDiffuse) * saturate(In.fShade + (g_vLightAmbient * g_vMtrlAmbient))
+	if (In.vWorldPos.x >= g_vBrushPos.x - g_fRadius && In.vWorldPos.x <= g_vBrushPos.x + g_fRadius &&
+		In.vWorldPos.z >= g_vBrushPos.z - g_fRadius && In.vWorldPos.z <= g_vBrushPos.z + g_fRadius)
+	{
+		float2		vTexUV = float2((In.vWorldPos.x - (g_vBrushPos.x - g_fRadius)) / (2.f * g_fRadius),
+			((g_vBrushPos.z + g_fRadius) - In.vWorldPos.z) / (2.f * g_fRadius));
+		vBrushColor = g_BrushColor.Sample(DefaultSampler, vTexUV);
+	}
+
+	vector vDiffuse = vSourDiffuse * vFilterColor.r + vDestDiffuse * (1.f - vFilterColor.r) + vBrushColor;
+
+	Out.vColor = (g_vLightDiffuse * vDiffuse) * saturate(In.fShade + (g_vLightAmbient * g_vMtrlAmbient))
 		+ (g_vLightSpecular * g_vMtrlSpecular) * In.fSpecular;
 
 	return Out;
@@ -109,6 +134,10 @@ technique11			DefaultTechnique
 {
 	pass Default
 	{
+		SetRasterizerState(FillMode_WireFrame);
+		SetDepthStencilState(ZBuffer_Default, 0);
+		SetBlendState(BlendDisable, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
 		VertexShader = compile vs_5_0 VS_MAIN();
 		GeometryShader = NULL;
 		PixelShader = compile ps_5_0  PS_MAIN();

@@ -20,7 +20,7 @@ Form::Form()
 
 Form::~Form()
 {
-	RELEASE_INSTANCE(CGameInstance);
+	
 }
 
 void Form::DoDataExchange(CDataExchange* pDX)

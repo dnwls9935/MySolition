@@ -13,31 +13,42 @@ CVIBuffer_Terrain::CVIBuffer_Terrain(const CVIBuffer_Terrain & rhs)
 {
 }
 
-HRESULT CVIBuffer_Terrain::NativeConstruct_Prototype(const _tchar* pShaderFilePath, const _tchar* pHeightMapPath)
+HRESULT CVIBuffer_Terrain::NativeConstruct_Prototype(const _tchar* pShaderFilePath, _uint _verticesX = 0, _uint _verticesZ = 0, const _tchar* pHeightMapPath = nullptr)
 {
 	if (FAILED(__super::NativeConstruct_Prototype()))
 		return E_FAIL;
 
-	HANDLE		hFile = CreateFile(pHeightMapPath, GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
-	if (0 == hFile)
-		return E_FAIL;
+	_ulong*				pPixel;
+	if (nullptr == pHeightMapPath)
+	{
+		m_iNumVerticesX = _verticesX;
+		m_iNumVerticesZ = _verticesZ;
 
-	BITMAPFILEHEADER		fh;
-	BITMAPINFOHEADER		ih;
-	_ulong				dwByte = 0;
+		pPixel = new _ulong[m_iNumVerticesX * m_iNumVerticesZ];
+	}
+	else {
+		HANDLE		hFile = CreateFile(pHeightMapPath, GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+		if (0 == hFile)
+			return E_FAIL;
 
-	ReadFile(hFile, &fh, sizeof(BITMAPFILEHEADER), &dwByte, nullptr);
-	ReadFile(hFile, &ih, sizeof(BITMAPINFOHEADER), &dwByte, nullptr);
+		BITMAPFILEHEADER		fh;
+		BITMAPINFOHEADER		ih;
+		_ulong				dwByte = 0;
+
+		ReadFile(hFile, &fh, sizeof(BITMAPFILEHEADER), &dwByte, nullptr);
+		ReadFile(hFile, &ih, sizeof(BITMAPINFOHEADER), &dwByte, nullptr);
 
 
-	_ulong*				pPixel = new _ulong[ih.biWidth * ih.biHeight];
-	ReadFile(hFile, pPixel, sizeof(_ulong) * ih.biWidth * ih.biHeight, &dwByte, nullptr);
+		pPixel = new _ulong[ih.biWidth * ih.biHeight];
+		ReadFile(hFile, pPixel, sizeof(_ulong) * ih.biWidth * ih.biHeight, &dwByte, nullptr);
 
 
-	m_iNumVerticesX = ih.biWidth;
-	m_iNumVerticesZ = ih.biHeight;
+		m_iNumVerticesX = ih.biWidth;
+		m_iNumVerticesZ = ih.biHeight;
 
-	CloseHandle(hFile);
+		CloseHandle(hFile);
+	}
+
 
 	ZeroMemory(&m_VBDesc, sizeof(D3D11_BUFFER_DESC));
 
@@ -192,11 +203,11 @@ HRESULT CVIBuffer_Terrain::NativeConstruct(void * pArg)
 	return S_OK;
 }
 
-CVIBuffer_Terrain * CVIBuffer_Terrain::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, const _tchar* pShaderFilePath, const _tchar* pHeightMapPath)
+CVIBuffer_Terrain * CVIBuffer_Terrain::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, const _tchar* pShaderFilePath, _uint _verticesX, _uint _verticesZ, const _tchar* pHeightMapPath)
 {
 	CVIBuffer_Terrain*		pInstance = new CVIBuffer_Terrain(pDevice, pDeviceContext);
 
-	if (FAILED(pInstance->NativeConstruct_Prototype(pShaderFilePath, pHeightMapPath)))
+	if (FAILED(pInstance->NativeConstruct_Prototype(pShaderFilePath, _verticesX, _verticesZ, pHeightMapPath)))
 	{
 		MSGBOX("Failed to Creating CVIBuffer_Terrain");
 		Safe_Release(pInstance);

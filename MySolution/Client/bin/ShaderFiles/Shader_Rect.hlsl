@@ -1,3 +1,4 @@
+#include "Shader_RenderState.hpp"
 
 
 /* 모든 전역변수들을 -> 상수테이블. */
@@ -93,9 +94,8 @@ technique11			DefaultTechnique
 	/* 조명연산(어둡게, 스펙큘러) + 그림자 + 노멀맵핑 */
 	pass Normal
 	{
-		/* 렌더스테이츠에 대한 정의. */
-		
-
+		SetRasterizerState(CullMode_Default);
+		SetDepthStencilState(ZBuffer_Default, 0);
 
 		/* 진입점함수를 지정한다. */
 		VertexShader = compile vs_5_0 VS_MAIN();

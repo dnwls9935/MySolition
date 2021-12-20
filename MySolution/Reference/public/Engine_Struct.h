@@ -33,6 +33,12 @@ namespace Engine
 		XMFLOAT2		vTexUV;
 	} VTXTEX;
 
+	typedef struct tagVertex_Texture_Cube
+	{
+		XMFLOAT3		vPosition;
+		XMFLOAT3		vTexUV;
+	} VTXTEXCUBE;
+
 	typedef struct tagVertex_Normal_Texture
 	{
 		XMFLOAT3		vPosition;

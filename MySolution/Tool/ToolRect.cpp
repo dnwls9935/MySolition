@@ -61,9 +61,9 @@ HRESULT ToolRect::Render()
 	m_pVIBufferCom->SetUp_ValueOnShader("g_ProjMatrix", &XMMatrixTranspose(pGameInstance->Get_Transform(CPipeLine::D3DTS_PROJECTION)), sizeof(_matrix));
 
 	m_pVIBufferCom->SetUp_TextureOnShader("g_DiffuseTexture", m_pTextureCom, 0);
-
+/*
 	m_pVIBufferCom->SetUp_ValueOnShader("g_vCamPosition", (void*)&pGameInstance->Get_CamPosition(), sizeof(_vector));
-
+*/
 	m_pVIBufferCom->Render(0);
 
 	RELEASE_INSTANCE(CGameInstance);
@@ -85,7 +85,7 @@ HRESULT ToolRect::SetUp_Components()
 		return E_FAIL;
 
 	/* Com_Texture */
-	if (FAILED(__super::SetUp_Components(0, TEXT("Prototype_Component_Texture_Moon_Comp"), TEXT("Com_Texture"), (CComponent**)&m_pTextureCom)))
+	if (FAILED(__super::SetUp_Components(0, TEXT("Prototype_Component_Texture_MoonBase02a_Nrm"), TEXT("Com_Texture"), (CComponent**)&m_pTextureCom)))
 		return E_FAIL;
 
 	/*

@@ -19,15 +19,14 @@ protected:
 	explicit CTerrain(const CGameObject& rhs);
 	virtual ~CTerrain() = default;
 public:
-	/* 원형객체가 생성될때 호출되는 함수. */
 	virtual HRESULT NativeConstruct_Prototype() override;
-	/* 복제본객체가 생성될때 호출되는 함수. */
 	virtual HRESULT NativeConstruct(void* pArg) override;
 	virtual _int Tick(_double TimeDelta) override;
 	virtual _int LateTick(_double TimeDelta) override;
 	virtual HRESULT Render() override;
 private:
 	CTexture*				m_pTextureCom = nullptr;
+	CTexture*				m_pFilterTexCom[2] = { nullptr, nullptr };
 	CRenderer*				m_pRendererCom = nullptr;
 	CTransform*				m_pTransformCom = nullptr;
 	CVIBuffer_Terrain*		m_pVIBufferCom = nullptr;

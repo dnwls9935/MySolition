@@ -21,6 +21,8 @@ public:
 	virtual HRESULT NativeConstruct(void* pArg) override;
 	virtual HRESULT Render(_uint iPassIndex);
 
+	void*	GetVertices() { return m_pVertices; };
+
 public:
 	HRESULT SetUp_ValueOnShader(const char* pConstantName, void* pData, _uint iSize);
 	HRESULT SetUp_TextureOnShader(const char* pConstantName, class CTexture* pTextureCom, _uint iTextureIndex = 0);

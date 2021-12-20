@@ -110,6 +110,15 @@ HRESULT CObject_Manager::Clear_Object_Manager(_uint iLevelIndex)
 	return S_OK;
 }
 
+CGameObject* CObject_Manager::FindObject(const _tchar * _tag)
+{
+	auto	iter = find_if(m_Prototype.begin(), m_Prototype.end(), CTag_Finder(_tag));
+	if (iter == m_Prototype.end())
+		return nullptr;
+
+	return iter->second;
+}
+
 CGameObject * CObject_Manager::Find_Prototype(const _tchar * pPrototypeTag)
 {
 	auto	iter = find_if(m_Prototype.begin(), m_Prototype.end(), CTag_Finder(pPrototypeTag));

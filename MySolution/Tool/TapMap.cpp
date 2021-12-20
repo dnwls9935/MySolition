@@ -24,11 +24,14 @@ TapMap::~TapMap()
 void TapMap::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
+	DDX_Control(pDX, IDC_EDIT1, m_VerticesX);
+	DDX_Control(pDX, IDC_EDIT2, m_VerticesZ);
 }
 
 
 BEGIN_MESSAGE_MAP(TapMap, CDialogEx)
 	ON_WM_CREATE()
+	ON_BN_CLICKED(IDC_BUTTON1, &TapMap::OnBnClickedButton1)
 END_MESSAGE_MAP()
 
 
@@ -55,4 +58,14 @@ int TapMap::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		return -1;
 
 	return 0;
+}
+
+
+void TapMap::OnBnClickedButton1()
+{
+	CGameInstance* gameInstance = GET_INSTANCE(CGameInstance);
+
+	gameInstance->FindObjct
+
+	RELEASE_INSTANCE(CGameInstance);
 }

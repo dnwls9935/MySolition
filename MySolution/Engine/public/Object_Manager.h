@@ -23,6 +23,8 @@ public:
 	_int LateTick(_double TimeDelta);
 public:
 	HRESULT Clear_Object_Manager(_uint iLevelIndex);
+	CGameObject*	FindObject(const _tchar* _tag);
+
 private:
 	unordered_map<const _tchar*, class CGameObject*>			m_Prototype;
 	typedef unordered_map<const _tchar*, class CGameObject*>	PROTOTYPES;

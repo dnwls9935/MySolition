@@ -5,6 +5,7 @@
 #include "ToolDefines.h"
 #include "ToolTerrain.h"
 #include "ToolCamera.h"
+#include "afxwin.h"
 // TapMap 대화 상자입니다.
 
 class TapMap : public CDialogEx
@@ -31,4 +32,7 @@ public:
 	virtual void PostNcDestroy();
 	virtual BOOL OnInitDialog();
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
+	CEdit m_VerticesX;
+	CEdit m_VerticesZ;
+	afx_msg void OnBnClickedButton1();
 };

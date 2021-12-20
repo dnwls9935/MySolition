@@ -15,6 +15,8 @@ public:
 	_int Tick(_double TimeDelta);
 	_int LateTick(_double TimeDelta);
 
+
+
 private:
 	list<class CGameObject*>			m_Objects;
 	typedef list<class CGameObject*>	OBJECTS;

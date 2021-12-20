@@ -22,6 +22,11 @@ public:
 	virtual _int LateTick(_double TimeDelta);
 	virtual HRESULT Render();
 
+	HRESULT		ResetTerrainInfo(const _tchar* _shaderFile, const _tchar* _heightMapFile, _uint _x, _uint _z);
+	
+private:
+	_float3		PickUpOnTerrain();
+
 private:
 	CTexture*				m_pTextureCom = nullptr;
 	CRenderer*				m_pRendererCom = nullptr;
