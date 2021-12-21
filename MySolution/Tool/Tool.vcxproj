@@ -205,6 +205,7 @@
     <ClInclude Include="ToolCamera.h" />
     <ClInclude Include="ToolDefines.h" />
     <ClInclude Include="ToolDoc.h" />
+    <ClInclude Include="ToolMouse.h" />
     <ClInclude Include="ToolRect.h" />
     <ClInclude Include="ToolTerrain.h" />
     <ClInclude Include="ToolView.h" />
@@ -224,6 +225,7 @@
     <ClCompile Include="Tool.cpp" />
     <ClCompile Include="ToolCamera.cpp" />
     <ClCompile Include="ToolDoc.cpp" />
+    <ClCompile Include="ToolMouse.cpp" />
     <ClCompile Include="ToolRect.cpp" />
     <ClCompile Include="ToolTerrain.cpp" />
     <ClCompile Include="ToolView.cpp" />

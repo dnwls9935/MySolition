@@ -13,42 +13,13 @@ CVIBuffer_Terrain::CVIBuffer_Terrain(const CVIBuffer_Terrain & rhs)
 {
 }
 
-HRESULT CVIBuffer_Terrain::NativeConstruct_Prototype(const _tchar* pShaderFilePath, _uint _verticesX = 0, _uint _verticesZ = 0, const _tchar* pHeightMapPath = nullptr)
+HRESULT CVIBuffer_Terrain::NativeConstruct_Prototype(const _tchar* pShaderFilePath, _uint x, _uint z)
 {
 	if (FAILED(__super::NativeConstruct_Prototype()))
 		return E_FAIL;
 
-	_ulong*				pPixel;
-	if (nullptr == pHeightMapPath)
-	{
-		m_iNumVerticesX = _verticesX;
-		m_iNumVerticesZ = _verticesZ;
-
-		pPixel = new _ulong[m_iNumVerticesX * m_iNumVerticesZ];
-	}
-	else {
-		HANDLE		hFile = CreateFile(pHeightMapPath, GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
-		if (0 == hFile)
-			return E_FAIL;
-
-		BITMAPFILEHEADER		fh;
-		BITMAPINFOHEADER		ih;
-		_ulong				dwByte = 0;
-
-		ReadFile(hFile, &fh, sizeof(BITMAPFILEHEADER), &dwByte, nullptr);
-		ReadFile(hFile, &ih, sizeof(BITMAPINFOHEADER), &dwByte, nullptr);
-
-
-		pPixel = new _ulong[ih.biWidth * ih.biHeight];
-		ReadFile(hFile, pPixel, sizeof(_ulong) * ih.biWidth * ih.biHeight, &dwByte, nullptr);
-
-
-		m_iNumVerticesX = ih.biWidth;
-		m_iNumVerticesZ = ih.biHeight;
-
-		CloseHandle(hFile);
-	}
-
+	m_iNumVerticesX = x;
+	m_iNumVerticesZ = z;
 
 	ZeroMemory(&m_VBDesc, sizeof(D3D11_BUFFER_DESC));
 
@@ -57,9 +28,9 @@ HRESULT CVIBuffer_Terrain::NativeConstruct_Prototype(const _tchar* pShaderFilePa
 	m_iNumVertices = m_iNumVerticesX * m_iNumVerticesZ;
 
 	m_VBDesc.ByteWidth = m_iStride * m_iNumVertices;
-	m_VBDesc.Usage = D3D11_USAGE_IMMUTABLE;
+	m_VBDesc.Usage = D3D11_USAGE_DYNAMIC;
 	m_VBDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	m_VBDesc.CPUAccessFlags = 0;
+	m_VBDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	m_VBDesc.MiscFlags = 0;
 	m_VBDesc.StructureByteStride = m_iStride;
 
@@ -75,7 +46,7 @@ HRESULT CVIBuffer_Terrain::NativeConstruct_Prototype(const _tchar* pShaderFilePa
 		{
 			_uint		iIndex = i * m_iNumVerticesX + j;
 
-			((VTXNORTEX*)m_pVertices)[iIndex].vPosition = _float3(j, (pPixel[iIndex] & 0x000000ff) / 10.0f, i);
+			((VTXNORTEX*)m_pVertices)[iIndex].vPosition = _float3(j, 0.f, i);
 			((VTXNORTEX*)m_pVertices)[iIndex].vNormal = _float3(0.f, 0.f, 0.f);
 			((VTXNORTEX*)m_pVertices)[iIndex].vTexUV = _float2(j / _float((m_iNumVerticesX - 1)), i / _float((m_iNumVerticesZ - 1)));
 		}
@@ -190,8 +161,6 @@ HRESULT CVIBuffer_Terrain::NativeConstruct_Prototype(const _tchar* pShaderFilePa
 	if (FAILED(Compile_ShaderFiles(pShaderFilePath, ElementDescs, 3)))
 		return E_FAIL;
 
-	Safe_Delete_Array(pPixel);
-
 	return S_OK;
 }
 
@@ -203,11 +172,22 @@ HRESULT CVIBuffer_Terrain::NativeConstruct(void * pArg)
 	return S_OK;
 }
 
-CVIBuffer_Terrain * CVIBuffer_Terrain::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, const _tchar* pShaderFilePath, _uint _verticesX, _uint _verticesZ, const _tchar* pHeightMapPath)
+void CVIBuffer_Terrain::SetVerticeY(_uint _idx, _float _y)
+{
+	D3D11_MAPPED_SUBRESOURCE data;
+	m_pDeviceContext->Map(m_pVB, 0, D3D11_MAP_WRITE_DISCARD, 0, &data);
+
+	((VTXNORTEX*)m_pVertices)[_idx].vPosition.y += _y;
+	((VTXNORTEX*)(data.pData))[_idx] = ((VTXNORTEX*)m_pVertices)[_idx];
+
+	m_pDeviceContext->Unmap(m_pVB, 0);
+} 
+
+CVIBuffer_Terrain * CVIBuffer_Terrain::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, const _tchar* pShaderFilePath, _uint x, _uint z)
 {
 	CVIBuffer_Terrain*		pInstance = new CVIBuffer_Terrain(pDevice, pDeviceContext);
 
-	if (FAILED(pInstance->NativeConstruct_Prototype(pShaderFilePath, _verticesX, _verticesZ, pHeightMapPath)))
+	if (FAILED(pInstance->NativeConstruct_Prototype(pShaderFilePath,x,z)))
 	{
 		MSGBOX("Failed to Creating CVIBuffer_Terrain");
 		Safe_Release(pInstance);
@@ -232,6 +212,4 @@ CComponent * CVIBuffer_Terrain::Clone(void * pArg)
 void CVIBuffer_Terrain::Free()
 {
 	__super::Free();
-
-
 }

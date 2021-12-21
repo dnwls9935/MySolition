@@ -22,16 +22,18 @@ public:
 	virtual _int LateTick(_double TimeDelta);
 	virtual HRESULT Render();
 
-	HRESULT		ResetTerrainInfo(const _tchar* _shaderFile, const _tchar* _heightMapFile, _uint _x, _uint _z);
-	
 private:
-	_float3		PickUpOnTerrain();
+	_int		PickUpOnTerrain();
+	_fvector		CalcMousePos();
 
 private:
 	CTexture*				m_pTextureCom = nullptr;
 	CRenderer*				m_pRendererCom = nullptr;
 	CTransform*				m_pTransformCom = nullptr;
 	CVIBuffer_Terrain*		m_pVIBufferCom = nullptr;
+
+	_float4					m_mousePos;
+
 private:
 	virtual HRESULT SetUp_Components();
 

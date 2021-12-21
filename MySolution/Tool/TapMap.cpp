@@ -63,9 +63,5 @@ int TapMap::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 void TapMap::OnBnClickedButton1()
 {
-	CGameInstance* gameInstance = GET_INSTANCE(CGameInstance);
 
-	gameInstance->FindObjct
-
-	RELEASE_INSTANCE(CGameInstance);
 }

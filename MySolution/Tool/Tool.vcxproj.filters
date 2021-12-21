@@ -37,6 +37,9 @@
     <Filter Include="Object\ToolEffect">
       <UniqueIdentifier>{38694a2c-e9d1-4bed-ae6f-ca1c801ab3e1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Object\ToolMouse">
+      <UniqueIdentifier>{c32953e0-93d7-4c83-8ce9-a3efa40551f6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainFrm.h">
@@ -84,6 +87,9 @@
     <ClInclude Include="ToolRect.h">
       <Filter>Object\ToolEffect</Filter>
     </ClInclude>
+    <ClInclude Include="ToolMouse.h">
+      <Filter>Object\ToolMouse</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MainFrm.cpp">
@@ -121,6 +127,9 @@
     </ClCompile>
     <ClCompile Include="ToolRect.cpp">
       <Filter>Object\ToolEffect</Filter>
+    </ClCompile>
+    <ClCompile Include="ToolMouse.cpp">
+      <Filter>Object\ToolMouse</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
