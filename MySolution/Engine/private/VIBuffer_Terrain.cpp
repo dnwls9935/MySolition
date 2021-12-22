@@ -172,13 +172,23 @@ HRESULT CVIBuffer_Terrain::NativeConstruct(void * pArg)
 	return S_OK;
 }
 
-void CVIBuffer_Terrain::SetVerticeY(_uint _idx, _float _y)
+void CVIBuffer_Terrain::SetVerticeY(_float4 _mousePos, _float _y, _int _scale)
 {
 	D3D11_MAPPED_SUBRESOURCE data;
 	m_pDeviceContext->Map(m_pVB, 0, D3D11_MAP_WRITE_DISCARD, 0, &data);
 
-	((VTXNORTEX*)m_pVertices)[_idx].vPosition.y += _y;
-	((VTXNORTEX*)(data.pData))[_idx] = ((VTXNORTEX*)m_pVertices)[_idx];
+	for (_uint i = 0; i < m_iNumVertices; i++)
+	{
+		if (_mousePos.x - _scale <= ((VTXNORTEX*)m_pVertices)[i].vPosition.x &&
+			_mousePos.x + _scale >= ((VTXNORTEX*)m_pVertices)[i].vPosition.x &&
+			_mousePos.z - _scale <= ((VTXNORTEX*)m_pVertices)[i].vPosition.z &&
+			_mousePos.z + _scale >= ((VTXNORTEX*)m_pVertices)[i].vPosition.z
+			)
+		{
+			((VTXNORTEX*)m_pVertices)[i].vPosition.y += _y;
+			((VTXNORTEX*)(data.pData))[i] = ((VTXNORTEX*)m_pVertices)[i];
+		}
+	}
 
 	m_pDeviceContext->Unmap(m_pVB, 0);
 } 

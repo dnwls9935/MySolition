@@ -17,7 +17,7 @@ public:
 	_uint	GetVerticesX() { return m_iNumVerticesX; };
 	_uint	GetVerticesZ() { return m_iNumVerticesZ; };
 
-	void	SetVerticeY(_uint _idx, _float _y);
+	void	SetVerticeY(_float4 _mousePos, _float _y, _int _scale);
 
 private:
 	_uint			m_iNumVerticesX = 0;

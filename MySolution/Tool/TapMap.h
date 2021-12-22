@@ -32,7 +32,11 @@ public:
 	virtual void PostNcDestroy();
 	virtual BOOL OnInitDialog();
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
-	CEdit m_VerticesX;
-	CEdit m_VerticesZ;
 	afx_msg void OnBnClickedButton1();
+
+	afx_msg	void OnBnClieckRadio(UINT value);
+	int m_radioValue;
+	int m_brushRadius;
+	afx_msg void OnEnChangeRadius();
+	CEdit m_BrushRadiusText;
 };

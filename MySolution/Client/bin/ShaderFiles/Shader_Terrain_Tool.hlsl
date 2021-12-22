@@ -20,6 +20,8 @@ cbuffer	BrushDesc {
 cbuffer MouseDesc
 {
 	vector		g_vMousePosition;
+	int			g_vMouseBrushType;
+	float		g_vMouseBrushRadius;
 };
 
 cbuffer LightDesc
@@ -133,12 +135,13 @@ PS_OUT PS_MAIN(PS_IN In)
 	Out.vColor = (g_vLightDiffuse * vDiffuse) * saturate(In.fShade + (g_vLightAmbient * g_vMtrlAmbient))
 		+ (g_vLightSpecular * g_vMtrlSpecular) * In.fSpecular;
 
-	if (In.vWorldPos.x >= (In.vMousePos.x - 5.f) && In.vWorldPos.x <= (In.vMousePos.x + 5.f) &&
-		In.vWorldPos.z >= (In.vMousePos.z - 5.f) && In.vWorldPos.z <= (In.vMousePos.z + 5.f))
+	if ((g_vMouseBrushType != 0) &&
+		(In.vWorldPos.x >= (In.vMousePos.x - g_vMouseBrushRadius) && In.vWorldPos.x <= (In.vMousePos.x + g_vMouseBrushRadius) &&
+		In.vWorldPos.z >= (In.vMousePos.z - g_vMouseBrushRadius) && In.vWorldPos.z <= (In.vMousePos.z + g_vMouseBrushRadius))
+		)
 	{
 		Out.vColor = vector(0.f, 1.f, 0.f, 1.f);
 	}
-		
 
 
 	return Out;
@@ -151,7 +154,7 @@ technique11			DefaultTechnique
 {
 	pass Default
 	{
-		SetRasterizerState(CullMode_Default);
+		SetRasterizerState(FillMode_WireFrame);
 		SetDepthStencilState(ZBuffer_Default, 0);
 		SetBlendState(BlendDisable, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 

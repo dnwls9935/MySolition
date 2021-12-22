@@ -33,6 +33,8 @@ private:
 	CVIBuffer_Terrain*		m_pVIBufferCom = nullptr;
 
 	_float4					m_mousePos;
+	_int					m_mouseBrushType;
+	_int					m_mouseBrushRadius;
 
 private:
 	virtual HRESULT SetUp_Components();

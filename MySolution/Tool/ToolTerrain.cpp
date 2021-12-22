@@ -6,7 +6,7 @@
 #include "MainFrm.h"
 #include "ToolView.h"
 #include "Form.h"
-
+#include "TapMap.h"
 
 ToolTerrain::ToolTerrain(ID3D11Device * _dx11Device, ID3D11DeviceContext * _dx11DeviceContext)
 	: CGameObject(_dx11Device, _dx11DeviceContext)
@@ -44,16 +44,20 @@ _int ToolTerrain::Tick(_double TimeDelta)
 
 	CGameInstance* gameInstance = GET_INSTANCE(CGameInstance);
 
-	if (gameInstance->Get_MouseButtonState(CInput_Device::MBS_LBUTTON))
+	CMainFrame* m_mainFrm = dynamic_cast<CMainFrame*>(AfxGetApp()->GetMainWnd());
+	Form* m_form = dynamic_cast<Form*>(m_mainFrm->m_MainSpliiter.GetPane(0, 0));
+
+	m_mouseBrushType = m_form->tapMap->m_radioValue;
+	m_mouseBrushRadius = m_form->tapMap->m_brushRadius;
+
+	if (0 != m_mouseBrushType)
 	{
-		_vector f = CalcMousePos();
-		XMStoreFloat4(&m_mousePos, f);
-		_int idx = PickUpOnTerrain();
-		if (0 <= idx)
-			m_pVIBufferCom->SetVerticeY(idx, (5.f * TimeDelta));
+		XMStoreFloat4(&m_mousePos, CalcMousePos());
+		if (gameInstance->Get_MouseButtonState(CInput_Device::MBS_LBUTTON))
+		{
+			m_pVIBufferCom->SetVerticeY(m_mousePos, 2.f * TimeDelta, m_mouseBrushRadius);
+		}
 	}
-
-
 	RELEASE_INSTANCE(CGameInstance);
 
 	return _int();
@@ -88,6 +92,8 @@ HRESULT ToolTerrain::Render()
 	m_pVIBufferCom->SetUp_ValueOnShader("g_vCamPosition", (void*)&pGameInstance->Get_CamPosition(), sizeof(_vector));
 
 	m_pVIBufferCom->SetUp_ValueOnShader("g_vMousePosition", &m_mousePos, sizeof(_vector));
+	m_pVIBufferCom->SetUp_ValueOnShader("g_vMouseBrushType", &m_mouseBrushType, sizeof(_int));
+	m_pVIBufferCom->SetUp_ValueOnShader("g_vMouseBrushRadius", &m_mouseBrushRadius, sizeof(_float));
 
 	m_pVIBufferCom->Render(0);
 
