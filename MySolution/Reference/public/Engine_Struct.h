@@ -2,6 +2,21 @@
 
 namespace Engine
 {
+	typedef struct MeshMaterial
+	{
+		class CTexture*		pMeshTexture[AI_TEXTURE_TYPE_MAX];
+	}MESHMATERIAL;
+
+	typedef struct tagVertex_Mesh
+	{
+		XMFLOAT3		vPosition;
+		XMFLOAT3		vNormal;
+		XMFLOAT2		vTexUV;
+		XMFLOAT3		vTangent;
+		XMUINT4			vBlendIndex;
+		XMFLOAT4		vBlendWeight;
+	}VTXMESH;
+
 	typedef struct tagLightDesc
 	{
 		XMFLOAT3		vDirection;

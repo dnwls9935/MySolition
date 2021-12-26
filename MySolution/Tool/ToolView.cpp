@@ -18,6 +18,7 @@
 #include "ToolTerrain.h"
 #include "ToolCamera.h"
 #include "ToolRect.h"
+#include "ToolObject.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -96,25 +97,32 @@ HRESULT CToolView::ReadyProtoAll()
 	if (FAILED(ReadyTexture()))
 		return E_FAIL;
 
+	_matrix		pivotMat;
+	pivotMat = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationX(XMConvertToRadians(90.0f)) * XMMatrixRotationY(XMConvertToRadians(180.0f));
+	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Model_HyperionChest"), CModel::Create(dx11Device, dx11DeviceContext, "../Client/Bin/Resources/Meshes/Kaelthas/", "HyperionChest.FBX", TEXT("../Client/Bin/ShaderFiles/Shader_Mesh.hlsl"), pivotMat))))
+		return E_FAIL;
+	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Model_HandsomeJack"), CModel::Create(dx11Device, dx11DeviceContext, "../Client/Bin/Resources/Meshes/Kaelthas/", "HandsomeJack.FBX", TEXT("../Client/Bin/ShaderFiles/Shader_Mesh.hlsl"), pivotMat))))
+		return E_FAIL;
+	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Model_HandsomeJackGoldlStatue"), CModel::Create(dx11Device, dx11DeviceContext, "../Client/Bin/Resources/Meshes/Kaelthas/", "HandsomeJackGoldlStatue.FBX", TEXT("../Client/Bin/ShaderFiles/Shader_Mesh.hlsl"), pivotMat))))
+		return E_FAIL;
+	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Model_Kaelthas"), CModel::Create(dx11Device, dx11DeviceContext, "../Client/Bin/Resources/Meshes/Kaelthas/", "Kaelthas.FBX", TEXT("../Client/Bin/ShaderFiles/Shader_Mesh.hlsl"), pivotMat))))
+		return E_FAIL;
+
 
 	///* 객체원형을 생성한다. */
 	if (FAILED(gameInstance->Add_Prototype(TEXT("Prototype_GameObject_Terrain"), ToolTerrain::Create(dx11Device, dx11DeviceContext))))
 		return E_FAIL;
 	if (FAILED(gameInstance->Add_Prototype(TEXT("Prototype_GameObject_Dyanmic_Camera"), ToolCamera::Create(dx11Device, dx11DeviceContext))))
 		return E_FAIL;
-	if (FAILED(gameInstance->Add_Prototype(TEXT("Prototype_GameObject_Rect"), ToolRect::Create(dx11Device, dx11DeviceContext))))
+
+	if (FAILED(gameInstance->Add_Prototype(TEXT("Prototype_GameObject_Model_HyperionChest"), ToolObject::Create(dx11Device, dx11DeviceContext))))
 		return E_FAIL;
-
-	return S_OK;
-}
-
-HRESULT CToolView::SetTerrain(const _tchar * _shader, _uint _x, _uint _z, const _tchar * _heightMap)
-{
-	//if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_VIBuffer_Terrain"), CVIBuffer_Terrain::Create(dx11Device, dx11DeviceContext,_shader, _x, _z, _heightMap))))
-	//	return E_FAIL;
-	//if (FAILED(gameInstance->Add_Prototype(TEXT("Prototype_GameObject_Terrain"), ToolTerrain::Create(dx11Device, dx11DeviceContext))))
-	//	return E_FAIL;
-
+	if (FAILED(gameInstance->Add_Prototype(TEXT("Prototype_GameObject_Model_HandsomeJack"), ToolObject::Create(dx11Device, dx11DeviceContext))))
+		return E_FAIL;
+	if (FAILED(gameInstance->Add_Prototype(TEXT("Prototype_GameObject_Model_HandsomeJackGoldlStatue"), ToolObject::Create(dx11Device, dx11DeviceContext))))
+		return E_FAIL;
+	if (FAILED(gameInstance->Add_Prototype(TEXT("Prototype_GameObject_Model_Kaelthas"), ToolObject::Create(dx11Device, dx11DeviceContext))))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -321,13 +329,31 @@ HRESULT CToolView::ReadyTerrainLayer(const _tchar* _layerTag)
 
 HRESULT CToolView::ReadyObjectLayer(const _tchar * _layerTag)
 {
+	ToolObject::TOOLOBJDESC objDesc;
+	objDesc.m_BufferTag = TEXT("Prototype_Component_Model_HyperionChest");
+	objDesc.m_Position = { 10.f,0.f,10.f };
+	if (FAILED(gameInstance->Add_GameObjectToLayer(1, _layerTag, TEXT("Prototype_GameObject_Model_HyperionChest"), &objDesc)))
+		return E_FAIL;
+
+	objDesc.m_BufferTag = TEXT("Prototype_Component_Model_HandsomeJack");
+	objDesc.m_Position = { 20.f,0.f,20.f };
+	if (FAILED(gameInstance->Add_GameObjectToLayer(1, _layerTag, TEXT("Prototype_GameObject_Model_HandsomeJack"), &objDesc)))
+		return E_FAIL;
+
+	objDesc.m_BufferTag = TEXT("Prototype_Component_Model_HandsomeJackGoldlStatue");
+	objDesc.m_Position = { 15.f,0.f,15.f };
+	if (FAILED(gameInstance->Add_GameObjectToLayer(1, _layerTag, TEXT("Prototype_GameObject_Model_HandsomeJackGoldlStatue"), &objDesc)))
+		return E_FAIL;
+
+	objDesc.m_BufferTag = TEXT("Prototype_Component_Model_Kaelthas");
+	objDesc.m_Position = { 0.f,0.f,0.f};
+	if (FAILED(gameInstance->Add_GameObjectToLayer(1, _layerTag, TEXT("Prototype_GameObject_Model_Kaelthas"), &objDesc)))
+		return E_FAIL;
+	
 	return S_OK;
 }
 
 HRESULT CToolView::ReadyEffectLayer(const _tchar * _layerTag)
 {
-	if (FAILED(gameInstance->Add_GameObjectToLayer(1, _layerTag, TEXT("Prototype_GameObject_Rect"))))
-		return E_FAIL;
-
 	return S_OK;
 }

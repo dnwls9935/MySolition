@@ -44,7 +44,7 @@ protected: /* For.IndexBuffer */
 	DXGI_FORMAT					m_eFormat;
 	D3D11_PRIMITIVE_TOPOLOGY	m_ePrimitiveTopology;
 
-private:
+protected:
 	ID3DX11Effect*				m_pEffect = nullptr;
 	vector<EFFECTDESC*>			m_EffectDescs;
 

@@ -8,7 +8,6 @@
 #include "MainFrm.h"
 #include "Form.h"
 
-
 // TapMap 대화 상자입니다.
 
 IMPLEMENT_DYNAMIC(TapMap, CDialogEx)

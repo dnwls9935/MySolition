@@ -23,6 +23,8 @@ HRESULT CTransform::NativeConstruct_Prototype()
 
 HRESULT CTransform::NativeConstruct(void * pArg)
 {
+	if(nullptr != pArg)
+		memcpy(&m_TransformDesc, pArg,sizeof(TRANSFORMDESC));
 	return S_OK;
 }
 

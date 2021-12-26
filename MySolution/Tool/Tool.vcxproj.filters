@@ -40,6 +40,9 @@
     <Filter Include="Object\ToolMouse">
       <UniqueIdentifier>{c32953e0-93d7-4c83-8ce9-a3efa40551f6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Object\ToolObject">
+      <UniqueIdentifier>{05be18dc-aae3-4ff0-a056-ef4bf1d650ef}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainFrm.h">
@@ -90,6 +93,9 @@
     <ClInclude Include="ToolMouse.h">
       <Filter>Object\ToolMouse</Filter>
     </ClInclude>
+    <ClInclude Include="ToolObject.h">
+      <Filter>Object\ToolObject</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MainFrm.cpp">
@@ -130,6 +136,9 @@
     </ClCompile>
     <ClCompile Include="ToolMouse.cpp">
       <Filter>Object\ToolMouse</Filter>
+    </ClCompile>
+    <ClCompile Include="ToolObject.cpp">
+      <Filter>Object\ToolObject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

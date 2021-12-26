@@ -99,6 +99,8 @@ HRESULT CVIBuffer::SetUp_ValueOnShader(const char* pConstantName, void* pData, _
 
 HRESULT CVIBuffer::SetUp_TextureOnShader(const char * pConstantName, CTexture * pTextureCom, _uint iTextureIndex)
 {
+	if (nullptr == pTextureCom)
+		return E_FAIL;
 	ID3D11ShaderResourceView*	pShaderResourceView = pTextureCom->Get_ShaderResourceView(iTextureIndex);
 	if (nullptr == pShaderResourceView)
 		return E_FAIL;

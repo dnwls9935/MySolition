@@ -12,7 +12,7 @@ private:
 	virtual ~CTexture() = default;
 public:
 	ID3D11ShaderResourceView* Get_ShaderResourceView(_uint iIndex) {
-		return m_Textures[iIndex];	
+		return m_Textures[iIndex];
 	}
 
 public:

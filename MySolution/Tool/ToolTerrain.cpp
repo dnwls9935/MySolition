@@ -93,7 +93,7 @@ HRESULT ToolTerrain::Render()
 
 	m_pVIBufferCom->SetUp_ValueOnShader("g_vMousePosition", &m_mousePos, sizeof(_vector));
 	m_pVIBufferCom->SetUp_ValueOnShader("g_vMouseBrushType", &m_mouseBrushType, sizeof(_int));
-	m_pVIBufferCom->SetUp_ValueOnShader("g_vMouseBrushRadius", &m_mouseBrushRadius, sizeof(_float));
+	m_pVIBufferCom->SetUp_ValueOnShader("g_vMouseBrushRadius", &m_mouseBrushRadius, sizeof(_int));
 
 	m_pVIBufferCom->Render(0);
 

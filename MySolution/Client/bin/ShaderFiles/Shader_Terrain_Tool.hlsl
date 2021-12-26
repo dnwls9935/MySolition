@@ -21,7 +21,7 @@ cbuffer MouseDesc
 {
 	vector		g_vMousePosition;
 	int			g_vMouseBrushType;
-	float		g_vMouseBrushRadius;
+	int			g_vMouseBrushRadius;
 };
 
 cbuffer LightDesc
@@ -96,7 +96,47 @@ VS_OUT VS_MAIN(VS_IN In)
 	Out.vMousePos = vMouseWorldPosition;
 
 	return Out;
-}
+};
+
+
+struct RANGE_IN
+{
+	float4		vWorldPos	: WORLDPOS;
+	float4		vMousePos	: MOUSEPOS;
+};
+
+
+vector SelectRange(RANGE_IN In) {
+	vector color = (vector)0;
+
+	if (g_vMouseBrushType == 1)
+	{
+		float x = In.vMousePos.x - In.vWorldPos.x;
+		float z = In.vMousePos.z - In.vWorldPos.z;
+
+		int dist = sqrt(x * x + z * z);
+
+		if (g_vMouseBrushRadius > dist
+			)
+		{
+			color = vector(1.f, 1.f, 0.f, 1.f);
+		}
+	}
+	else if (g_vMouseBrushType == 2)
+	{
+		if (In.vWorldPos.x >= (In.vMousePos.x - g_vMouseBrushRadius) &&
+			In.vWorldPos.x <= (In.vMousePos.x + g_vMouseBrushRadius) &&
+			In.vWorldPos.z >= (In.vMousePos.z - g_vMouseBrushRadius) &&
+			In.vWorldPos.z <= (In.vMousePos.z + g_vMouseBrushRadius)
+			)
+		{
+			color = vector(1.f, 1.f, 0.f, 1.f);
+		}
+	}
+
+	return color;
+};
+
 
 struct PS_IN
 {
@@ -116,6 +156,7 @@ struct PS_OUT
 PS_OUT PS_MAIN(PS_IN In)
 {
 	PS_OUT		Out = (PS_OUT)0;
+	RANGE_IN	RANGEIN = (RANGE_IN)0;
 
 	vector	vSourDiffuse = g_DiffuseSourTexture.Sample(DefaultSampler, In.vTexUV * 10.f);
 	vector	vDestDiffuse = g_DiffuseDestTexture.Sample(DefaultSampler, In.vTexUV * 20.f);
@@ -132,22 +173,16 @@ PS_OUT PS_MAIN(PS_IN In)
 
 	vector vDiffuse = vSourDiffuse * vFilterColor.r + vDestDiffuse * (1.f - vFilterColor.r) + vBrushColor;
 
+
+	RANGEIN.vWorldPos = In.vWorldPos;
+	RANGEIN.vMousePos = In.vMousePos;
+
+
 	Out.vColor = (g_vLightDiffuse * vDiffuse) * saturate(In.fShade + (g_vLightAmbient * g_vMtrlAmbient))
-		+ (g_vLightSpecular * g_vMtrlSpecular) * In.fSpecular;
-
-	if ((g_vMouseBrushType != 0) &&
-		(In.vWorldPos.x >= (In.vMousePos.x - g_vMouseBrushRadius) && In.vWorldPos.x <= (In.vMousePos.x + g_vMouseBrushRadius) &&
-		In.vWorldPos.z >= (In.vMousePos.z - g_vMouseBrushRadius) && In.vWorldPos.z <= (In.vMousePos.z + g_vMouseBrushRadius))
-		)
-	{
-		Out.vColor = vector(0.f, 1.f, 0.f, 1.f);
-	}
-
+		+ (g_vLightSpecular * g_vMtrlSpecular) * In.fSpecular + SelectRange(RANGEIN);
 
 	return Out;
-}
-
-
+};
 
 
 technique11			DefaultTechnique
@@ -162,7 +197,7 @@ technique11			DefaultTechnique
 		GeometryShader = NULL;
 		PixelShader = compile ps_5_0  PS_MAIN();
 	}
-}
+};
 
 
 
