@@ -38,8 +38,6 @@ public:
 	HRESULT		RenderEnd();
 	HRESULT		ReadyProtoAll();	
 
-	HRESULT		SetTerrain(const _tchar* _shader, _uint _x, _uint _z, const _tchar* _heightMap);
-
 private:
 	HRESULT	ReadyLayer();
 	HRESULT	ReadyTexture();

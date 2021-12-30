@@ -30,6 +30,10 @@ void TapMap::DoDataExchange(CDataExchange* pDX)
 	DDX_Radio(pDX, IDC_RADIO1, m_radioValue);
 	DDX_Text(pDX, IDC_EDIT2, m_brushRadius);
 	DDX_Control(pDX, IDC_EDIT2, m_BrushRadiusText);
+	DDX_Control(pDX, IDC_CHECK1, m_CullMode);
+	DDX_Control(pDX, IDC_LIST1, m_objectListBox);
+	DDX_Control(pDX, IDC_CHECK2, m_BatchObject);
+	DDX_Control(pDX, IDC_CHECK3, m_Modify);
 }
 
 
@@ -37,6 +41,8 @@ BEGIN_MESSAGE_MAP(TapMap, CDialogEx)
 	ON_WM_CREATE()
 	ON_CONTROL_RANGE(BN_CLICKED, IDC_RADIO1, IDC_RADIO3, &TapMap::OnBnClieckRadio)
 	ON_EN_CHANGE(IDC_EDIT2, &TapMap::OnEnChangeRadius)
+	ON_BN_CLICKED(IDC_CHECK2, &TapMap::OnBnClickedCheck2)
+	ON_BN_CLICKED(IDC_CHECK3, &TapMap::OnBnClickedCheck3)
 END_MESSAGE_MAP()
 
 
@@ -87,7 +93,28 @@ void TapMap::OnEnChangeRadius()
 	// 이 알림 메시지를 보내지 않습니다.
 
 	// TODO:  여기에 컨트롤 알림 처리기 코드를 추가합니다.
+
+
+	
 	CString str;
 	m_BrushRadiusText.GetWindowTextW(str);
 	m_brushRadius = _ttoi(str);
+}
+
+
+void TapMap::OnBnClickedCheck2()
+{
+	if (m_BatchObject.GetCheck()) {
+		m_Modify.SetCheck(FALSE);
+	}
+	Invalidate(FALSE);
+}
+
+
+void TapMap::OnBnClickedCheck3()
+{
+	if (m_Modify.GetCheck()) {
+		m_BatchObject.SetCheck(FALSE);
+	}
+	Invalidate(FALSE);
 }

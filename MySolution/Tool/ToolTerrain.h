@@ -10,6 +10,8 @@ class CVIBuffer_Terrain;
 END
 class ToolTerrain final : public CGameObject
 {
+public:
+	enum class RENDER_ID { DEFAULT, WIREFRAME, RENDER_ID_END };
 private:
 	explicit ToolTerrain(ID3D11Device* _dx11Device, ID3D11DeviceContext* _dx11DeviceContext);
 	explicit ToolTerrain(const ToolTerrain& rhs);
@@ -23,7 +25,8 @@ public:
 	virtual HRESULT Render();
 
 private:
-	_int		PickUpOnTerrain();
+	void			PickHeightTerrain(_double _timeDelta);
+	void			BatchingObject(_double _timeDelta);
 	_fvector		CalcMousePos();
 
 private:
@@ -35,6 +38,13 @@ private:
 	_float4					m_mousePos;
 	_int					m_mouseBrushType;
 	_int					m_mouseBrushRadius;
+
+	RENDER_ID				m_RenderID = RENDER_ID::DEFAULT;
+
+
+	class CMainFrame* m_mainFrm = nullptr;
+	class Form* m_form = nullptr;
+
 
 private:
 	virtual HRESULT SetUp_Components();

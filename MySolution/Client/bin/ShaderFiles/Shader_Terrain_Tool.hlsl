@@ -116,8 +116,7 @@ vector SelectRange(RANGE_IN In) {
 
 		int dist = sqrt(x * x + z * z);
 
-		if (g_vMouseBrushRadius > dist
-			)
+		if (g_vMouseBrushRadius > dist)
 		{
 			color = vector(1.f, 1.f, 0.f, 1.f);
 		}
@@ -189,6 +188,16 @@ technique11			DefaultTechnique
 {
 	pass Default
 	{
+		SetRasterizerState(CullMode_None);
+		SetDepthStencilState(ZBuffer_Default, 0);
+		SetBlendState(BlendDisable, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		PixelShader = compile ps_5_0  PS_MAIN();
+	}
+	pass FillMode_WireFrame
+	{
 		SetRasterizerState(FillMode_WireFrame);
 		SetDepthStencilState(ZBuffer_Default, 0);
 		SetBlendState(BlendDisable, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
@@ -198,7 +207,3 @@ technique11			DefaultTechnique
 		PixelShader = compile ps_5_0  PS_MAIN();
 	}
 };
-
-
-
-

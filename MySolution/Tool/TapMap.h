@@ -38,5 +38,11 @@ public:
 	int m_radioValue;
 	int m_brushRadius;
 	afx_msg void OnEnChangeRadius();
-	CEdit m_BrushRadiusText;
+	CEdit m_BrushRadiusText; 
+	CButton m_CullMode;
+	CListBox m_objectListBox;
+	CButton m_BatchObject;
+	afx_msg void OnBnClickedCheck2();
+	CButton m_Modify;
+	afx_msg void OnBnClickedCheck3();
 };

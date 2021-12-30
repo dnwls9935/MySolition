@@ -13,6 +13,7 @@ class ToolObject final : public CGameObject
 public:
 	typedef struct tagToolObjectDesc {
 		const _tchar*	m_BufferTag = TEXT("");
+		const _tchar*   m_ObjTag = TEXT("");
 		_float3			m_Position = { 0.f, 0.f, 0.f };
 	}TOOLOBJDESC;
 
@@ -28,12 +29,20 @@ public:
 	virtual _int LateTick(_double TimeDelta);
 	virtual HRESULT Render();
 
+	_bool		GetPickCheckState() { return m_PickChecking; };
+
+private:
+	void	CheckButton();
+	_bool	PickingObject();
+
 private:
 	CRenderer*				m_pRendererCom = nullptr;
 	CTransform*				m_pTransformCom = nullptr;
 	CModel*					m_pModelCom = nullptr;
 
 	TOOLOBJDESC			m_ToolObjDesc;
+	bool				m_PickChecking = FALSE;
+	_float		m_mouseSenitive = 0.05f;
 
 private:
 	virtual HRESULT SetUp_Components();

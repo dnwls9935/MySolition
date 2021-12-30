@@ -37,6 +37,8 @@ HRESULT ToolObject::NativeConstruct(void * pArg)
 	if (FAILED(SetUp_Components()))
 		return E_FAIL;
 
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(m_ToolObjDesc.m_Position.x, m_ToolObjDesc.m_Position.y, m_ToolObjDesc.m_Position.z, 1.f));
+
 	return S_OK;
 }
 
@@ -46,13 +48,32 @@ _int ToolObject::Tick(_double TimeDelta)
 
 	CMainFrame* m_mainFrm = dynamic_cast<CMainFrame*>(AfxGetApp()->GetMainWnd());
 	Form* m_form = dynamic_cast<Form*>(m_mainFrm->m_MainSpliiter.GetPane(0, 0));
-/*
-	_vector vec = { 0.f, 0.f, 0.f, 0.f };
-	XMStoreFloat3(&m_ToolObjDesc.m_Position, vec);
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION,vec);
-	???????????????????????????????????
-*/
-	
+
+	if (m_form->tapMap->m_Modify.GetCheck())
+	{
+		if (gameInstance->Get_MouseButtonState(CInput_Device::MBS_LBUTTON))
+		{
+			if (!m_PickChecking)
+			{
+				m_PickChecking = PickingObject();
+			}
+			else {
+				_long MouseMove = 0;
+				if (MouseMove = gameInstance->Get_MouseMoveState(CInput_Device::MMS_X))
+				{
+					m_pTransformCom->Rotation_Axis(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta * -MouseMove * m_mouseSenitive);
+				}
+			}
+		}
+
+		
+	}
+
+	if (gameInstance->Get_DIKeyState(DIK_ESCAPE) & 0x80)
+	{
+		m_PickChecking = FALSE;
+	}
+
 	RELEASE_INSTANCE(CGameInstance);
 
 	return _int();
@@ -77,6 +98,7 @@ HRESULT ToolObject::Render()
 	m_pModelCom->SetUp_ValueOnShader("g_WorldMatrix", &XMMatrixTranspose(m_pTransformCom->Get_WorldMatrix()), sizeof(_matrix));
 	m_pModelCom->SetUp_ValueOnShader("g_ViewMatrix", &XMMatrixTranspose(pGameInstance->Get_Transform(CPipeLine::D3DTS_VIEW)), sizeof(_matrix));
 	m_pModelCom->SetUp_ValueOnShader("g_ProjMatrix", &XMMatrixTranspose(pGameInstance->Get_Transform(CPipeLine::D3DTS_PROJECTION)), sizeof(_matrix));
+	m_pModelCom->SetUp_ValueOnShader("g_PickModel", &m_PickChecking, sizeof(_bool));
 
 	if (FAILED(m_pModelCom->Bind_Buffers()))
 		return E_FAIL;
@@ -92,6 +114,49 @@ HRESULT ToolObject::Render()
 	RELEASE_INSTANCE(CGameInstance);
 
 	return S_OK;
+}
+
+void ToolObject::CheckButton()
+{
+	m_PickChecking = TRUE;
+}
+
+_bool ToolObject::PickingObject()
+{
+	CGameInstance* gameInstance = GET_INSTANCE(CGameInstance);
+	Calculator::CALCDESC calDesc;
+	ZeroMemory(&calDesc, sizeof(calDesc));
+	calDesc._hWnd = g_hWnd;
+	calDesc._width = g_WIN_WIDHT;
+	calDesc._height = g_WIN_HEIGHT;
+	calDesc._transformCom = m_pTransformCom;
+	calDesc._rayPos = { 0.f, 0.f, 0.f, 0.f };
+	calDesc._rayDir = { 0.f, 0.f, 0.f, 0.f };
+
+	gameInstance->CalcMousePos(&calDesc);
+
+	_vector pPos = calDesc._rayPos;
+	_vector pDir = calDesc._rayDir;
+
+	VTXMESH*	modelVtxPos = (VTXMESH*)m_pModelCom->GetVertices();
+	_uint		modelVtxCount = m_pModelCom->GetNumVertices();
+	_float		dist;
+
+	for (_uint i = 0; i < modelVtxCount; i++)
+	{
+		_vector vec1 = XMLoadFloat3(&modelVtxPos[i].vPosition);
+		i++;
+		_vector vec2 = XMLoadFloat3(&modelVtxPos[i].vPosition);
+		i++;
+		_vector vec3 = XMLoadFloat3(&modelVtxPos[i].vPosition);
+
+		if (TriangleTests::Intersects(pPos, pDir, vec1, vec2, vec3, dist))
+		{
+			return TRUE;
+		}
+	}
+	RELEASE_INSTANCE(CGameInstance);
+	return FALSE;
 }
 
 HRESULT ToolObject::SetUp_Components()

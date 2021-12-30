@@ -255,6 +255,11 @@ _byte CGameInstance::Get_MouseButtonState(CInput_Device::MOUSEBUTTONSTATE eButto
 	return m_pInput_Device->Get_MouseButtonState(eButtonState);
 }
 
+void CGameInstance::CalcMousePos(Calculator::CALCDESC* _calDesc)
+{
+	Calculator::CalcMousePos(_calDesc);
+}
+
 void CGameInstance::Release_Engine()
 {
 

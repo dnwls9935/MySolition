@@ -7,6 +7,7 @@
 #include "ToolView.h"
 #include "Form.h"
 #include "TapMap.h"
+#include "ToolObject.h"
 
 ToolTerrain::ToolTerrain(ID3D11Device * _dx11Device, ID3D11DeviceContext * _dx11DeviceContext)
 	: CGameObject(_dx11Device, _dx11DeviceContext)
@@ -34,6 +35,9 @@ HRESULT ToolTerrain::NativeConstruct(void * pArg)
 	if (FAILED(SetUp_Components()))
 		return E_FAIL;
 
+	m_mainFrm = dynamic_cast<CMainFrame*>(AfxGetApp()->GetMainWnd());
+	m_form = dynamic_cast<Form*>(m_mainFrm->m_MainSpliiter.GetPane(0, 0));
+
 	return S_OK;
 }
 
@@ -42,23 +46,18 @@ _int ToolTerrain::Tick(_double TimeDelta)
 	if (FAILED(__super::Tick(TimeDelta)))
 		return -1;
 
-	CGameInstance* gameInstance = GET_INSTANCE(CGameInstance);
 
-	CMainFrame* m_mainFrm = dynamic_cast<CMainFrame*>(AfxGetApp()->GetMainWnd());
-	Form* m_form = dynamic_cast<Form*>(m_mainFrm->m_MainSpliiter.GetPane(0, 0));
-
-	m_mouseBrushType = m_form->tapMap->m_radioValue;
-	m_mouseBrushRadius = m_form->tapMap->m_brushRadius;
-
-	if (0 != m_mouseBrushType)
+	if (m_form->tapMap->m_BatchObject.GetCheck())
 	{
-		XMStoreFloat4(&m_mousePos, CalcMousePos());
-		if (gameInstance->Get_MouseButtonState(CInput_Device::MBS_LBUTTON))
-		{
-			m_pVIBufferCom->SetVerticeY(m_mousePos, 2.f * TimeDelta, m_mouseBrushRadius);
-		}
+		BatchingObject(TimeDelta);
 	}
-	RELEASE_INSTANCE(CGameInstance);
+	else {
+		m_mouseBrushType = m_form->tapMap->m_radioValue;
+		if (0 != m_mouseBrushType)
+			PickHeightTerrain(TimeDelta);
+	}
+
+	m_RenderID = (RENDER_ID)m_form->tapMap->m_CullMode.GetCheck();
 
 	return _int();
 }
@@ -95,142 +94,87 @@ HRESULT ToolTerrain::Render()
 	m_pVIBufferCom->SetUp_ValueOnShader("g_vMouseBrushType", &m_mouseBrushType, sizeof(_int));
 	m_pVIBufferCom->SetUp_ValueOnShader("g_vMouseBrushRadius", &m_mouseBrushRadius, sizeof(_int));
 
-	m_pVIBufferCom->Render(0);
+	m_pVIBufferCom->Render((_uint)m_RenderID);
 
 	RELEASE_INSTANCE(CGameInstance);
 
 	return S_OK;
 }
 
-
-_int ToolTerrain::PickUpOnTerrain()
+void ToolTerrain::PickHeightTerrain(_double TimeDelta)
 {
-	POINT	pt = {};
-	GetCursorPos(&pt);
-	ScreenToClient(g_hWnd, &pt);
-
-	// 마우스 포스 가져옴(window 기준)
-	_float3			mousePos;
-	mousePos.x = pt.x / (g_WIN_WIDHT * 0.5f)- 1.f;
-	mousePos.y = pt.y / -(g_WIN_HEIGHT * 0.5f) + 1.f;
-	mousePos.z = 0.f;
-
 	CGameInstance* gameInstance = GET_INSTANCE(CGameInstance);
 
-	// 투영에서 뷰 스페이스로 다운
-	_fmatrix projMat = gameInstance->Get_Transform(CPipeLine::D3DTS_PROJECTION);
-	_matrix projMatInv = XMMatrixInverse(nullptr, projMat);
+	m_mouseBrushRadius = m_form->tapMap->m_brushRadius;
 
-	_vector viewMousePos = XMVector3TransformCoord(XMLoadFloat3(&mousePos), projMatInv);
-
-	// 뷰에서 월드로 다운
-	_vector RayPos, RayDir;
-	RayPos = XMVectorSet(0.f, 0.f, 0.f, 0.f);
-	RayDir = viewMousePos - RayPos;
-
-	_fmatrix viewMat = gameInstance->Get_Transform(CPipeLine::D3DTS_VIEW);
-	_matrix viewMatInv = XMMatrixInverse(nullptr, viewMat);
-
-	RayPos = XMVector3TransformCoord(RayPos, viewMatInv);
-	RayDir = XMVector3TransformNormal(RayDir, viewMatInv);
-	
-	// 월드에서 뷰로 다운
-	_fmatrix worldMatInv = m_pTransformCom->Get_WorldMatrixInverse();
-	//
-	RayPos = XMVector3TransformCoord(RayPos, worldMatInv);
-	RayDir = XMVector3TransformNormal(RayDir, worldMatInv);
-	RayDir = XMVector3Normalize(RayDir);
-
-	RELEASE_INSTANCE(CGameInstance);
-
-	_ulong		dwCntX = m_pVIBufferCom->GetVerticesX();
-	_ulong		dwCntZ = m_pVIBufferCom->GetVerticesZ();
-	VTXNORTEX*	terrainVtxPos = (VTXNORTEX*)m_pVIBufferCom->GetVertices();
-
-	_ulong	dwVtxIdx[3];
-	_float	dist;
-
-	for (_ulong i = 0; i < dwCntZ - 1; i++)
+	XMStoreFloat4(&m_mousePos, CalcMousePos());
+	if ((gameInstance->Get_MouseButtonState(CInput_Device::MBS_LBUTTON)) &&
+		(gameInstance->Get_DIKeyState(DIK_LSHIFT) & 0x80))
 	{
-		for (_ulong j = 0; j < dwCntX - 1; j++)
-		{
-			_ulong	dwIdx = i * dwCntX + j;
+		m_pVIBufferCom->SetVerticeY(m_mousePos, -2.f * TimeDelta, m_mouseBrushRadius, m_mouseBrushType);
+	}
+	else if (gameInstance->Get_MouseButtonState(CInput_Device::MBS_LBUTTON)) {
+		m_pVIBufferCom->SetVerticeY(m_mousePos, 2.f * TimeDelta, m_mouseBrushRadius, m_mouseBrushType);
+	}
+	RELEASE_INSTANCE(CGameInstance);
+}
 
-			dwVtxIdx[0] = dwIdx + dwCntX;
-			dwVtxIdx[1] = dwIdx + dwCntX + 1;
-			dwVtxIdx[2] = dwIdx + 1;
+void ToolTerrain::BatchingObject(_double _timeDelta)
+{
+	CGameInstance* gameInstance = GET_INSTANCE(CGameInstance);
+	_uint count = m_form->tapMap->m_objectListBox.GetCount();
+	_uint focus = m_form->tapMap->m_objectListBox.GetCurSel();
 
-			if (TriangleTests::Intersects(RayPos, RayDir,
-				XMLoadFloat3(&terrainVtxPos[dwVtxIdx[0]].vPosition),
-				XMLoadFloat3(&terrainVtxPos[dwVtxIdx[1]].vPosition),
-				XMLoadFloat3(&terrainVtxPos[dwVtxIdx[2]].vPosition),
-				dist)
-				)
-			{
-				//cout << (dwIdx * 2) + 1 << endl;
-				return dwIdx;
-			}
+	if (gameInstance->Get_MouseButtonState(CInput_Device::MBS_LBUTTON) &&
+		count >= focus)
+	{
+		_vector calcVec = CalcMousePos();
+		_bool b = XMVector4Equal(_vector{ 0.f,0.f,0.f,0.f }, calcVec);
+		if (b)
+			return;
 
-			dwVtxIdx[0] = dwIdx + dwCntX;
-			dwVtxIdx[1] = dwIdx + 1;
-			dwVtxIdx[2] = dwIdx;
+		XMStoreFloat4(&m_mousePos, calcVec);
 
-			if (TriangleTests::Intersects(RayPos, RayDir,
-				XMLoadFloat3(&terrainVtxPos[dwVtxIdx[0]].vPosition),
-				XMLoadFloat3(&terrainVtxPos[dwVtxIdx[1]].vPosition),
-				XMLoadFloat3(&terrainVtxPos[dwVtxIdx[2]].vPosition),
-				dist)
-				)
-			{
-				//cout << (dwIdx * 2)<< endl;
-				return dwIdx;
-			}
+		CString str = TEXT("");
+		m_form->tapMap->m_objectListBox.GetText(focus, str);
 
-		}
+		ToolObject::TOOLOBJDESC objDesc;
+
+		CString componentText = TEXT("Prototype_Component_Model_");
+		componentText += str;
+		objDesc.m_BufferTag = componentText;
+
+		CString gameObjectText = TEXT("Prototype_GameObject_Model_");
+		gameObjectText += str;
+		objDesc.m_ObjTag = gameObjectText;
+
+		objDesc.m_Position = { m_mousePos.x, m_mousePos.y, m_mousePos.z };
+		gameInstance->Add_GameObjectToLayer(1, TEXT("Object"), objDesc.m_ObjTag, &objDesc);
 	}
 
-	return 0;
+	RELEASE_INSTANCE(CGameInstance);
 }
 
 _fvector ToolTerrain::CalcMousePos()
 {
-	POINT	pt = {};
-	GetCursorPos(&pt);
-	ScreenToClient(g_hWnd, &pt);
-
-	// 마우스 포스 가져옴(window 기준)
-	_float3			mousePos;
-	mousePos.x = pt.x / (g_WIN_WIDHT * 0.5f) - 1.f;
-	mousePos.y = pt.y / -(g_WIN_HEIGHT * 0.5f) + 1.f;
-	mousePos.z = 0.f;
-
+	
 	CGameInstance* gameInstance = GET_INSTANCE(CGameInstance);
+	Calculator::CALCDESC calDesc;
+	ZeroMemory(&calDesc, sizeof(calDesc));
+	calDesc._hWnd = g_hWnd;
+	calDesc._width = g_WIN_WIDHT;
+	calDesc._height = g_WIN_HEIGHT;
+	calDesc._transformCom = m_pTransformCom;
+	calDesc._rayPos = { 0.f, 0.f, 0.f, 0.f };
+	calDesc._rayDir = { 0.f, 0.f, 0.f, 0.f };
 
-	// 투영에서 뷰 스페이스로 다운
-	_fmatrix projMat = gameInstance->Get_Transform(CPipeLine::D3DTS_PROJECTION);
-	_matrix projMatInv = XMMatrixInverse(nullptr, projMat);
+	gameInstance->CalcMousePos(&calDesc);
 
-	_vector viewMousePos = XMVector3TransformCoord(XMLoadFloat3(&mousePos), projMatInv);
-
-	// 뷰에서 월드로 다운
-	_vector RayPos, RayDir;
-	RayPos = XMVectorSet(0.f, 0.f, 0.f, 0.f);
-	RayDir = viewMousePos - RayPos;
-
-	_fmatrix viewMat = gameInstance->Get_Transform(CPipeLine::D3DTS_VIEW);
-	_matrix viewMatInv = XMMatrixInverse(nullptr, viewMat);
-
-	RayPos = XMVector3TransformCoord(RayPos, viewMatInv);
-	RayDir = XMVector3TransformNormal(RayDir, viewMatInv);
-
-	// 월드에서 뷰로 다운
-	_fmatrix worldMatInv = m_pTransformCom->Get_WorldMatrixInverse();
-	//
-	RayPos = XMVector3TransformCoord(RayPos, worldMatInv);
-	RayDir = XMVector3TransformNormal(RayDir, worldMatInv);
-	RayDir = XMVector3Normalize(RayDir);
-
-	RELEASE_INSTANCE(CGameInstance);
+	_vector pPos = calDesc._rayPos;
+	_vector pDir = calDesc._rayDir;
+/*
+	_vector pPos = RayPos;
+	_vector pDir = RayDir;*/
 
 	_ulong		dwCntX = m_pVIBufferCom->GetVerticesX();
 	_ulong		dwCntZ = m_pVIBufferCom->GetVerticesZ();
@@ -249,14 +193,14 @@ _fvector ToolTerrain::CalcMousePos()
 			dwVtxIdx[1] = dwIdx + dwCntX + 1;
 			dwVtxIdx[2] = dwIdx + 1;
 
-			if (TriangleTests::Intersects(RayPos, RayDir,
+			if (TriangleTests::Intersects(pPos, pDir,
 				XMLoadFloat3(&terrainVtxPos[dwVtxIdx[0]].vPosition),
 				XMLoadFloat3(&terrainVtxPos[dwVtxIdx[1]].vPosition),
 				XMLoadFloat3(&terrainVtxPos[dwVtxIdx[2]].vPosition),
 				dist)
 				)
 			{
-				_vector revec = RayPos + RayDir * dist;
+				_vector revec = pPos + pDir* dist;
 				return revec;
 			}
 
@@ -264,20 +208,21 @@ _fvector ToolTerrain::CalcMousePos()
 			dwVtxIdx[1] = dwIdx + 1;
 			dwVtxIdx[2] = dwIdx;
 
-			if (TriangleTests::Intersects(RayPos, RayDir,
+			if (TriangleTests::Intersects(pPos, pDir,
 				XMLoadFloat3(&terrainVtxPos[dwVtxIdx[0]].vPosition),
 				XMLoadFloat3(&terrainVtxPos[dwVtxIdx[1]].vPosition),
 				XMLoadFloat3(&terrainVtxPos[dwVtxIdx[2]].vPosition),
 				dist)
 				)
 			{
-				_vector revec = RayPos + RayDir * dist;
+				_vector revec = pPos + pDir* dist;
 				return revec;
 			}
 
 		}
 	}
 
+	RELEASE_INSTANCE(CGameInstance);
 	return XMVectorSet(0.f, 0.f, 0.f, 0.f);
 }
 

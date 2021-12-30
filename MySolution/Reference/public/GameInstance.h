@@ -7,6 +7,7 @@
 #include "Object_Manager.h"
 #include "Component_Manager.h"
 #include "PipeLine.h"
+#include "Calculator.h"
 
 BEGIN(Engine)
 
@@ -58,6 +59,9 @@ public: /* for.Input_Device */
 	_byte Get_DIKeyState(_ubyte byKeyID) const;
 	_long Get_MouseMoveState(CInput_Device::MOUSEMOVESTATE eMoveState) const;
 	_byte Get_MouseButtonState(CInput_Device::MOUSEBUTTONSTATE eButtonState) const;
+
+public: /* For.Calculator */
+	void		CalcMousePos(Calculator::CALCDESC* _calDesc);
 	
 private:
 	CGraphic_Device*			m_pGraphic_Device = nullptr;		

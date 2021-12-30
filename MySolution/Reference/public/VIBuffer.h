@@ -22,6 +22,7 @@ public:
 	virtual HRESULT Render(_uint iPassIndex);
 
 	void*	GetVertices() { return m_pVertices; };
+	_uint	GetNumVertices() { return m_iNumVertices; };
 
 public:
 	HRESULT SetUp_ValueOnShader(const char* pConstantName, void* pData, _uint iSize);
