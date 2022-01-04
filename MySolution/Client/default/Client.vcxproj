@@ -210,6 +210,7 @@
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\bin\ShaderFiles\Shader_Cube.hlsl" />
+    <FxCompile Include="..\bin\ShaderFiles\Shader_Line.hlsl" />
     <FxCompile Include="..\bin\ShaderFiles\Shader_Mesh.hlsl" />
     <FxCompile Include="..\bin\ShaderFiles\Shader_Mesh_Tool.hlsl" />
     <FxCompile Include="..\bin\ShaderFiles\Shader_Rect.hlsl" />

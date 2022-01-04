@@ -95,18 +95,53 @@ HRESULT CToolView::ReadyProtoAll()
 		return E_FAIL;
 	if (FAILED(gameInstance->Add_Prototype(0, TEXT("ProtoType_Component_VIBuffer_Rect"), CVIBuffer_Rect::Create(dx11Device, dx11DeviceContext, TEXT("../Client/Bin/ShaderFiles/Shader_Rect.hlsl")))))
 		return E_FAIL;
+	/*if (FAILED(gameInstance->Add_Prototype(0, TEXT("ProtoType_Component_VIBuffer_Line"), CVIBuffer_ThreeWaySystem::Create(dx11Device, dx11DeviceContext, TEXT("../Client/Bin/ShaderFiles/Shader_Line.hlsl")))))
+		return E_FAIL;*/
 	if (FAILED(ReadyTexture()))
 		return E_FAIL;
 
 	_matrix		pivotMat;
-	pivotMat = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationX(XMConvertToRadians(90.0f)) * XMMatrixRotationY(XMConvertToRadians(180.0f));
-	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Model_HyperionChest"), CModel::Create(dx11Device, dx11DeviceContext, "../Client/Bin/Resources/Meshes/Kaelthas/", "HyperionChest.FBX", TEXT("../Client/Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), pivotMat))))
+	CModel::MODELDESC pModelDesc;
+	ZeroMemory(&pModelDesc, sizeof(pModelDesc));
+
+	pModelDesc.mMeshFileName = "HyperionChest.FBX";
+	pModelDesc.mMeshFilePath = "../Client/Bin/Resources/Meshes/Kaelthas/";
+	pModelDesc.mPivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationX(XMConvertToRadians(90.0f)) * XMMatrixRotationY(XMConvertToRadians(180.0f));
+	pModelDesc.mShaderFilePath = TEXT("../Client/Bin/ShaderFiles/Shader_Mesh_Tool.hlsl");
+	pModelDesc.mMeshType = CModel::TYPE::TYPE_STATIC;
+	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Model_HyperionChest"), CModel::Create(dx11Device, dx11DeviceContext, pModelDesc))))
 		return E_FAIL;
-	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Model_HandsomeJack"), CModel::Create(dx11Device, dx11DeviceContext, "../Client/Bin/Resources/Meshes/Kaelthas/", "HandsomeJack.FBX", TEXT("../Client/Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), pivotMat))))
+
+	pModelDesc.mMeshFileName = "HandsomeJack.FBX";
+	pModelDesc.mMeshFilePath = "../Client/Bin/Resources/Meshes/Kaelthas/";
+	pModelDesc.mPivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationX(XMConvertToRadians(90.0f)) * XMMatrixRotationY(XMConvertToRadians(180.0f));
+	pModelDesc.mShaderFilePath = TEXT("../Client/Bin/ShaderFiles/Shader_Mesh_Tool.hlsl");
+	pModelDesc.mMeshType = CModel::TYPE::TYPE_STATIC;
+	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Model_HandsomeJack"), CModel::Create(dx11Device, dx11DeviceContext, pModelDesc))))
 		return E_FAIL;
-	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Model_HandsomeJackGoldlStatue"), CModel::Create(dx11Device, dx11DeviceContext, "../Client/Bin/Resources/Meshes/Kaelthas/", "HandsomeJackGoldlStatue.FBX", TEXT("../Client/Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), pivotMat))))
+
+	pModelDesc.mMeshFileName = "HandsomeJackGoldlStatue.FBX";
+	pModelDesc.mMeshFilePath = "../Client/Bin/Resources/Meshes/Kaelthas/";
+	pModelDesc.mPivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationX(XMConvertToRadians(90.0f)) * XMMatrixRotationY(XMConvertToRadians(180.0f));
+	pModelDesc.mShaderFilePath = TEXT("../Client/Bin/ShaderFiles/Shader_Mesh_Tool.hlsl");
+	pModelDesc.mMeshType = CModel::TYPE::TYPE_STATIC;
+	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Model_HandsomeJackGoldlStatue"), CModel::Create(dx11Device, dx11DeviceContext, pModelDesc))))
 		return E_FAIL;
-	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Model_Kaelthas"), CModel::Create(dx11Device, dx11DeviceContext, "../Client/Bin/Resources/Meshes/Kaelthas/", "Kaelthas.FBX", TEXT("../Client/Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), pivotMat))))
+
+	pModelDesc.mMeshFileName = "Kaelthas.FBX";
+	pModelDesc.mMeshFilePath = "../Client/Bin/Resources/Meshes/Kaelthas/";
+	pModelDesc.mPivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationX(XMConvertToRadians(90.0f)) * XMMatrixRotationY(XMConvertToRadians(180.0f));
+	pModelDesc.mShaderFilePath = TEXT("../Client/Bin/ShaderFiles/Shader_Mesh_Tool.hlsl");
+	pModelDesc.mMeshType = CModel::TYPE::TYPE_DYNAMIC;
+	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Model_Kaelthas"), CModel::Create(dx11Device, dx11DeviceContext, pModelDesc))))
+		return E_FAIL;
+
+	pModelDesc.mMeshFileName = "UltraLisk.FBX";
+	pModelDesc.mMeshFilePath = "../Client/Bin/Resources/Meshes/Kaelthas/";
+	pModelDesc.mPivotMatrix = XMMatrixScaling(1.f, 1.f, 1.f) * XMMatrixRotationX(XMConvertToRadians(90.0f)) * XMMatrixRotationY(XMConvertToRadians(180.0f));
+	pModelDesc.mShaderFilePath = TEXT("../Client/Bin/ShaderFiles/Shader_Mesh_Tool.hlsl");
+	pModelDesc.mMeshType = CModel::TYPE::TYPE_STATIC;
+	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Model_UltraLisk"), CModel::Create(dx11Device, dx11DeviceContext, pModelDesc))))
 		return E_FAIL;
 
 
@@ -123,6 +158,8 @@ HRESULT CToolView::ReadyProtoAll()
 	if (FAILED(gameInstance->Add_Prototype(TEXT("Prototype_GameObject_Model_HandsomeJackGoldlStatue"), ToolObject::Create(dx11Device, dx11DeviceContext))))
 		return E_FAIL;
 	if (FAILED(gameInstance->Add_Prototype(TEXT("Prototype_GameObject_Model_Kaelthas"), ToolObject::Create(dx11Device, dx11DeviceContext))))
+		return E_FAIL;
+	if (FAILED(gameInstance->Add_Prototype(TEXT("Prototype_Component_Model_UltraLisk"), ToolObject::Create(dx11Device, dx11DeviceContext))))
 		return E_FAIL;
 
 	return S_OK;
@@ -357,7 +394,15 @@ HRESULT CToolView::ReadyObjectLayer(const _tchar * _layerTag)
 	objDesc.m_Position = { 0.f,0.f,0.f};
 	if (FAILED(gameInstance->Add_GameObjectToLayer(1, _layerTag, objDesc.m_ObjTag, &objDesc)))
 		return E_FAIL;
+
 	m_form->tapMap->m_objectListBox.AddString(TEXT("Kaelthas"));
+
+	objDesc.m_BufferTag = TEXT("Prototype_Component_Model_UltraLisk");
+	objDesc.m_ObjTag = TEXT("Prototype_Component_Model_UltraLisk");
+	objDesc.m_Position = { 0.f,0.f,0.f };
+	if (FAILED(gameInstance->Add_GameObjectToLayer(1, _layerTag, objDesc.m_ObjTag, &objDesc)))
+		return E_FAIL;
+	m_form->tapMap->m_objectListBox.AddString(TEXT("UltraLisk"));
 	
 	return S_OK;
 }

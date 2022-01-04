@@ -1,6 +1,9 @@
 #include "..\public\Model.h"
 #include "MeshContainer.h"
 #include "Texture.h"
+#include "HierarchyNode.h"
+#include "Animation.h"
+#include "Channel.h"
 
 
 CModel::CModel(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
@@ -27,15 +30,16 @@ CModel::CModel(const CModel & rhs)
 	}
 }
 
-HRESULT CModel::NativeConstruct_Prototype(const char * pMeshFilePath, const char * pMeshFileName, const _tchar* pShaderFilePath, _fmatrix PivotMatrix)
+HRESULT CModel::NativeConstruct_Prototype(MODELDESC _modelDesc)
 {
-	XMStoreFloat4x4(&m_PivotMatrix, PivotMatrix);
-
-	strcpy_s(m_szMeshFilePath, pMeshFilePath);
+	XMStoreFloat4x4(&m_PivotMatrix, _modelDesc.mPivotMatrix);
+	m_Type = _modelDesc.mMeshType;
+	
+	strcpy_s(m_szMeshFilePath, _modelDesc.mMeshFilePath);
 
 	char		szFullPath[MAX_PATH] = "";
-	strcpy_s(szFullPath, pMeshFilePath);
-	strcat_s(szFullPath, pMeshFileName);
+	strcpy_s(szFullPath, _modelDesc.mMeshFilePath);
+	strcat_s(szFullPath, _modelDesc.mMeshFileName);
 
 	m_pScene = m_Importer.ReadFile(szFullPath, aiProcess_ConvertToLeftHanded | aiProcess_Triangulate | aiProcess_CalcTangentSpace);
 	if (nullptr == m_pScene)
@@ -50,10 +54,31 @@ HRESULT CModel::NativeConstruct_Prototype(const char * pMeshFilePath, const char
 	if (FAILED(Create_Materials()))
 		return E_FAIL;
 
+	if (FAILED(Compile_Shader(_modelDesc.mShaderFilePath)))
+		return E_FAIL;
+
+	if (TYPE::TYPE_STATIC == m_Type)
+	{
+		if (FAILED(Create_VertexIndexBuffer()))
+			return E_FAIL;
+
+		return S_OK;
+	}
+
+	if (FAILED(Create_HierachyNode(m_pScene->mRootNode)))
+		return E_FAIL;
+
+	sort(m_HierarchyNodes.begin(), m_HierarchyNodes.end(), [](HierarchyNode* _sour, HierarchyNode* _dest) {
+		return _sour->GetDepth() < _dest->GetDepth();
+	});
+
+	if (FAILED(Create_SkinnedDesc()))
+		return E_FAIL;
+
 	if (FAILED(Create_VertexIndexBuffer()))
 		return E_FAIL;
 
-	if (FAILED(Compile_Shader(pShaderFilePath)))
+	if (FAILED(Create_Animation()))
 		return E_FAIL;
 
 	return S_OK;
@@ -66,7 +91,7 @@ HRESULT CModel::NatvieConstruct(void * pArg)
 
 HRESULT CModel::SetUp_TextureOnShader(const char * pConstantName, _uint iMeshContainerIndex, aiTextureType eType)
 {
-	if (FAILED(__super::SetUp_TextureOnShader(pConstantName, m_Materials[m_MeshContainers[iMeshContainerIndex]->Get_MaterialIndex()]->pMeshTexture[eType])))
+	if (FAILED(__super::SetUp_TextureOnShader(pConstantName, m_Materials[m_MeshContainers[iMeshContainerIndex]->GetMeshDesc().iMaterialIndex]->pMeshTexture[eType])))
 		return E_FAIL;
 
 	return S_OK;
@@ -93,7 +118,6 @@ HRESULT CModel::Bind_Buffers()
 	m_pDeviceContext->IASetVertexBuffers(0, 1, pVertexBuffers, iStrides, iOffsets);
 	m_pDeviceContext->IASetIndexBuffer(m_pIB, m_eFormat, 0);
 	m_pDeviceContext->IASetPrimitiveTopology(m_ePrimitiveTopology);
-
 	return S_OK;
 }
 
@@ -159,7 +183,7 @@ HRESULT CModel::Create_Materials()
 
 			_tchar		szFullName[MAX_PATH] = TEXT("");
 
-			MultiByteToWideChar(CP_ACP, 0, szMeshFilePath, strlen(szMeshFilePath), szFullName, MAX_PATH);
+			MultiByteToWideChar(CP_ACP, 0, szMeshFilePath, (_int)strlen(szMeshFilePath), szFullName, MAX_PATH);
 
 			pMeshMaterial->pMeshTexture[j] = CTexture::Create(m_pDevice, m_pDeviceContext, szFullName);
 			if (nullptr == pMeshMaterial->pMeshTexture[j])
@@ -283,11 +307,151 @@ HRESULT CModel::Compile_Shader(const _tchar * pShaderFilePath)
 	return S_OK;
 }
 
-CModel * CModel::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, const char * pMeshFilePath, const char * pMeshFileName, const _tchar* pShaderFilePath, _fmatrix PivotMatrix)
+HRESULT CModel::Create_HierachyNode(aiNode * _node, HierarchyNode * _parent, _uint _depth)
+{
+	_matrix pTransformationMatrix;
+	memcpy(&pTransformationMatrix, &_node->mTransformation, sizeof(_matrix));
+
+	HierarchyNode::HIERARCHY_DESE pHierarchyNodeDesc;
+	strcpy_s(pHierarchyNodeDesc.m_BoneName, /*strlen(_node->mName.data)*/MAX_PATH, _node->mName.data);
+	memcpy(&pHierarchyNodeDesc.m_CombinedTrasformationMatrix,&pTransformationMatrix, sizeof(_matrix));
+	pHierarchyNodeDesc.m_Depth = _depth;
+	pHierarchyNodeDesc.m_Parent = _parent;
+
+	HierarchyNode* pHierarchyNode = HierarchyNode::Create(m_pDevice, m_pDeviceContext, pHierarchyNodeDesc);
+	if (nullptr == pHierarchyNode)
+		return E_FAIL;
+
+	m_HierarchyNodes.push_back(pHierarchyNode);
+
+	for (_uint i = 0; i < _node->mNumChildren; i++)
+		Create_HierachyNode(_node->mChildren[i], pHierarchyNode, _depth +1);
+
+	return S_OK;
+}
+
+HRESULT CModel::Create_SkinnedDesc()
+{
+	for (_uint i = 0; i < m_pScene->mNumMeshes; i++) 
+	{
+		aiMesh* pMesh = m_pScene->mMeshes[i];
+		CMeshContainer* pMeshContainer = m_MeshContainers[i];
+
+		for (_uint j = 0; j < pMesh->mNumBones; j++)
+		{
+			aiBone* pBone = pMesh->mBones[j];
+
+			CMeshContainer::BONEDESC* pBoneDesc = new CMeshContainer::BONEDESC;
+			
+			memcpy(&pBoneDesc->m_OffsetMatrix, &pBone->mOffsetMatrix, sizeof(_float4x4));
+			pBoneDesc->m_Node = Find_HierarchyNode(pBone->mName.data);
+			if (nullptr == pBoneDesc->m_Node)
+				return E_FAIL;
+
+			pMeshContainer->AddBoneDesc(pBoneDesc) ;
+			
+			for (_uint k = 0; k < pBone->mNumWeights; k++)
+			{
+				CMeshContainer::MESHDESC		pMeshDesc = pMeshContainer->GetMeshDesc();
+				_uint pVertexIdx = pMeshDesc.iStartVertexIndex + pBone->mWeights[k].mVertexId;
+
+				if (0.0f == ((VTXMESH*)m_pVertices)[pVertexIdx].vBlendWeight.x)
+				{
+					((VTXMESH*)m_pVertices)[pVertexIdx].vBlendIndex.x = j;
+					((VTXMESH*)m_pVertices)[pVertexIdx].vBlendWeight.x = pBone->mWeights[k].mWeight;
+				}
+				else if (0.0f == ((VTXMESH*)m_pVertices)[pVertexIdx].vBlendWeight.y)
+				{
+					((VTXMESH*)m_pVertices)[pVertexIdx].vBlendIndex.y = j;
+					((VTXMESH*)m_pVertices)[pVertexIdx].vBlendWeight.y = pBone->mWeights[k].mWeight;
+				}
+				else if (0.0f == ((VTXMESH*)m_pVertices)[pVertexIdx].vBlendWeight.z)
+				{
+					((VTXMESH*)m_pVertices)[pVertexIdx].vBlendIndex.z = j;
+					((VTXMESH*)m_pVertices)[pVertexIdx].vBlendWeight.z = pBone->mWeights[k].mWeight;
+				}
+				else if (0.0f == ((VTXMESH*)m_pVertices)[pVertexIdx].vBlendWeight.w)
+				{
+					((VTXMESH*)m_pVertices)[pVertexIdx].vBlendIndex.w = j;
+					((VTXMESH*)m_pVertices)[pVertexIdx].vBlendWeight.w = pBone->mWeights[k].mWeight;
+				}
+
+			}
+
+		}
+	}
+	return S_OK;
+}
+
+HRESULT CModel::Create_Animation()
+{
+	for (_uint i = 0; i < m_pScene->mNumAnimations; i++)
+	{
+		aiAnimation* pAiAnim = m_pScene->mAnimations[i];
+
+		Animation::ANIMDESC pAnimDesc;
+		ZeroMemory(&pAnimDesc, sizeof(pAnimDesc));
+
+		strcpy_s(pAnimDesc.m_AnimationName, pAiAnim->mName.data);
+		pAnimDesc.m_Duration = pAiAnim->mDuration;
+		pAnimDesc.m_TrackPlaySpeed = pAiAnim->mTicksPerSecond;
+
+		Animation*	pAnimation = Animation::Create(pAnimDesc);
+		if (nullptr == pAnimation)
+			return E_FAIL;
+
+		m_Animations.push_back(pAnimation);
+
+		for (_uint j = 0; j < pAiAnim->mNumChannels; j++)
+		{
+			aiNodeAnim* pAiAnimChannel = pAiAnim->mChannels[j];
+			
+			_uint pNumKeyFrames = max(pAiAnimChannel->mNumPositionKeys, pAiAnimChannel->mNumRotationKeys);
+			pNumKeyFrames = max(pNumKeyFrames, pAiAnimChannel->mNumScalingKeys);
+
+			Channel::KEYFRAME pKeyFrame;
+			ZeroMemory(&pKeyFrame, sizeof(pKeyFrame));
+
+			_double pTime = 0.0;
+
+			for (_uint k = 0; k < pNumKeyFrames; k++)
+			{
+				if (pAiAnimChannel->mNumPositionKeys > k)
+				{
+					memcpy(&pKeyFrame.m_Position, &pAiAnimChannel->mPositionKeys[k].mValue , sizeof(_float3));
+				}
+				if (pAiAnimChannel->mNumRotationKeys > k)
+				{
+					memcpy(&pKeyFrame.m_Rotation, &pAiAnimChannel->mRotationKeys[k].mValue, sizeof(_float4));
+				}
+				if (pAiAnimChannel->mNumScalingKeys > k)
+				{
+					memcpy(&pKeyFrame.m_Scale, &pAiAnimChannel->mScalingKeys[k].mValue, sizeof(_float3));
+				}
+			}
+
+		}
+	}
+	return S_OK;
+}
+
+HierarchyNode * CModel::Find_HierarchyNode(char * _name)
+{
+	auto iter = find_if(m_HierarchyNodes.begin(), m_HierarchyNodes.end(), [&](HierarchyNode* _node) {
+		return !strcmp(_node->GetBoneName(), _name);
+	});
+
+	if (m_HierarchyNodes.end() == iter)
+		return nullptr;
+
+	return (*iter);
+}
+
+CModel * CModel::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, MODELDESC _modelDesc)
 {
 	CModel*		pInstance = new CModel(pDevice, pDeviceContext);
 
-	if (FAILED(pInstance->NativeConstruct_Prototype(pMeshFilePath, pMeshFileName, pShaderFilePath, PivotMatrix)))
+	if (FAILED(pInstance->NativeConstruct_Prototype(_modelDesc)))
 	{
 		MSGBOX("Failed to Creating CModel");
 		Safe_Release(pInstance);
@@ -327,7 +491,8 @@ void CModel::Free()
 		for (_uint i = 0; i < AI_TEXTURE_TYPE_MAX; ++i)
 			Safe_Release(pMaterial->pMeshTexture[i]);
 
-		Safe_Delete(pMaterial);
+		if (false == m_isCloned)
+			Safe_Delete(pMaterial);
 	}
 
 	m_Materials.clear();

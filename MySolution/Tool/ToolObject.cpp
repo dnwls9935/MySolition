@@ -63,10 +63,17 @@ _int ToolObject::Tick(_double TimeDelta)
 				{
 					m_pTransformCom->Rotation_Axis(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta * -MouseMove * m_mouseSenitive);
 				}
+
 			}
 		}
 
-		
+		// 이거 왜 안되냐 열받네~
+		/*_long mouseCheck = 0;
+		if ((gameInstance->Get_DIKeyState(DIK_LCONTROL) & 0x80) &&
+			(mouseCheck = gameInstance->Get_MouseMoveState(CInput_Device::MMS_WHEEL)))
+		{
+			m_pTransformCom->Set_Scale(mouseCheck * 0.05f);
+		}*/
 	}
 
 	if (gameInstance->Get_DIKeyState(DIK_ESCAPE) & 0x80)
@@ -109,9 +116,10 @@ HRESULT ToolObject::Render()
 
 		m_pModelCom->Render(i, 0);
 	}
-
-
 	RELEASE_INSTANCE(CGameInstance);
+
+	if (m_PickChecking)
+		//RenderThreeWaySystem();
 
 	return S_OK;
 }
@@ -159,13 +167,25 @@ _bool ToolObject::PickingObject()
 	return FALSE;
 }
 
+void ToolObject::RenderThreeWaySystem()
+{
+	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+
+	m_pThreeWaySystem->SetUp_ValueOnShader("g_WorldMatrix", &XMMatrixTranspose(m_pTransformCom->Get_WorldMatrix()), sizeof(_matrix));
+	m_pThreeWaySystem->SetUp_ValueOnShader("g_ViewMatrix", &XMMatrixTranspose(pGameInstance->Get_Transform(CPipeLine::D3DTS_VIEW)), sizeof(_matrix));
+	m_pThreeWaySystem->SetUp_ValueOnShader("g_ProjMatrix", &XMMatrixTranspose(pGameInstance->Get_Transform(CPipeLine::D3DTS_PROJECTION)), sizeof(_matrix));
+
+	m_pThreeWaySystem->Render(0);
+
+	RELEASE_INSTANCE(CGameInstance);
+}
+
 HRESULT ToolObject::SetUp_Components()
 {
 	/* Com_Transform */
 	CTransform::TRANSFORMDESC		TransformDesc;
 	TransformDesc.fSpeedPerSec = 7.f;
 	TransformDesc.fRotationPerSec = XMConvertToRadians(90.0f);
-
 	if (FAILED(__super::SetUp_Components(0, TEXT("Prototype_Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &TransformDesc)))
 		return E_FAIL;
 
@@ -176,6 +196,10 @@ HRESULT ToolObject::SetUp_Components()
 	/* Com_Model */
 	if (FAILED(__super::SetUp_Components(0, m_ToolObjDesc.m_BufferTag, TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
 		return E_FAIL;
+
+	/* Com_ThreeWaySystem */
+	/*if (FAILED(__super::SetUp_Components(0, TEXT("ProtoType_Component_VIBuffer_Line"), TEXT("Com_ThreeWaySystem"), (CComponent**)&m_pThreeWaySystem)))
+		return E_FAIL;*/
 
 
 	return S_OK;

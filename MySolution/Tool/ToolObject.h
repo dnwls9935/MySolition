@@ -7,6 +7,7 @@ class CTexture;
 class CRenderer;
 class CTransform;
 class CModel;
+class CVIBuffer_ThreeWaySystem;
 END
 class ToolObject final : public CGameObject
 {
@@ -34,11 +35,13 @@ public:
 private:
 	void	CheckButton();
 	_bool	PickingObject();
+	void	RenderThreeWaySystem();
 
 private:
-	CRenderer*				m_pRendererCom = nullptr;
-	CTransform*				m_pTransformCom = nullptr;
-	CModel*					m_pModelCom = nullptr;
+	CRenderer*					m_pRendererCom = nullptr;
+	CTransform*					m_pTransformCom = nullptr;
+	CModel*						m_pModelCom = nullptr;
+	CVIBuffer_ThreeWaySystem*	m_pThreeWaySystem = nullptr;
 
 	TOOLOBJDESC			m_ToolObjDesc;
 	bool				m_PickChecking = FALSE;

@@ -46,7 +46,7 @@ HRESULT CVIBuffer_Terrain::NativeConstruct_Prototype(const _tchar* pShaderFilePa
 		{
 			_uint		iIndex = i * m_iNumVerticesX + j;
 
-			((VTXNORTEX*)m_pVertices)[iIndex].vPosition = _float3(j, 0.f, i);
+			((VTXNORTEX*)m_pVertices)[iIndex].vPosition = _float3((_float)j, 0.f, (_float)i);
 			((VTXNORTEX*)m_pVertices)[iIndex].vNormal = _float3(0.f, 0.f, 0.f);
 			((VTXNORTEX*)m_pVertices)[iIndex].vTexUV = _float2(j / _float((m_iNumVerticesX - 1)), i / _float((m_iNumVerticesZ - 1)));
 		}

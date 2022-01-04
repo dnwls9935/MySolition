@@ -44,6 +44,7 @@ public:
 	void Set_TransformDesc(const TRANSFORMDESC& TransformDesc) {
 		m_TransformDesc = TransformDesc;
 	}
+	void Set_Scale(_float _scale);
 public:
 	virtual HRESULT NativeConstruct_Prototype();
 	virtual HRESULT NativeConstruct(void* pArg);

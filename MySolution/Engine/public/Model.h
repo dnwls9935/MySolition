@@ -6,6 +6,16 @@ BEGIN(Engine)
 
 class ENGINE_DLL CModel final : public CVIBuffer
 {
+public:
+	enum class TYPE {TYPE_STATIC, TYPE_DYNAMIC, TYPE_END};
+public:
+	typedef struct tagModelDesc {
+		const char*		mMeshFilePath = "";
+		const char*		mMeshFileName = "";
+		const _tchar*	mShaderFilePath = TEXT("");
+		_matrix			mPivotMatrix;
+		TYPE				mMeshType = TYPE::TYPE_END;
+	}MODELDESC;
 private:
 	explicit CModel(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	explicit CModel(const CModel& rhs);
@@ -16,7 +26,7 @@ public:
 		return (_uint)m_MeshContainers.size();
 	}
 public:
-	HRESULT NativeConstruct_Prototype(const char * pMeshFilePath, const char * pMeshFileName, const _tchar* pShaderFilePath, _fmatrix PivotMatrix);
+	HRESULT NativeConstruct_Prototype(MODELDESC _modelDesc);
 	HRESULT NatvieConstruct(void* pArg);
 public:
 	HRESULT SetUp_TextureOnShader(const char* pConstantName, _uint iMeshContainerIndex, aiTextureType eType);
@@ -30,23 +40,26 @@ private:
 	char				m_szMeshFilePath[MAX_PATH] = "";
 
 private:
-	/* 모든 메시들의 정점정보를 하나의 배열에 모아둔다. */
-	/* 정점버퍼를 생성한다. */
-	//VTXMESH*			m_pVertices = nullptr;
-
-
 	FACEINDICES32*		m_pFaceIndices = nullptr;
 
-
 private:
-	vector<class CMeshContainer*>			m_MeshContainers;
+	vector<class CMeshContainer*>				m_MeshContainers;
 	typedef vector<class CMeshContainer*>	MESHCONTAINERS;
 
-	vector<MESHMATERIAL*>				m_Materials;
+	vector<MESHMATERIAL*>					m_Materials;
 	typedef vector<MESHMATERIAL*>		MESHMATERIALS;
+
+	vector<class HierarchyNode*>				m_HierarchyNodes;
+	typedef vector<class HierarchyNode*>	HIERARCHYNODES;
+
+	vector<class Animation*>					m_Animations;
+	typedef vector<class Animation*>	ANIMATIONS;
 
 private:
 	_float4x4							m_PivotMatrix;
+
+private:
+	TYPE		m_Type;
 
 private:
 	HRESULT Reserve_VertexIndexData();
@@ -60,8 +73,17 @@ private:
 
 	HRESULT Compile_Shader(const _tchar* pShaderFilePath);
 
+	HRESULT Create_HierachyNode(aiNode* _node, class HierarchyNode* _parent = nullptr, _uint _depth = 0);
+
+	HRESULT	Create_SkinnedDesc();
+
+	HRESULT Create_Animation();
+
+private:
+	HierarchyNode* Find_HierarchyNode(char* _name);
+
 public:
-	static CModel* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, const char* pMeshFilePath, const char* pMeshFileName, const _tchar* pShaderFilePath, _fmatrix PivotMatrix);
+	static CModel* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, MODELDESC _modelDesc);
 	virtual CComponent* Clone(void* pArg) override;
 	virtual void Free() override;
 };

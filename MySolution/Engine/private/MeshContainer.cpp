@@ -26,6 +26,11 @@ HRESULT CMeshContainer::Render()
 	return S_OK;
 }
 
+HRESULT CMeshContainer::AddBoneDesc(BONEDESC * _boneDesc)
+{
+	return E_NOTIMPL;
+}
+
 CMeshContainer * CMeshContainer::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, const MESHDESC& MeshDesc)
 {
 	CMeshContainer*		pInstance = new CMeshContainer(pDevice, pDeviceContext);

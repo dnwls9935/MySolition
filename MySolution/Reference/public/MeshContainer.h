@@ -7,6 +7,12 @@ BEGIN(Engine)
 class CMeshContainer final : public CBase
 {
 public:
+	typedef struct tagBoneDesc {
+		_float4x4				m_OffsetMatrix;
+		class HierarchyNode*	m_Node;
+	}BONEDESC;
+
+public:
 	typedef struct tagMeshContainderDesc
 	{
 		_uint	iMaterialIndex = 0;
@@ -19,8 +25,8 @@ public:
 	virtual ~CMeshContainer() = default;
 
 public:
-	_uint Get_MaterialIndex() const {
-		return m_MeshDesc.iMaterialIndex;
+	const MESHDESC& GetMeshDesc() const {
+		return m_MeshDesc;
 	}
 
 public:
@@ -30,8 +36,15 @@ private:
 	ID3D11Device*			m_pDevice = nullptr;
 	ID3D11DeviceContext*	m_pDeviceContext = nullptr;
 
+public:
+	HRESULT			AddBoneDesc(BONEDESC* _boneDesc);
+
 private:
 	MESHDESC				m_MeshDesc;
+
+private:
+	vector<BONEDESC*>			m_Bones;
+	typedef vector<BONEDESC*>	BONES;
 
 public:
 	static CMeshContainer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, const MESHDESC& MeshDesc);

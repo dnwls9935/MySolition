@@ -111,10 +111,10 @@ void ToolTerrain::PickHeightTerrain(_double TimeDelta)
 	if ((gameInstance->Get_MouseButtonState(CInput_Device::MBS_LBUTTON)) &&
 		(gameInstance->Get_DIKeyState(DIK_LSHIFT) & 0x80))
 	{
-		m_pVIBufferCom->SetVerticeY(m_mousePos, -2.f * TimeDelta, m_mouseBrushRadius, m_mouseBrushType);
+		m_pVIBufferCom->SetVerticeY(m_mousePos, -2.f * (_float)TimeDelta, m_mouseBrushRadius, m_mouseBrushType);
 	}
 	else if (gameInstance->Get_MouseButtonState(CInput_Device::MBS_LBUTTON)) {
-		m_pVIBufferCom->SetVerticeY(m_mousePos, 2.f * TimeDelta, m_mouseBrushRadius, m_mouseBrushType);
+		m_pVIBufferCom->SetVerticeY(m_mousePos, 2.f * (_float)TimeDelta, m_mouseBrushRadius, m_mouseBrushType);
 	}
 	RELEASE_INSTANCE(CGameInstance);
 }
