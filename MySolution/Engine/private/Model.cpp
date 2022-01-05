@@ -128,7 +128,19 @@ HRESULT CModel::Render(_uint iMeshContainerIndex, _uint iPassIndex)
 	if (FAILED(m_EffectDescs[iPassIndex]->pPass->Apply(0, m_pDeviceContext)))
 		return E_FAIL;
 
+	_matrix	BoneMatrices[256];
+
 	m_MeshContainers[iMeshContainerIndex]->Render();
+
+	return S_OK;
+}
+
+HRESULT CModel::UpdateCombinedTrasnformationMatrix(_double _timeDelta)
+{
+	m_Animations[m_CurrentAnimation]->UpdateTransformationMatrix(_timeDelta);
+
+	for (auto& pHierachyNode : m_HierarchyNodes)
+		pHierachyNode->UpdateCombinedTransformationMatrix();
 
 	return S_OK;
 }
@@ -388,7 +400,6 @@ HRESULT CModel::Create_Animation()
 	for (_uint i = 0; i < m_pScene->mNumAnimations; i++)
 	{
 		aiAnimation* pAiAnim = m_pScene->mAnimations[i];
-
 		Animation::ANIMDESC pAnimDesc;
 		ZeroMemory(&pAnimDesc, sizeof(pAnimDesc));
 
@@ -402,34 +413,47 @@ HRESULT CModel::Create_Animation()
 
 		m_Animations.push_back(pAnimation);
 
+
 		for (_uint j = 0; j < pAiAnim->mNumChannels; j++)
 		{
 			aiNodeAnim* pAiAnimChannel = pAiAnim->mChannels[j];
 			
+			Channel* pChannel = Channel::Create(pAiAnimChannel->mNodeName.data);
+			if (nullptr == pChannel)
+				return E_FAIL;
+			HierarchyNode*		pHierarchyNode = Find_HierarchyNode(pAiAnimChannel->mNodeName.data);
+			if (nullptr == pHierarchyNode)
+				return E_FAIL;
+
 			_uint pNumKeyFrames = max(pAiAnimChannel->mNumPositionKeys, pAiAnimChannel->mNumRotationKeys);
 			pNumKeyFrames = max(pNumKeyFrames, pAiAnimChannel->mNumScalingKeys);
-
-			Channel::KEYFRAME pKeyFrame;
-			ZeroMemory(&pKeyFrame, sizeof(pKeyFrame));
 
 			_double pTime = 0.0;
 
 			for (_uint k = 0; k < pNumKeyFrames; k++)
 			{
+				Channel::KEYFRAME pKeyFrame;
+				ZeroMemory(&pKeyFrame, sizeof(pKeyFrame));
+
 				if (pAiAnimChannel->mNumPositionKeys > k)
 				{
 					memcpy(&pKeyFrame.m_Position, &pAiAnimChannel->mPositionKeys[k].mValue , sizeof(_float3));
+					pTime = pAiAnimChannel->mPositionKeys[k].mTime;
 				}
 				if (pAiAnimChannel->mNumRotationKeys > k)
 				{
 					memcpy(&pKeyFrame.m_Rotation, &pAiAnimChannel->mRotationKeys[k].mValue, sizeof(_float4));
+					pTime = pAiAnimChannel->mRotationKeys[k].mTime;
 				}
 				if (pAiAnimChannel->mNumScalingKeys > k)
 				{
 					memcpy(&pKeyFrame.m_Scale, &pAiAnimChannel->mScalingKeys[k].mValue, sizeof(_float3));
+					pTime = pAiAnimChannel->mScalingKeys[k].mTime;
 				}
+				pChannel->AddKeyFrame(pKeyFrame);
+				pHierarchyNode->AddChannel(pChannel);
 			}
-
+			pAnimation->AddChannel(pChannel);
 		}
 	}
 	return S_OK;

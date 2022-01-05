@@ -211,7 +211,7 @@ void CVIBuffer_Terrain::SetVerticeY(_float4 _mousePos, _float _y, _int _scale, _
 				x = _mousePos.x - ((VTXNORTEX*)m_pVertices)[iIndex].vPosition.x;
 				z = _mousePos.z - ((VTXNORTEX*)m_pVertices)[iIndex].vPosition.z;
 
-				dist = sqrt(x * x + z * z);
+				dist = (_uint)(sqrt(x * x + z * z));
 
 				if (_scale > dist)
 				{
