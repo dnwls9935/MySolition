@@ -27,7 +27,7 @@ public:		HRESULT	SetUp_TextureOnShader(const char* pConstantName, _uint iMeshCon
 public:		HRESULT	Bind_Buffers();
 public:		HRESULT	Render(_uint iMeshContainerIndex, _uint iPassIndex);
 
-private:		HRESULT	UpdateCombinedTrasnformationMatrix(_double _timeDelta);
+public:		HRESULT	UpdateCombinedTrasnformationMatrix(_double _timeDelta);
 
 private:		const aiScene*			m_pScene = nullptr;
 private:		Assimp::Importer		m_Importer;

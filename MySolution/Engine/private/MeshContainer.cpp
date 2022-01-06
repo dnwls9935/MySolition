@@ -1,5 +1,5 @@
 #include "..\public\MeshContainer.h"
-
+#include "HierarchyNode.h"
 
 CMeshContainer::CMeshContainer(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: m_pDevice(pDevice)
@@ -7,6 +7,15 @@ CMeshContainer::CMeshContainer(ID3D11Device * pDevice, ID3D11DeviceContext * pDe
 {
 	Safe_AddRef(m_pDeviceContext);
 	Safe_AddRef(m_pDevice);
+}
+
+void CMeshContainer::GetBoneMatrices(_matrix * _boneMatrices)
+{
+	_uint pIndex = 0;
+
+	for (auto& pBone : m_Bones)
+		_boneMatrices[pIndex++] = XMMatrixTranspose(XMLoadFloat4x4(&pBone->m_OffsetMatrix) * pBone->m_Node->GetCombinedMatrix());
+
 }
 
 HRESULT CMeshContainer::NativeConstruct(const MESHDESC & MeshDesc)
@@ -28,7 +37,9 @@ HRESULT CMeshContainer::Render()
 
 HRESULT CMeshContainer::AddBoneDesc(BONEDESC * _boneDesc)
 {
-	return E_NOTIMPL;
+	m_Bones.push_back(_boneDesc);
+
+	return S_OK;
 }
 
 CMeshContainer * CMeshContainer::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, const MESHDESC& MeshDesc)
@@ -50,4 +61,9 @@ void CMeshContainer::Free()
 {
 	Safe_Release(m_pDeviceContext);
 	Safe_Release(m_pDevice);
+
+	for (auto& pBone : m_Bones)
+		Safe_Delete(pBone);
+
+	m_Bones.clear();
 }

@@ -19,6 +19,9 @@ CModel::CModel(const CModel & rhs)
 	, m_MeshContainers(rhs.m_MeshContainers)
 	, m_Materials(rhs.m_Materials)
 	, m_PivotMatrix(rhs.m_PivotMatrix)
+	, m_CurrentAnimation(rhs.m_CurrentAnimation)
+	, m_Animations(rhs.m_Animations)
+	, m_HierarchyNodes(rhs.m_HierarchyNodes)
 {
 	for (auto& pMeshContainer : m_MeshContainers)
 		Safe_AddRef(pMeshContainer);
@@ -28,6 +31,11 @@ CModel::CModel(const CModel & rhs)
 		for (_uint i = 0; i < AI_TEXTURE_TYPE_MAX; ++i)
 			Safe_AddRef(pMaterial->pMeshTexture[i]);
 	}
+
+	for (auto& pAnim : m_Animations)
+		Safe_AddRef(pAnim);
+	for (auto& pNode : m_HierarchyNodes)
+		Safe_AddRef(pNode);
 }
 
 HRESULT CModel::NativeConstruct_Prototype(MODELDESC _modelDesc)
@@ -125,10 +133,17 @@ HRESULT CModel::Render(_uint iMeshContainerIndex, _uint iPassIndex)
 {
 	m_pDeviceContext->IASetInputLayout(m_EffectDescs[iPassIndex]->pInputLayout);
 
+	_matrix	BoneMatrices[128];
+	ZeroMemory(&BoneMatrices, sizeof(_matrix) * 128);
+
+
+	m_MeshContainers[iMeshContainerIndex]->GetBoneMatrices(BoneMatrices);
+
+	if (FAILED(SetUp_ValueOnShader(("g_BoneMatrices"), BoneMatrices, sizeof(_matrix) * 128)))
+		return E_FAIL;
+	
 	if (FAILED(m_EffectDescs[iPassIndex]->pPass->Apply(0, m_pDeviceContext)))
 		return E_FAIL;
-
-	_matrix	BoneMatrices[256];
 
 	m_MeshContainers[iMeshContainerIndex]->Render();
 
@@ -138,9 +153,9 @@ HRESULT CModel::Render(_uint iMeshContainerIndex, _uint iPassIndex)
 HRESULT CModel::UpdateCombinedTrasnformationMatrix(_double _timeDelta)
 {
 	m_Animations[m_CurrentAnimation]->UpdateTransformationMatrix(_timeDelta);
-
+	
 	for (auto& pHierachyNode : m_HierarchyNodes)
-		pHierachyNode->UpdateCombinedTransformationMatrix();
+		pHierachyNode->UpdateCombinedTransformationMatrix(m_CurrentAnimation);
 
 	return S_OK;
 }
@@ -243,8 +258,6 @@ HRESULT CModel::Create_MeshContainer()
 
 			XMStoreFloat3(&((VTXMESH*)m_pVertices)[iVertexIndex].vPosition, vPosition);
 
-
-
 			memcpy(&((VTXMESH*)m_pVertices)[iVertexIndex].vNormal, &pMesh->mNormals[j], sizeof(_float3));
 			memcpy(&((VTXMESH*)m_pVertices)[iVertexIndex].vTexUV, &pMesh->mTextureCoords[0][j], sizeof(_float2));
 			memcpy(&((VTXMESH*)m_pVertices)[iVertexIndex].vTangent, &pMesh->mTangents[j], sizeof(_float3));
@@ -310,10 +323,12 @@ HRESULT CModel::Compile_Shader(const _tchar * pShaderFilePath)
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 32, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+		{ "TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 32, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "BLENDINDEX", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 44, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "BLENDWEIGHT", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 60, D3D11_INPUT_PER_VERTEX_DATA, 0 }
 	};
 
-	if (FAILED(__super::Compile_ShaderFiles(pShaderFilePath, ElementDescs, 4)))
+	if (FAILED(__super::Compile_ShaderFiles(pShaderFilePath, ElementDescs, 6)))
 		return E_FAIL;
 
 	return S_OK;
@@ -326,7 +341,8 @@ HRESULT CModel::Create_HierachyNode(aiNode * _node, HierarchyNode * _parent, _ui
 
 	HierarchyNode::HIERARCHY_DESE pHierarchyNodeDesc;
 	strcpy_s(pHierarchyNodeDesc.m_BoneName, /*strlen(_node->mName.data)*/MAX_PATH, _node->mName.data);
-	memcpy(&pHierarchyNodeDesc.m_CombinedTrasformationMatrix,&pTransformationMatrix, sizeof(_matrix));
+	XMStoreFloat4x4(&pHierarchyNodeDesc.m_CombinedTrasformationMatrix, pTransformationMatrix);
+
 	pHierarchyNodeDesc.m_Depth = _depth;
 	pHierarchyNodeDesc.m_Parent = _parent;
 
@@ -334,6 +350,8 @@ HRESULT CModel::Create_HierachyNode(aiNode * _node, HierarchyNode * _parent, _ui
 	if (nullptr == pHierarchyNode)
 		return E_FAIL;
 
+
+	pHierarchyNode->ReserveChannel(m_pScene->mNumAnimations);
 	m_HierarchyNodes.push_back(pHierarchyNode);
 
 	for (_uint i = 0; i < _node->mNumChildren; i++)
@@ -354,8 +372,11 @@ HRESULT CModel::Create_SkinnedDesc()
 			aiBone* pBone = pMesh->mBones[j];
 
 			CMeshContainer::BONEDESC* pBoneDesc = new CMeshContainer::BONEDESC;
-			
-			memcpy(&pBoneDesc->m_OffsetMatrix, &pBone->mOffsetMatrix, sizeof(_float4x4));
+			_matrix		offsetMatrix;
+
+			memcpy(&offsetMatrix, &pBone->mOffsetMatrix, sizeof(_float4x4));
+			XMStoreFloat4x4(&pBoneDesc->m_OffsetMatrix, XMMatrixTranspose(offsetMatrix));
+
 			pBoneDesc->m_Node = Find_HierarchyNode(pBone->mName.data);
 			if (nullptr == pBoneDesc->m_Node)
 				return E_FAIL;
@@ -411,9 +432,6 @@ HRESULT CModel::Create_Animation()
 		if (nullptr == pAnimation)
 			return E_FAIL;
 
-		m_Animations.push_back(pAnimation);
-
-
 		for (_uint j = 0; j < pAiAnim->mNumChannels; j++)
 		{
 			aiNodeAnim* pAiAnimChannel = pAiAnim->mChannels[j];
@@ -428,8 +446,6 @@ HRESULT CModel::Create_Animation()
 			_uint pNumKeyFrames = max(pAiAnimChannel->mNumPositionKeys, pAiAnimChannel->mNumRotationKeys);
 			pNumKeyFrames = max(pNumKeyFrames, pAiAnimChannel->mNumScalingKeys);
 
-			_double pTime = 0.0;
-
 			for (_uint k = 0; k < pNumKeyFrames; k++)
 			{
 				Channel::KEYFRAME pKeyFrame;
@@ -438,23 +454,31 @@ HRESULT CModel::Create_Animation()
 				if (pAiAnimChannel->mNumPositionKeys > k)
 				{
 					memcpy(&pKeyFrame.m_Position, &pAiAnimChannel->mPositionKeys[k].mValue , sizeof(_float3));
-					pTime = pAiAnimChannel->mPositionKeys[k].mTime;
+					pKeyFrame.m_Time = pAiAnimChannel->mPositionKeys[k].mTime;
 				}
 				if (pAiAnimChannel->mNumRotationKeys > k)
 				{
-					memcpy(&pKeyFrame.m_Rotation, &pAiAnimChannel->mRotationKeys[k].mValue, sizeof(_float4));
-					pTime = pAiAnimChannel->mRotationKeys[k].mTime;
+					pKeyFrame.m_Rotation.x = pAiAnimChannel->mRotationKeys[k].mValue.x;
+					pKeyFrame.m_Rotation.y = pAiAnimChannel->mRotationKeys[k].mValue.y;
+					pKeyFrame.m_Rotation.z = pAiAnimChannel->mRotationKeys[k].mValue.z;
+					pKeyFrame.m_Rotation.w = pAiAnimChannel->mRotationKeys[k].mValue.w;
+
+					pKeyFrame.m_Time = pAiAnimChannel->mRotationKeys[k].mTime;
 				}
 				if (pAiAnimChannel->mNumScalingKeys > k)
 				{
 					memcpy(&pKeyFrame.m_Scale, &pAiAnimChannel->mScalingKeys[k].mValue, sizeof(_float3));
-					pTime = pAiAnimChannel->mScalingKeys[k].mTime;
+					pKeyFrame.m_Time = pAiAnimChannel->mScalingKeys[k].mTime;
 				}
+
 				pChannel->AddKeyFrame(pKeyFrame);
-				pHierarchyNode->AddChannel(pChannel);
 			}
+
+			pHierarchyNode->AddChannel(pChannel);
 			pAnimation->AddChannel(pChannel);
 		}
+
+		m_Animations.push_back(pAnimation);
 	}
 	return S_OK;
 }
@@ -505,6 +529,14 @@ void CModel::Free()
 	{
 		Safe_Delete_Array(m_pFaceIndices);
 	}
+
+	for (auto& pAnim : m_Animations)
+		Safe_Release(pAnim);
+	m_Animations.clear();
+
+	for (auto& pNode : m_HierarchyNodes)
+		Safe_Release(pNode);
+	m_HierarchyNodes.clear();
 
 	for (auto& pMeshContainer : m_MeshContainers)
 		Safe_Release(pMeshContainer);

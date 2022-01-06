@@ -17,6 +17,7 @@ public:
 	class TapMap*	tapMap = nullptr;
 	class TapEffect* tapEffect = nullptr;
 	class TapUI* tapUI = nullptr;
+	class TabObject* tabObject = nullptr;
 
 	_int		m_FocusTab = 0;
 

@@ -94,6 +94,7 @@ _int ToolObject::LateTick(_double TimeDelta)
 	if (nullptr != m_pRendererCom && 0 == m_form->m_tabCtrl.GetCurSel())
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
 
+	m_pModelCom->UpdateCombinedTrasnformationMatrix(TimeDelta);
 
 	return _int();
 }
@@ -114,13 +115,13 @@ HRESULT ToolObject::Render()
 	{
 		m_pModelCom->SetUp_TextureOnShader("g_DiffuseTexture", i, aiTextureType_DIFFUSE);
 
-		m_pModelCom->Render(i, 0);
+		m_pModelCom->Render(i, 1);
 	}
-	RELEASE_INSTANCE(CGameInstance);
 
-	if (m_PickChecking)
+	//if (m_PickChecking)
 		//RenderThreeWaySystem();
 
+	RELEASE_INSTANCE(CGameInstance);
 	return S_OK;
 }
 

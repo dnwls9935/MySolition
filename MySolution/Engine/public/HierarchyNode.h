@@ -22,8 +22,10 @@ public:		virtual ~HierarchyNode() = default;
 
 public:		_uint					GetDepth() const { return m_HierarchyDesc.m_Depth; };
 public:		const char*		GetBoneName()const { return m_HierarchyDesc.m_BoneName; }
+public:		void					ReserveChannel(_uint _numAnimation) { m_Channels.resize(_numAnimation); }
 public:		HRESULT			AddChannel(class Channel* _channel) { m_Channels.push_back(_channel); return S_OK; };
 public:		void					UpdateCombinedTransformationMatrix(_uint _animationIndex);
+public:		_matrix			GetCombinedMatrix() const { return XMLoadFloat4x4(&m_HierarchyDesc.m_CombinedTrasformationMatrix); };
 
 private:		HRESULT	NativeConstruct(HierarchyNode::HIERARCHY_DESE _HierarchyDesc);
 

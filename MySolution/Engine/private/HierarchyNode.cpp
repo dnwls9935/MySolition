@@ -12,15 +12,26 @@ HierarchyNode::HierarchyNode(ID3D11Device * _dx11Device, ID3D11DeviceContext * _
 
 void HierarchyNode::UpdateCombinedTransformationMatrix(_uint _animationIndex)
 {
-	_matrix		pTransformationMatrix = m_Channels[_animationIndex]->GetTransformationMatrix();
-	// 여기부터 짜야함
+	if (nullptr != m_Channels[_animationIndex])
+		XMStoreFloat4x4(&m_HierarchyDesc.m_TransformationMatrix, m_Channels[_animationIndex]->GetTransformationMatrix());
+
+	if (nullptr != m_HierarchyDesc.m_Parent) {
+		XMStoreFloat4x4(&m_HierarchyDesc.m_CombinedTrasformationMatrix,
+			XMLoadFloat4x4(&m_HierarchyDesc.m_TransformationMatrix)* XMLoadFloat4x4(&m_HierarchyDesc.m_Parent->m_HierarchyDesc.m_CombinedTrasformationMatrix));
+	}
+	else {
+		XMStoreFloat4x4(&m_HierarchyDesc.m_CombinedTrasformationMatrix,
+			XMLoadFloat4x4(&m_HierarchyDesc.m_TransformationMatrix)* XMMatrixIdentity() );
+	}
 }
 
 HRESULT HierarchyNode::NativeConstruct(HierarchyNode::HIERARCHY_DESE _HierarchyDesc)
 {
+	XMStoreFloat4x4(&_HierarchyDesc.m_TransformationMatrix, XMMatrixTranspose( XMLoadFloat4x4(&_HierarchyDesc.m_TransformationMatrix)));
+	XMStoreFloat4x4(&_HierarchyDesc.m_CombinedTrasformationMatrix, XMMatrixIdentity());
+
 	m_HierarchyDesc = _HierarchyDesc;
 	Safe_AddRef(m_HierarchyDesc.m_Parent);
-
 	return S_OK;
 }
 
@@ -40,6 +51,8 @@ void HierarchyNode::Free()
 {
 	Safe_Release(dx11Device);
 	Safe_Release(dx11DeviceContext);
+
+	Safe_Release(m_HierarchyDesc.m_Parent);
 
 	for (auto& pChannel : m_Channels)
 		Safe_Release(pChannel);

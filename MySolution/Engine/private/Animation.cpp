@@ -54,10 +54,10 @@ HRESULT Animation::UpdateTransformationMatrix(_double _timeDelta)
 			pPosition = XMVectorSetW(pPosition, 1.f);
 		}
 		/* 애니메이션 끝남 */
-		else if (m_AnimDesc.m_TrackPositionAcc < pKeyFrame[pNumKeyFrame].m_Time) {
-			pScale = XMLoadFloat3(&pKeyFrame[pNumKeyFrame].m_Scale);
-			pRotation = XMLoadFloat4(&pKeyFrame[pNumKeyFrame].m_Rotation);
-			pPosition = XMLoadFloat3(&pKeyFrame[pNumKeyFrame].m_Position);
+		else if (m_AnimDesc.m_TrackPositionAcc < pKeyFrame[pNumKeyFrame-1].m_Time) {
+			pScale = XMLoadFloat3(&pKeyFrame[pNumKeyFrame-1].m_Scale);
+			pRotation = XMLoadFloat4(&pKeyFrame[pNumKeyFrame-1].m_Rotation);
+			pPosition = XMLoadFloat3(&pKeyFrame[pNumKeyFrame-1].m_Position);
 			pPosition = XMVectorSetW(pPosition, 1.f);
 		}
 		/* 아직 애니메이션이 돌고있다 -> 특정 키프레임과 그 다음 키프레임 사이 어딘가에 있다 */

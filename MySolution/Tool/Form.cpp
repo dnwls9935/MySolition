@@ -7,6 +7,7 @@
 #include "TapMap.h"
 #include "TapEffect.h"
 #include "TapUI.h"
+#include "TabObject.h"
 
 // Form
 
@@ -64,17 +65,26 @@ void Form::OnTcnSelchangeTab1(NMHDR *pNMHDR, LRESULT *pResult)
 		tapMap->ShowWindow(SW_SHOW);
 		tapEffect->ShowWindow(SW_HIDE);
 		tapUI->ShowWindow(SW_HIDE);
+		tabObject->ShowWindow(SW_HIDE);
 		break;
 	case 1:
 		tapMap->ShowWindow(SW_HIDE);
 		tapEffect->ShowWindow(SW_SHOW);
 		tapUI->ShowWindow(SW_HIDE);
+		tabObject->ShowWindow(SW_HIDE);
 		break;
 	case 2:
 		tapMap->ShowWindow(SW_HIDE);
 		tapEffect->ShowWindow(SW_HIDE);
 		tapUI->ShowWindow(SW_SHOW);
+		tabObject->ShowWindow(SW_HIDE);
 		break;
+	case 3:
+		tapMap->ShowWindow(SW_HIDE);
+		tapEffect->ShowWindow(SW_HIDE);
+		tapUI->ShowWindow(SW_HIDE);
+		tabObject->ShowWindow(SW_SHOW);
+
 	}
 	*pResult = 0;
 }
@@ -89,12 +99,14 @@ HRESULT Form::ReadyTabSetting()
 	CString tab1 = TEXT("Map");
 	CString tab2 = TEXT("Effect");
 	CString tab3 = TEXT("UI");
+	CString tab4 = TEXT("Object");
 
 	m_tabCtrl.SetCurSel(0);
 
 	m_tabCtrl.InsertItem(1, tab1);
 	m_tabCtrl.InsertItem(2, tab2);
 	m_tabCtrl.InsertItem(3, tab3);
+	m_tabCtrl.InsertItem(4, tab4);
 
 
 	CRect rtTemp;
@@ -117,6 +129,12 @@ HRESULT Form::ReadyTabSetting()
 	tapUI->Create(IDD_TAPUI, &m_tabCtrl);
 	tapUI->MoveWindow(5, 25, rtTemp.Width() - 10, rtTemp.Height() - 30);
 	tapUI->ShowWindow(SW_HIDE);
+
+	// ³×¹øÂ° ÅÇ
+	tabObject = new TabObject;
+	tabObject->Create(IDD_TAPUI, &m_tabCtrl);
+	tabObject->MoveWindow(5, 25, rtTemp.Width() - 10, rtTemp.Height() - 30);
+	tabObject->ShowWindow(SW_HIDE);
 
 	return S_OK;
 }

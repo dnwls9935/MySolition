@@ -43,6 +43,9 @@
     <Filter Include="Object\ToolObject">
       <UniqueIdentifier>{05be18dc-aae3-4ff0-a056-ef4bf1d650ef}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.View\Form\Object">
+      <UniqueIdentifier>{0d5b5c9d-38aa-4667-acab-970e45b96f0f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainFrm.h">
@@ -96,6 +99,9 @@
     <ClInclude Include="ToolObject.h">
       <Filter>Object\ToolObject</Filter>
     </ClInclude>
+    <ClInclude Include="TabObject.h">
+      <Filter>02.View\Form\Object</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MainFrm.cpp">
@@ -139,6 +145,9 @@
     </ClCompile>
     <ClCompile Include="ToolObject.cpp">
       <Filter>Object\ToolObject</Filter>
+    </ClCompile>
+    <ClCompile Include="TabObject.cpp">
+      <Filter>02.View\Form\Object</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
