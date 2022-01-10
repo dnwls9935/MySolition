@@ -7,11 +7,13 @@ cbuffer Matrices
 	matrix		g_ProjMatrix;
 };
 
-struct BoneMatrixArray {
-	matrix Bone[128];
+struct BoneMatrixArray
+{
+	matrix		Bone[128];
 };
 
-cbuffer BoneMatricesBuffer {
+cbuffer	BoneMatricesBuffer
+{
 	BoneMatrixArray		g_BoneMatrices;
 };
 
@@ -28,7 +30,6 @@ cbuffer PickingCheck {
 	bool		g_PickModel = false;
 };
 
-
 struct VS_IN
 {
 	float3		vPosition : POSITION;
@@ -36,7 +37,7 @@ struct VS_IN
 	float2		vTexUV : TEXCOORD0;
 	float3		vTangent : TANGENT;
 	uint4		vBlendIndex : BLENDINDEX;
-	float4		vBlendWeight : BLENDWEIGHT;
+	float4		vBlendWeight: BLENDWEIGHT;
 };
 
 struct VS_OUT
@@ -44,7 +45,6 @@ struct VS_OUT
 	float4		vPosition : SV_POSITION;
 	float2		vTexUV : TEXCOORD0;
 };
-
 
 VS_OUT VS_MAIN_STATIC(VS_IN In)
 {
@@ -60,6 +60,7 @@ VS_OUT VS_MAIN_STATIC(VS_IN In)
 	Out.vTexUV = In.vTexUV;
 
 	return Out;
+
 }
 
 
@@ -67,19 +68,22 @@ VS_OUT VS_MAIN_DYNAMIC(VS_IN In)
 {
 	VS_OUT			Out = (VS_OUT)0;
 
+
 	matrix			matWV, matWVP;
 
-	float		fWeight = 1.f - (In.vBlendWeight.x + In.vBlendWeight.y + In.vBlendWeight.z);
+	float		fWeightw = 1.f - (In.vBlendWeight.x + In.vBlendWeight.y + In.vBlendWeight.z);
 
-	matrix boneMatrix = g_BoneMatrices.Bone[In.vBlendIndex.x] * In.vBlendWeight.x +
+
+	matrix			BoneMatrix = g_BoneMatrices.Bone[In.vBlendIndex.x] * In.vBlendWeight.x +
 		g_BoneMatrices.Bone[In.vBlendIndex.y] * In.vBlendWeight.y +
 		g_BoneMatrices.Bone[In.vBlendIndex.z] * In.vBlendWeight.z +
 		g_BoneMatrices.Bone[In.vBlendIndex.w] * In.vBlendWeight.w;
 
+
 	matWV = mul(g_WorldMatrix, g_ViewMatrix);
 	matWVP = mul(matWV, g_ProjMatrix);
 
-	vector vPosition = mul(vector(In.vPosition, 1.f), boneMatrix);
+	vector		vPosition = mul(vector(In.vPosition, 1.f), BoneMatrix);
 	vPosition = mul(vPosition, matWVP);
 
 	Out.vPosition = vPosition;
@@ -101,16 +105,20 @@ struct PS_OUT
 
 PS_OUT PS_MAIN(PS_IN In)
 {
+	//PS_OUT		Out = (PS_OUT)0;
+	//
+	//vector pick = vector(0.f, 0.f, 0.f, 1.f);
+	//vector texColor = g_DiffuseTexture.Sample(DefaultSampler, In.vTexUV);
+
+	//if (g_PickModel) {
+	//	pick = vector(0.2f, 0.2f, 0.f, 1.f);
+	//}
+
+	//Out.vColor = texColor + pick;
+
 	PS_OUT		Out = (PS_OUT)0;
-	
-	vector pick = vector(0.f, 0.f, 0.f, 1.f);
-	vector texColor = g_DiffuseTexture.Sample(DefaultSampler, In.vTexUV);
 
-	if (g_PickModel) {
-		pick = vector(0.2f, 0.2f, 0.f, 1.f);
-	}
-
-	Out.vColor = texColor + pick;
+	Out.vColor = g_DiffuseTexture.Sample(DefaultSampler, In.vTexUV);
 
 	return Out;
 }

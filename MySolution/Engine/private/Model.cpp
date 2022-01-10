@@ -136,7 +136,6 @@ HRESULT CModel::Render(_uint iMeshContainerIndex, _uint iPassIndex)
 	_matrix	BoneMatrices[128];
 	ZeroMemory(&BoneMatrices, sizeof(_matrix) * 128);
 
-
 	m_MeshContainers[iMeshContainerIndex]->GetBoneMatrices(BoneMatrices);
 
 	if (FAILED(SetUp_ValueOnShader(("g_BoneMatrices"), BoneMatrices, sizeof(_matrix) * 128)))
@@ -324,10 +323,10 @@ HRESULT CModel::Compile_Shader(const _tchar * pShaderFilePath)
 		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		{ "TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 32, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "BLENDINDEX", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 44, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "BLENDINDEX", 0, DXGI_FORMAT_R32G32B32A32_UINT, 0, 44, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		{ "BLENDWEIGHT", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 60, D3D11_INPUT_PER_VERTEX_DATA, 0 }
-	};
 
+	};
 	if (FAILED(__super::Compile_ShaderFiles(pShaderFilePath, ElementDescs, 6)))
 		return E_FAIL;
 
@@ -341,7 +340,7 @@ HRESULT CModel::Create_HierachyNode(aiNode * _node, HierarchyNode * _parent, _ui
 
 	HierarchyNode::HIERARCHY_DESE pHierarchyNodeDesc;
 	strcpy_s(pHierarchyNodeDesc.m_BoneName, /*strlen(_node->mName.data)*/MAX_PATH, _node->mName.data);
-	XMStoreFloat4x4(&pHierarchyNodeDesc.m_CombinedTrasformationMatrix, pTransformationMatrix);
+	XMStoreFloat4x4(&pHierarchyNodeDesc.m_TransformationMatrix, pTransformationMatrix);
 
 	pHierarchyNodeDesc.m_Depth = _depth;
 	pHierarchyNodeDesc.m_Parent = _parent;
@@ -383,32 +382,33 @@ HRESULT CModel::Create_SkinnedDesc()
 
 			pMeshContainer->AddBoneDesc(pBoneDesc) ;
 			
-			for (_uint k = 0; k < pBone->mNumWeights; k++)
+			for (_uint k = 0; k < pBone->mNumWeights; ++k)
 			{
-				CMeshContainer::MESHDESC		pMeshDesc = pMeshContainer->GetMeshDesc();
-				_uint pVertexIdx = pMeshDesc.iStartVertexIndex + pBone->mWeights[k].mVertexId;
+				CMeshContainer::MESHDESC	MeshDesc = pMeshContainer->GetMeshDesc();
 
-				if (0.0f == ((VTXMESH*)m_pVertices)[pVertexIdx].vBlendWeight.x)
+				_uint	iVertexIndex = MeshDesc.iStartVertexIndex + pBone->mWeights[k].mVertexId;
+
+				if (0.0f == ((VTXMESH*)m_pVertices)[iVertexIndex].vBlendWeight.x)
 				{
-					((VTXMESH*)m_pVertices)[pVertexIdx].vBlendIndex.x = j;
-					((VTXMESH*)m_pVertices)[pVertexIdx].vBlendWeight.x = pBone->mWeights[k].mWeight;
+					((VTXMESH*)m_pVertices)[iVertexIndex].vBlendIndex.x = j;
+					((VTXMESH*)m_pVertices)[iVertexIndex].vBlendWeight.x = pBone->mWeights[k].mWeight;
 				}
-				else if (0.0f == ((VTXMESH*)m_pVertices)[pVertexIdx].vBlendWeight.y)
+				else if (0.0f == ((VTXMESH*)m_pVertices)[iVertexIndex].vBlendWeight.y)
 				{
-					((VTXMESH*)m_pVertices)[pVertexIdx].vBlendIndex.y = j;
-					((VTXMESH*)m_pVertices)[pVertexIdx].vBlendWeight.y = pBone->mWeights[k].mWeight;
-				}
-				else if (0.0f == ((VTXMESH*)m_pVertices)[pVertexIdx].vBlendWeight.z)
-				{
-					((VTXMESH*)m_pVertices)[pVertexIdx].vBlendIndex.z = j;
-					((VTXMESH*)m_pVertices)[pVertexIdx].vBlendWeight.z = pBone->mWeights[k].mWeight;
-				}
-				else if (0.0f == ((VTXMESH*)m_pVertices)[pVertexIdx].vBlendWeight.w)
-				{
-					((VTXMESH*)m_pVertices)[pVertexIdx].vBlendIndex.w = j;
-					((VTXMESH*)m_pVertices)[pVertexIdx].vBlendWeight.w = pBone->mWeights[k].mWeight;
+					((VTXMESH*)m_pVertices)[iVertexIndex].vBlendIndex.y = j;
+					((VTXMESH*)m_pVertices)[iVertexIndex].vBlendWeight.y = pBone->mWeights[k].mWeight;
 				}
 
+				else if (0.0f == ((VTXMESH*)m_pVertices)[iVertexIndex].vBlendWeight.z)
+				{
+					((VTXMESH*)m_pVertices)[iVertexIndex].vBlendIndex.z = j;
+					((VTXMESH*)m_pVertices)[iVertexIndex].vBlendWeight.z = pBone->mWeights[k].mWeight;
+				}
+				else
+				{
+					((VTXMESH*)m_pVertices)[iVertexIndex].vBlendIndex.w = j;
+					((VTXMESH*)m_pVertices)[iVertexIndex].vBlendWeight.w = pBone->mWeights[k].mWeight;
+				}
 			}
 
 		}

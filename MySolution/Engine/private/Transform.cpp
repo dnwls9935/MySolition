@@ -14,19 +14,15 @@ CTransform::CTransform(const CTransform & rhs)
 	
 }
 
-void CTransform::Set_Scale(_float _scale)
+void CTransform::Set_Scale(_fvector _scale)
 {
-	_vector		vRight = Get_State(CTransform::STATE_RIGHT);
-	_vector		vUp = Get_State(CTransform::STATE_UP);
-	_vector		vLook = Get_State(CTransform::STATE_LOOK);
-
-	vRight = XMVectorScale(vRight, _scale);
-	vLook = XMVectorScale(vLook, _scale);
-	vUp = XMVectorScale(vUp, _scale);
+	_vector		vRight = XMVector3Normalize(Get_State(CTransform::STATE_RIGHT)) * XMVectorGetX(_scale);
+	_vector		vUp = XMVector3Normalize(Get_State(CTransform::STATE_UP)) * XMVectorGetY(_scale);
+	_vector		vLook = XMVector3Normalize(Get_State(CTransform::STATE_LOOK)) * XMVectorGetZ(_scale);
 
 	Set_State(CTransform::STATE_RIGHT, vRight);
-	Set_State(CTransform::STATE_LOOK, vLook);
 	Set_State(CTransform::STATE_UP, vUp);
+	Set_State(CTransform::STATE_LOOK, vLook);
 }
 
 HRESULT CTransform::NativeConstruct_Prototype()

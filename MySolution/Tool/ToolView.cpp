@@ -130,7 +130,7 @@ HRESULT CToolView::ReadyProtoAll()
 
 	pModelDesc.mMeshFileName = "Kaelthas.FBX";
 	pModelDesc.mMeshFilePath = "../Client/Bin/Resources/Meshes/Kaelthas/";
-	pModelDesc.mPivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationX(XMConvertToRadians(90.0f)) * XMMatrixRotationY(XMConvertToRadians(180.0f));
+	pModelDesc.mPivotMatrix = /*XMMatrixScaling(0.01f, 0.01f, 0.01f) **/ XMMatrixRotationX(XMConvertToRadians(90.0f)) * XMMatrixRotationY(XMConvertToRadians(180.0f));
 	pModelDesc.mShaderFilePath = TEXT("../Client/Bin/ShaderFiles/Shader_Mesh_Tool.hlsl");
 	pModelDesc.mMeshType = CModel::TYPE::TYPE_DYNAMIC;
 	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Model_Kaelthas"), CModel::Create(dx11Device, dx11DeviceContext, pModelDesc))))

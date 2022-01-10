@@ -14,7 +14,7 @@ HRESULT Animation::NativeConstruct(Animation::ANIMDESC _animDesc)
 
 HRESULT Animation::UpdateTransformationMatrix(_double _timeDelta)
 {
-	m_AnimDesc.m_TrackPositionAcc += _timeDelta;
+	m_AnimDesc.m_TrackPositionAcc += m_AnimDesc.m_TrackPlaySpeed * _timeDelta;
 
 	if (m_AnimDesc.m_TrackPositionAcc >= m_AnimDesc.m_Duration)
 	{
@@ -25,7 +25,7 @@ HRESULT Animation::UpdateTransformationMatrix(_double _timeDelta)
 		m_AnimDesc.m_IsFinished = FALSE;
 	}
 
-	_uint		pNumChannels = m_Channels.size();
+	_uint		pNumChannels = (_uint)m_Channels.size();
 
 	for (_uint i = 0; i < pNumChannels; i++)
 	{
@@ -40,10 +40,12 @@ HRESULT Animation::UpdateTransformationMatrix(_double _timeDelta)
 
 
 		if (TRUE == m_AnimDesc.m_IsFinished)
+		{
+			pCurrentKeyFrameIndex = 0;
 			m_Channels[i]->SetCurrentKeyFrameIndex(0);
+		}
 
-
-		_uint		pNumKeyFrame = pKeyFrame.size();
+		_uint		pNumKeyFrame = (_uint)pKeyFrame.size();
 
 		/* 애니메이션 시작전 */
 		if (m_AnimDesc.m_TrackPositionAcc < pKeyFrame[0].m_Time)
@@ -54,7 +56,7 @@ HRESULT Animation::UpdateTransformationMatrix(_double _timeDelta)
 			pPosition = XMVectorSetW(pPosition, 1.f);
 		}
 		/* 애니메이션 끝남 */
-		else if (m_AnimDesc.m_TrackPositionAcc < pKeyFrame[pNumKeyFrame-1].m_Time) {
+		else if (m_AnimDesc.m_TrackPositionAcc > pKeyFrame[pNumKeyFrame-1].m_Time) {
 			pScale = XMLoadFloat3(&pKeyFrame[pNumKeyFrame-1].m_Scale);
 			pRotation = XMLoadFloat4(&pKeyFrame[pNumKeyFrame-1].m_Rotation);
 			pPosition = XMLoadFloat3(&pKeyFrame[pNumKeyFrame-1].m_Position);
@@ -65,8 +67,8 @@ HRESULT Animation::UpdateTransformationMatrix(_double _timeDelta)
 			if (m_AnimDesc.m_TrackPositionAcc >= pKeyFrame[pCurrentKeyFrameIndex + 1].m_Time)
 				m_Channels[i]->SetCurrentKeyFrameIndex(++pCurrentKeyFrameIndex);
 
-			_float	pRatio = (m_AnimDesc.m_TrackPositionAcc - pKeyFrame[pCurrentKeyFrameIndex].m_Time) /
-				(pKeyFrame[pCurrentKeyFrameIndex + 1].m_Time - pKeyFrame[pCurrentKeyFrameIndex].m_Time);
+			_float	pRatio = (_float)((m_AnimDesc.m_TrackPositionAcc - pKeyFrame[pCurrentKeyFrameIndex].m_Time) /
+				(pKeyFrame[pCurrentKeyFrameIndex + 1].m_Time - pKeyFrame[pCurrentKeyFrameIndex].m_Time));
 
 			_vector pSourScale, pSourRotation, pSourPosition,
 						pDestScale, pDestRotation, pDestPosition;
