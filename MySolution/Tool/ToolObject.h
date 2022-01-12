@@ -31,6 +31,7 @@ public:
 	virtual HRESULT Render();
 
 	_bool		GetPickCheckState() { return m_PickChecking; };
+	TOOLOBJDESC GetObjectDesc() const { return m_ToolObjDesc; }
 
 private:
 	void	CheckButton();

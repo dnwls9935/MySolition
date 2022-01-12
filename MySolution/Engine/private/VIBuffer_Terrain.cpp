@@ -319,11 +319,23 @@ void CVIBuffer_Terrain::SetVerticeY(_float4 _mousePos, _float _y, _int _scale, _
 	Safe_Delete_Array(pIndices);
 
 	m_pDeviceContext->Unmap(m_pVB, 0);
-	//SetNormalVector();
+}
+
+void CVIBuffer_Terrain::SetVerticeY(_int _index, _float _y)
+{
+	D3D11_MAPPED_SUBRESOURCE data;
+	m_pDeviceContext->Map(m_pVB, 0, D3D11_MAP_WRITE_DISCARD, 0, &data);
+	((VTXNORTEX*)m_pVertices)[_index].vPosition.y = _y;
+	((VTXNORTEX*)(data.pData))[_index] = ((VTXNORTEX*)m_pVertices)[_index];
+
+	m_pDeviceContext->Unmap(m_pVB, 0);
 }
 
 void CVIBuffer_Terrain::SetNormalVector()
 {
+	D3D11_MAPPED_SUBRESOURCE data;
+	m_pDeviceContext->Map(m_pVB, 0, D3D11_MAP_WRITE_DISCARD, 0, &data);
+	/* //////////////////////////////////////////// */
 	FACEINDICES32*		pIndices = new FACEINDICES32[m_iNumPrimitive];
 	ZeroMemory(pIndices, sizeof(FACEINDICES32) * m_iNumPrimitive);
 
@@ -387,11 +399,13 @@ void CVIBuffer_Terrain::SetNormalVector()
 				XMVector3Normalize(XMLoadFloat3(&((VTXNORTEX*)m_pVertices)[pIndices[iNumPrimitive]._2].vNormal) + vNormal));
 
 			++iNumPrimitive;
+			((VTXNORTEX*)(data.pData))[iIndex] = ((VTXNORTEX*)m_pVertices)[iIndex];
 		}
 	}
-
+	/* //////////////////////////////////////////// */
 
 	Safe_Delete_Array(pIndices);
+	m_pDeviceContext->Unmap(m_pVB, 0);
 }
 
 CVIBuffer_Terrain * CVIBuffer_Terrain::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, const _tchar* pShaderFilePath, _uint x, _uint z)

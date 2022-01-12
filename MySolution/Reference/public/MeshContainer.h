@@ -16,6 +16,7 @@ public:
 	}MESHDESC;
 public:
 	explicit CMeshContainer(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	explicit CMeshContainer(const CMeshContainer& rhs);
 	virtual ~CMeshContainer() = default;
 
 public:
@@ -49,6 +50,7 @@ private:
 
 public:
 	static CMeshContainer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, const MESHDESC& MeshDesc);
+	CMeshContainer* Clone();
 	virtual void Free() override;
 };
 

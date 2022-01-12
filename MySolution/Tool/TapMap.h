@@ -27,6 +27,11 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 public:
+	HRESULT	SaveTerrainLayer(HANDLE& hFile);
+	HRESULT SaveObjectLayer(HANDLE& hFile);
+
+	HRESULT LoadTerrainLayer(HANDLE& hFile);
+	HRESULT	LoadObjectLayer(HANDLE& hFile);
 
 public:
 	virtual void PostNcDestroy();
@@ -45,4 +50,5 @@ public:
 	afx_msg void OnBnClickedCheck2();
 	CButton m_Modify;
 	afx_msg void OnBnClickedCheck3();
+	afx_msg void OnBnClickedButton2();
 };

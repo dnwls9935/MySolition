@@ -15,7 +15,7 @@ public:
 	_int Tick(_double TimeDelta);
 	_int LateTick(_double TimeDelta);
 
-
+	list<class CGameObject*>& GetObjectList() { return m_Objects; };
 
 private:
 	list<class CGameObject*>			m_Objects;

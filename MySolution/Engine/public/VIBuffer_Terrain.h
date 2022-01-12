@@ -18,8 +18,8 @@ public:
 	_uint	GetVerticesZ() { return m_iNumVerticesZ; };
 
 	void	SetVerticeY(_float4 _mousePos, _float _y, _int _scale, _uint _type);
-
-	void	SetNormalVector();
+	void SetVerticeY(_int _index, _float _y);
+	void SetNormalVector();
 
 private:
 	_uint			m_iNumVerticesX = 0;

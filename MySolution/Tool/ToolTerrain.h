@@ -24,6 +24,13 @@ public:
 	virtual _int LateTick(_double TimeDelta);
 	virtual HRESULT Render();
 
+	void*		GetVertices();
+	_uint		GetX();
+	_uint		GetZ();
+
+	HRESULT SetVertexY(_int _index, _float _y);
+	void		SetNormalVector();
+
 private:
 	void			PickHeightTerrain(_double _timeDelta);
 	void			BatchingObject(_double _timeDelta);

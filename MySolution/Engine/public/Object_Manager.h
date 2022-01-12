@@ -24,6 +24,8 @@ public:
 public:
 	HRESULT Clear_Object_Manager(_uint iLevelIndex);
 	CGameObject*	FindObject(const _tchar* _tag);
+	list<class CGameObject*>& GetObjectList(_uint _levelIdx, const _tchar* _tag);
+	//_uint		GetNumLevel() const { return m_iNumLevels; };
 
 private:
 	unordered_map<const _tchar*, class CGameObject*>			m_Prototype;

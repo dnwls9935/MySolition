@@ -89,7 +89,7 @@ HRESULT CToolView::RenderEnd()
 HRESULT CToolView::ReadyProtoAll()
 {
 	/* 컴포넌트 원형 생성한다. */
-	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_VIBuffer_Terrain"), CVIBuffer_Terrain::Create(dx11Device, dx11DeviceContext, TEXT("../Client/Bin/ShaderFiles/Shader_Terrain_Tool.hlsl"),200, 150))))
+	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_VIBuffer_Terrain"), CVIBuffer_Terrain::Create(dx11Device, dx11DeviceContext, TEXT("../Client/Bin/ShaderFiles/Shader_Terrain_Tool.hlsl"),150, 150))))
 		return E_FAIL;
 	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Transform"), CTransform::Create(dx11Device, dx11DeviceContext))))
 		return E_FAIL;
@@ -102,7 +102,7 @@ HRESULT CToolView::ReadyProtoAll()
 
 	_matrix			PivotMatrix;
 	PivotMatrix = /*XMMatrixScaling(0.01f, 0.01f, 0.01f) * */XMMatrixRotationX(XMConvertToRadians(90.0f)) * XMMatrixRotationY(XMConvertToRadians(180.0f));
-	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Model_Kaelthas"), CModel::Create(dx11Device, dx11DeviceContext, "../Client/Bin/Resources/Meshes/Hyperion/", "HyperionTurretGun.FBX", TEXT("../Client/Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_ANIM))))
+	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Model_Zero"), CModel::Create(dx11Device, dx11DeviceContext, "../Client/Bin/Resources/Meshes/Zero/", "ZeroTest.FBX", TEXT("../Client/Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_ANIM))))
 		return E_FAIL;
 
 
@@ -112,7 +112,7 @@ HRESULT CToolView::ReadyProtoAll()
 	if (FAILED(gameInstance->Add_Prototype(TEXT("Prototype_GameObject_Dyanmic_Camera"), ToolCamera::Create(dx11Device, dx11DeviceContext))))
 		return E_FAIL;
 
-	if (FAILED(gameInstance->Add_Prototype(TEXT("Prototype_GameObject_Model_Kaelthas"), ToolObject::Create(dx11Device, dx11DeviceContext))))
+	if (FAILED(gameInstance->Add_Prototype(TEXT("Prototype_GameObject_Model_Zero"), ToolObject::Create(dx11Device, dx11DeviceContext))))
 		return E_FAIL;
 	
 
@@ -322,12 +322,12 @@ HRESULT CToolView::ReadyTerrainLayer(const _tchar* _layerTag)
 HRESULT CToolView::ReadyObjectLayer(const _tchar * _layerTag)
 {
 	ToolObject::TOOLOBJDESC objDesc;
-	objDesc.m_BufferTag = TEXT("Prototype_Component_Model_Kaelthas");
-	objDesc.m_ObjTag = TEXT("Prototype_GameObject_Model_Kaelthas");
+	objDesc.m_BufferTag = TEXT("Prototype_Component_Model_Zero");
+	objDesc.m_ObjTag = TEXT("Prototype_GameObject_Model_Zero");
 	objDesc.m_Position = { 0.f,0.f,0.f};
 	if (FAILED(gameInstance->Add_GameObjectToLayer(1, _layerTag, objDesc.m_ObjTag, &objDesc)))
 		return E_FAIL;
-	m_form->tapMap->m_objectListBox.AddString(TEXT("Kaelthas"));
+	m_form->tapMap->m_objectListBox.AddString(TEXT("Zero"));
 	
 	return S_OK;
 }

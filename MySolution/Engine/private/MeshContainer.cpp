@@ -10,6 +10,15 @@ CMeshContainer::CMeshContainer(ID3D11Device * pDevice, ID3D11DeviceContext * pDe
 	Safe_AddRef(m_pDevice);
 }
 
+CMeshContainer::CMeshContainer(const CMeshContainer & rhs)
+	: m_pDevice(rhs.m_pDevice)
+	, m_pDeviceContext(rhs.m_pDeviceContext)
+	, m_MeshDesc(rhs.m_MeshDesc)
+{
+	Safe_AddRef(m_pDeviceContext);
+	Safe_AddRef(m_pDevice);
+}
+
 HRESULT CMeshContainer::NativeConstruct(const MESHDESC & MeshDesc)
 {
 	memcpy(&m_MeshDesc, &MeshDesc, sizeof(MESHDESC));
@@ -57,6 +66,11 @@ CMeshContainer * CMeshContainer::Create(ID3D11Device * pDevice, ID3D11DeviceCont
 
 	return pInstance;
 
+}
+
+CMeshContainer * CMeshContainer::Clone()
+{
+	return new CMeshContainer(*this);
 }
 
 

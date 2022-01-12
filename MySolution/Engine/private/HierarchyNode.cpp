@@ -54,11 +54,15 @@ CHierarchyNode * CHierarchyNode::Create(ID3D11Device * pDevice, ID3D11DeviceCont
 void CHierarchyNode::Free()
 {
 
+
 	Safe_Release(m_pParent);
 
 	for (auto& pChannel : m_Channels)
 		Safe_Release(pChannel);
 
 	m_Channels.clear();
+
+	Safe_Release(m_pDeviceContext);
+	Safe_Release(m_pDevice);
 
 }

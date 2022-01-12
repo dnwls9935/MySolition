@@ -16,27 +16,20 @@ CModel::CModel(const CModel & rhs)
 	: CVIBuffer(rhs)
 	, m_pFaceIndices(rhs.m_pFaceIndices)
 	, m_pScene(rhs.m_pScene)
-	, m_MeshContainers(rhs.m_MeshContainers)
 	, m_Materials(rhs.m_Materials)
 	, m_PivotMatrix(rhs.m_PivotMatrix)
 	, m_iCurrentAnimation(rhs.m_iCurrentAnimation)
-	, m_Animations(rhs.m_Animations)
-	, m_HierarchyNodes(rhs.m_HierarchyNodes)
 {
-
-	for (auto& pMeshContainer : m_MeshContainers)
-		Safe_AddRef(pMeshContainer);
+	for (auto& pMeshContainer : rhs.m_MeshContainers)
+	{
+		m_MeshContainers.push_back(pMeshContainer->Clone());
+	}
 
 	for (auto& pMaterial : m_Materials)
 	{
 		for (_uint i = 0; i < AI_TEXTURE_TYPE_MAX; ++i)
 			Safe_AddRef(pMaterial->pMeshTexture[i]);
 	}
-
-	for (auto& pAnimation : m_Animations)
-		Safe_AddRef(pAnimation);
-	for (auto& pNode : m_HierarchyNodes)
-		Safe_AddRef(pNode);
 }
 
 HRESULT CModel::NativeConstruct_Prototype(const char * pMeshFilePath, const char * pMeshFileName, const _tchar* pShaderFilePath, _fmatrix PivotMatrix, TYPE eMeshType)
@@ -95,8 +88,25 @@ HRESULT CModel::NativeConstruct_Prototype(const char * pMeshFilePath, const char
 	return S_OK;
 }
 
-HRESULT CModel::NatvieConstruct(void * pArg)
+HRESULT CModel::NativeConstruct(void * pArg)
 {
+	if (TYPE_STATIC == m_eMeshType)
+		return S_OK;
+
+	if (FAILED(Create_HierarchyNode(m_pScene->mRootNode)))
+		return E_FAIL;
+
+	sort(m_HierarchyNodes.begin(), m_HierarchyNodes.end(), [](CHierarchyNode* pSour, CHierarchyNode* pDest)
+	{
+		return pSour->Get_Depth() < pDest->Get_Depth();
+	});
+
+	if (FAILED(Clone_SkinnedDesc()))
+		return E_FAIL;
+
+	if (FAILED(Create_Animation()))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -183,7 +193,9 @@ HRESULT CModel::Reserve_VertexIndexData()
 
 	m_pVertices = new VTXMESH[m_iNumVertices];
 	ZeroMemory(m_pVertices, sizeof(VTXMESH) * m_iNumVertices);
+
 	m_pFaceIndices = new FACEINDICES32[m_iNumPrimitive];
+	ZeroMemory(m_pFaceIndices, sizeof(FACEINDICES32) * m_iNumPrimitive);
 
 	return S_OK;
 }
@@ -221,7 +233,7 @@ HRESULT CModel::Create_Materials()
 
 			_tchar		szFullName[MAX_PATH] = TEXT("");
 
-			MultiByteToWideChar(CP_ACP, 0, szMeshFilePath, (_int)strlen(szMeshFilePath), szFullName, MAX_PATH);
+			MultiByteToWideChar(CP_ACP, 0, szMeshFilePath, strlen(szMeshFilePath), szFullName, MAX_PATH);
 
 			pMeshMaterial->pMeshTexture[j] = CTexture::Create(m_pDevice, m_pDeviceContext, szFullName);
 			if (nullptr == pMeshMaterial->pMeshTexture[j])
@@ -418,6 +430,34 @@ HRESULT CModel::Create_SkinnedDesc()
 					((VTXMESH*)m_pVertices)[iVertexIndex].vBlendWeight.w = pBone->mWeights[k].mWeight;
 				}
 			}
+		}
+	}
+
+	return S_OK;
+}
+
+HRESULT CModel::Clone_SkinnedDesc()
+{
+	for (_uint i = 0; i < m_pScene->mNumMeshes; ++i)
+	{
+		aiMesh*		pMesh = m_pScene->mMeshes[i];
+		CMeshContainer*	pMeshContainer = m_MeshContainers[i];
+
+		for (_uint j = 0; j < pMesh->mNumBones; ++j)
+		{
+			aiBone*		pBone = pMesh->mBones[j];
+
+			BONEDESC*	pBoneDesc = new BONEDESC;
+			_matrix		OffSetMatrix;
+
+			OffSetMatrix = XMMatrixTranspose(_matrix(pBone->mOffsetMatrix[0]));
+			XMStoreFloat4x4(&pBoneDesc->OffsetMatrix, OffSetMatrix);
+
+			pBoneDesc->pNode = Find_HierarchyNode(pBone->mName.data);
+			if (nullptr == pBoneDesc->pNode)
+				return E_FAIL;
+
+			pMeshContainer->Add_BoneDesc(pBoneDesc);
 		}
 	}
 

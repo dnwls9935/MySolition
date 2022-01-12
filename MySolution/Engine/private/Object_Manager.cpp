@@ -119,6 +119,16 @@ CGameObject* CObject_Manager::FindObject(const _tchar * _tag)
 	return iter->second;
 }
 
+list<CGameObject*>& CObject_Manager::GetObjectList(_uint _levelIdx, const _tchar* _tag)
+{
+	auto	iter = find_if(m_pLayers[_levelIdx].begin(), m_pLayers[_levelIdx].end(), CTag_Finder(_tag));
+
+	if (iter == m_pLayers[_levelIdx].end())
+		return list<CGameObject*>();
+
+	return iter->second->GetObjectList();
+}
+
 CGameObject * CObject_Manager::Find_Prototype(const _tchar * pPrototypeTag)
 {
 	auto	iter = find_if(m_Prototype.begin(), m_Prototype.end(), CTag_Finder(pPrototypeTag));

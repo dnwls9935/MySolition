@@ -83,6 +83,27 @@ _int ToolObject::Tick(_double TimeDelta)
 		m_PickChecking = FALSE;
 	}
 
+	if (gameInstance->Get_DIKeyState(DIK_1) & 0x80)
+	{
+		m_pModelCom->SetUp_AnimationIndex(0);
+	}
+	else 	if (gameInstance->Get_DIKeyState(DIK_2) & 0x80)
+	{
+		m_pModelCom->SetUp_AnimationIndex(1);
+	}
+	else 	if (gameInstance->Get_DIKeyState(DIK_3) & 0x80)
+	{
+		m_pModelCom->SetUp_AnimationIndex(2);
+	}
+	else 	if (gameInstance->Get_DIKeyState(DIK_4) & 0x80)
+	{
+		m_pModelCom->SetUp_AnimationIndex(3);
+	}
+	else 	if (gameInstance->Get_DIKeyState(DIK_5) & 0x80)
+	{
+		m_pModelCom->SetUp_AnimationIndex(4);
+	}
+
 	RELEASE_INSTANCE(CGameInstance);
 
 	return _int();

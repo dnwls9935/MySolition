@@ -15,11 +15,11 @@ private:
 
 public:
 	_uint Get_NumMeshContainer() {
-		return (_uint)m_MeshContainers.size();
+		return m_MeshContainers.size();
 	}
 public:
 	HRESULT NativeConstruct_Prototype(const char * pMeshFilePath, const char * pMeshFileName, const _tchar* pShaderFilePath, _fmatrix PivotMatrix, TYPE eMeshType);
-	HRESULT NatvieConstruct(void* pArg);
+	HRESULT NativeConstruct(void* pArg);
 public:
 	HRESULT SetUp_TextureOnShader(const char* pConstantName, _uint iMeshContainerIndex, aiTextureType eType);
 	void SetUp_AnimationIndex(_uint iAnimationIndex) {
@@ -66,6 +66,7 @@ private:
 	HRESULT Create_HierarchyNode(aiNode* pNode, CHierarchyNode* pParent = nullptr, _uint iDepth = 0);
 
 	HRESULT Create_SkinnedDesc();
+	HRESULT Clone_SkinnedDesc();
 
 	HRESULT Create_Animation();
 

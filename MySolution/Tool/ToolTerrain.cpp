@@ -101,6 +101,32 @@ HRESULT ToolTerrain::Render()
 	return S_OK;
 }
 
+void * ToolTerrain::GetVertices()
+{
+	return m_pVIBufferCom->GetVertices();
+}
+
+_uint ToolTerrain::GetX()
+{
+	return m_pVIBufferCom->GetVerticesX();
+}
+
+_uint ToolTerrain::GetZ()
+{
+	return m_pVIBufferCom->GetVerticesZ();
+}
+HRESULT ToolTerrain::SetVertexY(_int _index, _float _y)
+{
+	m_pVIBufferCom->SetVerticeY(_index, _y);
+
+	return S_OK;
+}
+
+void ToolTerrain::SetNormalVector()
+{
+	m_pVIBufferCom->SetNormalVector();
+}
+
 void ToolTerrain::PickHeightTerrain(_double TimeDelta)
 {
 	CGameInstance* gameInstance = GET_INSTANCE(CGameInstance);
