@@ -2,6 +2,21 @@
 
 namespace Engine
 {
+	typedef struct tagKeyFrame
+	{
+		double			Time;
+		XMFLOAT3		vScale;
+		XMFLOAT4		vRotation;
+		XMFLOAT3		vPosition;
+	}KEYFRAME;
+
+	typedef struct tagBoneDesc
+	{
+		/* 뼈대의 로컬 -> 정점의 로컬스페이스 변환을 위한 행렬이다. */
+		XMFLOAT4X4		OffsetMatrix;
+		class CHierarchyNode*	pNode;
+	}BONEDESC;
+
 	typedef struct MeshMaterial
 	{
 		class CTexture*		pMeshTexture[AI_TEXTURE_TYPE_MAX];

@@ -1,114 +1,127 @@
 #include "..\public\Animation.h"
-
 #include "Channel.h"
 
-Animation::Animation()
+CAnimation::CAnimation()
 {
 }
 
-HRESULT Animation::NativeConstruct(Animation::ANIMDESC _animDesc)
+HRESULT CAnimation::NativeConstruct(char * pName, _double Duration, _double PlaySpeed)
 {
-	m_AnimDesc = _animDesc;
-	return S_OK;
-}
-
-HRESULT Animation::UpdateTransformationMatrix(_double _timeDelta)
-{
-	m_AnimDesc.m_TrackPositionAcc += m_AnimDesc.m_TrackPlaySpeed * _timeDelta;
-
-	if (m_AnimDesc.m_TrackPositionAcc >= m_AnimDesc.m_Duration)
-	{
-		m_AnimDesc.m_IsFinished = TRUE;
-		m_AnimDesc.m_TrackPositionAcc = 0.0;
-	}
-	else {
-		m_AnimDesc.m_IsFinished = FALSE;
-	}
-
-	_uint		pNumChannels = (_uint)m_Channels.size();
-
-	for (_uint i = 0; i < pNumChannels; i++)
-	{
-		vector<Channel::KEYFRAME>		pKeyFrame = m_Channels[i]->GetKeyFrame();
-
-		_uint pCurrentKeyFrameIndex = m_Channels[i]->GetCurrentKeyFrameIndex();
-
-		_vector pScale, pRotation, pPosition;
-		pScale = XMVectorZero();
-		pRotation = XMVectorZero();
-		pPosition = XMVectorZero();
-
-
-		if (TRUE == m_AnimDesc.m_IsFinished)
-		{
-			pCurrentKeyFrameIndex = 0;
-			m_Channels[i]->SetCurrentKeyFrameIndex(0);
-		}
-
-		_uint		pNumKeyFrame = (_uint)pKeyFrame.size();
-
-		/* 애니메이션 시작전 */
-		if (m_AnimDesc.m_TrackPositionAcc < pKeyFrame[0].m_Time)
-		{
-			pScale = XMLoadFloat3(&pKeyFrame[0].m_Scale);
-			pRotation = XMLoadFloat4(&pKeyFrame[0].m_Rotation);
-			pPosition = XMLoadFloat3(&pKeyFrame[0].m_Position);
-			pPosition = XMVectorSetW(pPosition, 1.f);
-		}
-		/* 애니메이션 끝남 */
-		else if (m_AnimDesc.m_TrackPositionAcc > pKeyFrame[pNumKeyFrame-1].m_Time) {
-			pScale = XMLoadFloat3(&pKeyFrame[pNumKeyFrame-1].m_Scale);
-			pRotation = XMLoadFloat4(&pKeyFrame[pNumKeyFrame-1].m_Rotation);
-			pPosition = XMLoadFloat3(&pKeyFrame[pNumKeyFrame-1].m_Position);
-			pPosition = XMVectorSetW(pPosition, 1.f);
-		}
-		/* 아직 애니메이션이 돌고있다 -> 특정 키프레임과 그 다음 키프레임 사이 어딘가에 있다 */
-		else {
-			if (m_AnimDesc.m_TrackPositionAcc >= pKeyFrame[pCurrentKeyFrameIndex + 1].m_Time)
-				m_Channels[i]->SetCurrentKeyFrameIndex(++pCurrentKeyFrameIndex);
-
-			_float	pRatio = (_float)((m_AnimDesc.m_TrackPositionAcc - pKeyFrame[pCurrentKeyFrameIndex].m_Time) /
-				(pKeyFrame[pCurrentKeyFrameIndex + 1].m_Time - pKeyFrame[pCurrentKeyFrameIndex].m_Time));
-
-			_vector pSourScale, pSourRotation, pSourPosition,
-						pDestScale, pDestRotation, pDestPosition;
-
-			pSourScale = XMLoadFloat3(&pKeyFrame[pCurrentKeyFrameIndex].m_Scale);
-			pSourRotation = XMLoadFloat4(&pKeyFrame[pCurrentKeyFrameIndex].m_Rotation);
-			pSourPosition = XMLoadFloat3(&pKeyFrame[pCurrentKeyFrameIndex].m_Position);
-
-			pDestScale = XMLoadFloat3(&pKeyFrame[pCurrentKeyFrameIndex].m_Scale);
-			pDestRotation = XMLoadFloat4(&pKeyFrame[pCurrentKeyFrameIndex].m_Rotation);
-			pDestPosition = XMLoadFloat3(&pKeyFrame[pCurrentKeyFrameIndex].m_Position);
-
-			pScale = XMVectorLerp(pSourScale, pDestScale, pRatio);
-			pRotation = XMQuaternionSlerp(pSourRotation, pDestRotation, pRatio);
-			pPosition = XMVectorLerp(pSourPosition, pDestPosition, pRatio);
-
-			_matrix pTransformationMatrix = XMMatrixAffineTransformation(pScale, XMVectorSet(0.f, 0.f, 0.f, 0.f) ,pRotation, pPosition);
-
-			m_Channels[i]->SetTrasnformationMatrix(pTransformationMatrix);
-		}
-	}
+	strcpy_s(m_szName, pName);
+	m_Duration = Duration;
+	m_PlaySpeed = PlaySpeed;
 
 	return S_OK;
 }
 
-Animation * Animation::Create(Animation::ANIMDESC _animDesc)
+HRESULT CAnimation::Add_Channel(CChannel * pChannel)
 {
-	Animation* pInstance = new Animation();
-	if (FAILED(pInstance->NativeConstruct(_animDesc)))
+	m_Channels.push_back(pChannel);
+
+	return S_OK;
+}
+
+HRESULT CAnimation::Update_TransformationMatrix(_double TimeDelta)
+{
+	m_TrackPositionAcc += m_PlaySpeed * TimeDelta;
+	if (m_TrackPositionAcc >= m_Duration)
 	{
-		MSGBOX("Faild to Create Animation");
+		m_isFinished = true;
+		m_TrackPositionAcc = 0.0;
+	}
+	else
+		m_isFinished = false;
+
+	_uint		iNumChannels = m_Channels.size();
+
+	for (_uint i = 0; i < iNumChannels; ++i)
+	{
+		vector<KEYFRAME*>		KeyFrames = m_Channels[i]->Get_KeyFrames();
+
+		_uint	iCurrentKeyFrameIndex = m_Channels[i]->Get_CurrentKeyFrameIndex();
+
+		_vector		vScale, vRotation, vPosition;
+		vScale = XMVectorZero();
+		vRotation = XMVectorZero();
+		vPosition = XMVectorZero();
+
+		if (true == m_isFinished)
+		{
+			iCurrentKeyFrameIndex = 0;
+			m_Channels[i]->Set_CurrentKeyFrameIndex(0);
+		}
+
+		_uint		iNumKeyFrame = KeyFrames.size();
+
+		/* 하나의 키프에ㅣㅁ 상태를 가지면 된다. */
+		if (m_TrackPositionAcc <= KeyFrames[0]->Time)
+		{
+			vScale = XMLoadFloat3(&KeyFrames[0]->vScale);
+			vRotation = XMLoadFloat4(&KeyFrames[0]->vRotation);
+			vPosition = XMLoadFloat3(&KeyFrames[0]->vPosition);
+			vPosition = XMVectorSetW(vPosition, 1.f);
+		}
+
+		/* 하나의 키프에ㅣㅁ 상태를 가지면 된다. */
+		else if (m_TrackPositionAcc > KeyFrames[iNumKeyFrame - 1]->Time)
+		{
+			vScale = XMLoadFloat3(&KeyFrames[iNumKeyFrame - 1]->vScale);
+			vRotation = XMLoadFloat4(&KeyFrames[iNumKeyFrame - 1]->vRotation);
+			vPosition = XMLoadFloat3(&KeyFrames[iNumKeyFrame - 1]->vPosition);
+			vPosition = XMVectorSetW(vPosition, 1.f);
+		}
+
+		/* 특정 키프레임과 키프=레임 사이에 있다.  */
+		else
+		{
+			if (m_TrackPositionAcc >= KeyFrames[iCurrentKeyFrameIndex + 1]->Time)
+				m_Channels[i]->Set_CurrentKeyFrameIndex(++iCurrentKeyFrameIndex);
+
+			_float		fRatio = (m_TrackPositionAcc - KeyFrames[iCurrentKeyFrameIndex]->Time) /
+				(KeyFrames[iCurrentKeyFrameIndex + 1]->Time - KeyFrames[iCurrentKeyFrameIndex]->Time);
+
+			_vector		vSourScale, vSourRotation, vSourPosition;
+			_vector		vDestScale, vDestRotation, vDestPosition;
+
+			vSourScale = XMLoadFloat3(&KeyFrames[iCurrentKeyFrameIndex]->vScale);
+			vSourRotation = XMLoadFloat4(&KeyFrames[iCurrentKeyFrameIndex]->vRotation);
+			vSourPosition = XMLoadFloat3(&KeyFrames[iCurrentKeyFrameIndex]->vPosition);
+
+			vDestScale = XMLoadFloat3(&KeyFrames[iCurrentKeyFrameIndex + 1]->vScale);
+			vDestRotation = XMLoadFloat4(&KeyFrames[iCurrentKeyFrameIndex + 1]->vRotation);
+			vDestPosition = XMLoadFloat3(&KeyFrames[iCurrentKeyFrameIndex + 1]->vPosition);
+
+			vScale = XMVectorLerp(vSourScale, vDestScale, fRatio);
+			vRotation = XMQuaternionSlerp(vSourRotation, vDestRotation, fRatio);
+			vPosition = XMVectorLerp(vSourPosition, vDestPosition, fRatio);
+			vPosition = XMVectorSetW(vPosition, 1.f);
+		}
+		_matrix		TransformationMatrix = XMMatrixAffineTransformation(vScale, XMVectorSet(0.f, 0.f, 0.f, 1.f), vRotation, vPosition);
+
+		m_Channels[i]->Set_TransformationMatrix(TransformationMatrix);
+	}
+
+	return S_OK;
+}
+
+CAnimation * CAnimation::Create(char * pName, _double Duration, _double PlaySpeed)
+{
+	CAnimation*		pInstance = new CAnimation();
+
+	if (FAILED(pInstance->NativeConstruct(pName, Duration, PlaySpeed)))
+	{
+		MSGBOX("Failed to Creating CAnimation");
 		Safe_Release(pInstance);
 	}
+
 	return pInstance;
 }
 
-void Animation::Free()
+void CAnimation::Free()
 {
 	for (auto& pChannel : m_Channels)
 		Safe_Release(pChannel);
 
 	m_Channels.clear();
+
 }

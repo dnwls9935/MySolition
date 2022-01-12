@@ -1,42 +1,66 @@
 #pragma once
 
 #include "Base.h"
+#include "Channel.h"
+
+/* 뼈하나의 정보를 표현하는 노드다. */
 
 BEGIN(Engine)
-class HierarchyNode final : public CBase
+
+class CHierarchyNode : public CBase
 {
+private:
+	explicit CHierarchyNode(ID3D11Device*	pDevice, ID3D11DeviceContext* pDeviceContext);
+	virtual ~CHierarchyNode() = default;
 
-public: typedef struct tagHierarchyNodeDesc {
-		char					m_BoneName[MAX_PATH] = "";
+public:
+	_uint	Get_Depth() const {
+		return m_iDepth;
+	}
 
-		HierarchyNode*			m_Parent = nullptr;
-		_uint					m_Depth = 0;
+	const char* Get_Name() const {
+		return m_szBoneName;
+	}
 
-		_float4x4				m_OffsetMatrix;
-		_float4x4				m_TransformationMatrix;
-		_float4x4				m_CombinedTrasformationMatrix;
-	}HIERARCHY_DESE;
+	_fmatrix Get_CombinedMatrix() const {
+		return XMLoadFloat4x4(&m_CombinedTransformationMatrix);
+	}
 
-public:		explicit HierarchyNode(ID3D11Device* _dx11Device, ID3D11DeviceContext* _dx11DeviceContext);
-public:		virtual ~HierarchyNode() = default;
+public:
+	void Reserve_Channel(_uint iNumAnimation) {
+		m_Channels.resize(iNumAnimation);
+	}
+	void Add_Channel(_uint iAnimationIndex, class CChannel* pChannel) {
+		m_Channels[iAnimationIndex] = pChannel;
+		Safe_AddRef(pChannel);
+	}
 
-public:		_uint					GetDepth() const { return m_HierarchyDesc.m_Depth; };
-public:		const char*		GetBoneName()const { return m_HierarchyDesc.m_BoneName; }
-public:		void					ReserveChannel(_uint _numAnimation) { m_Channels.resize(_numAnimation); }
-public:		HRESULT			AddChannel(class Channel* _channel) { m_Channels.push_back(_channel); return S_OK; };
-public:		void					UpdateCombinedTransformationMatrix(_uint _animationIndex);
-public:		_matrix			GetCombinedMatrix() const { return XMLoadFloat4x4(&m_HierarchyDesc.m_CombinedTrasformationMatrix); };
+public:
+	HRESULT NativeConstruct(char* pBoneName, _fmatrix TransformationMatrix, _uint iDepth, CHierarchyNode* pParent);
+	void Update_CombinedTransformationMatrix(_uint iAnimationIndex);
+private:
+	ID3D11Device*			m_pDevice = nullptr;
+	ID3D11DeviceContext*	m_pDeviceContext = nullptr;
 
-private:		HRESULT	NativeConstruct(HierarchyNode::HIERARCHY_DESE _HierarchyDesc);
+private:
+	/* 노드의 이름과 뼈의 이름은 1:1로 매칭된다. */
+	char				m_szBoneName[MAX_PATH] = "";
+	CHierarchyNode*		m_pParent = nullptr;
+	_uint				m_iDepth = 0;
+
+	_float4x4			m_OffsetMatrix;
+	_float4x4			m_TransformationMatrix;
+	_float4x4			m_CombinedTransformationMatrix;
+
+	/* 정점을 그리기위한 최종 행렬은. */
+	/* m_OffsetMatrix * m_CombinedTransformationMatrix(m_TransformationMatrix * 부모`s m_CombinedTransformationMatrix) * 객체`s 월드 */
 
 
-private:		ID3D11Device*					dx11Device;
-private:		ID3D11DeviceContext*		dx11DeviceContext;
-private:		HIERARCHY_DESE			m_HierarchyDesc;
-private:		vector<class Channel*>	m_Channels;
+	vector<class CChannel*>			m_Channels;
 
-public:		static HierarchyNode* Create(ID3D11Device* _dx11Device, ID3D11DeviceContext* _dx11DeviceContext,HierarchyNode::HIERARCHY_DESE _HierarchyDesc);
-public:		virtual void Free() override;
+public:
+	static CHierarchyNode* Create(ID3D11Device*	pDevice, ID3D11DeviceContext* pDeviceContext, char* pBoneName, _fmatrix TransformationMatrix, _uint iDepth = 0, CHierarchyNode* pParent = nullptr);
+	virtual void Free() override;
 };
 
 END

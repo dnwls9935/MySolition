@@ -1,9 +1,9 @@
 #include "..\public\Model.h"
 #include "MeshContainer.h"
-#include "Texture.h"
 #include "HierarchyNode.h"
-#include "Animation.h"
+#include "Texture.h"
 #include "Channel.h"
+#include "Animation.h"
 
 
 CModel::CModel(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
@@ -19,10 +19,11 @@ CModel::CModel(const CModel & rhs)
 	, m_MeshContainers(rhs.m_MeshContainers)
 	, m_Materials(rhs.m_Materials)
 	, m_PivotMatrix(rhs.m_PivotMatrix)
-	, m_CurrentAnimation(rhs.m_CurrentAnimation)
+	, m_iCurrentAnimation(rhs.m_iCurrentAnimation)
 	, m_Animations(rhs.m_Animations)
 	, m_HierarchyNodes(rhs.m_HierarchyNodes)
 {
+
 	for (auto& pMeshContainer : m_MeshContainers)
 		Safe_AddRef(pMeshContainer);
 
@@ -32,22 +33,23 @@ CModel::CModel(const CModel & rhs)
 			Safe_AddRef(pMaterial->pMeshTexture[i]);
 	}
 
-	for (auto& pAnim : m_Animations)
-		Safe_AddRef(pAnim);
+	for (auto& pAnimation : m_Animations)
+		Safe_AddRef(pAnimation);
 	for (auto& pNode : m_HierarchyNodes)
 		Safe_AddRef(pNode);
 }
 
-HRESULT CModel::NativeConstruct_Prototype(MODELDESC _modelDesc)
+HRESULT CModel::NativeConstruct_Prototype(const char * pMeshFilePath, const char * pMeshFileName, const _tchar* pShaderFilePath, _fmatrix PivotMatrix, TYPE eMeshType)
 {
-	XMStoreFloat4x4(&m_PivotMatrix, _modelDesc.mPivotMatrix);
-	m_Type = _modelDesc.mMeshType;
-	
-	strcpy_s(m_szMeshFilePath, _modelDesc.mMeshFilePath);
+	m_eMeshType = eMeshType;
+
+	XMStoreFloat4x4(&m_PivotMatrix, PivotMatrix);
+
+	strcpy_s(m_szMeshFilePath, pMeshFilePath);
 
 	char		szFullPath[MAX_PATH] = "";
-	strcpy_s(szFullPath, _modelDesc.mMeshFilePath);
-	strcat_s(szFullPath, _modelDesc.mMeshFileName);
+	strcpy_s(szFullPath, pMeshFilePath);
+	strcat_s(szFullPath, pMeshFileName);
 
 	m_pScene = m_Importer.ReadFile(szFullPath, aiProcess_ConvertToLeftHanded | aiProcess_Triangulate | aiProcess_CalcTangentSpace);
 	if (nullptr == m_pScene)
@@ -62,10 +64,10 @@ HRESULT CModel::NativeConstruct_Prototype(MODELDESC _modelDesc)
 	if (FAILED(Create_Materials()))
 		return E_FAIL;
 
-	if (FAILED(Compile_Shader(_modelDesc.mShaderFilePath)))
+	if (FAILED(Compile_Shader(pShaderFilePath)))
 		return E_FAIL;
 
-	if (TYPE::TYPE_STATIC == m_Type)
+	if (TYPE_STATIC == m_eMeshType)
 	{
 		if (FAILED(Create_VertexIndexBuffer()))
 			return E_FAIL;
@@ -73,11 +75,12 @@ HRESULT CModel::NativeConstruct_Prototype(MODELDESC _modelDesc)
 		return S_OK;
 	}
 
-	if (FAILED(Create_HierachyNode(m_pScene->mRootNode)))
+	if (FAILED(Create_HierarchyNode(m_pScene->mRootNode)))
 		return E_FAIL;
 
-	sort(m_HierarchyNodes.begin(), m_HierarchyNodes.end(), [](HierarchyNode* _sour, HierarchyNode* _dest) {
-		return _sour->GetDepth() < _dest->GetDepth();
+	sort(m_HierarchyNodes.begin(), m_HierarchyNodes.end(), [](CHierarchyNode* pSour, CHierarchyNode* pDest)
+	{
+		return pSour->Get_Depth() < pDest->Get_Depth();
 	});
 
 	if (FAILED(Create_SkinnedDesc()))
@@ -99,7 +102,7 @@ HRESULT CModel::NatvieConstruct(void * pArg)
 
 HRESULT CModel::SetUp_TextureOnShader(const char * pConstantName, _uint iMeshContainerIndex, aiTextureType eType)
 {
-	if (FAILED(__super::SetUp_TextureOnShader(pConstantName, m_Materials[m_MeshContainers[iMeshContainerIndex]->GetMeshDesc().iMaterialIndex]->pMeshTexture[eType])))
+	if (FAILED(__super::SetUp_TextureOnShader(pConstantName, m_Materials[m_MeshContainers[iMeshContainerIndex]->Get_MaterialIndex()]->pMeshTexture[eType])))
 		return E_FAIL;
 
 	return S_OK;
@@ -126,6 +129,22 @@ HRESULT CModel::Bind_Buffers()
 	m_pDeviceContext->IASetVertexBuffers(0, 1, pVertexBuffers, iStrides, iOffsets);
 	m_pDeviceContext->IASetIndexBuffer(m_pIB, m_eFormat, 0);
 	m_pDeviceContext->IASetPrimitiveTopology(m_ePrimitiveTopology);
+
+	return S_OK;
+}
+
+/* 매 프레임마다 호출. */
+HRESULT CModel::Update_CombinedTransformationMatrix(_double TimeDelta)
+{
+	/* 현재 애니메이션 재생시간에 따른 뼈들의 TransformationMatrix를 갱신한다. */
+	m_Animations[m_iCurrentAnimation]->Update_TransformationMatrix(TimeDelta);
+
+	/* 렌더링해야할 CombinedTransfromkationMatrix를 만든다. */
+	for (auto& pHierarchyNode : m_HierarchyNodes)
+	{
+		pHierarchyNode->Update_CombinedTransformationMatrix(m_iCurrentAnimation);
+	}
+
 	return S_OK;
 }
 
@@ -133,28 +152,20 @@ HRESULT CModel::Render(_uint iMeshContainerIndex, _uint iPassIndex)
 {
 	m_pDeviceContext->IASetInputLayout(m_EffectDescs[iPassIndex]->pInputLayout);
 
-	_matrix	BoneMatrices[128];
-	ZeroMemory(&BoneMatrices, sizeof(_matrix) * 128);
 
-	m_MeshContainers[iMeshContainerIndex]->GetBoneMatrices(BoneMatrices);
+	_matrix		BoneMatrices[128];
+	ZeroMemory(BoneMatrices, sizeof(_matrix) * 128);
 
-	if (FAILED(SetUp_ValueOnShader(("g_BoneMatrices"), BoneMatrices, sizeof(_matrix) * 128)))
+	m_MeshContainers[iMeshContainerIndex]->SetUp_BoneMatrices(BoneMatrices);
+
+	if (FAILED(SetUp_ValueOnShader("g_BoneMatrices", BoneMatrices, sizeof(_matrix) * 128)))
 		return E_FAIL;
-	
+
 	if (FAILED(m_EffectDescs[iPassIndex]->pPass->Apply(0, m_pDeviceContext)))
 		return E_FAIL;
 
+
 	m_MeshContainers[iMeshContainerIndex]->Render();
-
-	return S_OK;
-}
-
-HRESULT CModel::UpdateCombinedTrasnformationMatrix(_double _timeDelta)
-{
-	m_Animations[m_CurrentAnimation]->UpdateTransformationMatrix(_timeDelta);
-	
-	for (auto& pHierachyNode : m_HierarchyNodes)
-		pHierachyNode->UpdateCombinedTransformationMatrix(m_CurrentAnimation);
 
 	return S_OK;
 }
@@ -171,6 +182,7 @@ HRESULT CModel::Reserve_VertexIndexData()
 	}
 
 	m_pVertices = new VTXMESH[m_iNumVertices];
+	ZeroMemory(m_pVertices, sizeof(VTXMESH) * m_iNumVertices);
 	m_pFaceIndices = new FACEINDICES32[m_iNumPrimitive];
 
 	return S_OK;
@@ -253,7 +265,8 @@ HRESULT CModel::Create_MeshContainer()
 			_vector		vPosition;
 			memcpy(&vPosition, &pMesh->mVertices[j], sizeof(_float3));
 
-			vPosition = XMVector3TransformCoord(vPosition, XMLoadFloat4x4(&m_PivotMatrix));
+			if (TYPE_STATIC == m_eMeshType)
+				vPosition = XMVector3TransformCoord(vPosition, XMLoadFloat4x4(&m_PivotMatrix));
 
 			XMStoreFloat3(&((VTXMESH*)m_pVertices)[iVertexIndex].vPosition, vPosition);
 
@@ -327,64 +340,59 @@ HRESULT CModel::Compile_Shader(const _tchar * pShaderFilePath)
 		{ "BLENDWEIGHT", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 60, D3D11_INPUT_PER_VERTEX_DATA, 0 }
 
 	};
+
 	if (FAILED(__super::Compile_ShaderFiles(pShaderFilePath, ElementDescs, 6)))
 		return E_FAIL;
 
 	return S_OK;
 }
 
-HRESULT CModel::Create_HierachyNode(aiNode * _node, HierarchyNode * _parent, _uint _depth)
+HRESULT CModel::Create_HierarchyNode(aiNode* pNode, CHierarchyNode* pParent, _uint iDepth)
 {
-	_matrix pTransformationMatrix;
-	memcpy(&pTransformationMatrix, &_node->mTransformation, sizeof(_matrix));
+	_matrix			TransformationMatrix;
+	memcpy(&TransformationMatrix, &pNode->mTransformation, sizeof(_matrix));
 
-	HierarchyNode::HIERARCHY_DESE pHierarchyNodeDesc;
-	strcpy_s(pHierarchyNodeDesc.m_BoneName, /*strlen(_node->mName.data)*/MAX_PATH, _node->mName.data);
-	XMStoreFloat4x4(&pHierarchyNodeDesc.m_TransformationMatrix, pTransformationMatrix);
-
-	pHierarchyNodeDesc.m_Depth = _depth;
-	pHierarchyNodeDesc.m_Parent = _parent;
-
-	HierarchyNode* pHierarchyNode = HierarchyNode::Create(m_pDevice, m_pDeviceContext, pHierarchyNodeDesc);
+	CHierarchyNode*		pHierarchyNode = CHierarchyNode::Create(m_pDevice, m_pDeviceContext, pNode->mName.data, TransformationMatrix, iDepth, pParent);
 	if (nullptr == pHierarchyNode)
 		return E_FAIL;
 
+	pHierarchyNode->Reserve_Channel(m_pScene->mNumAnimations);
 
-	pHierarchyNode->ReserveChannel(m_pScene->mNumAnimations);
 	m_HierarchyNodes.push_back(pHierarchyNode);
 
-	for (_uint i = 0; i < _node->mNumChildren; i++)
-		Create_HierachyNode(_node->mChildren[i], pHierarchyNode, _depth +1);
+	for (_uint i = 0; i < pNode->mNumChildren; ++i)
+		Create_HierarchyNode(pNode->mChildren[i], pHierarchyNode, iDepth + 1);
 
 	return S_OK;
 }
 
 HRESULT CModel::Create_SkinnedDesc()
 {
-	for (_uint i = 0; i < m_pScene->mNumMeshes; i++) 
+	for (_uint i = 0; i < m_pScene->mNumMeshes; ++i)
 	{
-		aiMesh* pMesh = m_pScene->mMeshes[i];
-		CMeshContainer* pMeshContainer = m_MeshContainers[i];
+		aiMesh*		pMesh = m_pScene->mMeshes[i];
+		CMeshContainer*	pMeshContainer = m_MeshContainers[i];
 
-		for (_uint j = 0; j < pMesh->mNumBones; j++)
+		for (_uint j = 0; j < pMesh->mNumBones; ++j)
 		{
-			aiBone* pBone = pMesh->mBones[j];
+			aiBone*		pBone = pMesh->mBones[j];
 
-			CMeshContainer::BONEDESC* pBoneDesc = new CMeshContainer::BONEDESC;
-			_matrix		offsetMatrix;
+			BONEDESC*	pBoneDesc = new BONEDESC;
+			_matrix		OffSetMatrix;
 
-			memcpy(&offsetMatrix, &pBone->mOffsetMatrix, sizeof(_float4x4));
-			XMStoreFloat4x4(&pBoneDesc->m_OffsetMatrix, XMMatrixTranspose(offsetMatrix));
+			OffSetMatrix = XMMatrixTranspose(_matrix(pBone->mOffsetMatrix[0]));
+			XMStoreFloat4x4(&pBoneDesc->OffsetMatrix, OffSetMatrix);
 
-			pBoneDesc->m_Node = Find_HierarchyNode(pBone->mName.data);
-			if (nullptr == pBoneDesc->m_Node)
+			pBoneDesc->pNode = Find_HierarchyNode(pBone->mName.data);
+			if (nullptr == pBoneDesc->pNode)
 				return E_FAIL;
 
-			pMeshContainer->AddBoneDesc(pBoneDesc) ;
-			
+			pMeshContainer->Add_BoneDesc(pBoneDesc);
+
+			/* 몇개 정점에 영향을 주고 있는지?! */
 			for (_uint k = 0; k < pBone->mNumWeights; ++k)
 			{
-				CMeshContainer::MESHDESC	MeshDesc = pMeshContainer->GetMeshDesc();
+				CMeshContainer::MESHDESC	MeshDesc = pMeshContainer->Get_MeshContainerDesc();
 
 				_uint	iVertexIndex = MeshDesc.iStartVertexIndex + pBone->mWeights[k].mVertexId;
 
@@ -410,96 +418,101 @@ HRESULT CModel::Create_SkinnedDesc()
 					((VTXMESH*)m_pVertices)[iVertexIndex].vBlendWeight.w = pBone->mWeights[k].mWeight;
 				}
 			}
-
 		}
 	}
+
 	return S_OK;
 }
 
 HRESULT CModel::Create_Animation()
 {
-	for (_uint i = 0; i < m_pScene->mNumAnimations; i++)
+	for (_uint i = 0; i < m_pScene->mNumAnimations; ++i)
 	{
-		aiAnimation* pAiAnim = m_pScene->mAnimations[i];
-		Animation::ANIMDESC pAnimDesc;
-		ZeroMemory(&pAnimDesc, sizeof(pAnimDesc));
+		aiAnimation*	pAnim = m_pScene->mAnimations[i];
 
-		strcpy_s(pAnimDesc.m_AnimationName, pAiAnim->mName.data);
-		pAnimDesc.m_Duration = pAiAnim->mDuration;
-		pAnimDesc.m_TrackPlaySpeed = pAiAnim->mTicksPerSecond;
-
-		Animation*	pAnimation = Animation::Create(pAnimDesc);
+		CAnimation*		pAnimation = CAnimation::Create(pAnim->mName.data, pAnim->mDuration, pAnim->mTicksPerSecond);
 		if (nullptr == pAnimation)
 			return E_FAIL;
 
-		for (_uint j = 0; j < pAiAnim->mNumChannels; j++)
+		/* 현재 애니메이션 영햐을 주는 뼈대들 */
+		for (_uint j = 0; j < pAnim->mNumChannels; ++j)
 		{
-			aiNodeAnim* pAiAnimChannel = pAiAnim->mChannels[j];
-			
-			Channel* pChannel = Channel::Create(pAiAnimChannel->mNodeName.data);
+			aiNodeAnim*		pAnimChannel = pAnim->mChannels[j];
+			CHierarchyNode*	pHierarchyNode = Find_HierarchyNode(pAnimChannel->mNodeName.data);
+			CChannel*		pChannel = CChannel::Create(pAnimChannel->mNodeName.data);
 			if (nullptr == pChannel)
 				return E_FAIL;
-			HierarchyNode*		pHierarchyNode = Find_HierarchyNode(pAiAnimChannel->mNodeName.data);
-			if (nullptr == pHierarchyNode)
-				return E_FAIL;
 
-			_uint pNumKeyFrames = max(pAiAnimChannel->mNumPositionKeys, pAiAnimChannel->mNumRotationKeys);
-			pNumKeyFrames = max(pNumKeyFrames, pAiAnimChannel->mNumScalingKeys);
+			_uint iNumKeyframes = max(pAnimChannel->mNumPositionKeys, pAnimChannel->mNumRotationKeys);
+			iNumKeyframes = max(iNumKeyframes, pAnimChannel->mNumScalingKeys);
 
-			for (_uint k = 0; k < pNumKeyFrames; k++)
+			_vector			vScale, vRotation, vPosition;
+			ZeroMemory(&vScale, sizeof(_vector));
+			ZeroMemory(&vRotation, sizeof(_vector));
+			ZeroMemory(&vPosition, sizeof(_vector));
+
+			for (_uint k = 0; k < iNumKeyframes; ++k)
 			{
-				Channel::KEYFRAME pKeyFrame;
-				ZeroMemory(&pKeyFrame, sizeof(pKeyFrame));
+				KEYFRAME*			pKeyFrame = new KEYFRAME;
+				ZeroMemory(pKeyFrame, sizeof(KEYFRAME));
 
-				if (pAiAnimChannel->mNumPositionKeys > k)
+				if (pAnimChannel->mNumPositionKeys > k)
 				{
-					memcpy(&pKeyFrame.m_Position, &pAiAnimChannel->mPositionKeys[k].mValue , sizeof(_float3));
-					pKeyFrame.m_Time = pAiAnimChannel->mPositionKeys[k].mTime;
-				}
-				if (pAiAnimChannel->mNumRotationKeys > k)
-				{
-					pKeyFrame.m_Rotation.x = pAiAnimChannel->mRotationKeys[k].mValue.x;
-					pKeyFrame.m_Rotation.y = pAiAnimChannel->mRotationKeys[k].mValue.y;
-					pKeyFrame.m_Rotation.z = pAiAnimChannel->mRotationKeys[k].mValue.z;
-					pKeyFrame.m_Rotation.w = pAiAnimChannel->mRotationKeys[k].mValue.w;
-
-					pKeyFrame.m_Time = pAiAnimChannel->mRotationKeys[k].mTime;
-				}
-				if (pAiAnimChannel->mNumScalingKeys > k)
-				{
-					memcpy(&pKeyFrame.m_Scale, &pAiAnimChannel->mScalingKeys[k].mValue, sizeof(_float3));
-					pKeyFrame.m_Time = pAiAnimChannel->mScalingKeys[k].mTime;
+					memcpy(&vPosition, &pAnimChannel->mPositionKeys[k].mValue, sizeof(_float3));
+					pKeyFrame->Time = pAnimChannel->mPositionKeys[k].mTime;
+					vPosition = XMVectorSetW(vPosition, 1.f);
 				}
 
-				pChannel->AddKeyFrame(pKeyFrame);
+				if (pAnimChannel->mNumScalingKeys > k)
+				{
+					memcpy(&vScale, &pAnimChannel->mScalingKeys[k].mValue, sizeof(_float3));
+					pKeyFrame->Time = pAnimChannel->mScalingKeys[k].mTime;
+				}
+
+				if (pAnimChannel->mNumRotationKeys > k)
+				{
+					// memcpy(&pKeyFrame->vRotation, &pAnimChannel->mRotationKeys[k].mValue, sizeof(_float4));
+					vRotation = XMVectorSetX(vRotation, pAnimChannel->mRotationKeys[k].mValue.x);
+					vRotation = XMVectorSetY(vRotation, pAnimChannel->mRotationKeys[k].mValue.y);
+					vRotation = XMVectorSetZ(vRotation, pAnimChannel->mRotationKeys[k].mValue.z);
+					vRotation = XMVectorSetW(vRotation, pAnimChannel->mRotationKeys[k].mValue.w);
+
+					pKeyFrame->Time = pAnimChannel->mRotationKeys[k].mTime;
+				}
+
+				memcpy(&pKeyFrame->vScale, &vScale, sizeof(_float3));
+				memcpy(&pKeyFrame->vRotation, &vRotation, sizeof(_float4));
+				memcpy(&pKeyFrame->vPosition, &vPosition, sizeof(_float3));
+
+				pChannel->Add_KeyFrame(pKeyFrame);
+
 			}
-
-			pHierarchyNode->AddChannel(pChannel);
-			pAnimation->AddChannel(pChannel);
+			pHierarchyNode->Add_Channel(i, pChannel);
+			pAnimation->Add_Channel(pChannel);
 		}
-
 		m_Animations.push_back(pAnimation);
 	}
 	return S_OK;
 }
 
-HierarchyNode * CModel::Find_HierarchyNode(char * _name)
+CHierarchyNode * CModel::Find_HierarchyNode(char * pName)
 {
-	auto iter = find_if(m_HierarchyNodes.begin(), m_HierarchyNodes.end(), [&](HierarchyNode* _node) {
-		return !strcmp(_node->GetBoneName(), _name);
+	auto	iter = find_if(m_HierarchyNodes.begin(), m_HierarchyNodes.end(), [&](CHierarchyNode* pNode)
+	{
+		return !strcmp(pNode->Get_Name(), pName);
 	});
 
-	if (m_HierarchyNodes.end() == iter)
+	if (iter == m_HierarchyNodes.end())
 		return nullptr;
 
 	return (*iter);
 }
 
-CModel * CModel::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, MODELDESC _modelDesc)
+CModel * CModel::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, const char * pMeshFilePath, const char * pMeshFileName, const _tchar* pShaderFilePath, _fmatrix PivotMatrix, TYPE eMeshType)
 {
 	CModel*		pInstance = new CModel(pDevice, pDeviceContext);
 
-	if (FAILED(pInstance->NativeConstruct_Prototype(_modelDesc)))
+	if (FAILED(pInstance->NativeConstruct_Prototype(pMeshFilePath, pMeshFileName, pShaderFilePath, PivotMatrix, eMeshType)))
 	{
 		MSGBOX("Failed to Creating CModel");
 		Safe_Release(pInstance);
@@ -517,7 +530,6 @@ CComponent * CModel::Clone(void * pArg)
 		MSGBOX("Failed to Creating CModel");
 		Safe_Release(pInstance);
 	}
-
 	return pInstance;
 }
 
@@ -530,12 +542,14 @@ void CModel::Free()
 		Safe_Delete_Array(m_pFaceIndices);
 	}
 
-	for (auto& pAnim : m_Animations)
-		Safe_Release(pAnim);
+	for (auto& pAnimation : m_Animations)
+		Safe_Release(pAnimation);
+
 	m_Animations.clear();
 
 	for (auto& pNode : m_HierarchyNodes)
 		Safe_Release(pNode);
+
 	m_HierarchyNodes.clear();
 
 	for (auto& pMeshContainer : m_MeshContainers)
@@ -546,7 +560,6 @@ void CModel::Free()
 	{
 		for (_uint i = 0; i < AI_TEXTURE_TYPE_MAX; ++i)
 			Safe_Release(pMaterial->pMeshTexture[i]);
-
 		if (false == m_isCloned)
 			Safe_Delete(pMaterial);
 	}

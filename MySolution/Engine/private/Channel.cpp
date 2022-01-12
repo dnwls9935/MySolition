@@ -1,33 +1,42 @@
 #include "..\public\Channel.h"
 
 
-Channel::Channel()
+
+CChannel::CChannel()
 {
 }
 
-HRESULT Channel::NativeConstruct(const char* _name)
+HRESULT CChannel::NativeConstruct(const char* pName)
 {
-	strcpy_s(m_Name, _name);
+	strcpy_s(m_szName, pName);
 
 	return S_OK;
 }
 
-Channel * Channel::Create(const char* _name)
+HRESULT CChannel::Add_KeyFrame(KEYFRAME * pKeyFrame)
 {
-	Channel* pInstance = new Channel();
-	if (FAILED(pInstance->NativeConstruct(_name)))
+	m_KeyFrames.push_back(pKeyFrame);
+
+	return S_OK;
+}
+
+CChannel * CChannel::Create(const char* pName)
+{
+	CChannel*		pInstance = new CChannel();
+
+	if (FAILED(pInstance->NativeConstruct(pName)))
 	{
-		MSGBOX("Failed to Create Channel");
+		MSGBOX("Failed to Creating CChannel");
 		Safe_Release(pInstance);
 	}
+
 	return pInstance;
 }
 
-void Channel::Free()
+void CChannel::Free()
 {
-	/*for (auto& pKeyFrame : m_KeyFrames)
-		Safe_Delete(pKeyFrame);*/
+	for (auto& pKeyFrame : m_KeyFrames)
+		Safe_Delete(pKeyFrame);
 
 	m_KeyFrames.clear();
 }
-

@@ -1,61 +1,64 @@
 #include "..\public\HierarchyNode.h"
-
 #include "Channel.h"
 
-HierarchyNode::HierarchyNode(ID3D11Device * _dx11Device, ID3D11DeviceContext * _dx11DeviceContext)
-	: dx11Device(_dx11Device)
-	, dx11DeviceContext(_dx11DeviceContext)
+CHierarchyNode::CHierarchyNode(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
+	: m_pDevice(pDevice)
+	, m_pDeviceContext(pDeviceContext)
 {
-	Safe_AddRef(dx11Device);
-	Safe_AddRef(dx11DeviceContext);
+	Safe_AddRef(m_pDevice);
+	Safe_AddRef(m_pDeviceContext);
 }
 
-void HierarchyNode::UpdateCombinedTransformationMatrix(_uint _animationIndex)
+HRESULT CHierarchyNode::NativeConstruct(char* pBoneName, _fmatrix TransformationMatrix, _uint iDepth, CHierarchyNode* pParent)
 {
-	if (nullptr != m_Channels[_animationIndex])
-		XMStoreFloat4x4(&m_HierarchyDesc.m_TransformationMatrix, m_Channels[_animationIndex]->GetTransformationMatrix());
+	strcpy_s(m_szBoneName, pBoneName);
+	XMStoreFloat4x4(&m_TransformationMatrix, XMMatrixTranspose(TransformationMatrix));
+	XMStoreFloat4x4(&m_CombinedTransformationMatrix, XMMatrixIdentity());
+	m_iDepth = iDepth;
 
-	if (nullptr != m_HierarchyDesc.m_Parent) {
-		XMStoreFloat4x4(&m_HierarchyDesc.m_CombinedTrasformationMatrix,
-			XMLoadFloat4x4(&m_HierarchyDesc.m_TransformationMatrix)* XMLoadFloat4x4(&m_HierarchyDesc.m_Parent->m_HierarchyDesc.m_CombinedTrasformationMatrix));
-	}
-	else {
-		XMStoreFloat4x4(&m_HierarchyDesc.m_CombinedTrasformationMatrix,
-			XMLoadFloat4x4(&m_HierarchyDesc.m_TransformationMatrix)* XMMatrixIdentity() );
-	}
-}
+	m_pParent = pParent;
+	Safe_AddRef(m_pParent);
 
-HRESULT HierarchyNode::NativeConstruct(HierarchyNode::HIERARCHY_DESE _HierarchyDesc)
-{
-	XMStoreFloat4x4(&_HierarchyDesc.m_TransformationMatrix, XMMatrixTranspose( XMLoadFloat4x4(&_HierarchyDesc.m_TransformationMatrix)));
-	XMStoreFloat4x4(&_HierarchyDesc.m_CombinedTrasformationMatrix, XMMatrixIdentity());
-
-	m_HierarchyDesc = _HierarchyDesc;
-	Safe_AddRef(m_HierarchyDesc.m_Parent);
 	return S_OK;
 }
 
-HierarchyNode * HierarchyNode::Create(ID3D11Device* _dx11Device, ID3D11DeviceContext* _dx11DeviceContext, HierarchyNode::HIERARCHY_DESE _HierarchyDesc)
+/* 모든 뼈의 TransformationMatrix가 애니메이션에 맞게 셋팅된 이후에 호출된다. */
+/* 현재 노드의 CombineTransformationMatrix를 셋팅해놓기위한 함수다. */
+void CHierarchyNode::Update_CombinedTransformationMatrix(_uint iAnimationIndex)
 {
-	HierarchyNode* pInstance = new HierarchyNode(_dx11Device, _dx11DeviceContext);
-	if (FAILED(pInstance->NativeConstruct(_HierarchyDesc)))
+	if (nullptr != m_Channels[iAnimationIndex])
 	{
-		MSGBOX("Failed to Create HierachyNode");
+		XMStoreFloat4x4(&m_TransformationMatrix, m_Channels[iAnimationIndex]->Get_TransformMatrix());
+	}
+
+	if (nullptr != m_pParent)
+		XMStoreFloat4x4(&m_CombinedTransformationMatrix, XMLoadFloat4x4(&m_TransformationMatrix) * XMLoadFloat4x4(&m_pParent->m_CombinedTransformationMatrix));
+
+	else
+		XMStoreFloat4x4(&m_CombinedTransformationMatrix, XMLoadFloat4x4(&m_TransformationMatrix) * XMMatrixIdentity());
+}
+
+CHierarchyNode * CHierarchyNode::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, char * pBoneName, _fmatrix TransformationMatrix, _uint iDepth, CHierarchyNode * pParent)
+{
+	CHierarchyNode*		pInstance = new CHierarchyNode(pDevice, pDeviceContext);
+
+	if (FAILED(pInstance->NativeConstruct(pBoneName, TransformationMatrix, iDepth, pParent)))
+	{
+		MSGBOX("Failed to Creating CMeshContainer");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-void HierarchyNode::Free()
+void CHierarchyNode::Free()
 {
-	Safe_Release(dx11Device);
-	Safe_Release(dx11DeviceContext);
 
-	Safe_Release(m_HierarchyDesc.m_Parent);
+	Safe_Release(m_pParent);
 
 	for (auto& pChannel : m_Channels)
 		Safe_Release(pChannel);
 
 	m_Channels.clear();
+
 }

@@ -4,38 +4,48 @@
 
 BEGIN(Engine)
 
-class Channel final : public CBase
+class CChannel final : public CBase
 {
-private:		Channel();
-private:		virtual ~Channel() = default;
+public:
+	CChannel();
+	virtual ~CChannel() = default;
+public:
+	vector<KEYFRAME*> Get_KeyFrames() {
+		return m_KeyFrames;
+	}
 
-public:	typedef struct tagKeyFrame {
-	_double		m_Time;
-	_float3		m_Scale;
-	_float4		m_Rotation;
-	_float3		m_Position;
-}KEYFRAME;
+	_uint Get_CurrentKeyFrameIndex() const {
+		return m_iCurrentKeyFrameIndex;
+	}
 
-public:		HRESULT	NativeConstruct(const char* _name);
-public:		HRESULT	AddKeyFrame(KEYFRAME _keyFrame) { m_KeyFrames.push_back(_keyFrame); return S_OK; };
+	_matrix Get_TransformMatrix() const {
+		return XMLoadFloat4x4(&m_TransformationMatrix);
+	}
 
-public:		vector<KEYFRAME>&	GetKeyFrame() { return m_KeyFrames; };
+	void Set_CurrentKeyFrameIndex(_uint KeyFrameIndex) {
+		m_iCurrentKeyFrameIndex = KeyFrameIndex;
+	}
 
-public:		_uint		GetCurrentKeyFrameIndex() const { return m_CurrentKeyFrameIndex; }
-public:		void		SetCurrentKeyFrameIndex(_uint _currentKeyFrameIndex) { m_CurrentKeyFrameIndex = _currentKeyFrameIndex; }
+	void Set_TransformationMatrix(_fmatrix TransformationMatrix) {
+		XMStoreFloat4x4(&m_TransformationMatrix, TransformationMatrix);
+	}
+public:
+	HRESULT NativeConstruct(const char* pName);
+	HRESULT Add_KeyFrame(KEYFRAME* pKeyFrame);
 
-public:		_matrix		GetTransformationMatrix() const { return XMLoadFloat4x4(&m_TransformationMatrix); };
-public:		void			SetTrasnformationMatrix(_fmatrix _transformationMatrix) { XMStoreFloat4x4(&m_TransformationMatrix, _transformationMatrix); }
+private:
+	char					m_szName[MAX_PATH] = "";
+	_uint					m_iCurrentKeyFrameIndex = 0;
+	_float4x4				m_TransformationMatrix;
 
-private:		vector<KEYFRAME>					m_KeyFrames;
-private:		typedef	 vector<KEYFRAME>	KEYFRAMES;
 
-private:		char				m_Name[MAX_PATH] = "";
-private:		_uint				m_CurrentKeyFrameIndex = 0;
-private:		_float4x4		m_TransformationMatrix;
+	/* 현재 채널(뼈)이 표현해야할 키프레임에 따른 상태행렬(스케일, 회전, 이동)들을 보관한다. */
+	vector<KEYFRAME*>			m_KeyFrames;
+	typedef vector<KEYFRAME*>	KEYFRAMES;
 
-public:		static Channel* Create(const char* _name);
-public:		virtual void Free() override;
+public:
+	static CChannel* Create(const char* pName);
+	virtual void Free() override;
 };
 
 END

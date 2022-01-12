@@ -96,7 +96,7 @@ _int ToolObject::LateTick(_double TimeDelta)
 	if (nullptr != m_pRendererCom && 0 == m_form->m_tabCtrl.GetCurSel())
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
 
-	m_pModelCom->UpdateCombinedTrasnformationMatrix(TimeDelta);
+	m_pModelCom->Update_CombinedTransformationMatrix(TimeDelta);
 
 	return _int();
 }

@@ -100,57 +100,10 @@ HRESULT CToolView::ReadyProtoAll()
 	if (FAILED(ReadyTexture()))
 		return E_FAIL;
 
-	_matrix		pivotMat;
-	CModel::MODELDESC pModelDesc;
-	ZeroMemory(&pModelDesc, sizeof(pModelDesc));
-/*
-	pModelDesc.mMeshFileName = "HyperionChest.FBX";
-	pModelDesc.mMeshFilePath = "../Client/Bin/Resources/Meshes/Kaelthas/";
-	pModelDesc.mPivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationX(XMConvertToRadians(90.0f)) * XMMatrixRotationY(XMConvertToRadians(180.0f));
-	pModelDesc.mShaderFilePath = TEXT("../Client/Bin/ShaderFiles/Shader_Mesh_Tool.hlsl");
-	pModelDesc.mMeshType = CModel::TYPE::TYPE_STATIC;
-	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Model_HyperionChest"), CModel::Create(dx11Device, dx11DeviceContext, pModelDesc))))
+	_matrix			PivotMatrix;
+	PivotMatrix = /*XMMatrixScaling(0.01f, 0.01f, 0.01f) * */XMMatrixRotationX(XMConvertToRadians(90.0f)) * XMMatrixRotationY(XMConvertToRadians(180.0f));
+	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Model_Kaelthas"), CModel::Create(dx11Device, dx11DeviceContext, "../Client/Bin/Resources/Meshes/Hyperion/", "HyperionTurretGun.FBX", TEXT("../Client/Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_ANIM))))
 		return E_FAIL;
-
-	pModelDesc.mMeshFileName = "HandsomeJack.FBX";
-	pModelDesc.mMeshFilePath = "../Client/Bin/Resources/Meshes/Kaelthas/";
-	pModelDesc.mPivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationX(XMConvertToRadians(90.0f)) * XMMatrixRotationY(XMConvertToRadians(180.0f));
-	pModelDesc.mShaderFilePath = TEXT("../Client/Bin/ShaderFiles/Shader_Mesh_Tool.hlsl");
-	pModelDesc.mMeshType = CModel::TYPE::TYPE_STATIC;
-	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Model_HandsomeJack"), CModel::Create(dx11Device, dx11DeviceContext, pModelDesc))))
-		return E_FAIL;
-
-	pModelDesc.mMeshFileName = "HandsomeJackGoldlStatue.FBX";
-	pModelDesc.mMeshFilePath = "../Client/Bin/Resources/Meshes/Kaelthas/";
-	pModelDesc.mPivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationX(XMConvertToRadians(90.0f)) * XMMatrixRotationY(XMConvertToRadians(180.0f));
-	pModelDesc.mShaderFilePath = TEXT("../Client/Bin/ShaderFiles/Shader_Mesh_Tool.hlsl");
-	pModelDesc.mMeshType = CModel::TYPE::TYPE_STATIC;
-	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Model_HandsomeJackGoldlStatue"), CModel::Create(dx11Device, dx11DeviceContext, pModelDesc))))
-		return E_FAIL;*/
-
-	pModelDesc.mMeshFileName = "Kaelthas.FBX";
-	pModelDesc.mMeshFilePath = "../Client/Bin/Resources/Meshes/Kaelthas/";
-	pModelDesc.mPivotMatrix = /*XMMatrixScaling(0.01f, 0.01f, 0.01f) **/ XMMatrixRotationX(XMConvertToRadians(90.0f)) * XMMatrixRotationY(XMConvertToRadians(180.0f));
-	pModelDesc.mShaderFilePath = TEXT("../Client/Bin/ShaderFiles/Shader_Mesh_Tool.hlsl");
-	pModelDesc.mMeshType = CModel::TYPE::TYPE_DYNAMIC;
-	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Model_Kaelthas"), CModel::Create(dx11Device, dx11DeviceContext, pModelDesc))))
-		return E_FAIL;
-/*
-	pModelDesc.mMeshFileName = "UltraLisk.FBX";
-	pModelDesc.mMeshFilePath = "../Client/Bin/Resources/Meshes/Kaelthas/";
-	pModelDesc.mPivotMatrix = XMMatrixScaling(1.f, 1.f, 1.f) * XMMatrixRotationX(XMConvertToRadians(90.0f)) * XMMatrixRotationY(XMConvertToRadians(180.0f));
-	pModelDesc.mShaderFilePath = TEXT("../Client/Bin/ShaderFiles/Shader_Mesh_Tool.hlsl");
-	pModelDesc.mMeshType = CModel::TYPE::TYPE_STATIC;
-	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Model_UltraLisk"), CModel::Create(dx11Device, dx11DeviceContext, pModelDesc))))
-		return E_FAIL;
-
-	pModelDesc.mMeshFileName = "HyperionTurretGun.FBX";
-	pModelDesc.mMeshFilePath = "../Client/Bin/Resources/Meshes/Hyperion/";
-	pModelDesc.mPivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationX(XMConvertToRadians(90.0f)) * XMMatrixRotationY(XMConvertToRadians(180.0f));
-	pModelDesc.mShaderFilePath = TEXT("../Client/Bin/ShaderFiles/Shader_Mesh_Tool.hlsl");
-	pModelDesc.mMeshType = CModel::TYPE::TYPE_DYNAMIC;
-	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Model_HyperionTurretGun"), CModel::Create(dx11Device, dx11DeviceContext, pModelDesc))))
-		return E_FAIL;*/
 
 
 	///* 객체원형을 생성한다. */
@@ -159,18 +112,9 @@ HRESULT CToolView::ReadyProtoAll()
 	if (FAILED(gameInstance->Add_Prototype(TEXT("Prototype_GameObject_Dyanmic_Camera"), ToolCamera::Create(dx11Device, dx11DeviceContext))))
 		return E_FAIL;
 
-	//if (FAILED(gameInstance->Add_Prototype(TEXT("Prototype_GameObject_Model_HyperionChest"), ToolObject::Create(dx11Device, dx11DeviceContext))))
-	//	return E_FAIL;
-	//if (FAILED(gameInstance->Add_Prototype(TEXT("Prototype_GameObject_Model_HandsomeJack"), ToolObject::Create(dx11Device, dx11DeviceContext))))
-	//	return E_FAIL;
-	//if (FAILED(gameInstance->Add_Prototype(TEXT("Prototype_GameObject_Model_HandsomeJackGoldlStatue"), ToolObject::Create(dx11Device, dx11DeviceContext))))
-	//	return E_FAIL;
 	if (FAILED(gameInstance->Add_Prototype(TEXT("Prototype_GameObject_Model_Kaelthas"), ToolObject::Create(dx11Device, dx11DeviceContext))))
 		return E_FAIL;
-	//if (FAILED(gameInstance->Add_Prototype(TEXT("Prototype_GameObject_Model_UltraLisk"), ToolObject::Create(dx11Device, dx11DeviceContext))))
-	//	return E_FAIL;
-	//if (FAILED(gameInstance->Add_Prototype(TEXT("Prototype_GameObject_Model_HyperionTurretGun"), ToolObject::Create(dx11Device, dx11DeviceContext))))
-	//	return E_FAIL;
+	
 
 	return S_OK;
 }
@@ -378,47 +322,12 @@ HRESULT CToolView::ReadyTerrainLayer(const _tchar* _layerTag)
 HRESULT CToolView::ReadyObjectLayer(const _tchar * _layerTag)
 {
 	ToolObject::TOOLOBJDESC objDesc;
-	/*objDesc.m_BufferTag = TEXT("Prototype_Component_Model_HyperionChest");
-	objDesc.m_ObjTag = TEXT("Prototype_GameObject_Model_HyperionChest");
-	objDesc.m_Position = { 10.f,0.f,10.f };
-	if (FAILED(gameInstance->Add_GameObjectToLayer(1, _layerTag, objDesc.m_ObjTag, &objDesc)))
-		return E_FAIL;
-	m_form->tapMap->m_objectListBox.AddString(TEXT("HyperionChest"));
-
-	objDesc.m_BufferTag = TEXT("Prototype_Component_Model_HandsomeJack");
-	objDesc.m_ObjTag = TEXT("Prototype_GameObject_Model_HandsomeJack");
-	objDesc.m_Position = { 20.f,0.f,20.f };
-	if (FAILED(gameInstance->Add_GameObjectToLayer(1, _layerTag, objDesc.m_ObjTag, &objDesc)))
-		return E_FAIL;
-	m_form->tapMap->m_objectListBox.AddString(TEXT("HandsomeJack"));
-
-	objDesc.m_BufferTag = TEXT("Prototype_Component_Model_HandsomeJackGoldlStatue");
-	objDesc.m_ObjTag = TEXT("Prototype_GameObject_Model_HandsomeJackGoldlStatue");
-	objDesc.m_Position = { 15.f,-1.f,15.f };
-	if (FAILED(gameInstance->Add_GameObjectToLayer(1, _layerTag, objDesc.m_ObjTag, &objDesc)))
-		return E_FAIL;
-	m_form->tapMap->m_objectListBox.AddString(TEXT("HandsomeJackGoldlStatue"));*/
-
 	objDesc.m_BufferTag = TEXT("Prototype_Component_Model_Kaelthas");
 	objDesc.m_ObjTag = TEXT("Prototype_GameObject_Model_Kaelthas");
 	objDesc.m_Position = { 0.f,0.f,0.f};
 	if (FAILED(gameInstance->Add_GameObjectToLayer(1, _layerTag, objDesc.m_ObjTag, &objDesc)))
 		return E_FAIL;
 	m_form->tapMap->m_objectListBox.AddString(TEXT("Kaelthas"));
-/*
-	objDesc.m_BufferTag = TEXT("Prototype_Component_Model_UltraLisk");
-	objDesc.m_ObjTag = TEXT("Prototype_GameObject_Model_UltraLisk");
-	objDesc.m_Position = { 0.f,0.f,0.f };
-	if (FAILED(gameInstance->Add_GameObjectToLayer(1, _layerTag, objDesc.m_ObjTag, &objDesc)))
-		return E_FAIL;
-	m_form->tapMap->m_objectListBox.AddString(TEXT("UltraLisk"));
-
-	objDesc.m_BufferTag = TEXT("Prototype_Component_Model_HyperionTurretGun");
-	objDesc.m_ObjTag = TEXT("Prototype_GameObject_Model_HyperionTurretGun");
-	objDesc.m_Position = { 0.f,0.f,0.f };
-	if (FAILED(gameInstance->Add_GameObjectToLayer(1, _layerTag, objDesc.m_ObjTag, &objDesc)))
-		return E_FAIL;
-	m_form->tapMap->m_objectListBox.AddString(TEXT("HyperionTurretGun"));*/
 	
 	return S_OK;
 }
