@@ -35,7 +35,7 @@ public:
 
 public:
 	HRESULT Add_BoneDesc(BONEDESC* pBoneDesc);
-	void SetUp_BoneMatrices(_matrix* pBoneMatrices);
+	void SetUp_BoneMatrices(_matrix* pBoneMatrices, _fmatrix _pivotMatrix);
 
 private:
 	ID3D11Device*			m_pDevice = nullptr;

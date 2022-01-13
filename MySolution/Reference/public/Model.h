@@ -15,7 +15,7 @@ private:
 
 public:
 	_uint Get_NumMeshContainer() {
-		return m_MeshContainers.size();
+		return (_uint)m_MeshContainers.size();
 	}
 public:
 	HRESULT NativeConstruct_Prototype(const char * pMeshFilePath, const char * pMeshFileName, const _tchar* pShaderFilePath, _fmatrix PivotMatrix, TYPE eMeshType);

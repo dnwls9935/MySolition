@@ -2,6 +2,7 @@
 
 #include "Client_Defines.h"
 #include "GameObject.h"
+#include "Transform.h"
 
 BEGIN(Engine)
 class CRenderer;
@@ -23,6 +24,10 @@ public:
 	virtual _int Tick(_double TimeDelta) override;
 	virtual _int LateTick(_double TimeDelta) override;
 	virtual HRESULT Render() override;
+
+	void		Rotation_AxisRotation_Axis(_fvector vAxis, _double TimeDelta);
+	_fvector Get_State(CTransform::STATE _state);
+
 private:
 	CRenderer*				m_pRendererCom = nullptr;
 	CTransform*				m_pTransformCom = nullptr;

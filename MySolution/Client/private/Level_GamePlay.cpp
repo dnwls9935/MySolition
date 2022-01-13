@@ -96,12 +96,12 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const _tchar * pLayerTag)
 	CCamera::CAMERADESC			CameraDesc;
 	ZeroMemory(&CameraDesc, sizeof(CCamera::CAMERADESC));
 
-	CameraDesc.vEye = _float3(0.0f, 10.0f, -7.0f);
+	CameraDesc.vEye = _float3(10.0f, 3.0f, 17.0f);
 	CameraDesc.vAt = _float3(0.0f, 0.0f, 0.0f);
 	CameraDesc.vAxisY = _float3(0.f, 1.f, 0.f);
-	CameraDesc.fFovy = XMConvertToRadians(60.f);
+	CameraDesc.fFovy = XMConvertToRadians(90.f);
 	CameraDesc.fAspect = _float(g_iWinCX) / g_iWinCY;
-	CameraDesc.fNear = 0.2f;
+	CameraDesc.fNear = 0.001f;
 	CameraDesc.fFar = 300.f;
 
 	CameraDesc.TransformDesc.fSpeedPerSec = 10.f;

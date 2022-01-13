@@ -33,7 +33,6 @@ void Calculator::CalcMousePos(CALCDESC* _calDesc)
 	RayPos = XMVector3TransformCoord(RayPos, viewMatInv);
 	RayDir = XMVector3TransformNormal(RayDir, viewMatInv);
 
-	// 월드에서 뷰로 다운
 	_fmatrix worldMatInv = _calDesc->_transformCom->Get_WorldMatrixInverse();
 	//
 	RayPos = XMVector3TransformCoord(RayPos, worldMatInv);

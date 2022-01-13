@@ -7,6 +7,16 @@ cbuffer Matrices
 	matrix		g_ProjMatrix;
 };
 
+struct BoneMatrixArray
+{
+	matrix		Bone[128];
+};
+
+cbuffer	BoneMatricesBuffer
+{
+	BoneMatrixArray		g_BoneMatrices;
+};
+
 texture2D	g_DiffuseTexture;
 
 sampler DefaultSampler = sampler_state
@@ -16,13 +26,14 @@ sampler DefaultSampler = sampler_state
 	AddressV = wrap;
 };
 
-
 struct VS_IN
 {
 	float3		vPosition : POSITION;
 	float3		vNormal : NORMAL;
 	float2		vTexUV : TEXCOORD0;
 	float3		vTangent : TANGENT;
+	uint4		vBlendIndex : BLENDINDEX;
+	float4		vBlendWeight: BLENDWEIGHT;
 };
 
 struct VS_OUT
@@ -31,8 +42,7 @@ struct VS_OUT
 	float2		vTexUV : TEXCOORD0;
 };
 
-
-VS_OUT VS_MAIN(VS_IN In)
+VS_OUT VS_MAIN_STATIC(VS_IN In)
 {
 	VS_OUT			Out = (VS_OUT)0;
 
@@ -47,6 +57,35 @@ VS_OUT VS_MAIN(VS_IN In)
 
 	return Out;
 
+}
+
+
+VS_OUT VS_MAIN_DYNAMIC(VS_IN In)
+{
+	VS_OUT			Out = (VS_OUT)0;
+
+
+	matrix			matWV, matWVP;
+
+	float		fWeightw = 1.f - (In.vBlendWeight.x + In.vBlendWeight.y + In.vBlendWeight.z);
+
+
+	matrix			BoneMatrix = g_BoneMatrices.Bone[In.vBlendIndex.x] * In.vBlendWeight.x +
+		g_BoneMatrices.Bone[In.vBlendIndex.y] * In.vBlendWeight.y +
+		g_BoneMatrices.Bone[In.vBlendIndex.z] * In.vBlendWeight.z +
+		g_BoneMatrices.Bone[In.vBlendIndex.w] * In.vBlendWeight.w;
+
+
+	matWV = mul(g_WorldMatrix, g_ViewMatrix);
+	matWVP = mul(matWV, g_ProjMatrix);
+
+	vector		vPosition = mul(vector(In.vPosition, 1.f), BoneMatrix);
+	vPosition = mul(vPosition, matWVP);
+
+	Out.vPosition = vPosition;
+	Out.vTexUV = In.vTexUV;
+
+	return Out;
 }
 
 struct PS_IN
@@ -74,14 +113,25 @@ PS_OUT PS_MAIN(PS_IN In)
 
 technique11			DefaultTechnique
 {
-	pass Default
+	pass StaticMesh
 	{
 		SetRasterizerState(CullMode_Default);
 		SetDepthStencilState(ZBuffer_Default, 0);
 		SetBlendState(BlendDisable, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
 		/* 진입점함수를 지정한다. */
-		VertexShader = compile vs_5_0 VS_MAIN();
+		VertexShader = compile vs_5_0 VS_MAIN_STATIC();
+		GeometryShader = NULL;
+		PixelShader = compile ps_5_0  PS_MAIN();
+	}
+	pass DynamicMesh
+	{
+		SetRasterizerState(CullMode_Default);
+		SetDepthStencilState(ZBuffer_Default, 0);
+		SetBlendState(BlendDisable, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		/* 진입점함수를 지정한다. */
+		VertexShader = compile vs_5_0 VS_MAIN_DYNAMIC();
 		GeometryShader = NULL;
 		PixelShader = compile ps_5_0  PS_MAIN();
 	}

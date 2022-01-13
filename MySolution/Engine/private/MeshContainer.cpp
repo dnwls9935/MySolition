@@ -44,13 +44,13 @@ HRESULT CMeshContainer::Add_BoneDesc(BONEDESC * pBoneDesc)
 	return S_OK;
 }
 
-void CMeshContainer::SetUp_BoneMatrices(_matrix * pBoneMatrices)
+void CMeshContainer::SetUp_BoneMatrices(_matrix * pBoneMatrices, _fmatrix _pivotMatrix)
 {
 	_uint		iIndex = 0;
 
 	for (auto& pBone : m_Bones)
 	{
-		pBoneMatrices[iIndex++] = XMMatrixTranspose(XMLoadFloat4x4(&pBone->OffsetMatrix) * pBone->pNode->Get_CombinedMatrix());
+		pBoneMatrices[iIndex++] = _pivotMatrix * XMMatrixTranspose(XMLoadFloat4x4(&pBone->OffsetMatrix) * pBone->pNode->Get_CombinedMatrix());
 	}
 }
 

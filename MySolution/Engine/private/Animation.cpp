@@ -56,10 +56,31 @@ HRESULT CAnimation::Update_TransformationMatrix(_double TimeDelta)
 		/* 하나의 키프에ㅣㅁ 상태를 가지면 된다. */
 		if (m_TrackPositionAcc <= KeyFrames[0]->Time)
 		{
-			vScale = XMLoadFloat3(&KeyFrames[0]->vScale);
+		/*	vScale = XMLoadFloat3(&KeyFrames[0]->vScale);
 			vRotation = XMLoadFloat4(&KeyFrames[0]->vRotation);
 			vPosition = XMLoadFloat3(&KeyFrames[0]->vPosition);
+			vPosition = XMVectorSetW(vPosition, 1.f);*/
+
+			_float		fRatio = (m_TrackPositionAcc - KeyFrames[iNumKeyFrame - 1]->Time) /
+				(KeyFrames[0]->Time - KeyFrames[iNumKeyFrame - 1]->Time);
+
+			_vector		vSourScale, vSourRotation, vSourPosition;
+			_vector		vDestScale, vDestRotation, vDestPosition;
+
+			vSourScale = XMLoadFloat3(&KeyFrames[iCurrentKeyFrameIndex]->vScale);
+			vSourRotation = XMLoadFloat4(&KeyFrames[iCurrentKeyFrameIndex]->vRotation);
+			vSourPosition = XMLoadFloat3(&KeyFrames[iCurrentKeyFrameIndex]->vPosition);
+
+			vDestScale = XMLoadFloat3(&KeyFrames[iCurrentKeyFrameIndex + 1]->vScale);
+			vDestRotation = XMLoadFloat4(&KeyFrames[iCurrentKeyFrameIndex + 1]->vRotation);
+			vDestPosition = XMLoadFloat3(&KeyFrames[iCurrentKeyFrameIndex + 1]->vPosition);
+
+			vScale = XMVectorLerp(vSourScale, vDestScale, fRatio);
+			vRotation = XMQuaternionSlerp(vSourRotation, vDestRotation, fRatio);
+			vPosition = XMVectorLerp(vSourPosition, vDestPosition, fRatio);
 			vPosition = XMVectorSetW(vPosition, 1.f);
+
+
 		}
 
 		/* 하나의 키프에ㅣㅁ 상태를 가지면 된다. */

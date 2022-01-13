@@ -30,18 +30,12 @@ HRESULT CPlayer::NativeConstruct(void * pArg)
 	if (FAILED(SetUp_Components()))
 		return E_FAIL;
 
-	/*m_pTransformCom->Scaling(XMVectorSet(0.01f, 0.01f, 0.01f, 1.f));*/
-
 	return S_OK;
 }
 
 _int CPlayer::Tick(_double TimeDelta)
 {
-	if (GetKeyState(VK_UP) & 0x8000)
-		m_pTransformCom->Go_Straight(TimeDelta);
-
-
-
+	
 	return _int();
 }
 
@@ -49,6 +43,16 @@ _int CPlayer::LateTick(_double TimeDelta)
 {
 	if (nullptr != m_pRendererCom)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
+
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+	_vector pCamPos = pGameInstance->Get_CamPosition();
+
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(XMVectorGetX(pCamPos),  XMVectorGetY(pCamPos) - 1.6f, XMVectorGetZ(pCamPos), XMVectorGetW(pCamPos)));
+
+	RELEASE_INSTANCE(CGameInstance);
+
+	m_pModelCom->Update_CombinedTransformationMatrix(TimeDelta);
 
 	return _int();
 }
@@ -68,7 +72,7 @@ HRESULT CPlayer::Render()
 	{
 		m_pModelCom->SetUp_TextureOnShader("g_DiffuseTexture", i, aiTextureType_DIFFUSE);
 
-		m_pModelCom->Render(i, 0);
+		m_pModelCom->Render(i, 1);
 	}
 
 
@@ -77,12 +81,22 @@ HRESULT CPlayer::Render()
 	return S_OK;
 }
 
+void CPlayer::Rotation_AxisRotation_Axis(_fvector vAxis, _double TimeDelta)
+{
+	m_pTransformCom->Rotation_Axis(vAxis, TimeDelta);
+}
+_fvector CPlayer::Get_State(CTransform::STATE _state)
+{
+	return m_pTransformCom->Get_State(_state);
+}
 HRESULT CPlayer::SetUp_Components()
 {
 	/* Com_Transform */
 	CTransform::TRANSFORMDESC		TransformDesc;
-	TransformDesc.fSpeedPerSec = 7.f;
-	TransformDesc.fRotationPerSec = XMConvertToRadians(90.0f);
+	TransformDesc.fSpeedPerSec = 10.f;
+	TransformDesc.fRotationPerSec = XMConvertToRadians(120.0f);
+
+
 
 	if (FAILED(__super::SetUp_Components(LEVEL_STATIC, TEXT("Prototype_Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &TransformDesc)))
 		return E_FAIL;

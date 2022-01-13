@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "..\public\Camera_Dynamic.h"
 #include "GameInstance.h"
+#include "Player.h"
 
 
 CCamera_Dynamic::CCamera_Dynamic(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
@@ -59,11 +60,19 @@ _int CCamera_Dynamic::Tick(_double TimeDelta)
 	if (MouseMove = pGameInstance->Get_MouseMoveState(CInput_Device::MMS_X))
 	{
 		m_pTransform->Rotation_Axis(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta * MouseMove * 0.1f);
+		CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+		static_cast<CPlayer*>(pGameInstance->GetObjectList(LEVEL_GAMEPLAY, TEXT("Layer_Player")).front())->Rotation_AxisRotation_Axis(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta * MouseMove * 0.1f);
+		RELEASE_INSTANCE(CGameInstance);
 	}
 
 	if (MouseMove = pGameInstance->Get_MouseMoveState(CInput_Device::MMS_Y))
 	{
 		m_pTransform->Rotation_Axis(m_pTransform->Get_State(CTransform::STATE_RIGHT), TimeDelta * MouseMove * 0.1f);
+
+		CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+		static_cast<CPlayer*>(pGameInstance->GetObjectList(LEVEL_GAMEPLAY, TEXT("Layer_Player")).front())->Rotation_AxisRotation_Axis(
+			m_pTransform->Get_State(CTransform::STATE_RIGHT), TimeDelta * MouseMove * 0.1f);
+		RELEASE_INSTANCE(CGameInstance);
 	}
 
 

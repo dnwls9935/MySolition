@@ -166,7 +166,7 @@ HRESULT CModel::Render(_uint iMeshContainerIndex, _uint iPassIndex)
 	_matrix		BoneMatrices[128];
 	ZeroMemory(BoneMatrices, sizeof(_matrix) * 128);
 
-	m_MeshContainers[iMeshContainerIndex]->SetUp_BoneMatrices(BoneMatrices);
+	m_MeshContainers[iMeshContainerIndex]->SetUp_BoneMatrices(BoneMatrices, XMLoadFloat4x4(&m_PivotMatrix));
 
 	if (FAILED(SetUp_ValueOnShader("g_BoneMatrices", BoneMatrices, sizeof(_matrix) * 128)))
 		return E_FAIL;
