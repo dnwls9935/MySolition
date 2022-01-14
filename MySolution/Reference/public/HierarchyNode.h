@@ -26,6 +26,16 @@ public:
 		return XMLoadFloat4x4(&m_CombinedTransformationMatrix);
 	}
 
+	_matrix Get_OffsetMatrix() const {
+		return XMLoadFloat4x4(&m_OffsetMatrix);
+	}
+
+	void CHierarchyNode::SetOffsetMatrix(_fmatrix _offsetMatrix)
+	{
+		XMStoreFloat4x4(&m_OffsetMatrix, _offsetMatrix);
+	}
+
+
 public:
 	void Reserve_Channel(_uint iNumAnimation) {
 		m_Channels.resize(iNumAnimation);
@@ -38,6 +48,7 @@ public:
 public:
 	HRESULT NativeConstruct(char* pBoneName, _fmatrix TransformationMatrix, _uint iDepth, CHierarchyNode* pParent);
 	void Update_CombinedTransformationMatrix(_uint iAnimationIndex);
+
 private:
 	ID3D11Device*			m_pDevice = nullptr;
 	ID3D11DeviceContext*	m_pDeviceContext = nullptr;

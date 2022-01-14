@@ -35,6 +35,7 @@ HRESULT CPlayer::NativeConstruct(void * pArg)
 
 _int CPlayer::Tick(_double TimeDelta)
 {
+	KeyCheck(TimeDelta);
 	
 	return _int();
 }
@@ -43,14 +44,6 @@ _int CPlayer::LateTick(_double TimeDelta)
 {
 	if (nullptr != m_pRendererCom)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
-
-	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
-
-	_vector pCamPos = pGameInstance->Get_CamPosition();
-
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(XMVectorGetX(pCamPos),  XMVectorGetY(pCamPos) - 1.6f, XMVectorGetZ(pCamPos), XMVectorGetW(pCamPos)));
-
-	RELEASE_INSTANCE(CGameInstance);
 
 	m_pModelCom->Update_CombinedTransformationMatrix(TimeDelta);
 
@@ -85,9 +78,46 @@ void CPlayer::Rotation_AxisRotation_Axis(_fvector vAxis, _double TimeDelta)
 {
 	m_pTransformCom->Rotation_Axis(vAxis, TimeDelta);
 }
-_fvector CPlayer::Get_State(CTransform::STATE _state)
+
+_matrix CPlayer::Get_CameraMatrix()
 {
-	return m_pTransformCom->Get_State(_state);
+	char szBuffer[MAX_PATH] = "Camera";
+	return m_pModelCom->GetHierachyMatrix(szBuffer);
+}
+void CPlayer::KeyCheck(_double TimeDelta)
+{
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+	if (pGameInstance->Get_DIKeyState(DIK_W) & 0x80)
+		m_pTransformCom->Go_Straight(TimeDelta);
+
+	if (pGameInstance->Get_DIKeyState(DIK_S) & 0x80)
+		m_pTransformCom->Go_BackWard(TimeDelta);
+
+	if (pGameInstance->Get_DIKeyState(DIK_D) & 0x80)
+		m_pTransformCom->Go_Right(TimeDelta);
+
+	if (pGameInstance->Get_DIKeyState(DIK_A) & 0x80)
+		m_pTransformCom->Go_Left(TimeDelta);
+
+
+	_long	MouseMove = 0;
+
+	if (MouseMove = pGameInstance->Get_MouseMoveState(CInput_Device::MMS_X))
+	{
+		m_pTransformCom->Rotation_Axis(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta * MouseMove * 0.1f);
+	}
+
+	if (MouseMove = pGameInstance->Get_MouseMoveState(CInput_Device::MMS_Y))
+	{
+		m_pTransformCom->Rotation_Axis(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), TimeDelta * MouseMove * 0.1f);
+	}
+
+
+
+
+	RELEASE_INSTANCE(CGameInstance);
+
 }
 HRESULT CPlayer::SetUp_Components()
 {

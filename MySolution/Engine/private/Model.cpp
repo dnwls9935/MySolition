@@ -396,6 +396,7 @@ HRESULT CModel::Create_SkinnedDesc()
 			XMStoreFloat4x4(&pBoneDesc->OffsetMatrix, OffSetMatrix);
 
 			pBoneDesc->pNode = Find_HierarchyNode(pBone->mName.data);
+
 			if (nullptr == pBoneDesc->pNode)
 				return E_FAIL;
 
@@ -546,6 +547,23 @@ CHierarchyNode * CModel::Find_HierarchyNode(char * pName)
 		return nullptr;
 
 	return (*iter);
+}
+
+_fmatrix CModel::GetHierachyMatrix(char* _HierarchyNodeName)
+{
+	CHierarchyNode* pHierarchyNode = Find_HierarchyNode(_HierarchyNodeName);
+	if (nullptr == pHierarchyNode)
+		return _matrix();
+
+	_matrix RenderingMatrix;
+
+	_fmatrix a = XMLoadFloat4x4(&m_PivotMatrix);
+	_fmatrix b = XMMatrixIdentity();
+	_fmatrix c = pHierarchyNode->Get_CombinedMatrix();
+
+	RenderingMatrix = XMLoadFloat4x4(&m_PivotMatrix)* XMMatrixTranspose(XMMatrixIdentity()) * pHierarchyNode->Get_CombinedMatrix() ;
+
+	return RenderingMatrix;
 }
 
 CModel * CModel::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, const char * pMeshFilePath, const char * pMeshFileName, const _tchar* pShaderFilePath, _fmatrix PivotMatrix, TYPE eMeshType)

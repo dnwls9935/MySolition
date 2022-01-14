@@ -104,8 +104,9 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const _tchar * pLayerTag)
 	CameraDesc.fNear = 0.001f;
 	CameraDesc.fFar = 300.f;
 
-	CameraDesc.TransformDesc.fSpeedPerSec = 10.f;
-	CameraDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(120.0f);
+	CameraDesc.TransformDesc.fSpeedPerSec = 7.f;
+	CameraDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(90.0f);
+
 
 	if (FAILED(pGameInstance->Add_GameObjectToLayer(LEVEL_GAMEPLAY, pLayerTag, TEXT("Prototype_GameObject_Camera"), &CameraDesc)))
 		return E_FAIL;

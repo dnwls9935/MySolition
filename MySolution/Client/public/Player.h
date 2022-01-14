@@ -26,7 +26,10 @@ public:
 	virtual HRESULT Render() override;
 
 	void		Rotation_AxisRotation_Axis(_fvector vAxis, _double TimeDelta);
-	_fvector Get_State(CTransform::STATE _state);
+	_matrix Get_CameraMatrix();
+
+private:
+	void		KeyCheck(_double TimeDelta);
 
 private:
 	CRenderer*				m_pRendererCom = nullptr;

@@ -62,7 +62,7 @@ _int CCamera::Tick(_double TimeDelta)
 	CPipeLine*		pPipeLine = GET_INSTANCE(CPipeLine);
 
 	/* 카메라 월드행렬 역행렬 == 뷰스페이스 변환 행렬. */
-	pPipeLine->Set_Transform(CPipeLine::D3DTS_VIEW, m_pTransform->Get_WorldMatrixInverse());	
+	pPipeLine->Set_Transform(CPipeLine::D3DTS_VIEW, m_pTransform->Get_WorldMatrixInverse());
 
 	pPipeLine->Set_Transform(CPipeLine::D3DTS_PROJECTION, XMMatrixPerspectiveFovLH(m_CameraDesc.fFovy, m_CameraDesc.fAspect, m_CameraDesc.fNear, m_CameraDesc.fFar));
 
