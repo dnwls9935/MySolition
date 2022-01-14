@@ -37,7 +37,34 @@ _int CCamera_Dynamic::Tick(_double TimeDelta)
 
 	_matrix camPos = static_cast<CPlayer*>(pGameInstance->GetObjectList(LEVEL_GAMEPLAY, TEXT("Layer_Player")).front())->Get_CameraMatrix();
 
+
+	if (pGameInstance->Get_DIKeyState(DIK_UP) & 0x80)
+		m_pTransform->Go_Straight(TimeDelta);
+
+	if (pGameInstance->Get_DIKeyState(DIK_DOWN) & 0x80)
+		m_pTransform->Go_BackWard(TimeDelta);
+
+	if (pGameInstance->Get_DIKeyState(DIK_RIGHT) & 0x80)
+		m_pTransform->Go_Right(TimeDelta);
+
+	if (pGameInstance->Get_DIKeyState(DIK_LEFT) & 0x80)
+		m_pTransform->Go_Left(TimeDelta);
+
+	_long	MouseMove = 0;
+
+	if (MouseMove = pGameInstance->Get_MouseMoveState(CInput_Device::MMS_X))
+	{
+		m_pTransform->Rotation_Axis(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta * MouseMove * 0.1f);
+	}
+
+	if (MouseMove = pGameInstance->Get_MouseMoveState(CInput_Device::MMS_Y))
+	{
+		m_pTransform->Rotation_Axis(m_pTransform->Get_State(CTransform::STATE_RIGHT), TimeDelta * MouseMove * 0.1f);
+	}
+
 	RELEASE_INSTANCE(CGameInstance);
+
+
 
 	return CCamera::Tick(TimeDelta);
 }

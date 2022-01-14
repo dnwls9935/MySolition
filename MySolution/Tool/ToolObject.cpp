@@ -62,17 +62,34 @@ _int ToolObject::Tick(_double TimeDelta)
 				{
 					m_pTransformCom->Rotation_Axis(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta * -MouseMove * m_mouseSenitive);
 				}
+				else if (MouseMove = gameInstance->Get_MouseMoveState(CInput_Device::MMS_Y)) 
+				{
+					_float4 position;
+					XMStoreFloat4(&position, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+
+					if (0 < MouseMove)
+						TimeDelta *= -1.f;
+
+					m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(position.x, position.y + (TimeDelta * 5), position.z, position.w));
+				}
 
 			}
 		}
 
-		// 이거 왜 안되냐 열받네~
-		/*_long mouseCheck = 0;
+		_long mouseCheck = 0;
 		if ((gameInstance->Get_DIKeyState(DIK_LCONTROL) & 0x80) &&
-			(mouseCheck = gameInstance->Get_MouseMoveState(CInput_Device::MMS_WHEEL)))
+			(mouseCheck = gameInstance->Get_MouseMoveState(CInput_Device::MMS_WHEEL)) &&
+			m_PickChecking)
 		{
-			m_pTransformCom->Set_Scale(mouseCheck * 0.05f);
-		}*/
+			_float Right = m_pTransformCom->Get_Scale(CTransform::STATE_RIGHT);
+			_float Up = m_pTransformCom->Get_Scale(CTransform::STATE_UP);
+			_float Look = m_pTransformCom->Get_Scale(CTransform::STATE_LOOK);
+
+			if (0 > mouseCheck)
+				TimeDelta *= -1.f;
+
+			m_pTransformCom->Set_Scale(XMVectorSet((_float)(Right + TimeDelta), (_float)(Up + TimeDelta), (_float)(Look + TimeDelta), 0.f));
+		}
 	}
 
 	if (gameInstance->Get_DIKeyState(DIK_ESCAPE) & 0x80)
@@ -119,7 +136,8 @@ _int ToolObject::LateTick(_double TimeDelta)
 	if (nullptr != m_pRendererCom && 0 == m_form->m_tabCtrl.GetCurSel())
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
 
-	m_pModelCom->Update_CombinedTransformationMatrix(TimeDelta);
+	if(CModel::TYPE::TYPE_ANIM == m_pModelCom->GetMeshType())
+		m_pModelCom->Update_CombinedTransformationMatrix(TimeDelta);
 
 	return _int();
 }
@@ -140,7 +158,7 @@ HRESULT ToolObject::Render()
 	{
 		m_pModelCom->SetUp_TextureOnShader("g_DiffuseTexture", i, aiTextureType_DIFFUSE);
 
-		m_pModelCom->Render(i, 1);
+		m_pModelCom->Render(i, m_pModelCom->GetMeshType());
 	}
 
 	//if (m_PickChecking)

@@ -28,6 +28,9 @@ public:
 	HRESULT Bind_Buffers();
 	HRESULT Update_CombinedTransformationMatrix(_double TimeDelta);
 	HRESULT Render(_uint iMeshContainerIndex, _uint iPassIndex);
+
+	TYPE		GetMeshType() const { return m_eMeshType; };
+
 private:
 	const aiScene*		m_pScene = nullptr;
 	Assimp::Importer	m_Importer;

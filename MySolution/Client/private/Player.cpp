@@ -100,7 +100,7 @@ void CPlayer::KeyCheck(_double TimeDelta)
 	if (pGameInstance->Get_DIKeyState(DIK_A) & 0x80)
 		m_pTransformCom->Go_Left(TimeDelta);
 
-
+/*
 	_long	MouseMove = 0;
 
 	if (MouseMove = pGameInstance->Get_MouseMoveState(CInput_Device::MMS_X))
@@ -113,9 +113,7 @@ void CPlayer::KeyCheck(_double TimeDelta)
 		m_pTransformCom->Rotation_Axis(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), TimeDelta * MouseMove * 0.1f);
 	}
 
-
-
-
+*/
 	RELEASE_INSTANCE(CGameInstance);
 
 }

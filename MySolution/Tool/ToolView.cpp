@@ -105,7 +105,7 @@ HRESULT CToolView::ReadyProtoAll()
 	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Model_Zero"), CModel::Create(dx11Device, dx11DeviceContext, "../Client/Bin/Resources/Meshes/Zero/", "ZeroTest.FBX", TEXT("../Client/Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_ANIM))))
 		return E_FAIL;
 
-	PivotMatrix = XMMatrixIdentity();
+	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationX(XMConvertToRadians(90.0f)) * XMMatrixRotationY(XMConvertToRadians(90.0f));
 	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Model_HandsomeJack"), CModel::Create(dx11Device, dx11DeviceContext, "../Client/Bin/Resources/Meshes/Static/", "HandsomeJack.FBX", TEXT("../Client/Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_STATIC))))
 		return E_FAIL;
 	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Model_HandsomeJackGoldenStatue"), CModel::Create(dx11Device, dx11DeviceContext, "../Client/Bin/Resources/Meshes/Static/", "HandsomeJackGoldlStatue.FBX", TEXT("../Client/Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_STATIC))))
@@ -335,43 +335,38 @@ HRESULT CToolView::ReadyTerrainLayer(const _tchar* _layerTag)
 
 HRESULT CToolView::ReadyObjectLayer(const _tchar * _layerTag)
 {
-	ToolObject::TOOLOBJDESC objDesc;
-	objDesc.m_BufferTag = TEXT("Prototype_Component_Model_Zero");
-	objDesc.m_ObjTag = TEXT("Prototype_GameObject_Model_Zero");
-	objDesc.m_Position = { 0.f,0.f,0.f};
-	if (FAILED(gameInstance->Add_GameObjectToLayer(1, _layerTag, objDesc.m_ObjTag, &objDesc)))
-		return E_FAIL;
+	//ToolObject::TOOLOBJDESC objDesc;
+	//objDesc.m_BufferTag = TEXT("Prototype_Component_Model_Zero");
+	//objDesc.m_ObjTag = TEXT("Prototype_GameObject_Model_Zero");
+	//objDesc.m_Position = { 0.f,0.f,0.f};
+	//if (FAILED(gameInstance->Add_GameObjectToLayer(1, _layerTag, objDesc.m_ObjTag, &objDesc)))
+	//	return E_FAIL;
+
+
+	//objDesc.m_BufferTag = TEXT("Prototype_Component_Model_HandsomeJack");
+	//objDesc.m_ObjTag = TEXT("Prototype_GameObject_Model_HandsomeJack");
+	//objDesc.m_Position = { 0.f,0.f,0.f };
+	//if (FAILED(gameInstance->Add_GameObjectToLayer(1, _layerTag, objDesc.m_ObjTag, &objDesc)))
+	//	return E_FAIL;
+
+
+	//objDesc.m_BufferTag = TEXT("Prototype_Component_Model_HyperionChest");
+	//objDesc.m_ObjTag = TEXT("Prototype_GameObject_Model_HyperionChest");
+	//objDesc.m_Position = { 0.f,0.f,0.f };
+	//if (FAILED(gameInstance->Add_GameObjectToLayer(1, _layerTag, objDesc.m_ObjTag, &objDesc)))
+	//	return E_FAIL;
+
+
+	//objDesc.m_BufferTag = TEXT("Prototype_Component_Model_HandsomeJackGoldenStatue");
+	//objDesc.m_ObjTag = TEXT("Prototype_GameObject_Model_HandsomeJackGoldenStatue");
+	//objDesc.m_Position = { 0.f,0.f,0.f };
+	//if (FAILED(gameInstance->Add_GameObjectToLayer(1, _layerTag, objDesc.m_ObjTag, &objDesc)))
+	//	return E_FAIL;
+
 	m_form->tapMap->m_objectListBox.AddString(TEXT("Zero"));
-
-
-	objDesc.m_BufferTag = TEXT("Prototype_Component_Model_HandsomeJack");
-	objDesc.m_ObjTag = TEXT("Prototype_GameObject_Model_HandsomeJack");
-	objDesc.m_Position = { 0.f,0.f,0.f };
-	if (FAILED(gameInstance->Add_GameObjectToLayer(1, _layerTag, objDesc.m_ObjTag, &objDesc)))
-		return E_FAIL;
 	m_form->tapMap->m_objectListBox.AddString(TEXT("HandsomeJack"));
-	
-
-/*
-if (FAILED(gameInstance->Add_Prototype(TEXT("Prototype_GameObject_Model_Zero"), ToolObject::Create(dx11Device, dx11DeviceContext))))
-return E_FAIL;
-if (FAILED(gameInstance->Add_Prototype(TEXT("Prototype_GameObject_Model_HandsomeJack"), ToolObject::Create(dx11Device, dx11DeviceContext))))
-return E_FAIL;
-if (FAILED(gameInstance->Add_Prototype(TEXT("Prototype_GameObject_Model_HandsomeJackGoldenStatue"), ToolObject::Create(dx11Device, dx11DeviceContext))))
-return E_FAIL;
-if (FAILED(gameInstance->Add_Prototype(TEXT("Prototype_GameObject_Model_HyperionChest"), ToolObject::Create(dx11Device, dx11DeviceContext))))
-return E_FAIL;
-
-
-
-
-	return E_FAIL;
-	if (FAILED(gameInstance->Add_Prototype(TEXT("Prototype_Component_Model_HandsomeJack"), ToolObject::Create(dx11Device, dx11DeviceContext))))
-		return E_FAIL;
-	if (FAILED(gameInstance->Add_Prototype(TEXT("Prototype_Component_Model_HandsomeJackGoldenStatue"), ToolObject::Create(dx11Device, dx11DeviceContext))))
-		return E_FAIL;
-	if (FAILED(gameInstance->Add_Prototype(TEXT("Prototype_Component_Model_HyperionChest"), ToolObject::Create(dx11Device, dx11DeviceContext))))
-		return E_FAIL;*/
+	m_form->tapMap->m_objectListBox.AddString(TEXT("HyperionChest"));
+	m_form->tapMap->m_objectListBox.AddString(TEXT("HandsomeJackGoldenStatue"));
 
 
 	return S_OK;

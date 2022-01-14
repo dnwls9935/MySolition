@@ -19,6 +19,7 @@ CModel::CModel(const CModel & rhs)
 	, m_Materials(rhs.m_Materials)
 	, m_PivotMatrix(rhs.m_PivotMatrix)
 	, m_iCurrentAnimation(rhs.m_iCurrentAnimation)
+	, m_eMeshType(rhs.m_eMeshType)
 {
 	for (auto& pMeshContainer : rhs.m_MeshContainers)
 	{
@@ -146,6 +147,9 @@ HRESULT CModel::Bind_Buffers()
 /* 매 프레임마다 호출. */
 HRESULT CModel::Update_CombinedTransformationMatrix(_double TimeDelta)
 {
+	if (TYPE_STATIC == m_eMeshType)
+		return S_OK;
+
 	/* 현재 애니메이션 재생시간에 따른 뼈들의 TransformationMatrix를 갱신한다. */
 	m_Animations[m_iCurrentAnimation]->Update_TransformationMatrix(TimeDelta);
 
@@ -161,7 +165,6 @@ HRESULT CModel::Update_CombinedTransformationMatrix(_double TimeDelta)
 HRESULT CModel::Render(_uint iMeshContainerIndex, _uint iPassIndex)
 {
 	m_pDeviceContext->IASetInputLayout(m_EffectDescs[iPassIndex]->pInputLayout);
-
 
 	_matrix		BoneMatrices[128];
 	ZeroMemory(BoneMatrices, sizeof(_matrix) * 128);
