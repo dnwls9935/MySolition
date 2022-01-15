@@ -1,11 +1,11 @@
 #pragma once
 
 #include "GameObject.h"
+#include "Transform.h"
 
 BEGIN(Engine)
 class CTexture;
 class CRenderer;
-class CTransform;
 class CModel;
 class CVIBuffer_ThreeWaySystem;
 END
@@ -13,9 +13,11 @@ class ToolObject final : public CGameObject
 {
 public:
 	typedef struct tagToolObjectDesc {
-		const _tchar*	m_BufferTag = TEXT("");
-		const _tchar*   m_ObjTag = TEXT("");
+		_tchar	m_BufferTag[MAX_PATH] = TEXT("");
+		_tchar  m_ObjTag[MAX_PATH] = TEXT("");
 		_float3			m_Position = { 0.f, 0.f, 0.f };
+		_float4x4		m_pTransformMatrix = _float4x4();
+		_bool			loadCheck = FALSE;
 	}TOOLOBJDESC;
 
 private:
@@ -31,7 +33,8 @@ public:
 	virtual HRESULT Render();
 
 	_bool		GetPickCheckState() { return m_PickChecking; };
-	TOOLOBJDESC GetObjectDesc() const { return m_ToolObjDesc; }
+	TOOLOBJDESC GetObjectDesc() { return m_ToolObjDesc; }
+	_matrix GetTransformMatrix()const { return m_pTransformCom->Get_WorldMatrix(); }
 
 private:
 	void	CheckButton();

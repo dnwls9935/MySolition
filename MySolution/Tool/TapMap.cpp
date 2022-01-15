@@ -109,11 +109,69 @@ HRESULT TapMap::LoadTerrainLayer(HANDLE & hFile)
 
 HRESULT TapMap::LoadObjectLayer(HANDLE & hFile)
 {
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+	DWORD dwByte = 0;
+	_int  size = 0;
+
+	while (TRUE)
+	{
+		_matrix pTransformMatrix = XMMatrixIdentity();
+		ToolObject::TOOLOBJDESC pToolObjDesc;
+		
+		ZeroMemory(&pToolObjDesc, sizeof(pToolObjDesc));
+
+
+		ReadFile(hFile, &pToolObjDesc, sizeof(ToolObject::TOOLOBJDESC), &dwByte, nullptr);
+		pToolObjDesc.loadCheck = TRUE;
+/*
+		ReadFile(hFile, &pTransformMatrix, sizeof(_matrix), &dwByte, nullptr);
+
+		ReadFile(hFile, &size, sizeof(_int), &dwByte, nullptr);
+		ReadFile(hFile, &pToolObjDesc.m_BufferTag, size * sizeof(_tchar), &dwByte, nullptr);
+
+		ReadFile(hFile, &size, sizeof(_int), &dwByte, nullptr);
+		ReadFile(hFile, &pToolObjDesc.m_ObjTag, size * sizeof(_tchar), &dwByte, nullptr);*/
+
+		if (0 == dwByte)
+			break;
+
+		pGameInstance->Add_GameObjectToLayer(1, TEXT("Object"), pToolObjDesc.m_ObjTag, &pToolObjDesc);
+	}
+
+	RELEASE_INSTANCE(CGameInstance);
 	return S_OK;
 }
 
 HRESULT TapMap::SaveObjectLayer(HANDLE& hFile)
 {
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+	list<CGameObject*> pGameObjectList = pGameInstance->GetObjectList(1, TEXT("Object"));
+
+	DWORD dwByte;
+	for (auto iter : pGameObjectList)
+	{
+		_matrix pTransformMatrix = static_cast<ToolObject*>(iter)->GetTransformMatrix();
+		ToolObject::TOOLOBJDESC pToolObjDesc = static_cast<ToolObject*>(iter)->GetObjectDesc();
+		XMStoreFloat4x4(&pToolObjDesc.m_pTransformMatrix , pTransformMatrix);
+
+		WriteFile(hFile, &pToolObjDesc, sizeof(ToolObject::TOOLOBJDESC), &dwByte, nullptr);
+/*
+		WriteFile(hFile, &pTransformMatrix, sizeof(_matrix), &dwByte, nullptr);
+
+		_int size = wcslen(pToolObjDesc.m_BufferTag);
+		WriteFile(hFile, &size, sizeof(_int), &dwByte, nullptr);
+		WriteFile(hFile, &pToolObjDesc.m_BufferTag, size * sizeof(_tchar), &dwByte, nullptr);
+		
+		size = wcslen(pToolObjDesc.m_ObjTag);
+		WriteFile(hFile, &size, sizeof(_int), &dwByte, nullptr);
+		WriteFile(hFile, &pToolObjDesc.m_ObjTag, size * sizeof(_tchar), &dwByte, nullptr);*/
+	}
+
+
+	RELEASE_INSTANCE(CGameInstance);
+
 	return S_OK;
 }
 

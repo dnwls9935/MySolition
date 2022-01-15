@@ -48,7 +48,6 @@ private:
 
 	RENDER_ID				m_RenderID = RENDER_ID::DEFAULT;
 
-
 	class CMainFrame* m_mainFrm = nullptr;
 	class Form* m_form = nullptr;
 

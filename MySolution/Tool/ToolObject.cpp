@@ -37,7 +37,18 @@ HRESULT ToolObject::NativeConstruct(void * pArg)
 	if (FAILED(SetUp_Components()))
 		return E_FAIL;
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(m_ToolObjDesc.m_Position.x, m_ToolObjDesc.m_Position.y, m_ToolObjDesc.m_Position.z, 1.f));
+	_matrix Transform = XMLoadFloat4x4(&m_ToolObjDesc.m_pTransformMatrix);
+
+	if (m_ToolObjDesc.loadCheck)
+	{
+		m_pTransformCom->Set_State(CTransform::STATE_RIGHT, Transform.r[0]);
+		m_pTransformCom->Set_State(CTransform::STATE_UP, Transform.r[1]);
+		m_pTransformCom->Set_State(CTransform::STATE_LOOK, Transform.r[2]);
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, Transform.r[3]);
+	}
+	else {
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(m_ToolObjDesc.m_Position.x, m_ToolObjDesc.m_Position.y, m_ToolObjDesc.m_Position.z, 1.f));
+	}
 	return S_OK;
 }
 

@@ -137,10 +137,10 @@ void ToolTerrain::PickHeightTerrain(_double TimeDelta)
 	if ((gameInstance->Get_MouseButtonState(CInput_Device::MBS_LBUTTON)) &&
 		(gameInstance->Get_DIKeyState(DIK_LSHIFT) & 0x80))
 	{
-		m_pVIBufferCom->SetVerticeY(m_mousePos, -2.f * (_float)TimeDelta, m_mouseBrushRadius, m_mouseBrushType);
+		m_pVIBufferCom->SetVerticeY(m_mousePos, -5.f * (_float)TimeDelta, m_mouseBrushRadius, m_mouseBrushType);
 	}
 	else if (gameInstance->Get_MouseButtonState(CInput_Device::MBS_LBUTTON)) {
-		m_pVIBufferCom->SetVerticeY(m_mousePos, 2.f * (_float)TimeDelta, m_mouseBrushRadius, m_mouseBrushType);
+		m_pVIBufferCom->SetVerticeY(m_mousePos, 5.f * (_float)TimeDelta, m_mouseBrushRadius, m_mouseBrushType);
 	}
 	RELEASE_INSTANCE(CGameInstance);
 }
@@ -168,14 +168,16 @@ void ToolTerrain::BatchingObject(_double _timeDelta)
 
 		CString componentText = TEXT("Prototype_Component_Model_");
 		componentText += str;
-		objDesc.m_BufferTag = componentText;
+		lstrcpy(objDesc.m_BufferTag, componentText);
 
 		CString gameObjectText = TEXT("Prototype_GameObject_Model_");
 		gameObjectText += str;
-		objDesc.m_ObjTag = gameObjectText;
+		lstrcpy(objDesc.m_ObjTag, gameObjectText);
 
 		objDesc.m_Position = { m_mousePos.x, m_mousePos.y, m_mousePos.z };
 		gameInstance->Add_GameObjectToLayer(1, TEXT("Object"), objDesc.m_ObjTag, &objDesc);
+
+		m_form->tapMap->m_BatchObject.SetCheck(FALSE);
 	}
 
 	RELEASE_INSTANCE(CGameInstance);
@@ -183,7 +185,6 @@ void ToolTerrain::BatchingObject(_double _timeDelta)
 
 _fvector ToolTerrain::CalcMousePos()
 {
-	
 	CGameInstance* gameInstance = GET_INSTANCE(CGameInstance);
 	Calculator::CALCDESC calDesc;
 	ZeroMemory(&calDesc, sizeof(calDesc));

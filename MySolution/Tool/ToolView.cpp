@@ -254,7 +254,6 @@ void CToolView::OnInitialUpdate()
 	{
 		MSGBOX(L"Failed to Ready Renderer Component");
 	}
-
 	
 	if (FAILED(ReadyLayer()))
 	{
