@@ -30,6 +30,8 @@ HRESULT CPlayer::NativeConstruct(void * pArg)
 	if (FAILED(SetUp_Components()))
 		return E_FAIL;
 
+	m_pModelCom->SetUp_AnimationIndex(5);
+
 	return S_OK;
 }
 
@@ -89,17 +91,26 @@ void CPlayer::KeyCheck(_double TimeDelta)
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 
 	if (pGameInstance->Get_DIKeyState(DIK_W) & 0x80)
+	{
 		m_pTransformCom->Go_Straight(TimeDelta);
-
-	if (pGameInstance->Get_DIKeyState(DIK_S) & 0x80)
+		m_pModelCom->SetUp_AnimationIndex(9);
+	}
+	else if (pGameInstance->Get_DIKeyState(DIK_S) & 0x80)
+	{
+		m_pModelCom->SetUp_AnimationIndex(9);
 		m_pTransformCom->Go_BackWard(TimeDelta);
-
-	if (pGameInstance->Get_DIKeyState(DIK_D) & 0x80)
+	}
+	else if (pGameInstance->Get_DIKeyState(DIK_D) & 0x80)
+	{
+		m_pModelCom->SetUp_AnimationIndex(11);
 		m_pTransformCom->Go_Right(TimeDelta);
-
-	if (pGameInstance->Get_DIKeyState(DIK_A) & 0x80)
+	}
+	else if (pGameInstance->Get_DIKeyState(DIK_A) & 0x80)
+	{
+		m_pModelCom->SetUp_AnimationIndex(10);
 		m_pTransformCom->Go_Left(TimeDelta);
-
+	}
+		
 /*
 	_long	MouseMove = 0;
 

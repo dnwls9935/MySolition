@@ -9,7 +9,7 @@ CLevel_Manager::CLevel_Manager()
 {
 }
 
-HRESULT CLevel_Manager::Open_Level(_uint iLevelIndex, CLevel * pOpenLevel)
+HRESULT CLevel_Manager::Open_Level(_uint iLevelIndex, CLevel * pOpenLevel, _uint nextLevel)
 {
 	if (nullptr == pOpenLevel)
 		return E_FAIL;
@@ -25,6 +25,8 @@ HRESULT CLevel_Manager::Open_Level(_uint iLevelIndex, CLevel * pOpenLevel)
 	m_pCurrentLevel = pOpenLevel;	
 
 	m_iCurrentLevelID = iLevelIndex;
+
+	m_iNextLevelID = nextLevel;
 
 	return S_OK;
 }
@@ -43,6 +45,14 @@ HRESULT CLevel_Manager::Render()
 		return E_FAIL;
 
 	return m_pCurrentLevel->Render();
+}
+
+_uint CLevel_Manager::GetNextLevelID()
+{
+	if (nullptr == m_pCurrentLevel)
+		return 99999999;
+
+	return m_iNextLevelID;
 }
 
 HRESULT CLevel_Manager::Clear_Managers()

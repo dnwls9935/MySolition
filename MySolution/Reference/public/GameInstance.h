@@ -40,7 +40,8 @@ public: /* For.Timer_Manager */
 	HRESULT Ready_Timer(const _tchar* pTimerTag);
 
 public: /* For.Level_Manager*/
-	HRESULT Open_Level(_uint iLevelIndex, class CLevel* pOpenLevel);
+	HRESULT Open_Level(_uint iLevelIndex, class CLevel* pOpenLevel, _uint nextLevelID);
+	_uint GetNextLevelID();
 
 public: /* For.Object_Manager*/
 	HRESULT Add_Prototype(const _tchar* pPrototypeTag, CGameObject* pPrototype);

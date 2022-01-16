@@ -89,7 +89,7 @@ HRESULT CToolView::RenderEnd()
 HRESULT CToolView::ReadyProtoAll()
 {
 	/* 컴포넌트 원형 생성한다. */
-	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_VIBuffer_Terrain"), CVIBuffer_Terrain::Create(dx11Device, dx11DeviceContext, TEXT("../Client/Bin/ShaderFiles/Shader_Terrain_Tool.hlsl"),150, 150))))
+	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_VIBuffer_Terrain"), CVIBuffer_Terrain::Create(dx11Device, dx11DeviceContext, TEXT("../Client/Bin/ShaderFiles/Shader_Terrain_Tool.hlsl"),100, 100))))
 		return E_FAIL;
 	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Transform"), CTransform::Create(dx11Device, dx11DeviceContext))))
 		return E_FAIL;
@@ -102,7 +102,7 @@ HRESULT CToolView::ReadyProtoAll()
 
 	_matrix			PivotMatrix;
 	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationX(XMConvertToRadians(-90.0f));
-	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Model_Zero"), CModel::Create(dx11Device, dx11DeviceContext, "../Client/Bin/Resources/Meshes/Zero/", "ZeroTest.FBX", TEXT("../Client/Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_ANIM))))
+	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Model_Zero"), CModel::Create(dx11Device, dx11DeviceContext, "../Client/Bin/Resources/Meshes/Zero/", "ZeroHandTest.FBX", TEXT("../Client/Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_ANIM))))
 		return E_FAIL;
 
 	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationX(XMConvertToRadians(90.0f)) * XMMatrixRotationY(XMConvertToRadians(90.0f));
@@ -112,6 +112,24 @@ HRESULT CToolView::ReadyProtoAll()
 		return E_FAIL;
 	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Model_HyperionChest"), CModel::Create(dx11Device, dx11DeviceContext, "../Client/Bin/Resources/Meshes/Static/", "HyperionChest.FBX", TEXT("../Client/Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_STATIC))))
 		return E_FAIL;
+	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Model_SnowDrift"), CModel::Create(dx11Device, dx11DeviceContext, "../Client/Bin/Resources/Meshes/Static/", "GlacialTest.FBX", TEXT("../Client/Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_STATIC))))
+		return E_FAIL;
+	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Model_SnowPile0"), CModel::Create(dx11Device, dx11DeviceContext, "../Client/Bin/Resources/Meshes/Static/", "Snowpile00.FBX", TEXT("../Client/Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_STATIC))))
+		return E_FAIL;
+	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Model_SnowPile1"), CModel::Create(dx11Device, dx11DeviceContext, "../Client/Bin/Resources/Meshes/Static/", "Snowpile01.FBX", TEXT("../Client/Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_STATIC))))
+		return E_FAIL;
+	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Model_SnowPile2"), CModel::Create(dx11Device, dx11DeviceContext, "../Client/Bin/Resources/Meshes/Static/", "Snowpile02.FBX", TEXT("../Client/Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_STATIC))))
+		return E_FAIL;
+	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Model_SnowPile3"), CModel::Create(dx11Device, dx11DeviceContext, "../Client/Bin/Resources/Meshes/Static/", "Snowpile03.FBX", TEXT("../Client/Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_STATIC))))
+		return E_FAIL;
+	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Model_SnowPile4"), CModel::Create(dx11Device, dx11DeviceContext, "../Client/Bin/Resources/Meshes/Static/", "Snowpile04.FBX", TEXT("../Client/Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_STATIC))))
+		return E_FAIL;
+	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Model_GlacialFlow_Straight0"), CModel::Create(dx11Device, dx11DeviceContext, "../Client/Bin/Resources/Meshes/Static/", "GlacialFlow_Straight0.FBX", TEXT("../Client/Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_STATIC))))
+		return E_FAIL;
+	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Model_GlacialFlow_Straight1"), CModel::Create(dx11Device, dx11DeviceContext, "../Client/Bin/Resources/Meshes/Static/", "GlacialFlow_Straight1.FBX", TEXT("../Client/Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_STATIC))))
+		return E_FAIL;
+	
+
 
 
 	///* 객체원형을 생성한다. */
@@ -128,6 +146,23 @@ HRESULT CToolView::ReadyProtoAll()
 		return E_FAIL;
 	if (FAILED(gameInstance->Add_Prototype(TEXT("Prototype_GameObject_Model_HyperionChest"), ToolObject::Create(dx11Device, dx11DeviceContext))))
 		return E_FAIL;
+	if (FAILED(gameInstance->Add_Prototype(TEXT("Prototype_GameObject_Model_SnowDrift"), ToolObject::Create(dx11Device, dx11DeviceContext))))
+		return E_FAIL;
+	if (FAILED(gameInstance->Add_Prototype(TEXT("Prototype_GameObject_Model_SnowPile0"), ToolObject::Create(dx11Device, dx11DeviceContext))))
+		return E_FAIL;
+	if (FAILED(gameInstance->Add_Prototype(TEXT("Prototype_GameObject_Model_SnowPile1"), ToolObject::Create(dx11Device, dx11DeviceContext))))
+		return E_FAIL;
+	if (FAILED(gameInstance->Add_Prototype(TEXT("Prototype_GameObject_Model_SnowPile2"), ToolObject::Create(dx11Device, dx11DeviceContext))))
+		return E_FAIL;
+	if (FAILED(gameInstance->Add_Prototype(TEXT("Prototype_GameObject_Model_SnowPile3"), ToolObject::Create(dx11Device, dx11DeviceContext))))
+		return E_FAIL;
+	if (FAILED(gameInstance->Add_Prototype(TEXT("Prototype_GameObject_Model_SnowPile4"), ToolObject::Create(dx11Device, dx11DeviceContext))))
+		return E_FAIL;
+	if (FAILED(gameInstance->Add_Prototype(TEXT("Prototype_GameObject_Model_GlacialFlow_Straight0"), ToolObject::Create(dx11Device, dx11DeviceContext))))
+		return E_FAIL;
+	if (FAILED(gameInstance->Add_Prototype(TEXT("Prototype_GameObject_Model_GlacialFlow_Straight1"), ToolObject::Create(dx11Device, dx11DeviceContext))))
+		return E_FAIL;
+
 	
 
 	return S_OK;
@@ -282,9 +317,9 @@ HRESULT CToolView::ReadyLayer()
 
 HRESULT CToolView::ReadyTexture()
 {
-	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Texture_Terrain"), CTexture::Create(dx11Device, dx11DeviceContext, TEXT("../Client/Bin/Resources/Textures/Terrain/Grass_%d.tga"), 2))))
+	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Texture_Terrain"), CTexture::Create(dx11Device, dx11DeviceContext, TEXT("../Client/Bin/Resources/Textures/Terrain/Snow_256_Dif.tga")))))
 		return E_FAIL;
-
+/*
 	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Texture_Moon_Comp"), CTexture::Create(dx11Device, dx11DeviceContext, TEXT("../Client/Bin/Resources/Menumap/Texture2D/Moon_Comp.tga")))))
 		return E_FAIL;
 	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Texture_Moon_Dif"), CTexture::Create(dx11Device, dx11DeviceContext, TEXT("../Client/Bin/Resources/Menumap/Texture2D/Moon_Dif.tga")))))
@@ -298,7 +333,7 @@ HRESULT CToolView::ReadyTexture()
 	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Texture_MoonBase02a_Nrm"), CTexture::Create(dx11Device, dx11DeviceContext, TEXT("../Client/Bin/Resources/Menumap/Texture2D/MoonBase02a_Nrm.tga")))))
 		return E_FAIL;
 
-
+*/
 	return S_OK;
 }
 
@@ -334,38 +369,20 @@ HRESULT CToolView::ReadyTerrainLayer(const _tchar* _layerTag)
 
 HRESULT CToolView::ReadyObjectLayer(const _tchar * _layerTag)
 {
-	//ToolObject::TOOLOBJDESC objDesc;
-	//objDesc.m_BufferTag = TEXT("Prototype_Component_Model_Zero");
-	//objDesc.m_ObjTag = TEXT("Prototype_GameObject_Model_Zero");
-	//objDesc.m_Position = { 0.f,0.f,0.f};
-	//if (FAILED(gameInstance->Add_GameObjectToLayer(1, _layerTag, objDesc.m_ObjTag, &objDesc)))
-	//	return E_FAIL;
-
-
-	//objDesc.m_BufferTag = TEXT("Prototype_Component_Model_HandsomeJack");
-	//objDesc.m_ObjTag = TEXT("Prototype_GameObject_Model_HandsomeJack");
-	//objDesc.m_Position = { 0.f,0.f,0.f };
-	//if (FAILED(gameInstance->Add_GameObjectToLayer(1, _layerTag, objDesc.m_ObjTag, &objDesc)))
-	//	return E_FAIL;
-
-
-	//objDesc.m_BufferTag = TEXT("Prototype_Component_Model_HyperionChest");
-	//objDesc.m_ObjTag = TEXT("Prototype_GameObject_Model_HyperionChest");
-	//objDesc.m_Position = { 0.f,0.f,0.f };
-	//if (FAILED(gameInstance->Add_GameObjectToLayer(1, _layerTag, objDesc.m_ObjTag, &objDesc)))
-	//	return E_FAIL;
-
-
-	//objDesc.m_BufferTag = TEXT("Prototype_Component_Model_HandsomeJackGoldenStatue");
-	//objDesc.m_ObjTag = TEXT("Prototype_GameObject_Model_HandsomeJackGoldenStatue");
-	//objDesc.m_Position = { 0.f,0.f,0.f };
-	//if (FAILED(gameInstance->Add_GameObjectToLayer(1, _layerTag, objDesc.m_ObjTag, &objDesc)))
-	//	return E_FAIL;
-
 	m_form->tapMap->m_objectListBox.AddString(TEXT("Zero"));
 	m_form->tapMap->m_objectListBox.AddString(TEXT("HandsomeJack"));
 	m_form->tapMap->m_objectListBox.AddString(TEXT("HyperionChest"));
 	m_form->tapMap->m_objectListBox.AddString(TEXT("HandsomeJackGoldenStatue"));
+	m_form->tapMap->m_objectListBox.AddString(TEXT("SnowDrift"));
+	m_form->tapMap->m_objectListBox.AddString(TEXT("SnowPile0"));
+	m_form->tapMap->m_objectListBox.AddString(TEXT("SnowPile1"));
+	m_form->tapMap->m_objectListBox.AddString(TEXT("SnowPile2"));
+	m_form->tapMap->m_objectListBox.AddString(TEXT("SnowPile3"));
+	m_form->tapMap->m_objectListBox.AddString(TEXT("SnowPile4")); 
+	m_form->tapMap->m_objectListBox.AddString(TEXT("GlacialFlow_Straight0"));
+	m_form->tapMap->m_objectListBox.AddString(TEXT("GlacialFlow_Straight1"));
+	
+	
 
 
 	return S_OK;

@@ -26,7 +26,6 @@ public:
 	virtual HRESULT Render() override;
 private:
 	CTexture*				m_pTextureCom = nullptr;
-	CTexture*				m_pFilterTexCom[2] = { nullptr, nullptr };
 	CRenderer*				m_pRendererCom = nullptr;
 	CTransform*				m_pTransformCom = nullptr;
 	CVIBuffer_Terrain*		m_pVIBufferCom = nullptr;

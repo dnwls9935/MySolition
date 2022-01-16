@@ -64,7 +64,12 @@ HRESULT CBackGround::Render()
 	m_pVIBufferCom->SetUp_ValueOnShader("g_WorldMatrix", &XMMatrixTranspose(m_WorldMatrix), sizeof(_float) * 16);
 	m_pVIBufferCom->SetUp_ValueOnShader("g_ViewMatrix", &XMMatrixIdentity(), sizeof(_float) * 16);	
 	m_pVIBufferCom->SetUp_ValueOnShader("g_ProjMatrix", &XMMatrixTranspose(m_ProjMatrix), sizeof(XMMATRIX));
-	m_pVIBufferCom->SetUp_TextureOnShader("g_DiffuseTexture", m_pTextureCom, 0);
+
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+	m_pVIBufferCom->SetUp_TextureOnShader("g_DiffuseTexture", m_pTextureCom, pGameInstance->GetNextLevelID());
+
+	RELEASE_INSTANCE(CGameInstance);
 
 	m_pVIBufferCom->Render(0);
 

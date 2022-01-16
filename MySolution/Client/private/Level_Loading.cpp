@@ -16,8 +16,6 @@ HRESULT CLevel_Loading::NativeConstruct(LEVEL eNextLevel)
 	if (FAILED(__super::NativeConstruct()))
 		return E_FAIL;
 
-	/* 로딩레벨에서 배경을 담당할 복제본객체를 생성하나다. */
-	/* 원형객체는 메인앱 스태틱으로 처리하낟. */
 	if (FAILED(Ready_Layer_BackGround(TEXT("Layer_BackGround"))))
 		return E_FAIL;
 	if (FAILED(Ready_Layer_UI(TEXT("Layer_UI"))))
@@ -25,7 +23,6 @@ HRESULT CLevel_Loading::NativeConstruct(LEVEL eNextLevel)
 
 	m_eNextLevel = eNextLevel;
 
-	/* 다음레벨에 필요한 ㅎ원형객체들을 새엇앟낟. */
 	m_pLoader = CLoader::Create(m_pDevice, m_pDeviceContext, m_eNextLevel);
 	if (nullptr == m_pLoader)
 		return E_FAIL;
@@ -95,18 +92,20 @@ HRESULT CLevel_Loading::Open_Level()
 	CGameInstance*	pGameInstance = GET_INSTANCE(CGameInstance);
 
 	CLevel*		pLevel = nullptr;
-
+	LEVEL			nextLevel = LEVEL::LEVEL_END;
 	switch (m_eNextLevel)
 	{
 	case LEVEL_LOGO: 
-		pLevel = CLevel_Logo::Create(m_pDevice, m_pDeviceContext);
+ 		pLevel = CLevel_Logo::Create(m_pDevice, m_pDeviceContext);
+		nextLevel = LEVEL::LEVEL_GAMEPLAY;
 		break;
 	case LEVEL_GAMEPLAY:
 		pLevel = CLevel_GamePlay::Create(m_pDevice, m_pDeviceContext);
+		nextLevel = LEVEL::LEVEL_LOGO;
 		break;
 	}
 
-	if (FAILED(pGameInstance->Open_Level(m_eNextLevel, pLevel)))
+	if (FAILED(pGameInstance->Open_Level(m_eNextLevel, pLevel, nextLevel)))
 		return E_FAIL;
 
 	RELEASE_INSTANCE(CGameInstance);

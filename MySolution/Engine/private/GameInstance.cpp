@@ -167,12 +167,20 @@ HRESULT CGameInstance::Ready_Timer(const _tchar * pTimerTag)
 	return m_pTimer_Manager->Ready_Timer(pTimerTag);
 }
 
-HRESULT CGameInstance::Open_Level(_uint iLevelIndex, CLevel * pOpenLevel)
+HRESULT CGameInstance::Open_Level(_uint iLevelIndex, CLevel * pOpenLevel, _uint nextLevelID)
 {
 	if (nullptr == m_pLevel_Manager)
 		return E_FAIL;
 
-	return m_pLevel_Manager->Open_Level(iLevelIndex, pOpenLevel);
+	return m_pLevel_Manager->Open_Level(iLevelIndex, pOpenLevel, nextLevelID);
+}
+
+_uint CGameInstance::GetNextLevelID()
+{
+	if (nullptr == m_pLevel_Manager)
+		return 0;
+
+	return m_pLevel_Manager->GetNextLevelID();
 }
 
 HRESULT CGameInstance::Add_Prototype(const _tchar * pPrototypeTag, CGameObject * pPrototype)

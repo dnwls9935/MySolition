@@ -13,7 +13,7 @@ cbuffer CamDesc
 };
 
 cbuffer	BrushDesc {
-	vector		g_vBrushPos = {20.f, 0.f, 10.f, 1.f};
+	vector		g_vBrushPos = { 20.f, 0.f, 10.f, 1.f };
 	float		g_fRadius = 5.f;
 };
 
@@ -33,9 +33,6 @@ cbuffer MtrlDesc
 };
 
 texture2D	g_DiffuseSourTexture;
-texture2D	g_DiffuseDestTexture;
-texture2D	g_FilterColor;
-texture2D	g_BrushColor;
 
 sampler DefaultSampler = sampler_state
 {
@@ -86,7 +83,14 @@ VS_OUT VS_MAIN(VS_IN In)
 	Out.vWorldPos = vWorldPosition;
 
 	return Out;
-}
+};
+
+
+struct RANGE_IN
+{
+	float4		vWorldPos	: WORLDPOS;
+};
+
 
 struct PS_IN
 {
@@ -105,34 +109,32 @@ struct PS_OUT
 PS_OUT PS_MAIN(PS_IN In)
 {
 	PS_OUT		Out = (PS_OUT)0;
+	RANGE_IN	RANGEIN = (RANGE_IN)0;
 
 	vector	vSourDiffuse = g_DiffuseSourTexture.Sample(DefaultSampler, In.vTexUV * 10.f);
-	vector	vDestDiffuse = g_DiffuseDestTexture.Sample(DefaultSampler, In.vTexUV * 20.f);
-	vector	vFilterColor = g_FilterColor.Sample(DefaultSampler, In.vTexUV);
-	vector	vBrushColor = (vector)0;
 
-	if (In.vWorldPos.x >= g_vBrushPos.x - g_fRadius && In.vWorldPos.x <= g_vBrushPos.x + g_fRadius &&
-		In.vWorldPos.z >= g_vBrushPos.z - g_fRadius && In.vWorldPos.z <= g_vBrushPos.z + g_fRadius)
-	{
-		float2		vTexUV = float2((In.vWorldPos.x - (g_vBrushPos.x - g_fRadius)) / (2.f * g_fRadius),
-			((g_vBrushPos.z + g_fRadius) - In.vWorldPos.z) / (2.f * g_fRadius));
-		vBrushColor = g_BrushColor.Sample(DefaultSampler, vTexUV);
-	}
-
-	vector vDiffuse = vSourDiffuse * vFilterColor.r + vDestDiffuse * (1.f - vFilterColor.r) + vBrushColor;
+	vector vDiffuse = vSourDiffuse;
 
 	Out.vColor = (g_vLightDiffuse * vDiffuse) * saturate(In.fShade + (g_vLightAmbient * g_vMtrlAmbient))
 		+ (g_vLightSpecular * g_vMtrlSpecular) * In.fSpecular;
 
 	return Out;
-}
-
-
+};
 
 
 technique11			DefaultTechnique
 {
 	pass Default
+	{
+		SetRasterizerState(CullMode_None);
+		SetDepthStencilState(ZBuffer_Default, 0);
+		SetBlendState(BlendDisable, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		PixelShader = compile ps_5_0  PS_MAIN();
+	}
+	pass FillMode_WireFrame
 	{
 		SetRasterizerState(FillMode_WireFrame);
 		SetDepthStencilState(ZBuffer_Default, 0);
@@ -142,8 +144,4 @@ technique11			DefaultTechnique
 		GeometryShader = NULL;
 		PixelShader = compile ps_5_0  PS_MAIN();
 	}
-}
-
-
-
-
+};

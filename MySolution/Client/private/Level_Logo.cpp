@@ -26,7 +26,7 @@ _int CLevel_Logo::Tick(_double TimeDelta)
 	{
 		CGameInstance*	pGameInstance = GET_INSTANCE(CGameInstance);
 
-		if (FAILED(pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pDeviceContext, LEVEL_GAMEPLAY))))
+		if (FAILED(pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pDeviceContext, LEVEL_GAMEPLAY), LEVEL_GAMEPLAY)))
 		{
 			RELEASE_INSTANCE(CGameInstance);
 			return -1;

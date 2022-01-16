@@ -13,6 +13,8 @@ public:
 	virtual HRESULT NativeConstruct();
 	virtual _int Tick(_double TimeDelta);
 	virtual HRESULT Render();
+
+
 protected:
 	ID3D11Device*			m_pDevice = nullptr;
 	ID3D11DeviceContext*	m_pDeviceContext = nullptr;

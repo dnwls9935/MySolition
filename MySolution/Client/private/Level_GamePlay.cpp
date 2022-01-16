@@ -26,9 +26,7 @@ HRESULT CLevel_GamePlay::NativeConstruct()
 
 	if (FAILED(Ready_Layer_Player(TEXT("Layer_Player"))))
 		return E_FAIL;
-
 	
-
 	return S_OK;
 }
 
