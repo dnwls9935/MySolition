@@ -2,6 +2,7 @@
 #include "..\public\Player.h"
 
 #include "GameInstance.h"
+#include "Camera_Dynamic.h"
 
 CPlayer::CPlayer(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -30,7 +31,7 @@ HRESULT CPlayer::NativeConstruct(void * pArg)
 	if (FAILED(SetUp_Components()))
 		return E_FAIL;
 
-	m_pModelCom->SetUp_AnimationIndex(5);
+	//m_pModelCom->SetUp_AnimationIndex(5);
 
 	return S_OK;
 }
@@ -38,6 +39,7 @@ HRESULT CPlayer::NativeConstruct(void * pArg)
 _int CPlayer::Tick(_double TimeDelta)
 {
 	KeyCheck(TimeDelta);
+	
 	
 	return _int();
 }
@@ -48,7 +50,6 @@ _int CPlayer::LateTick(_double TimeDelta)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
 
 	m_pModelCom->Update_CombinedTransformationMatrix(TimeDelta);
-
 	return _int();
 }
 
@@ -84,7 +85,7 @@ void CPlayer::Rotation_AxisRotation_Axis(_fvector vAxis, _double TimeDelta)
 _matrix CPlayer::Get_CameraMatrix()
 {
 	char szBuffer[MAX_PATH] = "Camera";
-	return m_pModelCom->GetHierachyMatrix(szBuffer);
+	return m_pModelCom->GetHierachyMatrix(szBuffer) * m_pTransformCom->Get_WorldMatrix();
 }
 void CPlayer::KeyCheck(_double TimeDelta)
 {
@@ -93,38 +94,34 @@ void CPlayer::KeyCheck(_double TimeDelta)
 	if (pGameInstance->Get_DIKeyState(DIK_W) & 0x80)
 	{
 		m_pTransformCom->Go_Straight(TimeDelta);
-		m_pModelCom->SetUp_AnimationIndex(9);
 	}
 	else if (pGameInstance->Get_DIKeyState(DIK_S) & 0x80)
 	{
-		m_pModelCom->SetUp_AnimationIndex(9);
 		m_pTransformCom->Go_BackWard(TimeDelta);
 	}
 	else if (pGameInstance->Get_DIKeyState(DIK_D) & 0x80)
 	{
-		m_pModelCom->SetUp_AnimationIndex(11);
 		m_pTransformCom->Go_Right(TimeDelta);
 	}
 	else if (pGameInstance->Get_DIKeyState(DIK_A) & 0x80)
 	{
-		m_pModelCom->SetUp_AnimationIndex(10);
 		m_pTransformCom->Go_Left(TimeDelta);
 	}
 		
-/*
 	_long	MouseMove = 0;
 
 	if (MouseMove = pGameInstance->Get_MouseMoveState(CInput_Device::MMS_X))
 	{
 		m_pTransformCom->Rotation_Axis(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta * MouseMove * 0.1f);
+		static_cast<CCamera_Dynamic*>((pGameInstance->GetObjectList(LEVEL_GAMEPLAY, TEXT("Layer_Camera")).front()))->Rotation_Axis(CCamera_Dynamic::ROTATION_TYPE::X, TimeDelta, MouseMove);
 	}
 
 	if (MouseMove = pGameInstance->Get_MouseMoveState(CInput_Device::MMS_Y))
 	{
 		m_pTransformCom->Rotation_Axis(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), TimeDelta * MouseMove * 0.1f);
+		static_cast<CCamera_Dynamic*>((pGameInstance->GetObjectList(LEVEL_GAMEPLAY, TEXT("Layer_Camera")).front()))->Rotation_Axis(CCamera_Dynamic::ROTATION_TYPE::Y, TimeDelta, MouseMove);
 	}
 
-*/
 	RELEASE_INSTANCE(CGameInstance);
 
 }

@@ -564,7 +564,7 @@ _fmatrix CModel::GetHierachyMatrix(char* _HierarchyNodeName)
 	_fmatrix b = XMMatrixIdentity();
 	_fmatrix c = pHierarchyNode->Get_CombinedMatrix();
 
-	RenderingMatrix = XMLoadFloat4x4(&m_PivotMatrix)* XMMatrixTranspose(XMMatrixIdentity()) * pHierarchyNode->Get_CombinedMatrix() ;
+	RenderingMatrix = XMLoadFloat4x4(&m_PivotMatrix)* XMMatrixTranspose(XMMatrixIdentity()) * pHierarchyNode->Get_CombinedMatrix();
 
 	return RenderingMatrix;
 }

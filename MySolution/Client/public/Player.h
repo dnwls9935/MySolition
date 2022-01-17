@@ -33,12 +33,12 @@ private:
 
 private:
 	CRenderer*				m_pRendererCom = nullptr;
-	CTransform*				m_pTransformCom = nullptr;
 	CModel*					m_pModelCom = nullptr;
 private:
 	virtual HRESULT SetUp_Components();
 
 public:
+	CTransform*				m_pTransformCom = nullptr;
 	static CPlayer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CGameObject* Clone(void* pArg) override;
 	virtual void Free() override;

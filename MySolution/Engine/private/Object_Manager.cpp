@@ -60,7 +60,9 @@ HRESULT CObject_Manager::Add_GameObjectToLayer(_uint iLevelIndex, const _tchar *
 		m_pLayers[iLevelIndex].insert(LAYERS::value_type(pLayerTag, pLayer));
 	}
 	else
+	{
 		iter->second->Add_GameObject(pGameObject);
+	}
 
 	return S_OK;
 }
