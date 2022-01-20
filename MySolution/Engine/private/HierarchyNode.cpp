@@ -11,6 +11,8 @@ CHierarchyNode::CHierarchyNode(ID3D11Device * pDevice, ID3D11DeviceContext * pDe
 
 HRESULT CHierarchyNode::NativeConstruct(char* pBoneName, _fmatrix TransformationMatrix, _uint iDepth, CHierarchyNode* pParent)
 {
+	XMStoreFloat4x4(&m_TransformationMatrix, XMMatrixIdentity());
+
 	strcpy_s(m_szBoneName, pBoneName);
 	XMStoreFloat4x4(&m_TransformationMatrix, XMMatrixTranspose(TransformationMatrix));
 	XMStoreFloat4x4(&m_CombinedTransformationMatrix, XMMatrixIdentity());

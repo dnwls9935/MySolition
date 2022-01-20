@@ -17,6 +17,9 @@ public:
 	HRESULT Add_Channel(class CChannel* pChannel);
 	HRESULT Update_TransformationMatrix(_double TimeDelta);
 
+public:
+	_bool	GetFinished()const { return m_isFinished; };
+
 private:
 	char				m_szName[MAX_PATH] = "";
 	_double				m_Duration = 0.0; /*하나의 애니메이션을 재생하는데 걸리는 시간(트랙의 위치와 동일) */

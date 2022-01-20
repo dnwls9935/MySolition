@@ -61,6 +61,12 @@ _int ToolObject::Tick(_double TimeDelta)
 
 	if (m_form->tapMap->m_Modify.GetCheck())
 	{
+		if (gameInstance->Get_DIKeyState(DIK_LSHIFT) & 0x80 && 
+			m_PickChecking)
+		{
+			KeyCheck(TimeDelta);
+		}
+
 		if (gameInstance->Get_MouseButtonState(CInput_Device::MBS_LBUTTON))
 		{
 			if (!m_PickChecking)
@@ -73,20 +79,23 @@ _int ToolObject::Tick(_double TimeDelta)
 				{
 					m_pTransformCom->Rotation_Axis(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta * -MouseMove * m_mouseSenitive);
 				}
-				else if (MouseMove = gameInstance->Get_MouseMoveState(CInput_Device::MMS_Y)) 
+
+				if (gameInstance->Get_DIKeyState(DIK_LALT) & 0x80)
 				{
-					_float4 position;
-					XMStoreFloat4(&position, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
-					if (0 < MouseMove)
-						TimeDelta *= -1.f;
+					if (MouseMove = gameInstance->Get_MouseMoveState(CInput_Device::MMS_Y))
+					{
+						_float4 position;
+						XMStoreFloat4(&position, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
-					m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(position.x, position.y + (TimeDelta * 5), position.z, position.w));
+						if (0 < MouseMove)
+							TimeDelta *= -1.f;
+
+						m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(position.x, position.y + (TimeDelta * 15), position.z, position.w));
+					}
 				}
-
 			}
 		}
-
 		_long mouseCheck = 0;
 		if ((gameInstance->Get_DIKeyState(DIK_LCONTROL) & 0x80) &&
 			(mouseCheck = gameInstance->Get_MouseMoveState(CInput_Device::MMS_WHEEL)) &&
@@ -101,13 +110,19 @@ _int ToolObject::Tick(_double TimeDelta)
 
 			m_pTransformCom->Set_Scale(XMVectorSet((_float)(Right + TimeDelta), (_float)(Up + TimeDelta), (_float)(Look + TimeDelta), 0.f));
 		}
+
+		if (gameInstance->Get_DIKeyState(DIK_DELETE) & 0x80 &&
+			m_PickChecking)
+		{
+			m_Dead = TRUE;
+		}
 	}
 
 	if (gameInstance->Get_DIKeyState(DIK_ESCAPE) & 0x80)
 	{
 		m_PickChecking = FALSE;
 	}
-
+/*
 	if (gameInstance->Get_DIKeyState(DIK_W) & 0x80)
 	{
 		m_pModelCom->SetUp_AnimationIndex(9);
@@ -140,7 +155,7 @@ _int ToolObject::Tick(_double TimeDelta)
 	{
 		m_pModelCom->SetUp_AnimationIndex(8);
 	}
-
+	*/
 	
 
 	RELEASE_INSTANCE(CGameInstance);
@@ -159,7 +174,7 @@ _int ToolObject::LateTick(_double TimeDelta)
 	if(CModel::TYPE::TYPE_ANIM == m_pModelCom->GetMeshType())
 		m_pModelCom->Update_CombinedTransformationMatrix(TimeDelta);
 
-	return _int();
+	return m_Dead;
 }
 
 HRESULT ToolObject::Render()
@@ -186,6 +201,21 @@ HRESULT ToolObject::Render()
 
 	RELEASE_INSTANCE(CGameInstance);
 	return S_OK;
+}
+
+void ToolObject::KeyCheck(_double TimeDelta)
+{
+	CGameInstance* gameInstance = GET_INSTANCE(CGameInstance);
+	if (gameInstance->Get_DIKeyState(DIK_W) & 0x80)
+		m_pTransformCom->Go_Straight(TimeDelta * 5.f);
+	if (gameInstance->Get_DIKeyState(DIK_S) & 0x80)
+		m_pTransformCom->Go_BackWard(TimeDelta * 5.f);
+	if (gameInstance->Get_DIKeyState(DIK_D) & 0x80)
+		m_pTransformCom->Go_Right(TimeDelta * 5.f);
+	if (gameInstance->Get_DIKeyState(DIK_A) & 0x80)
+		m_pTransformCom->Go_Left(TimeDelta * 5.f);
+
+	RELEASE_INSTANCE(CGameInstance);
 }
 
 void ToolObject::CheckButton()

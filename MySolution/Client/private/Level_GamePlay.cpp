@@ -14,17 +14,21 @@ HRESULT CLevel_GamePlay::NativeConstruct()
 {
 	if (FAILED(__super::NativeConstruct()))
 		return E_FAIL;
-
-	if (FAILED(Ready_Layer_BackGround(TEXT("Layer_BackGround"))))
-		return E_FAIL;
-
 	if (FAILED(Ready_LightDesc()))
 		return E_FAIL;
-
+	if (FAILED(Ready_Layer_BackGround(TEXT("Layer_BackGround"))))
+		return E_FAIL;
+	if (FAILED(Ready_Layer_SkyBox(TEXT("Layer_SkyBox"))))
+		return E_FAIL;
+	if (FAILED(Ready_Layer_Camera(TEXT("Layer_Camera"))))
+		return E_FAIL;
 	if (FAILED(Ready_Layer_Player(TEXT("Layer_Player"))))
 		return E_FAIL;
-
-	if (FAILED(Ready_Layer_Camera(TEXT("Layer_Camera"))))
+	if (FAILED(Ready_Layer_Environment(TEXT("Layer_Environment"))))
+		return E_FAIL;
+	if (FAILED(Ready_Layer_Object(TEXT("Layer_Object"))))
+		return E_FAIL;
+	if (FAILED(Ready_Layer_Enemy(TEXT("Layer_Enemy"))))
 		return E_FAIL;
 
 	return S_OK;
@@ -32,6 +36,11 @@ HRESULT CLevel_GamePlay::NativeConstruct()
 
 _int CLevel_GamePlay::Tick(_double TimeDelta)
 {
+	POINT pt{g_iWinCX/ 2, g_iWinCY/2};
+	ClientToScreen(g_hWnd, &pt);
+	SetCursorPos(pt.x, pt.y);
+
+
 	if (0 > (__super::Tick(TimeDelta)))
 		return -1;
 
@@ -59,6 +68,27 @@ HRESULT CLevel_GamePlay::Ready_LightDesc()
 	return S_OK;
 }
 
+HRESULT CLevel_GamePlay::Ready_Layer_Environment(const _tchar * pLayerTag)
+{
+	return S_OK;
+}
+
+HRESULT CLevel_GamePlay::Ready_Layer_Object(const _tchar * pLayerTag)
+{
+	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+
+	if (FAILED(pGameInstance->Add_GameObjectToLayer(LEVEL_GAMEPLAY, pLayerTag, TEXT("Prototype_GameObject_MonsterTest"))))
+		return E_FAIL;
+
+	RELEASE_INSTANCE(CGameInstance);
+	return S_OK;
+}
+
+HRESULT CLevel_GamePlay::Ready_Layer_Enemy(const _tchar * pLayerTag)
+{
+	return S_OK;
+}
+
 HRESULT CLevel_GamePlay::Ready_Layer_Player(const _tchar * pLayerTag)
 {
 	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
@@ -79,6 +109,15 @@ HRESULT CLevel_GamePlay::Ready_Layer_BackGround(const _tchar * pLayerTag)
 	if (FAILED(pGameInstance->Add_GameObjectToLayer(LEVEL_GAMEPLAY, pLayerTag, TEXT("Prototype_GameObject_Terrain"))))
 		return E_FAIL;
 
+	RELEASE_INSTANCE(CGameInstance);
+
+	return S_OK;
+}
+
+HRESULT CLevel_GamePlay::Ready_Layer_SkyBox(const _tchar * pLayerTag)
+{
+	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+
 	if (FAILED(pGameInstance->Add_GameObjectToLayer(LEVEL_GAMEPLAY, pLayerTag, TEXT("Prototype_GameObject_Cube"))))
 		return E_FAIL;
 
@@ -94,13 +133,13 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const _tchar * pLayerTag)
 	CCamera::CAMERADESC			CameraDesc;
 	ZeroMemory(&CameraDesc, sizeof(CCamera::CAMERADESC));
 
-	CameraDesc.vEye = _float3(0.0f, 4.0f, 0.0f);
+	CameraDesc.vEye = _float3(0.0f, 3.0f, -1.5f);
 	CameraDesc.vAt = _float3(0.0f, 0.0f, 5.0f);
 	CameraDesc.vAxisY = _float3(0.f, 1.f, 0.f);
-	CameraDesc.fFovy = XMConvertToRadians(90.f);
+	CameraDesc.fFovy = XMConvertToRadians(60.f);
 	CameraDesc.fAspect = _float(g_iWinCX) / g_iWinCY;
-	CameraDesc.fNear = 0.001f;
-	CameraDesc.fFar = 300.f;
+	CameraDesc.fNear = 0.01f;
+	CameraDesc.fFar = 1000.f;
 
 	CameraDesc.TransformDesc.fSpeedPerSec = 10.f;
 	CameraDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(120.0f);

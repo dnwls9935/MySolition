@@ -79,12 +79,6 @@
     <Filter Include="00.Utility\04.PipeLine">
       <UniqueIdentifier>{adb5f830-14a5-47ff-be34-9833843760c2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="00.Utility\03.Component\Model">
-      <UniqueIdentifier>{da617122-136c-4517-a575-e7e24afc505d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="00.Utility\03.Component\Model\MeshContainer">
-      <UniqueIdentifier>{87e56b74-e928-4ce3-9b33-a4a374b427bd}</UniqueIdentifier>
-    </Filter>
     <Filter Include="00.Utility\05.Calculator">
       <UniqueIdentifier>{0d212c34-91e3-4365-9f1e-8d9b2aa0f8b5}</UniqueIdentifier>
     </Filter>
@@ -94,14 +88,26 @@
     <Filter Include="00.Utility\03.Component\VIBuffer\Line\ThreeWaySystem">
       <UniqueIdentifier>{d61f8b10-32fa-4674-827f-dbf180ea06e3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="00.Utility\03.Component\Model\Animation">
+    <Filter Include="00.Utility\03.Component\Collider">
+      <UniqueIdentifier>{47ed140b-7568-486b-bce8-4b308c826173}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.Utility\06. DebugDraw">
+      <UniqueIdentifier>{39cd41a4-5395-47ce-a207-9626ff77280d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.Utility\03.Component\VIBuffer\Model">
+      <UniqueIdentifier>{da617122-136c-4517-a575-e7e24afc505d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.Utility\03.Component\VIBuffer\Model\MeshContainer">
+      <UniqueIdentifier>{87e56b74-e928-4ce3-9b33-a4a374b427bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.Utility\03.Component\VIBuffer\Model\Animation">
       <UniqueIdentifier>{70197dda-8366-4a1a-9ab3-35bca6624216}</UniqueIdentifier>
     </Filter>
-    <Filter Include="00.Utility\03.Component\Model\HirerachyNode">
-      <UniqueIdentifier>{6b06d69b-8169-44a3-95f9-e808f989d6bb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="00.Utility\03.Component\Model\Animation\Channel">
+    <Filter Include="00.Utility\03.Component\VIBuffer\Model\Animation\Channel">
       <UniqueIdentifier>{44e30016-a338-45d1-b984-2fbe8420599c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.Utility\03.Component\VIBuffer\Model\HirerachyNode">
+      <UniqueIdentifier>{6b06d69b-8169-44a3-95f9-e808f989d6bb}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -137,9 +143,6 @@
     </ClInclude>
     <ClInclude Include="..\public\Timer.h">
       <Filter>01.System\00.Device\Timer</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\GameObject.h">
-      <Filter>00.Utility\02.GameObject</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Object_Manager.h">
       <Filter>00.Utility\02.GameObject\Manager</Filter>
@@ -187,10 +190,10 @@
       <Filter>00.Utility\03.Component\VIBuffer\Cube</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Model.h">
-      <Filter>00.Utility\03.Component\Model</Filter>
+      <Filter>00.Utility\03.Component\VIBuffer\Model</Filter>
     </ClInclude>
     <ClInclude Include="..\public\MeshContainer.h">
-      <Filter>00.Utility\03.Component\Model\MeshContainer</Filter>
+      <Filter>00.Utility\03.Component\VIBuffer\Model\MeshContainer</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Calculator.h">
       <Filter>00.Utility\05.Calculator</Filter>
@@ -199,13 +202,22 @@
       <Filter>00.Utility\03.Component\VIBuffer\Line\ThreeWaySystem</Filter>
     </ClInclude>
     <ClInclude Include="..\public\HierarchyNode.h">
-      <Filter>00.Utility\03.Component\Model\HirerachyNode</Filter>
+      <Filter>00.Utility\03.Component\VIBuffer\Model\HirerachyNode</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Animation.h">
-      <Filter>00.Utility\03.Component\Model\Animation</Filter>
+      <Filter>00.Utility\03.Component\VIBuffer\Model\Animation</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Channel.h">
-      <Filter>00.Utility\03.Component\Model\Animation\Channel</Filter>
+      <Filter>00.Utility\03.Component\VIBuffer\Model\Animation\Channel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Collider.h">
+      <Filter>00.Utility\03.Component\Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\DebugDraw.h">
+      <Filter>00.Utility\06. DebugDraw</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\GameObject.h">
+      <Filter>00.Utility\02.GameObject</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -275,11 +287,8 @@
     <ClCompile Include="..\private\VIBuffer_Cube.cpp">
       <Filter>00.Utility\03.Component\VIBuffer\Cube</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\Model.cpp">
-      <Filter>00.Utility\03.Component\Model</Filter>
-    </ClCompile>
     <ClCompile Include="..\private\MeshContainer.cpp">
-      <Filter>00.Utility\03.Component\Model\MeshContainer</Filter>
+      <Filter>00.Utility\03.Component\VIBuffer\Model\MeshContainer</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Calculator.cpp">
       <Filter>00.Utility\05.Calculator</Filter>
@@ -288,13 +297,22 @@
       <Filter>00.Utility\03.Component\VIBuffer\Line\ThreeWaySystem</Filter>
     </ClCompile>
     <ClCompile Include="..\private\HierarchyNode.cpp">
-      <Filter>00.Utility\03.Component\Model\HirerachyNode</Filter>
+      <Filter>00.Utility\03.Component\VIBuffer\Model\HirerachyNode</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Animation.cpp">
-      <Filter>00.Utility\03.Component\Model\Animation</Filter>
+      <Filter>00.Utility\03.Component\VIBuffer\Model\Animation</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Channel.cpp">
-      <Filter>00.Utility\03.Component\Model\Animation\Channel</Filter>
+      <Filter>00.Utility\03.Component\VIBuffer\Model\Animation\Channel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Model.cpp">
+      <Filter>00.Utility\03.Component\VIBuffer\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Collider.cpp">
+      <Filter>00.Utility\03.Component\Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\DebugDraw.cpp">
+      <Filter>00.Utility\06. DebugDraw</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

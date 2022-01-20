@@ -33,6 +33,11 @@ CModel::CModel(const CModel & rhs)
 	}
 }
 
+CHierarchyNode* CModel::Get_BoneMatrix(const char * pBoneName)
+{
+	return Find_HierarchyNode(pBoneName);
+}
+
 HRESULT CModel::NativeConstruct_Prototype(const char * pMeshFilePath, const char * pMeshFileName, const _tchar* pShaderFilePath, _fmatrix PivotMatrix, TYPE eMeshType)
 {
 	m_eMeshType = eMeshType;
@@ -147,9 +152,6 @@ HRESULT CModel::Bind_Buffers()
 /* 매 프레임마다 호출. */
 HRESULT CModel::Update_CombinedTransformationMatrix(_double TimeDelta)
 {
-	if (TYPE_STATIC == m_eMeshType)
-		return S_OK;
-
 	/* 현재 애니메이션 재생시간에 따른 뼈들의 TransformationMatrix를 갱신한다. */
 	m_Animations[m_iCurrentAnimation]->Update_TransformationMatrix(TimeDelta);
 
@@ -166,6 +168,7 @@ HRESULT CModel::Render(_uint iMeshContainerIndex, _uint iPassIndex)
 {
 	m_pDeviceContext->IASetInputLayout(m_EffectDescs[iPassIndex]->pInputLayout);
 
+
 	_matrix		BoneMatrices[128];
 	ZeroMemory(BoneMatrices, sizeof(_matrix) * 128);
 
@@ -181,6 +184,11 @@ HRESULT CModel::Render(_uint iMeshContainerIndex, _uint iPassIndex)
 	m_MeshContainers[iMeshContainerIndex]->Render();
 
 	return S_OK;
+}
+
+_bool CModel::GetAnimationFinished()
+{
+	return  m_Animations[m_iCurrentAnimation]->GetFinished();
 }
 
 HRESULT CModel::Reserve_VertexIndexData()
@@ -236,7 +244,7 @@ HRESULT CModel::Create_Materials()
 
 			_tchar		szFullName[MAX_PATH] = TEXT("");
 
-			MultiByteToWideChar(CP_ACP, 0, szMeshFilePath, strlen(szMeshFilePath), szFullName, MAX_PATH);
+			MultiByteToWideChar(CP_ACP, 0, szMeshFilePath, (_int)strlen(szMeshFilePath), szFullName, MAX_PATH);
 
 			pMeshMaterial->pMeshTexture[j] = CTexture::Create(m_pDevice, m_pDeviceContext, szFullName);
 			if (nullptr == pMeshMaterial->pMeshTexture[j])
@@ -399,9 +407,10 @@ HRESULT CModel::Create_SkinnedDesc()
 			XMStoreFloat4x4(&pBoneDesc->OffsetMatrix, OffSetMatrix);
 
 			pBoneDesc->pNode = Find_HierarchyNode(pBone->mName.data);
-
 			if (nullptr == pBoneDesc->pNode)
 				return E_FAIL;
+
+			pBoneDesc->pNode->Set_OffsetMatrix(OffSetMatrix * XMLoadFloat4x4(&m_PivotMatrix));
 
 			pMeshContainer->Add_BoneDesc(pBoneDesc);
 
@@ -460,6 +469,8 @@ HRESULT CModel::Clone_SkinnedDesc()
 			pBoneDesc->pNode = Find_HierarchyNode(pBone->mName.data);
 			if (nullptr == pBoneDesc->pNode)
 				return E_FAIL;
+
+			pBoneDesc->pNode->Set_OffsetMatrix(OffSetMatrix * XMLoadFloat4x4(&m_PivotMatrix));
 
 			pMeshContainer->Add_BoneDesc(pBoneDesc);
 		}
@@ -539,7 +550,7 @@ HRESULT CModel::Create_Animation()
 	return S_OK;
 }
 
-CHierarchyNode * CModel::Find_HierarchyNode(char * pName)
+CHierarchyNode * CModel::Find_HierarchyNode(const char * pName)
 {
 	auto	iter = find_if(m_HierarchyNodes.begin(), m_HierarchyNodes.end(), [&](CHierarchyNode* pNode)
 	{
@@ -550,23 +561,6 @@ CHierarchyNode * CModel::Find_HierarchyNode(char * pName)
 		return nullptr;
 
 	return (*iter);
-}
-
-_fmatrix CModel::GetHierachyMatrix(char* _HierarchyNodeName)
-{
-	CHierarchyNode* pHierarchyNode = Find_HierarchyNode(_HierarchyNodeName);
-	if (nullptr == pHierarchyNode)
-		return _matrix();
-
-	_matrix RenderingMatrix;
-
-	_fmatrix a = XMLoadFloat4x4(&m_PivotMatrix);
-	_fmatrix b = XMMatrixIdentity();
-	_fmatrix c = pHierarchyNode->Get_CombinedMatrix();
-
-	RenderingMatrix = XMLoadFloat4x4(&m_PivotMatrix)* XMMatrixTranspose(XMMatrixIdentity()) * pHierarchyNode->Get_CombinedMatrix();
-
-	return RenderingMatrix;
 }
 
 CModel * CModel::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, const char * pMeshFilePath, const char * pMeshFileName, const _tchar* pShaderFilePath, _fmatrix PivotMatrix, TYPE eMeshType)

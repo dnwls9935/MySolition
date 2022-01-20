@@ -46,6 +46,12 @@
     <Filter Include="02.GameObject\Player">
       <UniqueIdentifier>{e71488d1-2b37-4734-818f-7a22d17ae3f1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\Monster">
+      <UniqueIdentifier>{fe3a1594-ba6f-4b71-8cc7-640c6d5d286b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\Test">
+      <UniqueIdentifier>{4e8b3117-f4a2-4707-9d2f-a70f0c6d2948}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -99,6 +105,9 @@
     <ClInclude Include="..\public\Player.h">
       <Filter>02.GameObject\Player</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\MonsterTest.h">
+      <Filter>02.GameObject\Monster\Test</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -136,6 +145,9 @@
     </ClCompile>
     <ClCompile Include="..\private\Player.cpp">
       <Filter>02.GameObject\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\MonsterTest.cpp">
+      <Filter>02.GameObject\Monster\Test</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -33,48 +33,20 @@ HRESULT CCamera_Dynamic::NativeConstruct(void * pArg)
 
 _int CCamera_Dynamic::Tick(_double TimeDelta)
 {
-	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 
-	_matrix camPos = static_cast<CPlayer*>(pGameInstance->GetObjectList(LEVEL_GAMEPLAY, TEXT("Layer_Player")).front())->m_pTransformCom->Get_WorldMatrix();
-	
-	_vector Right = camPos.r[0];
-	_vector Up = camPos.r[1];
-	_vector Look = camPos.r[2];
-	_vector Position = camPos.r[3];
-
-	Position = XMVectorSetY(Position, XMVectorGetY(Position) + 2.f);
-
-	m_pTransform->Set_State(CTransform::STATE_POSITION, Right);
-	m_pTransform->Set_State(CTransform::STATE_POSITION, Up);
-	m_pTransform->Set_State(CTransform::STATE_POSITION, Look);
-	m_pTransform->Set_State(CTransform::STATE_POSITION, Position);
-
-/*
-	if (pGameInstance->Get_DIKeyState(DIK_W) & 0x80)
-	{
-		m_pTransform->Go_Straight(TimeDelta);
-	}
-	else if (pGameInstance->Get_DIKeyState(DIK_S) & 0x80)
-	{
-		m_pTransform->Go_BackWard(TimeDelta);
-	}
-	else if (pGameInstance->Get_DIKeyState(DIK_D) & 0x80)
-	{
-		m_pTransform->Go_Right(TimeDelta);
-	}
-	else if (pGameInstance->Get_DIKeyState(DIK_A) & 0x80)
-	{
-		m_pTransform->Go_Left(TimeDelta);
-	}
-*/
-	RELEASE_INSTANCE(CGameInstance);
 	return CCamera::Tick(TimeDelta);
 }
 
 _int CCamera_Dynamic::LateTick(_double TimeDelta)
-{
-	
-	return _int();
+{	
+	CPipeLine*		pPipeLine = GET_INSTANCE(CPipeLine);
+
+	pPipeLine->Set_Transform(CPipeLine::D3DTS_VIEW, m_pTransform->Get_WorldMatrixInverse());
+
+	pPipeLine->Set_Transform(CPipeLine::D3DTS_PROJECTION, XMMatrixPerspectiveFovLH(m_CameraDesc.fFovy, m_CameraDesc.fAspect, m_CameraDesc.fNear, m_CameraDesc.fFar));
+
+	RELEASE_INSTANCE(CPipeLine);
+	return CCamera::LateTick(TimeDelta);
 }
 
 HRESULT CCamera_Dynamic::Render()
@@ -82,36 +54,45 @@ HRESULT CCamera_Dynamic::Render()
 	return S_OK;
 }
 
-void CCamera_Dynamic::Rotation_Axis(ROTATION_TYPE _rotation,_double TimeDelta, _long	MouseMove)
+void CCamera_Dynamic::SetCameraPosition(_matrix camPos, _matrix _PWM)
 {
-	if (ROTATION_TYPE::X == _rotation)
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+/*
+	_matrix camPos = static_cast<CPlayer*>(pGameInstance->GetObjectList(LEVEL_GAMEPLAY, TEXT("Layer_Player")).front())->GetCameraMatrix();
+*/
+	_vector		vPosition = camPos.r[3];
+	vPosition = XMVectorSetW(vPosition, 1.f);
+
+	_vector		vLook = _PWM.r[2];
+	vLook = XMVector3Normalize(vLook);
+
+	_vector		vRight = XMVector3Cross(_PWM.r[1], vLook);
+	vRight = XMVector3Normalize(vRight);
+
+	_vector		vUp = XMVector3Cross(vLook, vRight);
+	vUp = XMVector3Normalize(vUp);
+
+	m_pTransform->Set_State(CTransform::STATE_RIGHT, vRight);
+	m_pTransform->Set_State(CTransform::STATE_UP, vUp);
+	m_pTransform->Set_State(CTransform::STATE_LOOK, vLook);
+	m_pTransform->Set_State(CTransform::STATE_POSITION, vPosition);
+
+	RELEASE_INSTANCE(CGameInstance);
+}
+
+void CCamera_Dynamic::RotationXY(ROTATION_TYPE _type, _double TimeDelta)
+{
+	switch (_type)
 	{
-		m_pTransform->Rotation_Axis(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta * MouseMove * 0.1f);
-	}
-	else if (ROTATION_TYPE::Y == _rotation)
-	{
-		m_pTransform->Rotation_Axis(m_pTransform->Get_State(CTransform::STATE_RIGHT), TimeDelta * MouseMove * 0.1f);
+	case Client::CCamera_Dynamic::ROTATION_TYPE::X:
+		m_pTransform->Rotation_Axis(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta);
+		break;
+	case Client::CCamera_Dynamic::ROTATION_TYPE::Y:
+		m_pTransform->Rotation_Axis(m_pTransform->Get_State(CTransform::STATE_RIGHT), TimeDelta);
+		break;
 	}
 }
 
-void CCamera_Dynamic::MoveCamera(MOVE_TYPE _moveType, _double TimeDelta)
-{
-	switch (_moveType)
-	{
-	case Client::CCamera_Dynamic::MOVE_TYPE::FRONT:
-		m_pTransform->Go_Straight(TimeDelta);
-		break;
-	case Client::CCamera_Dynamic::MOVE_TYPE::BACK:
-		m_pTransform->Go_BackWard(TimeDelta);
-		break;
-	case Client::CCamera_Dynamic::MOVE_TYPE::RIGHT:
-		m_pTransform->Go_Right(TimeDelta);
-		break;
-	case Client::CCamera_Dynamic::MOVE_TYPE::LEFT:
-		m_pTransform->Go_Left(TimeDelta);
-		break;
-	}
-}
 
 CCamera_Dynamic * CCamera_Dynamic::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 {

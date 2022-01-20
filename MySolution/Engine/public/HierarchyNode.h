@@ -7,7 +7,7 @@
 
 BEGIN(Engine)
 
-class CHierarchyNode : public CBase
+class ENGINE_DLL CHierarchyNode : public CBase
 {
 private:
 	explicit CHierarchyNode(ID3D11Device*	pDevice, ID3D11DeviceContext* pDeviceContext);
@@ -26,15 +26,13 @@ public:
 		return XMLoadFloat4x4(&m_CombinedTransformationMatrix);
 	}
 
-	_matrix Get_OffsetMatrix() const {
+	_fmatrix Get_OffsetMatrix() const {
 		return XMLoadFloat4x4(&m_OffsetMatrix);
 	}
 
-	void CHierarchyNode::SetOffsetMatrix(_fmatrix _offsetMatrix)
-	{
-		XMStoreFloat4x4(&m_OffsetMatrix, _offsetMatrix);
+	void Set_OffsetMatrix(_fmatrix OffsetMatrix) {
+		XMStoreFloat4x4(&m_OffsetMatrix, OffsetMatrix);
 	}
-
 
 public:
 	void Reserve_Channel(_uint iNumAnimation) {
@@ -48,7 +46,6 @@ public:
 public:
 	HRESULT NativeConstruct(char* pBoneName, _fmatrix TransformationMatrix, _uint iDepth, CHierarchyNode* pParent);
 	void Update_CombinedTransformationMatrix(_uint iAnimationIndex);
-
 private:
 	ID3D11Device*			m_pDevice = nullptr;
 	ID3D11DeviceContext*	m_pDeviceContext = nullptr;

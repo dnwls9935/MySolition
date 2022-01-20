@@ -19,6 +19,10 @@
 #include "assimp/Importer.hpp"
 #include "assimp/scene.h"
 
+#include "DirectxTK/Effects.h"
+#include "DirectxTK/SpriteBatch.h"
+#include "DirectxTK/SpriteFont.h"
+
 
 #include <vector>
 #include <map>

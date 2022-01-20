@@ -19,9 +19,20 @@ public:
 	virtual _int Tick(_double TimeDelta);
 	virtual _int LateTick(_double TimeDelta);
 	virtual HRESULT Render();
+
+public:
+	class CComponent*		GetComponent(const _tchar* _componentTag);
+	void	CheckHit(_fvector _AimRay, _fvector _AimDir);
+
 protected:
 	ID3D11Device*			m_pDevice = nullptr;
 	ID3D11DeviceContext*	m_pDeviceContext = nullptr;
+
+	_bool			m_Dead = FALSE;
+
+	_bool			Dying = FALSE;
+	_int				m_HP = 3;
+
 protected:
 	unordered_map<const _tchar*, class CComponent*>		m_Components;
 

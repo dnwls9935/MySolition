@@ -83,6 +83,7 @@ HRESULT TapMap::LoadTerrainLayer(HANDLE & hFile)
 	list<CGameObject*>& pGameObjectList = pGameInstance->GetObjectList(1, TEXT("Terrain"));
 
 	ToolTerrain* pTerrain = static_cast<ToolTerrain*>(pGameObjectList.front());
+	 
 
 	DWORD dwByte;
 

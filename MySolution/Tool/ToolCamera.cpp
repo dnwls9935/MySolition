@@ -55,6 +55,8 @@ HRESULT ToolCamera::DeviceInputKeyChecking(_double TimeDelta)
 
 	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 
+	TimeDelta *= 1.5f;
+
 	if (pGameInstance->Get_DIKeyState(DIK_UP) & 0x80)
 	{
 		m_pTransform->Go_Straight(TimeDelta);

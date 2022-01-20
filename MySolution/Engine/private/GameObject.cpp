@@ -12,6 +12,7 @@ CGameObject::CGameObject(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceCo
 CGameObject::CGameObject(const CGameObject & rhs)
 	: m_pDevice(rhs.m_pDevice)
 	, m_pDeviceContext(rhs.m_pDeviceContext)
+	, m_Dead(rhs.m_Dead)
 {
 	Safe_AddRef(m_pDeviceContext);
 	Safe_AddRef(m_pDevice);
@@ -34,12 +35,36 @@ _int CGameObject::Tick(_double TimeDelta)
 
 _int CGameObject::LateTick(_double TimeDelta)
 {
-	return _int();
+	if (0 >= m_HP)
+		m_Dead = TRUE;
+
+	return m_Dead;
 }
 
 HRESULT CGameObject::Render()
 {
 	return S_OK;
+}
+
+CComponent * CGameObject::GetComponent(const _tchar * _componentTag)
+{
+	auto& iter = find_if(m_Components.begin(), m_Components.end(), CTag_Finder(_componentTag));
+
+	if (m_Components.end() == iter)
+		return nullptr;
+
+	return iter->second;
+}
+
+void CGameObject::CheckHit(_fvector _AimRay, _fvector _AimDir)
+{
+	CCollider* pColliderAABB = (CCollider*)GetComponent(TEXT("Com_AABB"));
+
+	if (pColliderAABB->CollisionAABBToRay(_AimRay, _AimDir))
+	{
+		m_HP--;
+	}
+		//pColliderAABB->IsCollision(TRUE);
 }
 
 HRESULT CGameObject::SetUp_Components(_uint iLevelIndex, const _tchar* pPrototypeTag, const _tchar* pComponentTag, CComponent** ppOut, void* pArg)

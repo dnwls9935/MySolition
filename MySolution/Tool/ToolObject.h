@@ -32,6 +32,8 @@ public:
 	virtual _int LateTick(_double TimeDelta);
 	virtual HRESULT Render();
 
+	void	KeyCheck(_double TimeDelta);
+
 	_bool		GetPickCheckState() { return m_PickChecking; };
 	TOOLOBJDESC GetObjectDesc() { return m_ToolObjDesc; }
 	_matrix GetTransformMatrix()const { return m_pTransformCom->Get_WorldMatrix(); }

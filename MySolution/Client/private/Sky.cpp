@@ -2,6 +2,7 @@
 #include "..\public\Sky.h"
 
 #include "GameInstance.h"
+#include "Camera_Dynamic.h"
 
 Sky::Sky(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -34,6 +35,7 @@ HRESULT Sky::NativeConstruct(void * pArg)
 
 _int Sky::Tick(_double TimeDelta)
 {
+	
 	return _int();
 }
 
@@ -42,11 +44,6 @@ _int Sky::LateTick(_double TimeDelta)
 	if (nullptr != m_pRendererCom)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_PRIORITY, this);
 
-	CGameInstance* gameInstance = GET_INSTANCE(CGameInstance);
-
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, gameInstance->Get_CamPosition());
-
-	RELEASE_INSTANCE(CGameInstance);
 
 	return _int();
 }
@@ -65,6 +62,14 @@ HRESULT Sky::Render()
 	RELEASE_INSTANCE(CGameInstance);
 
 	return S_OK;
+}
+
+void Sky::SetCamTransform()
+{
+	CGameInstance* gameInstance = GET_INSTANCE(CGameInstance);
+
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, static_cast<CCamera_Dynamic*>(gameInstance->GetObjectList(LEVEL_GAMEPLAY, TEXT("Layer_Camera")).front())->Get_WorldMatrix().r[3]);
+	RELEASE_INSTANCE(CGameInstance);
 }
 
 HRESULT Sky::SetUp_Components()

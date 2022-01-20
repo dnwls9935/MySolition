@@ -15,8 +15,16 @@ private:
 
 public:
 	_uint Get_NumMeshContainer() {
-		return m_MeshContainers.size();
+		return (_uint)m_MeshContainers.size();
 	}
+
+	// Bone_ArmHand_R
+
+	CHierarchyNode* Get_BoneMatrix(const char* pBoneName);
+	_fmatrix Get_PivotMatrix() {
+		return XMLoadFloat4x4(&m_PivotMatrix);
+	}
+
 public:
 	HRESULT NativeConstruct_Prototype(const char * pMeshFilePath, const char * pMeshFileName, const _tchar* pShaderFilePath, _fmatrix PivotMatrix, TYPE eMeshType);
 	HRESULT NativeConstruct(void* pArg);
@@ -29,7 +37,9 @@ public:
 	HRESULT Update_CombinedTransformationMatrix(_double TimeDelta);
 	HRESULT Render(_uint iMeshContainerIndex, _uint iPassIndex);
 
-	TYPE		GetMeshType() const { return m_eMeshType; };
+	TYPE GetMeshType()const { return m_eMeshType; }
+
+	_bool	GetAnimationFinished();
 
 private:
 	const aiScene*		m_pScene = nullptr;
@@ -69,16 +79,12 @@ private:
 	HRESULT Create_HierarchyNode(aiNode* pNode, CHierarchyNode* pParent = nullptr, _uint iDepth = 0);
 
 	HRESULT Create_SkinnedDesc();
-
 	HRESULT Clone_SkinnedDesc();
 
 	HRESULT Create_Animation();
 
 private:
-	CHierarchyNode* Find_HierarchyNode(char* pName);
-
-public:
-	_fmatrix GetHierachyMatrix(char* _HierarchyNodeName);
+	CHierarchyNode* Find_HierarchyNode(const char* pName);
 
 public:
 	static CModel* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, const char* pMeshFilePath, const char* pMeshFileName, const _tchar* pShaderFilePath, _fmatrix PivotMatrix, TYPE eMeshType);

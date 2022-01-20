@@ -284,7 +284,6 @@ void CGameInstance::CalcMousePos(Calculator::CALCDESC* _calDesc)
 
 void CGameInstance::Release_Engine()
 {
-
 	if (0 != CGameInstance::GetInstance()->DestroyInstance())
 		MSGBOX("Failed to Release CGameInstance");	
 

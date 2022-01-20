@@ -4,7 +4,7 @@
 
 #include "Base.h"
 
-class CPipeLine : public CBase
+class ENGINE_DLL CPipeLine : public CBase
 {
 	DECLARE_SINGLETON(CPipeLine)
 public:

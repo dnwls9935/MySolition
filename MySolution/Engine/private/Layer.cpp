@@ -34,6 +34,21 @@ _int CLayer::LateTick(_double TimeDelta)
 {
 	_int		iProgress = 0;
 
+	auto& pGameObject = m_Objects.begin();
+
+	for (; pGameObject != m_Objects.end();)
+	{
+		_int deadChk = (*pGameObject)->LateTick(TimeDelta);
+		if (deadChk)
+		{
+			Safe_Release(*pGameObject);
+			pGameObject = m_Objects.erase(pGameObject);
+		}
+		else {
+			pGameObject++;
+		}
+	}
+/*
 	for (auto& pGameObject : m_Objects)
 	{
 		if (nullptr != pGameObject)
@@ -41,7 +56,7 @@ _int CLayer::LateTick(_double TimeDelta)
 
 		if (0 > iProgress)
 			return -1;
-	}
+	}*/
 	return _int(0);
 }
 
