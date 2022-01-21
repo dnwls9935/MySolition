@@ -36,7 +36,10 @@ private:
 	void			PickHeightTerrain(_double _timeDelta);
 	void			BatchingObject(_double _timeDelta);
 	_fvector		CalcMousePos();
-	void			Navigation(_double TimeDelta);
+
+private:
+	void			Navigationing(_double TimeDelta);
+	void			NavigationKeyChecking(_double TimeDelta);
 
 private:
 	CTexture*				m_pTextureCom = nullptr;
@@ -49,13 +52,19 @@ private:
 	_int					m_mouseBrushType;
 	_int					m_mouseBrushRadius;
 
+	_bool				m_MouseLButton = FALSE;
+
 	RENDER_ID				m_RenderID = RENDER_ID::DEFAULT;
 
 	class CMainFrame* m_mainFrm = nullptr;
 	class Form* m_form = nullptr;
 
-	list<_float3*>					m_NaviPoints;
-	typedef list<_float3*>		NAVIPOINTS;
+
+	list<class NaviPoint*>					m_NaviPoints;
+	typedef list<class NaviPoint*>		NAVIPOINTS;
+
+	class NaviPoint* m_NaviPointArr[3] = {nullptr, nullptr, nullptr};
+
 
 private:
 	virtual HRESULT SetUp_Components();

@@ -195,6 +195,7 @@
   <ItemGroup>
     <ClInclude Include="Form.h" />
     <ClInclude Include="MainFrm.h" />
+    <ClInclude Include="NaviPoint.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="TabObject.h" />
@@ -215,6 +216,7 @@
   <ItemGroup>
     <ClCompile Include="Form.cpp" />
     <ClCompile Include="MainFrm.cpp" />
+    <ClCompile Include="NaviPoint.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

@@ -89,13 +89,20 @@ HRESULT CToolView::RenderEnd()
 HRESULT CToolView::ReadyProtoAll()
 {
 	/* 컴포넌트 원형 생성한다. */
+	/* For.Prototype_Component_VIBuffer_Terrain */
 	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_VIBuffer_Terrain"), CVIBuffer_Terrain::Create(dx11Device, dx11DeviceContext, TEXT("../Client/Bin/ShaderFiles/Shader_Terrain_Tool.hlsl"),130, 100))))
 		return E_FAIL;
+	/* For.Prototype_Component_Transform */
 	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Transform"), CTransform::Create(dx11Device, dx11DeviceContext))))
 		return E_FAIL;
+	/* For.Prototype_Component_VIBuffer_Rect */
 	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_VIBuffer_Rect"), CVIBuffer_Rect::Create(dx11Device, dx11DeviceContext, TEXT("../Client/Bin/ShaderFiles/Shader_Rect.hlsl")))))
 		return E_FAIL;
+	/* For.Prototype_Component_Navigation */
 	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Navigation"), Navigation::Create(dx11Device, dx11DeviceContext))))
+		return E_FAIL;
+	/* For.Prototype_Component_Collider */
+	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Collider_Sphere"), CCollider::Create(dx11Device, dx11DeviceContext, CCollider::TYPE::TYPE_SPHERE))))
 		return E_FAIL;
 	
 	
@@ -104,7 +111,7 @@ HRESULT CToolView::ReadyProtoAll()
 
 	_matrix			PivotMatrix;
 	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationX(XMConvertToRadians(-90.0f));
-	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Model_Zero"), CModel::Create(dx11Device, dx11DeviceContext, "../Client/Bin/Resources/Meshes/Zero/", "ZeroHand.FBX", TEXT("../Client/Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_ANIM))))
+	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Model_Zero"), CModel::Create(dx11Device, dx11DeviceContext, "../Client/Bin/Resources/Meshes/Zero/", "Test.FBX", TEXT("../Client/Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_ANIM))))
 		return E_FAIL;
 
 	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationX(XMConvertToRadians(90.0f)) * XMMatrixRotationY(XMConvertToRadians(90.0f));

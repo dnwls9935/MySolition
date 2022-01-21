@@ -17,6 +17,9 @@ public:
 
 	_bool	MoveOnNavigation(_fvector _Position);
 
+public:
+	void		AddCell(_float3* _Points);
+
 #ifdef _DEBUG
 	HRESULT	Render(_fmatrix _WorldMatrix = XMMatrixIdentity());
 #endif // _DEBUG

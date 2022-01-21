@@ -46,6 +46,9 @@
     <Filter Include="02.View\Form\Object">
       <UniqueIdentifier>{0d5b5c9d-38aa-4667-acab-970e45b96f0f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Object\ToolTerrain\NaviPoint">
+      <UniqueIdentifier>{367e8257-69d4-4fd7-8648-be6eac2b339e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainFrm.h">
@@ -102,6 +105,9 @@
     <ClInclude Include="TabObject.h">
       <Filter>02.View\Form\Object</Filter>
     </ClInclude>
+    <ClInclude Include="NaviPoint.h">
+      <Filter>Object\ToolTerrain\NaviPoint</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MainFrm.cpp">
@@ -148,6 +154,9 @@
     </ClCompile>
     <ClCompile Include="TabObject.cpp">
       <Filter>02.View\Form\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="NaviPoint.cpp">
+      <Filter>Object\ToolTerrain\NaviPoint</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

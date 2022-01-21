@@ -67,6 +67,12 @@ _bool Navigation::MoveOnNavigation(_fvector _Position)
 	}
 }
 
+void Navigation::AddCell(_float3 * _Points)
+{
+	Cell* cell = Cell::Create(m_pDevice, m_pDeviceContext, _Points, m_Cells.size());
+	m_Cells.push_back(cell);
+}
+
 #ifdef _DEBUG
 
 HRESULT Navigation::Render(_fmatrix _WorldMatrix)

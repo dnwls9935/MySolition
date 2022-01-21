@@ -8,6 +8,7 @@
 #include "Form.h"
 #include "TapMap.h"
 #include "ToolObject.h"
+#include "NaviPoint.h"
 
 ToolTerrain::ToolTerrain(ID3D11Device * _dx11Device, ID3D11DeviceContext * _dx11DeviceContext)
 	: CGameObject(_dx11Device, _dx11DeviceContext)
@@ -53,7 +54,7 @@ _int ToolTerrain::Tick(_double TimeDelta)
 	}
 	else if (m_form->tapMap->m_Navigation.GetCheck())
 	{
-		Navigation(TimeDelta);
+		Navigationing(TimeDelta);
 	}
 	else {
 		m_mouseBrushType = m_form->tapMap->m_radioValue;
@@ -62,6 +63,10 @@ _int ToolTerrain::Tick(_double TimeDelta)
 	}
 
 	m_RenderID = (RENDER_ID)m_form->tapMap->m_CullMode.GetCheck();
+	
+	for (auto& pNaviPoint : m_NaviPoints)
+		pNaviPoint->Update();
+
 	return _int();
 }
 
@@ -75,6 +80,11 @@ _int ToolTerrain::LateTick(_double TimeDelta)
 
 	if (nullptr != m_pRendererCom && 0 == m_form->m_tabCtrl.GetCurSel())
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
+
+	for (auto& pNaviPoint : m_NaviPoints)
+		pNaviPoint->LateUpdate();
+
+	m_MouseLButton = TRUE;
 
 	return _int();
 }
@@ -100,8 +110,11 @@ HRESULT ToolTerrain::Render()
 
 	RELEASE_INSTANCE(CGameInstance);
 
-	m_NavigationCom->Render();
+	for (auto& pNaviPoint : m_NaviPoints)
+		pNaviPoint->Render();
 
+	m_NavigationCom->Render();
+	
 
 	return S_OK;
 }
@@ -258,10 +271,46 @@ _fvector ToolTerrain::CalcMousePos()
 	return XMVectorSet(0.f, 0.f, 0.f, 0.f);
 }
 
-void ToolTerrain::Navigation(_double TimeDelta)
+void ToolTerrain::Navigationing(_double TimeDelta)
 {
-	// 여기부터 천천히 생각해보자
+	NavigationKeyChecking(TimeDelta);
+}
 
+void ToolTerrain::NavigationKeyChecking(_double TimeDelta)
+{
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+	if (pGameInstance->Get_MouseButtonState(CInput_Device::MOUSEBUTTONSTATE::MBS_LBUTTON))
+	{
+		for (auto& pNaviPoint : m_NaviPoints)
+		{
+			Calculator::CALCDESC pCalDesc;
+			ZeroMemory(&pCalDesc, sizeof(Calculator::CALCDESC));
+
+			pCalDesc._height = g_WIN_HEIGHT;
+			pCalDesc._width = g_WIN_WIDHT;
+			pCalDesc._hWnd = g_hWnd;
+			pCalDesc._transformCom = m_pTransformCom;
+			pGameInstance->CalcMousePos(&pCalDesc);
+
+			NaviPoint* pNaviPoint = nullptr;
+			pNaviPoint->CollisionSphere(pCalDesc._rayPos, pCalDesc._rayDir, &pNaviPoint);
+			// 내일 생각하자
+		}
+
+
+
+		_vector pCalculatingMousePosition = CalcMousePos();
+		NaviPoint* pNaviPoint = NaviPoint::Create(m_pDevice, m_pDeviceContext, m_NaviPoints.size(), pCalculatingMousePosition);
+		if (nullptr == pNaviPoint)
+			return;
+		m_NaviPoints.push_back(pNaviPoint);
+		//m_form->tapMap->m_Navigation.SetCheck(FALSE);
+
+
+	}
+
+	RELEASE_INSTANCE(CGameInstance);
 }
 
 HRESULT ToolTerrain::SetUp_Components()
@@ -316,6 +365,9 @@ CGameObject * ToolTerrain::Clone(void * pArg)
 void ToolTerrain::Free()
 {
 	__super::Free();
+
+	for (auto& pNaviPoint : m_NaviPoints)
+		Safe_Release(pNaviPoint);
 
 	Safe_Release(m_pTextureCom);
 	Safe_Release(m_pRendererCom);

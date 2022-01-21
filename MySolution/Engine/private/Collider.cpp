@@ -253,6 +253,20 @@ _bool CCollider::CollisionAABBToRay(_fvector Ray, _fvector Dir)
 	return TRUE;
 }
 
+_bool CCollider::CollisionSphereToRay(_fvector Ray, _fvector Dir)
+{
+	_float pDistance = 0;
+	m_IsCollision = FALSE;
+
+	if (!m_Sphere->Intersects(Ray, Dir, pDistance))
+	{
+		return FALSE;
+	}
+
+	m_IsCollision = TRUE;
+	return TRUE;
+}
+
 _fmatrix CCollider::RemoveScale(_fmatrix _transform)
 {
 	_matrix RemoveScaleMatrix = _transform;
