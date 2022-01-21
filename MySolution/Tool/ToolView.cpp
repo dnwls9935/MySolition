@@ -93,16 +93,18 @@ HRESULT CToolView::ReadyProtoAll()
 		return E_FAIL;
 	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Transform"), CTransform::Create(dx11Device, dx11DeviceContext))))
 		return E_FAIL;
-	if (FAILED(gameInstance->Add_Prototype(0, TEXT("ProtoType_Component_VIBuffer_Rect"), CVIBuffer_Rect::Create(dx11Device, dx11DeviceContext, TEXT("../Client/Bin/ShaderFiles/Shader_Rect.hlsl")))))
+	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_VIBuffer_Rect"), CVIBuffer_Rect::Create(dx11Device, dx11DeviceContext, TEXT("../Client/Bin/ShaderFiles/Shader_Rect.hlsl")))))
 		return E_FAIL;
-	/*if (FAILED(gameInstance->Add_Prototype(0, TEXT("ProtoType_Component_VIBuffer_Line"), CVIBuffer_ThreeWaySystem::Create(dx11Device, dx11DeviceContext, TEXT("../Client/Bin/ShaderFiles/Shader_Line.hlsl")))))
-		return E_FAIL;*/
+	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Navigation"), Navigation::Create(dx11Device, dx11DeviceContext))))
+		return E_FAIL;
+	
+	
 	if (FAILED(ReadyTexture()))
 		return E_FAIL;
 
 	_matrix			PivotMatrix;
 	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationX(XMConvertToRadians(-90.0f));
-	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Model_Zero"), CModel::Create(dx11Device, dx11DeviceContext, "../Client/Bin/Resources/Meshes/Zero/", "ZeroHandTest.FBX", TEXT("../Client/Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_ANIM))))
+	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Model_Zero"), CModel::Create(dx11Device, dx11DeviceContext, "../Client/Bin/Resources/Meshes/Zero/", "ZeroHand.FBX", TEXT("../Client/Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_ANIM))))
 		return E_FAIL;
 
 	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationX(XMConvertToRadians(90.0f)) * XMMatrixRotationY(XMConvertToRadians(90.0f));
@@ -283,13 +285,12 @@ void CToolView::OnInitialUpdate()
 
 	if (FAILED(ReadyProtoAll()))
 		MSGBOX(L"Failed to ReadyProtoAll");
-
 	/* For.Prototype_Component_Renderer */
 	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Renderer"), m_pRenderer = CRenderer::Create(dx11Device, dx11DeviceContext))))
 	{
 		MSGBOX(L"Failed to Ready Renderer Component");
 	}
-	
+
 	if (FAILED(ReadyLayer()))
 	{
 		MSGBOX(L"Failed to Ready Layer");

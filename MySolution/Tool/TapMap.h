@@ -51,4 +51,6 @@ public:
 	CButton m_Modify;
 	afx_msg void OnBnClickedCheck3();
 	afx_msg void OnBnClickedButton2();
+	afx_msg void OnBnClickedCheck4();
+	CButton m_Navigation;
 };

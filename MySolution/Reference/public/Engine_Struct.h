@@ -72,7 +72,8 @@ namespace Engine
 	typedef struct tagVertex_Line
 	{
 		XMFLOAT3		vPosition;
-	} VTXLINE;
+		XMFLOAT4		vColor;
+	} VTXCOL;
 
 	typedef struct tagVertex_Normal_Texture
 	{

@@ -20,6 +20,7 @@ CGameObject::CGameObject(const CGameObject & rhs)
 
 HRESULT CGameObject::NativeConstruct_Prototype()
 {
+	m_Components.reserve(0);
 	return S_OK;
 }
 

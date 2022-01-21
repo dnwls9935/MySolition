@@ -36,6 +36,7 @@ void TapMap::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_LIST1, m_objectListBox);
 	DDX_Control(pDX, IDC_CHECK2, m_BatchObject);
 	DDX_Control(pDX, IDC_CHECK3, m_Modify);
+	DDX_Control(pDX, IDC_CHECK4, m_Navigation);
 }
 
 
@@ -47,6 +48,7 @@ BEGIN_MESSAGE_MAP(TapMap, CDialogEx)
 	ON_BN_CLICKED(IDC_CHECK3, &TapMap::OnBnClickedCheck3)
 	ON_BN_CLICKED(IDC_BUTTON1, &TapMap::OnBnClickedButton1)
 	ON_BN_CLICKED(IDC_BUTTON2, &TapMap::OnBnClickedButton2)
+	ON_BN_CLICKED(IDC_CHECK4, &TapMap::OnBnClickedCheck4)
 END_MESSAGE_MAP()
 
 
@@ -257,6 +259,7 @@ void TapMap::OnBnClickedCheck2()
 {
 	if (m_BatchObject.GetCheck()) {
 		m_Modify.SetCheck(FALSE);
+		m_Navigation.SetCheck(FALSE);
 	}
 	Invalidate(FALSE);
 }
@@ -266,6 +269,7 @@ void TapMap::OnBnClickedCheck3()
 {
 	if (m_Modify.GetCheck()) {
 		m_BatchObject.SetCheck(FALSE);
+		m_Navigation.SetCheck(FALSE);
 	}
 	Invalidate(FALSE);
 }
@@ -295,4 +299,14 @@ void TapMap::OnBnClickedButton2()
 
 		CloseHandle(hFile);
 	}
+}
+
+
+void TapMap::OnBnClickedCheck4()
+{
+	if (m_Navigation.GetCheck()) {
+		m_BatchObject.SetCheck(FALSE);
+		m_Modify.SetCheck(FALSE);
+	}
+	Invalidate(FALSE);
 }

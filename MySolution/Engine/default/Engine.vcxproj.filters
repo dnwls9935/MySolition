@@ -109,6 +109,18 @@
     <Filter Include="00.Utility\03.Component\VIBuffer\Model\HirerachyNode">
       <UniqueIdentifier>{6b06d69b-8169-44a3-95f9-e808f989d6bb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="00.Utility\03.Component\Navigation">
+      <UniqueIdentifier>{e47a1839-75f0-4005-a8af-b7281db51db3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.Utility\03.Component\Navigation\Cell">
+      <UniqueIdentifier>{3ff4a857-d6a7-4d4f-b64e-f1cdf0df41c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.Utility\03.Component\VIBuffer\TriangleToLine">
+      <UniqueIdentifier>{09f5be2d-a7b8-4010-91bb-8161a07bdcd4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.Utility\03.Component\VIBuffer\TriangleToLine\Shader">
+      <UniqueIdentifier>{7139293e-07c3-485f-98ab-97882cf1642d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Base.h">
@@ -219,6 +231,15 @@
     <ClInclude Include="..\public\GameObject.h">
       <Filter>00.Utility\02.GameObject</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Navigation.h">
+      <Filter>00.Utility\03.Component\Navigation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Cell.h">
+      <Filter>00.Utility\03.Component\Navigation\Cell</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\VIBuffer_TriangleToLine.h">
+      <Filter>00.Utility\03.Component\VIBuffer\TriangleToLine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
@@ -314,5 +335,19 @@
     <ClCompile Include="..\private\DebugDraw.cpp">
       <Filter>00.Utility\06. DebugDraw</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\Navigation.cpp">
+      <Filter>00.Utility\03.Component\Navigation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Cell.cpp">
+      <Filter>00.Utility\03.Component\Navigation\Cell</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\VIBuffer_TriangleToLine.cpp">
+      <Filter>00.Utility\03.Component\VIBuffer\TriangleToLine</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\bin\ShaderFiles\Shader_TriangleToLine.hlsl">
+      <Filter>00.Utility\03.Component\VIBuffer\TriangleToLine\Shader</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

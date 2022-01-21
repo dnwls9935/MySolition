@@ -4,10 +4,12 @@
 #include "Renderer.h"
 #include "Transform.h"
 #include "Collider.h"
+#include "Navigation.h"
 #include "Model.h"
 #include "VIBuffer_Rect.h"
 #include "VIBuffer_Terrain.h"
 #include "VIBuffer_Cube.h"
+#include "VIBuffer_TriangleToLine.h"
 #include "ThreeWaySystem.h"
 
 BEGIN(Engine)

@@ -19,7 +19,7 @@ HRESULT CVIBuffer_ThreeWaySystem::NativeConstruct_Prototype(const _tchar* pShade
 	ZeroMemory(&m_VBDesc, sizeof(D3D11_BUFFER_DESC));
 
 	/* D3D11_BUFFER_DESC */
-	m_iStride = sizeof(VTXLINE);
+	m_iStride = sizeof(VTXCOL);
 	m_iNumVertices = 4;
 
 	m_VBDesc.ByteWidth = m_iStride * m_iNumVertices;
@@ -32,8 +32,8 @@ HRESULT CVIBuffer_ThreeWaySystem::NativeConstruct_Prototype(const _tchar* pShade
 
 	/* D3D11_SUBRESOURCE_DATA */
 	ZeroMemory(&m_VBSubresourceData, sizeof(D3D11_SUBRESOURCE_DATA));
-	m_pVertices = new VTXLINE[m_iNumVertices];
-	ZeroMemory(m_pVertices, sizeof(VTXLINE) * m_iNumVertices);
+	m_pVertices = new VTXCOL[m_iNumVertices];
+	ZeroMemory(m_pVertices, sizeof(VTXCOL) * m_iNumVertices);
 
 	((VTXTEX*)m_pVertices)[0].vPosition = _float3(0.0f, 0.0f, 0.f);
 

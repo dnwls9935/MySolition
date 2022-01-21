@@ -7,6 +7,7 @@ class CTexture;
 class CRenderer;
 class CTransform;
 class CVIBuffer_Terrain;
+class Navigation;
 END
 class ToolTerrain final : public CGameObject
 {
@@ -35,12 +36,14 @@ private:
 	void			PickHeightTerrain(_double _timeDelta);
 	void			BatchingObject(_double _timeDelta);
 	_fvector		CalcMousePos();
+	void			Navigation(_double TimeDelta);
 
 private:
 	CTexture*				m_pTextureCom = nullptr;
 	CRenderer*				m_pRendererCom = nullptr;
 	CTransform*				m_pTransformCom = nullptr;
 	CVIBuffer_Terrain*		m_pVIBufferCom = nullptr;
+	Navigation*					m_NavigationCom = nullptr;
 
 	_float4					m_mousePos;
 	_int					m_mouseBrushType;
@@ -51,6 +54,8 @@ private:
 	class CMainFrame* m_mainFrm = nullptr;
 	class Form* m_form = nullptr;
 
+	list<_float3*>					m_NaviPoints;
+	typedef list<_float3*>		NAVIPOINTS;
 
 private:
 	virtual HRESULT SetUp_Components();

@@ -51,6 +51,10 @@ _int ToolTerrain::Tick(_double TimeDelta)
 	{
 		BatchingObject(TimeDelta);
 	}
+	else if (m_form->tapMap->m_Navigation.GetCheck())
+	{
+		Navigation(TimeDelta);
+	}
 	else {
 		m_mouseBrushType = m_form->tapMap->m_radioValue;
 		if (0 != m_mouseBrushType)
@@ -58,7 +62,6 @@ _int ToolTerrain::Tick(_double TimeDelta)
 	}
 
 	m_RenderID = (RENDER_ID)m_form->tapMap->m_CullMode.GetCheck();
-
 	return _int();
 }
 
@@ -72,7 +75,6 @@ _int ToolTerrain::LateTick(_double TimeDelta)
 
 	if (nullptr != m_pRendererCom && 0 == m_form->m_tabCtrl.GetCurSel())
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
-
 
 	return _int();
 }
@@ -97,6 +99,9 @@ HRESULT ToolTerrain::Render()
 	m_pVIBufferCom->Render((_uint)m_RenderID);
 
 	RELEASE_INSTANCE(CGameInstance);
+
+	m_NavigationCom->Render();
+
 
 	return S_OK;
 }
@@ -253,6 +258,12 @@ _fvector ToolTerrain::CalcMousePos()
 	return XMVectorSet(0.f, 0.f, 0.f, 0.f);
 }
 
+void ToolTerrain::Navigation(_double TimeDelta)
+{
+	// 여기부터 천천히 생각해보자
+
+}
+
 HRESULT ToolTerrain::SetUp_Components()
 {
 	/* Com_Transform */
@@ -271,6 +282,9 @@ HRESULT ToolTerrain::SetUp_Components()
 	if (FAILED(__super::SetUp_Components(0, TEXT("Prototype_Component_Texture_Terrain"), TEXT("Com_Texture"), (CComponent**)&m_pTextureCom)))
 		return E_FAIL;
 
+	/* Com_Navigation */
+	if (FAILED(__super::SetUp_Components(0, TEXT("Prototype_Component_Navigation"), TEXT("Com_Navigation"), (CComponent**)&m_NavigationCom)))
+		return E_FAIL;
 
 	return S_OK;
 }

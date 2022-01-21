@@ -39,7 +39,14 @@ _int ToolCamera::Tick(_double TimeDelta)
 
 _int ToolCamera::LateTick(_double TimeDelta)
 {
-	
+	CPipeLine*		pPipeLine = GET_INSTANCE(CPipeLine);
+
+	pPipeLine->Set_Transform(CPipeLine::D3DTS_VIEW, m_pTransform->Get_WorldMatrixInverse());
+
+	pPipeLine->Set_Transform(CPipeLine::D3DTS_PROJECTION, XMMatrixPerspectiveFovLH(m_CameraDesc.fFovy, m_CameraDesc.fAspect, m_CameraDesc.fNear, m_CameraDesc.fFar));
+
+	RELEASE_INSTANCE(CPipeLine);
+	return CCamera::LateTick(TimeDelta);
 
 	return _int();
 }
