@@ -52,6 +52,12 @@
     <Filter Include="02.GameObject\Monster\Test">
       <UniqueIdentifier>{4e8b3117-f4a2-4707-9d2f-a70f0c6d2948}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\Player\Weapon">
+      <UniqueIdentifier>{e66f1302-1239-43aa-ba0c-6b28a570f86d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Player\Weapon\GunTest">
+      <UniqueIdentifier>{1f21b4bb-ec05-4ffe-b101-2096b4f5bcd5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -108,6 +114,9 @@
     <ClInclude Include="..\public\MonsterTest.h">
       <Filter>02.GameObject\Monster\Test</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\GunTest.h">
+      <Filter>02.GameObject\Player\Weapon\GunTest</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -148,6 +157,9 @@
     </ClCompile>
     <ClCompile Include="..\private\MonsterTest.cpp">
       <Filter>02.GameObject\Monster\Test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\GunTest.cpp">
+      <Filter>02.GameObject\Player\Weapon\GunTest</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

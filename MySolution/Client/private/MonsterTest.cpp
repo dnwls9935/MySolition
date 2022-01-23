@@ -30,7 +30,7 @@ HRESULT MonsterTest::NativeConstruct(void * pArg)
 	if (FAILED(SetUp_Components()))
 		return E_FAIL;
 
-	m_pModelCom->SetUp_AnimationIndex((_int)ANIMATION_STATE::IDLE);
+	m_pModelCom->SetUp_AnimationIndex((_int)ANIMATION_STATE::IDLE_VAR);
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(5.f, 0.f, 5.f, 1.f));
 
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
@@ -53,13 +53,13 @@ _int MonsterTest::LateTick(_double TimeDelta)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
 
 	if (m_pModelCom->GetAnimationFinished())
-		m_pModelCom->SetUp_AnimationIndex((_int)ANIMATION_STATE::IDLE);
+		m_pModelCom->SetUp_AnimationIndex((_int)ANIMATION_STATE::IDLE_VAR);
 
 	//m_ColliderCom->CollisionAABB((CCollider*)m_TargetObject->GetComponent(TEXT("Com_AABB")));
 
 	if (0 >= m_HP)
 	{
-		m_pModelCom->SetUp_AnimationIndex((_uint)ANIMATION_STATE::DEATH);
+		m_pModelCom->SetUp_AnimationIndex((_uint)ANIMATION_STATE::DEATH_CRITICAL);
 		if (m_pModelCom->GetAnimationFinished())
 		{
 			m_Dead = TRUE;

@@ -100,9 +100,9 @@ _fmatrix CPlayer::GetCameraMatrix()
 void CPlayer::Shotting()
 {
 	RAY ray = CreateRay();
-
+	// 리팩토링 필수
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
-	list<CGameObject*> objList = pGameInstance->GetObjectList(LEVEL_GAMEPLAY, TEXT("Layer_Object"));
+	list<CGameObject*> objList = pGameInstance->GetObjectList(LEVEL_GAMEPLAY, TEXT("Layer_Enemy"));
 
 	for (auto& iter : objList)
 	{
@@ -184,6 +184,8 @@ void CPlayer::KeyCheck(_double TimeDelta)
 
 		if (pGameInstance->Get_MouseButtonState(CInput_Device::MOUSEBUTTONSTATE::MBS_LBUTTON))
 		{
+			// 무기를 어떻게 들게 할껀지 고민좀 해보자
+
 			Shotting();
 		}
 	}

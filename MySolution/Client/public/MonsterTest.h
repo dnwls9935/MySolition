@@ -15,7 +15,12 @@ BEGIN(Client)
 class MonsterTest final : public CGameObject
 {
 public:
-	enum class ANIMATION_STATE {ALL,IDLE,DEATH,
+	enum class ANIMATION_STATE {ALL,
+		FLY_F, FLY_B, FLY_L,
+		IDLE_FLIGHT, IDLE_VAR, 
+		RUN_F, SPRINT_F,
+		SPAWN_RUN, DEATH_CRITICAL,
+		ATTACK_STING, ATTACK_SPIT, ATTACK_RADIUS, ATTACK_FLIGHT_SPIT ,
 		ANIMATION_STATE_END};
 protected:
 	explicit MonsterTest(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

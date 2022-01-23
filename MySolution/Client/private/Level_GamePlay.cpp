@@ -70,6 +70,7 @@ HRESULT CLevel_GamePlay::Ready_LightDesc()
 
 HRESULT CLevel_GamePlay::Ready_Layer_Environment(const _tchar * pLayerTag)
 {
+	
 	return S_OK;
 }
 
@@ -77,7 +78,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Object(const _tchar * pLayerTag)
 {
 	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 
-	if (FAILED(pGameInstance->Add_GameObjectToLayer(LEVEL_GAMEPLAY, pLayerTag, TEXT("Prototype_GameObject_MonsterTest"))))
+	if (FAILED(pGameInstance->Add_GameObjectToLayer(LEVEL_GAMEPLAY, pLayerTag, TEXT("Prototype_GameObject_GunTest"))))
 		return E_FAIL;
 
 	RELEASE_INSTANCE(CGameInstance);
@@ -86,6 +87,12 @@ HRESULT CLevel_GamePlay::Ready_Layer_Object(const _tchar * pLayerTag)
 
 HRESULT CLevel_GamePlay::Ready_Layer_Enemy(const _tchar * pLayerTag)
 {
+	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+
+	if (FAILED(pGameInstance->Add_GameObjectToLayer(LEVEL_GAMEPLAY, pLayerTag, TEXT("Prototype_GameObject_MonsterTest"))))
+		return E_FAIL;
+
+	RELEASE_INSTANCE(CGameInstance);
 	return S_OK;
 }
 

@@ -5,6 +5,7 @@
 #include "Sky.h"
 #include "Player.h"
 #include "MonsterTest.h"
+#include "GunTest.h"
 #include "GameInstance.h"
 
 CLoader::CLoader(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
@@ -106,7 +107,11 @@ HRESULT CLoader::Loading_ForGamePlay()
 		return E_FAIL;
 
 	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(90.0f));
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_MonsterTest"), CModel::Create(m_pDevice, m_pDeviceContext, "../Bin/Resources/Meshes/Zero/", "ZeroTest.FBX", TEXT("../Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_ANIM))))
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_MonsterTest"), CModel::Create(m_pDevice, m_pDeviceContext, "../Bin/Resources/Meshes/BugMorph/", "BugMorph.FBX", TEXT("../Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_ANIM))))
+		return E_FAIL;
+
+	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(90.0f));
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_GunTest"), CModel::Create(m_pDevice, m_pDeviceContext, "../Bin/Resources/Meshes/GunTest/", "GunPistolTest.FBX", TEXT("../Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_ANIM))))
 		return E_FAIL;
 
 
@@ -123,6 +128,8 @@ HRESULT CLoader::Loading_ForGamePlay()
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Player"), CPlayer::Create(m_pDevice, m_pDeviceContext))))
 		return E_FAIL;
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_MonsterTest"), MonsterTest::Create(m_pDevice, m_pDeviceContext))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_GunTest"), GunTest::Create(m_pDevice, m_pDeviceContext))))
 		return E_FAIL;
 
 	wsprintf(m_szLoading, TEXT("로딩이 완료되었습니다. "));
