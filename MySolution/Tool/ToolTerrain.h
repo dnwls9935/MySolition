@@ -40,6 +40,8 @@ private:
 private:
 	void			Navigationing(_double TimeDelta);
 	void			NavigationKeyChecking(_double TimeDelta);
+	void			SettingNavigation();
+	_bool		CheckNaviPoint(class NaviPoint* NaviPoint);
 
 private:
 	CTexture*				m_pTextureCom = nullptr;

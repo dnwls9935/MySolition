@@ -58,6 +58,9 @@
     <Filter Include="02.GameObject\Player\Weapon\GunTest">
       <UniqueIdentifier>{1f21b4bb-ec05-4ffe-b101-2096b4f5bcd5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\EnvirionmentObject">
+      <UniqueIdentifier>{74de07f4-dc7c-4459-ae46-f4eedd688454}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -117,6 +120,9 @@
     <ClInclude Include="..\public\GunTest.h">
       <Filter>02.GameObject\Player\Weapon\GunTest</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\EnvironmentObject.h">
+      <Filter>02.GameObject\EnvirionmentObject</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -160,6 +166,9 @@
     </ClCompile>
     <ClCompile Include="..\private\GunTest.cpp">
       <Filter>02.GameObject\Player\Weapon\GunTest</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\EnvironmentObject.cpp">
+      <Filter>02.GameObject\EnvirionmentObject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

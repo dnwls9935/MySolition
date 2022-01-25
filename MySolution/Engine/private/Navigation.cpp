@@ -67,9 +67,13 @@ _bool Navigation::MoveOnNavigation(_fvector _Position)
 	}
 }
 
-void Navigation::AddCell(_float3 * _Points)
+void Navigation::AddCell(_float3 * _Points, const _tchar* _ShaderFilePath)
 {
-	Cell* cell = Cell::Create(m_pDevice, m_pDeviceContext, _Points, m_Cells.size());
+	Cell* cell = nullptr;
+	if(nullptr == _ShaderFilePath)
+		 cell = Cell::Create(m_pDevice, m_pDeviceContext, _Points, (_uint)m_Cells.size());
+	else
+		cell = Cell::Create(m_pDevice, m_pDeviceContext, _Points, (_uint)m_Cells.size(), _ShaderFilePath);
 	m_Cells.push_back(cell);
 }
 

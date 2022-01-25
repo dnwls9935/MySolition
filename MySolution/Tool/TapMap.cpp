@@ -8,6 +8,7 @@
 #include "MainFrm.h"
 #include "Form.h"
 #include "Layer.h"
+#include "Cell.h"
 #include "ToolObject.h"
 
 // TapMap 대화 상자입니다.
@@ -52,6 +53,32 @@ BEGIN_MESSAGE_MAP(TapMap, CDialogEx)
 END_MESSAGE_MAP()
 
 
+HRESULT TapMap::SaveNavigation(HANDLE & hFile)
+{
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+	vector<Cell*> pNavigationCells = static_cast<Navigation*>(pGameInstance->GetObjectList(1, TEXT("Terrain")).front()->GetComponent(TEXT("Com_Navigation")))->GetCells();
+	_int size = pNavigationCells.size();
+	_ulong		dwByte;
+
+	WriteFile(hFile, &size, sizeof(_int), &dwByte, nullptr);
+	for (auto& Cell : pNavigationCells)
+	{
+		_float3 Points;
+		XMStoreFloat3(&Points , Cell->GetPoint(Cell::POINT::POINT_1st));
+		WriteFile(hFile, &Points, sizeof(_float3), &dwByte, nullptr);
+
+		XMStoreFloat3(&Points, Cell->GetPoint(Cell::POINT::POINT_2nd));
+		WriteFile(hFile, &Points, sizeof(_float3), &dwByte, nullptr);
+
+		XMStoreFloat3(&Points, Cell->GetPoint(Cell::POINT::POINT_3rd));
+		WriteFile(hFile, &Points, sizeof(_float3), &dwByte, nullptr);
+	}
+
+	RELEASE_INSTANCE(CGameInstance);
+	return S_OK;
+}
+
 HRESULT TapMap::SaveTerrainLayer(HANDLE& hFile)
 {
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
@@ -65,15 +92,17 @@ HRESULT TapMap::SaveTerrainLayer(HANDLE& hFile)
 	_int z = pTerrain->GetZ();
 	void* pVertices = pTerrain->GetVertices();
 
-	for (_int i = 0; i <x ; i++)
+	_int count = 0;
+
+	for (_int i = 0; i <z ; i++)
 	{
-		for (_uint j = 0; j < z; j++)
+		for (_int j = 0; j < x; j++)
 		{
 			_uint		iIndex = i * x + j;
+
 			WriteFile(hFile, &((VTXNORTEX*)pVertices)[iIndex].vPosition.y, sizeof(_float), &dwByte, nullptr);
 		}
 	}
-
 	RELEASE_INSTANCE(CGameInstance);
 	return S_OK;
 }
@@ -93,11 +122,12 @@ HRESULT TapMap::LoadTerrainLayer(HANDLE & hFile)
 	_float y = 0;
 	_int z = pTerrain->GetZ();
 
-	for (_int i = 0; i < x; i++)
+
+	for (_int i = 0; i <z; i++)
 	{
-		for (_int j = 0; j < z; j++)
+		for (_int j = 0; j < x; j++)
 		{
-			_int iIndex = i * x + j;
+			_int		iIndex = i * x + j;
 
 			ReadFile(hFile, &y, sizeof(_float), &dwByte, nullptr);
 			static_cast<ToolTerrain*>(pGameObjectList.front())->SetVertexY(iIndex, y);
@@ -120,21 +150,11 @@ HRESULT TapMap::LoadObjectLayer(HANDLE & hFile)
 	while (TRUE)
 	{
 		_matrix pTransformMatrix = XMMatrixIdentity();
-		ToolObject::TOOLOBJDESC pToolObjDesc;
+		CGameObject::TOOLOBJDESC pToolObjDesc;
 		
 		ZeroMemory(&pToolObjDesc, sizeof(pToolObjDesc));
-
-
-		ReadFile(hFile, &pToolObjDesc, sizeof(ToolObject::TOOLOBJDESC), &dwByte, nullptr);
+		ReadFile(hFile, &pToolObjDesc, sizeof(CGameObject::TOOLOBJDESC), &dwByte, nullptr);
 		pToolObjDesc.loadCheck = TRUE;
-/*
-		ReadFile(hFile, &pTransformMatrix, sizeof(_matrix), &dwByte, nullptr);
-
-		ReadFile(hFile, &size, sizeof(_int), &dwByte, nullptr);
-		ReadFile(hFile, &pToolObjDesc.m_BufferTag, size * sizeof(_tchar), &dwByte, nullptr);
-
-		ReadFile(hFile, &size, sizeof(_int), &dwByte, nullptr);
-		ReadFile(hFile, &pToolObjDesc.m_ObjTag, size * sizeof(_tchar), &dwByte, nullptr);*/
 
 		if (0 == dwByte)
 			break;
@@ -142,6 +162,32 @@ HRESULT TapMap::LoadObjectLayer(HANDLE & hFile)
 		pGameInstance->Add_GameObjectToLayer(1, TEXT("Object"), pToolObjDesc.m_ObjTag, &pToolObjDesc);
 	}
 
+	RELEASE_INSTANCE(CGameInstance);
+	return S_OK;
+}
+
+HRESULT TapMap::LoadNavigation(HANDLE & hFile)
+{
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+	DWORD dwByte = 0;
+	_int size = 0;
+	ReadFile(hFile, &size, sizeof(_int), &dwByte, nullptr);
+
+	for (_int i = 0; i < size; i++)
+	{
+		_float3 Points[3];
+		_float3 Point;
+		ReadFile(hFile,  &Point, sizeof(_float3), &dwByte, nullptr);
+		Points[0] = Point;
+
+		ReadFile(hFile, &Point, sizeof(_float3), &dwByte, nullptr);
+		Points[1] = Point;
+
+		ReadFile(hFile, &Point, sizeof(_float3), &dwByte, nullptr);
+		Points[2] = Point;
+
+		static_cast<Navigation*>(pGameInstance->GetObjectList(1, TEXT("Terrain")).front()->GetComponent(TEXT("Com_Navigation")))->AddCell(Points, TEXT("../Client/Bin/ShaderFiles/Shader_TriangleToLine.hlsl"));
+	}
 	RELEASE_INSTANCE(CGameInstance);
 	return S_OK;
 }
@@ -156,10 +202,10 @@ HRESULT TapMap::SaveObjectLayer(HANDLE& hFile)
 	for (auto iter : pGameObjectList)
 	{
 		_matrix pTransformMatrix = static_cast<ToolObject*>(iter)->GetTransformMatrix();
-		ToolObject::TOOLOBJDESC pToolObjDesc = static_cast<ToolObject*>(iter)->GetObjectDesc();
+		CGameObject::TOOLOBJDESC pToolObjDesc = static_cast<ToolObject*>(iter)->GetObjectDesc();
 		XMStoreFloat4x4(&pToolObjDesc.m_pTransformMatrix , pTransformMatrix);
 
-		WriteFile(hFile, &pToolObjDesc, sizeof(ToolObject::TOOLOBJDESC), &dwByte, nullptr);
+		WriteFile(hFile, &pToolObjDesc, sizeof(CGameObject::TOOLOBJDESC), &dwByte, nullptr);
 /*
 		WriteFile(hFile, &pTransformMatrix, sizeof(_matrix), &dwByte, nullptr);
 
@@ -222,10 +268,11 @@ void TapMap::OnBnClickedButton1()
 
 		if (FAILED(SaveTerrainLayer(hFile)))
 			return;
-
+		if (FAILED(SaveNavigation(hFile)))
+			return;
 		if (FAILED(SaveObjectLayer(hFile)))
 			return;
-
+		
 	CloseHandle(hFile);
 	}
 }
@@ -293,9 +340,12 @@ void TapMap::OnBnClickedButton2()
 
 		if (FAILED(LoadTerrainLayer(hFile)))
 			return;
-
+		if (FAILED(LoadNavigation(hFile)))
+			return;
 		if (FAILED(LoadObjectLayer(hFile)))
 			return;
+		
+
 
 		CloseHandle(hFile);
 	}

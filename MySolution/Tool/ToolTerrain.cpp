@@ -39,6 +39,8 @@ HRESULT ToolTerrain::NativeConstruct(void * pArg)
 	m_mainFrm = dynamic_cast<CMainFrame*>(AfxGetApp()->GetMainWnd());
 	m_form = dynamic_cast<Form*>(m_mainFrm->m_MainSpliiter.GetPane(0, 0));
 
+	m_Type = OBJTYPE_ID::TERRAIN;
+
 	return S_OK;
 }
 
@@ -114,8 +116,6 @@ HRESULT ToolTerrain::Render()
 		pNaviPoint->Render();
 
 	m_NavigationCom->Render();
-	
-
 	return S_OK;
 }
 
@@ -193,6 +193,9 @@ void ToolTerrain::BatchingObject(_double _timeDelta)
 		lstrcpy(objDesc.m_ObjTag, gameObjectText);
 
 		objDesc.m_Position = { m_mousePos.x, m_mousePos.y, m_mousePos.z };
+
+		objDesc.m_Type = OBJTYPE_ID::ENVIRONMENT;
+
 		gameInstance->Add_GameObjectToLayer(1, TEXT("Object"), objDesc.m_ObjTag, &objDesc);
 
 		m_form->tapMap->m_BatchObject.SetCheck(FALSE);
@@ -273,6 +276,7 @@ _fvector ToolTerrain::CalcMousePos()
 
 void ToolTerrain::Navigationing(_double TimeDelta)
 {
+	cout << m_NaviPointArr[0] << " / " << m_NaviPointArr[1] << " / " << m_NaviPointArr[2] << " / " << m_NavigationCom->CellsSize() << endl;
 	NavigationKeyChecking(TimeDelta);
 }
 
@@ -280,37 +284,94 @@ void ToolTerrain::NavigationKeyChecking(_double TimeDelta)
 {
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 
+	_bool LeftControlCheck = pGameInstance->Get_DIKeyState(DIK_LCONTROL) & 0x80;
+
+	if (FALSE == LeftControlCheck)
+	{
+		if (pGameInstance->Get_MouseButtonState(CInput_Device::MOUSEBUTTONSTATE::MBS_LBUTTON))
+		{
+			_vector pCalculatingMousePosition = CalcMousePos();
+
+			if (XMVector4Equal(XMVectorSet(0.f, 0.f, 0.f, 0.f), pCalculatingMousePosition))
+				return;
+
+			NaviPoint* pNaviPoint = NaviPoint::Create(m_pDevice, m_pDeviceContext, m_NaviPoints.size(), pCalculatingMousePosition);
+			if (nullptr == pNaviPoint)
+				return;
+			m_NaviPoints.push_back(pNaviPoint);
+			m_form->tapMap->m_Navigation.SetCheck(FALSE);
+		}
+	}
+	else {
+		SettingNavigation();
+	}
+	RELEASE_INSTANCE(CGameInstance);
+}
+
+void ToolTerrain::SettingNavigation()
+{
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 	if (pGameInstance->Get_MouseButtonState(CInput_Device::MOUSEBUTTONSTATE::MBS_LBUTTON))
 	{
+		Calculator::CALCDESC CalDesc;
+		CalDesc._height = g_WIN_HEIGHT;
+		CalDesc._width = g_WIN_WIDHT;
+		CalDesc._hWnd = g_hWnd;
+		CalDesc._transformCom = m_pTransformCom;
+
+		pGameInstance->CalcMousePos(&CalDesc);
+		_vector Ray = CalDesc._rayPos;
+		_vector Dir = CalDesc._rayDir;
+
+		Ray = XMVector3TransformCoord(Ray, m_pTransformCom->Get_WorldMatrix());
+		Dir = XMVector3TransformNormal(Dir, m_pTransformCom->Get_WorldMatrix());
+		Dir = XMVector3Normalize(Dir);
+
+
+		NaviPoint* NaviPoint = nullptr;
 		for (auto& pNaviPoint : m_NaviPoints)
+			pNaviPoint->CollisionSphere(Ray, Dir, &NaviPoint);
+
+
+		if (nullptr == m_NaviPointArr[0])
 		{
-			Calculator::CALCDESC pCalDesc;
-			ZeroMemory(&pCalDesc, sizeof(Calculator::CALCDESC));
-
-			pCalDesc._height = g_WIN_HEIGHT;
-			pCalDesc._width = g_WIN_WIDHT;
-			pCalDesc._hWnd = g_hWnd;
-			pCalDesc._transformCom = m_pTransformCom;
-			pGameInstance->CalcMousePos(&pCalDesc);
-
-			NaviPoint* pNaviPoint = nullptr;
-			pNaviPoint->CollisionSphere(pCalDesc._rayPos, pCalDesc._rayDir, &pNaviPoint);
-			// 내일 생각하자
+			if(FALSE == CheckNaviPoint(NaviPoint))
+				m_NaviPointArr[0] = NaviPoint;
 		}
+		else if (nullptr == m_NaviPointArr[1])
+		{
+			if (FALSE == CheckNaviPoint(NaviPoint))
+				m_NaviPointArr[1] = NaviPoint;
+		}
+		else if (nullptr == m_NaviPointArr[2])
+		{
+			if (FALSE == CheckNaviPoint(NaviPoint))
+			{
+				m_NaviPointArr[2] = NaviPoint;
+				_float3		CellPosition[3];
+				CellPosition[0] = m_NaviPointArr[0]->GetPosition();
+				CellPosition[1] = m_NaviPointArr[1]->GetPosition();
+				CellPosition[2] = m_NaviPointArr[2]->GetPosition();
+				m_NavigationCom->AddCell(CellPosition, TEXT("../Client/Bin/ShaderFiles/Shader_TriangleToLine.hlsl"));
 
+				for (_int i = 0; i < 3; i++)
+					m_NaviPointArr[i] = nullptr;
 
-
-		_vector pCalculatingMousePosition = CalcMousePos();
-		NaviPoint* pNaviPoint = NaviPoint::Create(m_pDevice, m_pDeviceContext, m_NaviPoints.size(), pCalculatingMousePosition);
-		if (nullptr == pNaviPoint)
-			return;
-		m_NaviPoints.push_back(pNaviPoint);
-		//m_form->tapMap->m_Navigation.SetCheck(FALSE);
-
-
+				m_form->tapMap->m_Navigation.SetCheck(FALSE);
+			}
+		}
 	}
-
 	RELEASE_INSTANCE(CGameInstance);
+}
+
+_bool ToolTerrain::CheckNaviPoint(NaviPoint * NaviPoint)
+{
+	for (_int i = 0; i < 3; i++)
+	{
+		if (m_NaviPointArr[i] == NaviPoint)
+			return TRUE;
+	}
+	return FALSE;
 }
 
 HRESULT ToolTerrain::SetUp_Components()

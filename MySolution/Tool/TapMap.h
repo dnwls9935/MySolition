@@ -26,19 +26,20 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 
-public:
+private:
+	HRESULT	SaveNavigation(HANDLE& hFile);
 	HRESULT	SaveTerrainLayer(HANDLE& hFile);
 	HRESULT SaveObjectLayer(HANDLE& hFile);
 
 	HRESULT LoadTerrainLayer(HANDLE& hFile);
 	HRESULT	LoadObjectLayer(HANDLE& hFile);
+	HRESULT LoadNavigation(HANDLE& hFile);
 
 public:
 	virtual void PostNcDestroy();
 	virtual BOOL OnInitDialog();
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	afx_msg void OnBnClickedButton1();
-
 	afx_msg	void OnBnClieckRadio(UINT value);
 	int m_radioValue;
 	int m_brushRadius;

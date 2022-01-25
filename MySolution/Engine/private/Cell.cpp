@@ -11,7 +11,7 @@ Cell::Cell(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	Safe_AddRef(m_pDeviceContext);
 }
 
-HRESULT Cell::NativeConstruct(_float3* _Point, _uint _Index)
+HRESULT Cell::NativeConstruct(_float3* _Point, _uint _Index, const _tchar* _ShaderFilePath)
 {
 	m_Index = _Index;
 
@@ -33,7 +33,7 @@ HRESULT Cell::NativeConstruct(_float3* _Point, _uint _Index)
 	}
 
 #ifdef _DEBUG
-	if (FAILED(ReadyDebugBuffer()))
+	if (FAILED(ReadyDebugBuffer(_ShaderFilePath)))
 		return E_FAIL;
 #endif // _DEBUG
 
@@ -81,9 +81,9 @@ _bool Cell::IsIn(_fvector _Position, Cell ** _OutNeighbor)
 	return TRUE;
 }
 #ifdef _DEBUG
-HRESULT Cell::ReadyDebugBuffer()
+HRESULT Cell::ReadyDebugBuffer(const _tchar* _ShaderFilePath)
 {
-	m_VIBuffer = CVIBuffer_TriangleToLine::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/ShaderFiles/Shader_TriangleToLine.hlsl"), m_Point);
+	m_VIBuffer = CVIBuffer_TriangleToLine::Create(m_pDevice, m_pDeviceContext, _ShaderFilePath, m_Point);
 
 	if (nullptr == m_VIBuffer)
 		return E_FAIL;
@@ -112,11 +112,11 @@ HRESULT Cell::Render(_fmatrix _WorldMatrix, _uint _CurrentIndex)
 }
 #endif // _DEBUG
 
-Cell * Cell::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, _float3* _Point, _uint _Index)
+Cell * Cell::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, _float3* _Point, _uint _Index, const _tchar* _ShaderFilePath)
 {
 	Cell*		pInstance = new Cell(pDevice, pDeviceContext);
 
-	if (FAILED(pInstance->NativeConstruct(_Point, _Index)))
+	if (FAILED(pInstance->NativeConstruct(_Point, _Index, _ShaderFilePath)))
 	{
 		MSGBOX("Failed to Creating Cell");
 		Safe_Release(pInstance);

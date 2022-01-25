@@ -12,13 +12,7 @@ END
 class ToolObject final : public CGameObject
 {
 public:
-	typedef struct tagToolObjectDesc {
-		_tchar	m_BufferTag[MAX_PATH] = TEXT("");
-		_tchar  m_ObjTag[MAX_PATH] = TEXT("");
-		_float3			m_Position = { 0.f, 0.f, 0.f };
-		_float4x4		m_pTransformMatrix = _float4x4();
-		_bool			loadCheck = FALSE;
-	}TOOLOBJDESC;
+
 
 private:
 	explicit ToolObject(ID3D11Device* _dx11Device, ID3D11DeviceContext* _dx11DeviceContext);

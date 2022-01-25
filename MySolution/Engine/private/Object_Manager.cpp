@@ -2,6 +2,7 @@
 #include "GameObject.h"
 #include "Layer.h"
 
+#include <iostream>
 
 IMPLEMENT_SINGLETON(CObject_Manager)
 
@@ -76,6 +77,7 @@ _int CObject_Manager::Tick(_double TimeDelta)
 		for (auto& Pair : m_pLayers[i])
 			iProgress = Pair.second->Tick(TimeDelta);
 
+		cout << m_pLayers[3].size() << endl;
 		if (0 > iProgress)
 			return -1;
 	}

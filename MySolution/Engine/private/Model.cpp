@@ -229,7 +229,7 @@ HRESULT CModel::Create_Materials()
 
 		for (_uint j = aiTextureType_DIFFUSE; j < AI_TEXTURE_TYPE_MAX; ++j)
 		{
-			aiString	strFilePath;
+				aiString	strFilePath;
 
 			if (FAILED(pMaterial->GetTexture(aiTextureType(j), 0, &strFilePath)))
 				continue;

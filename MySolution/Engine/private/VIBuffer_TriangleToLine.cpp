@@ -103,6 +103,7 @@ HRESULT CVIBuffer_TriangleToLine::NativeConstruct_Prototype(const _tchar* pShade
 	if (FAILED(Compile_ShaderFiles(pShaderFilePath, ElementDescs, 2)))
 		return E_FAIL;
 
+
 	return S_OK;
 }
 

@@ -26,9 +26,10 @@ HRESULT MonsterTest::NativeConstruct(void * pArg)
 	if (FAILED(__super::NativeConstruct(pArg)))
 		return E_FAIL;
 
-
 	if (FAILED(SetUp_Components()))
 		return E_FAIL;
+	
+	m_HP = 10;
 
 	m_pModelCom->SetUp_AnimationIndex((_int)ANIMATION_STATE::IDLE_VAR);
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(5.f, 0.f, 5.f, 1.f));

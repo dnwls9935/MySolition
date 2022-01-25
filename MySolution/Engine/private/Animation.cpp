@@ -32,7 +32,7 @@ HRESULT CAnimation::Update_TransformationMatrix(_double TimeDelta)
 	else
 		m_isFinished = false;
 
-	_uint		iNumChannels = m_Channels.size();
+	_uint		iNumChannels = (_uint)m_Channels.size();
 
 	for (_uint i = 0; i < iNumChannels; ++i)
 	{
@@ -51,7 +51,7 @@ HRESULT CAnimation::Update_TransformationMatrix(_double TimeDelta)
 			m_Channels[i]->Set_CurrentKeyFrameIndex(0);
 		}
 
-		_uint		iNumKeyFrame = KeyFrames.size();
+		_uint		iNumKeyFrame = (_uint)KeyFrames.size();
 
 		/* 하나의 키프에ㅣㅁ 상태를 가지면 된다. */
 		if (m_TrackPositionAcc <= KeyFrames[0]->Time)
@@ -61,8 +61,8 @@ HRESULT CAnimation::Update_TransformationMatrix(_double TimeDelta)
 			vPosition = XMLoadFloat3(&KeyFrames[0]->vPosition);
 			vPosition = XMVectorSetW(vPosition, 1.f);*/
 
-			_float		fRatio = (m_TrackPositionAcc - KeyFrames[iNumKeyFrame - 1]->Time) /
-				(KeyFrames[0]->Time - KeyFrames[iNumKeyFrame - 1]->Time);
+			_float		fRatio = (_float)((m_TrackPositionAcc - KeyFrames[iNumKeyFrame - 1]->Time) /
+				(KeyFrames[0]->Time - KeyFrames[iNumKeyFrame - 1]->Time));
 
 			_vector		vSourScale, vSourRotation, vSourPosition;
 			_vector		vDestScale, vDestRotation, vDestPosition;
@@ -98,8 +98,8 @@ HRESULT CAnimation::Update_TransformationMatrix(_double TimeDelta)
 			if (m_TrackPositionAcc >= KeyFrames[iCurrentKeyFrameIndex + 1]->Time)
 				m_Channels[i]->Set_CurrentKeyFrameIndex(++iCurrentKeyFrameIndex);
 
-			_float		fRatio = (m_TrackPositionAcc - KeyFrames[iCurrentKeyFrameIndex]->Time) /
-				(KeyFrames[iCurrentKeyFrameIndex + 1]->Time - KeyFrames[iCurrentKeyFrameIndex]->Time);
+			_float		fRatio = (_float)((m_TrackPositionAcc - KeyFrames[iCurrentKeyFrameIndex]->Time) /
+				(KeyFrames[iCurrentKeyFrameIndex + 1]->Time - KeyFrames[iCurrentKeyFrameIndex]->Time));
 
 			_vector		vSourScale, vSourRotation, vSourPosition;
 			_vector		vDestScale, vDestRotation, vDestPosition;

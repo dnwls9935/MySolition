@@ -69,6 +69,11 @@ HRESULT CTerrain::Render()
 	return S_OK;
 }
 
+void CTerrain::SetVerticeY(_uint Index, _float Y)
+{
+	m_pVIBufferCom->SetVerticeY(Index, Y);
+};
+
 HRESULT CTerrain::SetUp_Components()
 {
 	/* Com_Transform */

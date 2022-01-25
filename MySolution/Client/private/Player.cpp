@@ -4,6 +4,7 @@
 #include "GameInstance.h"
 #include "HierarchyNode.h"
 #include "Camera_Dynamic.h"
+#include "GunTest.h"
 #include "Sky.h"
 
 CPlayer::CPlayer(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
@@ -34,6 +35,7 @@ HRESULT CPlayer::NativeConstruct(void * pArg)
 		return E_FAIL;
 
 	m_CameraBone = m_pModelCom->Get_BoneMatrix("Camera");
+	m_WeaponBone = m_pModelCom->Get_BoneMatrix("R_Weapon_Bone");
 	m_pModelCom->SetUp_AnimationIndex((_int)ANIMATION_STATE::IDLE);
 
 	return S_OK;
@@ -44,8 +46,8 @@ _int CPlayer::Tick(_double TimeDelta)
 	KeyCheck(TimeDelta);
 	m_pModelCom->Update_CombinedTransformationMatrix(TimeDelta);
 	m_ColliderCom->Update(m_pTransformCom->Get_WorldMatrix());
-
 	SetCamAndSkyBox();
+	SetUpWeapon();
 	return _int();
 }
 
@@ -89,12 +91,13 @@ HRESULT CPlayer::Render()
 
 _fmatrix CPlayer::GetCameraMatrix()
 {
-	_matrix		PivotMatrix = m_pModelCom->Get_PivotMatrix();
+	_matrix		Transform = XMMatrixTranslation(0.f , -2500.f, 0.f);
 	_matrix		OffsetMatrix = XMMatrixIdentity();
 	_matrix		CombinedMatrix = m_CameraBone->Get_CombinedMatrix() * XMMatrixScaling(0.01f, 0.01f, 0.01f);
+	_matrix		PivotMatrix = m_pModelCom->Get_PivotMatrix();
 	_matrix		WorldMatrix = m_pTransformCom->Get_WorldMatrix();
 
-	return PivotMatrix * OffsetMatrix * CombinedMatrix * WorldMatrix;
+	return Transform* PivotMatrix* OffsetMatrix * CombinedMatrix  * WorldMatrix;
 }
 
 void CPlayer::Shotting()
@@ -108,6 +111,27 @@ void CPlayer::Shotting()
 	{
 		iter->CheckHit(ray.Ray, ray.Dir);
 	}
+
+	RELEASE_INSTANCE(CGameInstance);
+}
+
+void CPlayer::SetUpWeapon()
+{
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+	_matrix TransMatrix = XMMatrixTranslation(-100.f, 3500.f, -2000.f);
+	_matrix OffsetMatrix = XMMatrixIdentity();//m_WeaponBone->Get_OffsetMatrix();
+	_matrix CombinedMatrix = m_WeaponBone->Get_CombinedMatrix() * XMMatrixScaling(0.01f, 0.01f, 0.01f);
+	_matrix PivotMatrix = m_pModelCom->Get_PivotMatrix();
+	_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
+
+
+	_matrix BoneMatrix = TransMatrix* PivotMatrix* OffsetMatrix * CombinedMatrix  * WorldMatrix;
+
+	list<CGameObject*> m_LayerPlayer = pGameInstance->GetObjectList(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
+	auto& iter = m_LayerPlayer.begin();
+	std::advance(iter, 1);
+	static_cast<GunTest*>(*iter)->SetUpWeapon(BoneMatrix, WorldMatrix);
 
 	RELEASE_INSTANCE(CGameInstance);
 }
@@ -174,18 +198,16 @@ void CPlayer::KeyCheck(_double TimeDelta)
 		if (pGameInstance->Get_DIKeyState(DIK_D) & 0x8000)
 		{
 			m_pTransformCom->Go_Right(TimeDelta);
-			m_pModelCom->SetUp_AnimationIndex((_int)ANIMATION_STATE::RUN_R);
+			m_pModelCom->SetUp_AnimationIndex((_int)ANIMATION_STATE::RUN_B);
 			m_Move = MOVE_TYPE::RIGHT;
 		}
 		if (pGameInstance->Get_DIKeyState(DIK_R) & 0x80)
 		{
-			m_pModelCom->SetUp_AnimationIndex((_int)ANIMATION_STATE::RELOAD_HYPERION);
+			m_pModelCom->SetUp_AnimationIndex((_int)ANIMATION_STATE::RELOAD);
 		}
 
 		if (pGameInstance->Get_MouseButtonState(CInput_Device::MOUSEBUTTONSTATE::MBS_LBUTTON))
 		{
-			// 무기를 어떻게 들게 할껀지 고민좀 해보자
-
 			Shotting();
 		}
 	}
@@ -213,8 +235,8 @@ void CPlayer::SetCamAndSkyBox()
 {
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 	static_cast<CCamera_Dynamic*>(pGameInstance->GetObjectList(LEVEL_GAMEPLAY, TEXT("Layer_Camera")).front())->SetCameraPosition(GetCameraMatrix(), m_pTransformCom->Get_WorldMatrix());
-	RELEASE_INSTANCE(CGameInstance);
 	static_cast<Sky*>(pGameInstance->GetObjectList(LEVEL_GAMEPLAY, TEXT("Layer_SkyBox")).front())->SetCamTransform();
+	RELEASE_INSTANCE(CGameInstance);
 }
 
 HRESULT CPlayer::SetUp_Components()
@@ -235,7 +257,10 @@ HRESULT CPlayer::SetUp_Components()
 	if (FAILED(__super::SetUp_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Player"), TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
 		return E_FAIL;
 
-	/* Com_Model */
+	/* Com_Navigation*/
+	if (FAILED(__super::SetUp_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Navigation"), TEXT("Com_Navigation"), (CComponent**)&m_Navigation)))
+		return E_FAIL;
+
 	CCollider::COLLISIONDESC CollisionDesc;
 	ZeroMemory(&CollisionDesc, sizeof(CCollider::COLLISIONDESC));
 	CollisionDesc.Scale = _float3(0.7f, 1.8f, 0.7f);
@@ -243,7 +268,14 @@ HRESULT CPlayer::SetUp_Components()
 	if (FAILED(__super::SetUp_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_AABB"), TEXT("Com_AABB"), (CComponent**)&m_ColliderCom, &CollisionDesc)))
 		return E_FAIL;
 
+	ZeroMemory(&CollisionDesc, sizeof(CCollider::COLLISIONDESC));
+	CollisionDesc.Scale = _float3(0.5f, 0.5, 0.5f);
+	CollisionDesc.Position = _float3(0.f, 0.f, 0.0f);
+	if (FAILED(__super::SetUp_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_Sphere"), TEXT("Com_Sphere"), (CComponent**)&m_ColliderSphereCom, &CollisionDesc)))
+		return E_FAIL;
+
 	return S_OK;
+
 }
 
 CPlayer * CPlayer::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)

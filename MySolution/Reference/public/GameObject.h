@@ -7,6 +7,19 @@ BEGIN(Engine)
 
 class ENGINE_DLL CGameObject abstract : public CBase
 {
+public:
+	enum class OBJTYPE_ID { ENVIRONMENT, TERRAIN, INTERACTION , PLAYER, PLAYER_WEAPONE, ENEMY,  OBJTYPE_END};
+
+public:
+	typedef struct tagToolObjectDesc {
+		_tchar	m_BufferTag[MAX_PATH] = TEXT("");
+		_tchar  m_ObjTag[MAX_PATH] = TEXT("");
+		_float3			m_Position = { 0.f, 0.f, 0.f };
+		_float4x4		m_pTransformMatrix = _float4x4();
+		_bool				loadCheck = FALSE;
+		OBJTYPE_ID		m_Type = OBJTYPE_ID::OBJTYPE_END;
+	}TOOLOBJDESC;
+
 protected:
 	explicit CGameObject(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	explicit CGameObject(const CGameObject& rhs);
@@ -31,7 +44,9 @@ protected:
 	_bool			m_Dead = FALSE;
 
 	_bool			Dying = FALSE;
-	_int				m_HP = 3;
+	_int				m_HP = 0;
+
+	OBJTYPE_ID		m_Type = OBJTYPE_ID::OBJTYPE_END;
 
 protected:
 	unordered_map<const _tchar*, class CComponent*>		m_Components;

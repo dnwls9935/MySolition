@@ -14,7 +14,7 @@ private:
 	virtual ~Cell() = default;
 
 public:
-	virtual HRESULT NativeConstruct(_float3* _Point, _uint _Index);
+	virtual HRESULT NativeConstruct(_float3* _Point, _uint _Index, const _tchar* _ShaderFilePath);
 
 public:
 	_fvector		GetPoint(POINT _Point) { 
@@ -34,7 +34,7 @@ public:
 
 #ifdef _DEBUG
 public:
-	HRESULT		ReadyDebugBuffer();
+	HRESULT		ReadyDebugBuffer(const _tchar* _ShaderFilePath);
 	HRESULT		Render(_fmatrix _WorldMatrix, _uint _CurrentIndex);
 #endif // _DEBUG
 
@@ -56,7 +56,7 @@ private:
 
 
 public:
-	static Cell* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _float3* _Point, _uint _Index);
+	static Cell* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _float3* _Point, _uint _Index, const _tchar* _ShaderFilePath = TEXT("../Bin/ShaderFiles/Shader_TriangleToLine.hlsl"));
 	virtual void Free() override;
 };
 

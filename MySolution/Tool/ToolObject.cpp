@@ -49,6 +49,8 @@ HRESULT ToolObject::NativeConstruct(void * pArg)
 	else {
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(m_ToolObjDesc.m_Position.x, m_ToolObjDesc.m_Position.y, m_ToolObjDesc.m_Position.z, 1.f));
 	}
+	m_Type = m_ToolObjDesc.m_Type;
+
 	return S_OK;
 }
 

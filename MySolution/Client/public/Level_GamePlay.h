@@ -25,6 +25,11 @@ private:
 	HRESULT Ready_Layer_SkyBox(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_Camera(const _tchar* pLayerTag);
 
+	HRESULT LoadData(HANDLE& hFile);
+	HRESULT LoadTerrain(HANDLE& hFile);
+	HRESULT LoadNavigation(HANDLE& hFile);
+	HRESULT LoadEnvironment(HANDLE& hFile);
+
 public:
 	static CLevel_GamePlay* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual void Free() override;

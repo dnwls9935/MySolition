@@ -15,11 +15,11 @@ BEGIN(Client)
 class GunTest final : public CGameObject
 {
 public:
-	enum class ANIMATION_STATE {ALL,
-		FIRE_DAHL, FIRE_JAKOBS, FIRE_MALIWAN, FIRE_TEDIORE, FIRE_TORGUE,
-		IDLE_DAHL, IDLE_HYPERION, IDLE_JAKOBS, IDLE_MALIWAN, IDLE_TORGUE,
-		RELOAD_JAKOBS, RELOAD_JAKOBS_VAR, RELOAD_HYPERION, FIRE_FAN,
-		ANIMATION_STATE_END};
+	enum class ANIMATION_STATE {
+		ALL,
+		FIRE, IDLE, RELOAD, FIRE_FAN,
+		ANIMATION_STATE_END
+	};
 protected:
 	explicit GunTest(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	explicit GunTest(const CGameObject& rhs);
@@ -33,11 +33,15 @@ public:
 	virtual _int LateTick(_double TimeDelta) override;
 	virtual HRESULT Render() override;
 
+public:
+	void SetUpWeapon(_fmatrix WeaponeBoneMatrix, _fmatrix PlayerWorldMatrix);
+
 private:
 	CRenderer*				m_pRendererCom = nullptr;
 	CTransform*				m_pTransformCom = nullptr;
 	CModel*					m_pModelCom = nullptr;
-	CCollider*					m_ColliderCom = nullptr;
+
+	_matrix						m_OriginMatrix = XMMatrixIdentity();
 
 	class CGameObject* m_TargetObject = nullptr;
 

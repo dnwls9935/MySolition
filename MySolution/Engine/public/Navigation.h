@@ -17,8 +17,11 @@ public:
 
 	_bool	MoveOnNavigation(_fvector _Position);
 
+	vector<class Cell*>	GetCells() { return m_Cells; }
+
 public:
-	void		AddCell(_float3* _Points);
+	void		AddCell(_float3* _Points, const _tchar* _ShaderFilePath = nullptr);
+	_uint	CellsSize()const { return (_uint)m_Cells.size(); }
 
 #ifdef _DEBUG
 	HRESULT	Render(_fmatrix _WorldMatrix = XMMatrixIdentity());

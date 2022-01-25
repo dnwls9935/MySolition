@@ -3,6 +3,9 @@
 
 #include "Camera_Dynamic.h"
 #include "GameInstance.h"
+#include "GameObject.h"
+#include "Player.h"
+#include "Terrain.h"
 
 
 CLevel_GamePlay::CLevel_GamePlay(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
@@ -16,7 +19,7 @@ HRESULT CLevel_GamePlay::NativeConstruct()
 		return E_FAIL;
 	if (FAILED(Ready_LightDesc()))
 		return E_FAIL;
-	if (FAILED(Ready_Layer_BackGround(TEXT("Layer_BackGround"))))
+	if (FAILED(Ready_Layer_BackGround(TEXT("Layer_Terrain"))))
 		return E_FAIL;
 	if (FAILED(Ready_Layer_SkyBox(TEXT("Layer_SkyBox"))))
 		return E_FAIL;
@@ -24,13 +27,20 @@ HRESULT CLevel_GamePlay::NativeConstruct()
 		return E_FAIL;
 	if (FAILED(Ready_Layer_Player(TEXT("Layer_Player"))))
 		return E_FAIL;
-	if (FAILED(Ready_Layer_Environment(TEXT("Layer_Environment"))))
-		return E_FAIL;
+	/*if (FAILED(Ready_Layer_Environment(TEXT("Layer_Environment"))))
+		return E_FAIL;*/
 	if (FAILED(Ready_Layer_Object(TEXT("Layer_Object"))))
 		return E_FAIL;
 	if (FAILED(Ready_Layer_Enemy(TEXT("Layer_Enemy"))))
 		return E_FAIL;
 
+	HANDLE hFile = CreateFile(L"../Bin/Data/TTT.dat", GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+	if (0 == hFile)
+		return E_FAIL;
+	if (FAILED(LoadData(hFile)))
+		return E_FAIL;
+
+	CloseHandle(hFile);
 	return S_OK;
 }
 
@@ -76,12 +86,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Environment(const _tchar * pLayerTag)
 
 HRESULT CLevel_GamePlay::Ready_Layer_Object(const _tchar * pLayerTag)
 {
-	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
-
-	if (FAILED(pGameInstance->Add_GameObjectToLayer(LEVEL_GAMEPLAY, pLayerTag, TEXT("Prototype_GameObject_GunTest"))))
-		return E_FAIL;
-
-	RELEASE_INSTANCE(CGameInstance);
+	
 	return S_OK;
 }
 
@@ -103,6 +108,9 @@ HRESULT CLevel_GamePlay::Ready_Layer_Player(const _tchar * pLayerTag)
 	if (FAILED(pGameInstance->Add_GameObjectToLayer(LEVEL_GAMEPLAY, pLayerTag, TEXT("Prototype_GameObject_Player"))))
 		return E_FAIL;
 
+	if (FAILED(pGameInstance->Add_GameObjectToLayer(LEVEL_GAMEPLAY, pLayerTag, TEXT("Prototype_GameObject_GunTest"))))
+		return E_FAIL;
+
 	RELEASE_INSTANCE(CGameInstance);
 
 	return S_OK;
@@ -111,7 +119,6 @@ HRESULT CLevel_GamePlay::Ready_Layer_Player(const _tchar * pLayerTag)
 HRESULT CLevel_GamePlay::Ready_Layer_BackGround(const _tchar * pLayerTag)
 {
 	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
-
 
 	if (FAILED(pGameInstance->Add_GameObjectToLayer(LEVEL_GAMEPLAY, pLayerTag, TEXT("Prototype_GameObject_Terrain"))))
 		return E_FAIL;
@@ -140,7 +147,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const _tchar * pLayerTag)
 	CCamera::CAMERADESC			CameraDesc;
 	ZeroMemory(&CameraDesc, sizeof(CCamera::CAMERADESC));
 
-	CameraDesc.vEye = _float3(0.0f, 3.0f, -1.5f);
+	CameraDesc.vEye = _float3(0.0f, 3.0f, -2.5f);
 	CameraDesc.vAt = _float3(0.0f, 0.0f, 5.0f);
 	CameraDesc.vAxisY = _float3(0.f, 1.f, 0.f);
 	CameraDesc.fFovy = XMConvertToRadians(60.f);
@@ -156,6 +163,114 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const _tchar * pLayerTag)
 		return E_FAIL;
 
 	RELEASE_INSTANCE(CGameInstance);
+
+	return S_OK;
+}
+
+HRESULT CLevel_GamePlay::LoadData(HANDLE& hFile)
+{
+	if (FAILED(LoadTerrain(hFile)))
+		return E_FAIL;
+
+	if (FAILED(LoadNavigation(hFile)))
+		return E_FAIL;
+
+	if (FAILED(LoadEnvironment(hFile)))
+		return E_FAIL;
+	return S_OK;
+}
+
+HRESULT CLevel_GamePlay::LoadTerrain(HANDLE & hFile)
+{
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+	list<CGameObject*>& pGameObjectList = pGameInstance->GetObjectList(LEVEL_GAMEPLAY, TEXT("Layer_Terrain"));
+	CTerrain* pTerrain = static_cast<CTerrain*>(pGameObjectList.front());
+	
+
+	if (nullptr == pTerrain)
+		return E_FAIL;
+
+	_uint x = static_cast<CVIBuffer_Terrain*>(pTerrain->GetComponent(TEXT("Com_VIBuffer")))->GetVerticesX();
+	_uint z = static_cast<CVIBuffer_Terrain*>(pTerrain->GetComponent(TEXT("Com_VIBuffer")))->GetVerticesZ();
+	_float y = 0.f;
+	DWORD dwByte;
+	for (_uint i = 0; i < z; i++)
+	{
+		for (_uint j = 0; j < x; j++)
+		{
+			_int		iIndex = i * x + j;
+			ReadFile(hFile, &y, sizeof(_float), &dwByte, nullptr);
+			pTerrain->SetVerticeY(iIndex, y);
+		}
+	}
+
+	RELEASE_INSTANCE(CGameInstance);
+	return S_OK;
+}
+
+HRESULT CLevel_GamePlay::LoadNavigation(HANDLE & hFile)
+{
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+	CPlayer* Player = (CPlayer*)pGameInstance->GetObjectList(LEVEL_GAMEPLAY, TEXT("Layer_Player")).front();
+
+	Navigation* NaviGation = (Navigation*)Player->GetComponent(TEXT("Com_Navigation"));
+	DWORD dwByte = 0;
+	_int size = 0;
+	ReadFile(hFile, &size, sizeof(_int), &dwByte, nullptr);
+
+
+	for (_int i = 0; i < size; i++)
+	{
+		_float3 Points[3];
+		_float3 Point;
+		ReadFile(hFile, &Point, sizeof(_float3), &dwByte, nullptr);
+		Points[0] = Point;
+
+		ReadFile(hFile, &Point, sizeof(_float3), &dwByte, nullptr);
+		Points[1] = Point;
+
+		ReadFile(hFile, &Point, sizeof(_float3), &dwByte, nullptr);
+		Points[2] = Point;
+
+		NaviGation->AddCell(Points);
+	}
+	RELEASE_INSTANCE(CGameInstance);
+	return S_OK;
+}
+
+HRESULT CLevel_GamePlay::LoadEnvironment(HANDLE & hFile)
+{
+	
+	DWORD dwByte = 0;
+
+	while (TRUE)
+	{
+		CGameObject::TOOLOBJDESC pToolObjDesc;
+		ZeroMemory(&pToolObjDesc, sizeof(pToolObjDesc));
+		ReadFile(hFile, &pToolObjDesc, sizeof(CGameObject::TOOLOBJDESC), &dwByte, nullptr);
+
+		if (0 == dwByte)
+			break;
+
+		switch (pToolObjDesc.m_Type)
+		{
+		case CGameObject::OBJTYPE_ID::ENVIRONMENT:
+		{
+			CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+			if (FAILED(pGameInstance->Add_GameObjectToLayer(LEVEL_GAMEPLAY, TEXT("Layer_Envrionment"), TEXT("Prototype_GameObject_EnvironmentObject"), &pToolObjDesc)))
+				return E_FAIL;
+			RELEASE_INSTANCE(CGameInstance);
+		}
+			break;
+		case CGameObject::OBJTYPE_ID::INTERACTION:
+			break;
+		case CGameObject::OBJTYPE_ID::PLAYER:
+			break;
+		case CGameObject::OBJTYPE_ID::ENEMY:
+			break;
+		}
+	}
 
 	return S_OK;
 }

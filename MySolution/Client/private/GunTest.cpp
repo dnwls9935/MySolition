@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "..\public\GunTest.h"
 #include "Player.h"
+#include "HierarchyNode.h"
 #include "GameInstance.h"
 
 GunTest::GunTest(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
@@ -26,28 +27,21 @@ HRESULT GunTest::NativeConstruct(void * pArg)
 	if (FAILED(__super::NativeConstruct(pArg)))
 		return E_FAIL;
 
-
 	if (FAILED(SetUp_Components()))
 		return E_FAIL;
 
-	m_pModelCom->SetUp_AnimationIndex((_int)ANIMATION_STATE::IDLE_HYPERION);
-	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(5.f, 0.f, 5.f, 1.f));
+	m_pModelCom->SetUp_AnimationIndex((_int)ANIMATION_STATE::IDLE);
 
+	m_OriginMatrix = m_pTransformCom->Get_WorldMatrix();
+
+	m_Type = CGameObject::OBJTYPE_ID::PLAYER_WEAPONE;
+
+	return S_OK;
 }
 
 _int GunTest::Tick(_double TimeDelta)
 {
-	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
-
-	if (pGameInstance->Get_DIKeyState(DIK_R) & 0x80)
-	{
-		m_pModelCom->SetUp_AnimationIndex((_uint)ANIMATION_STATE::RELOAD_HYPERION);
-	}
-
-	RELEASE_INSTANCE(CGameInstance);
 	m_pModelCom->Update_CombinedTransformationMatrix(TimeDelta);
-	m_ColliderCom->Update(m_pTransformCom->Get_WorldMatrix());
-
 	return _int();
 }
 
@@ -57,13 +51,7 @@ _int GunTest::LateTick(_double TimeDelta)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
 
 	if (m_pModelCom->GetAnimationFinished())
-		m_pModelCom->SetUp_AnimationIndex((_int)ANIMATION_STATE::IDLE_HYPERION);
-
-	if (m_pModelCom->GetAnimationFinished())
-		m_pModelCom->SetUp_AnimationIndex((_uint)ANIMATION_STATE::IDLE_HYPERION);
-
-
-	//m_ColliderCom->CollisionAABB((CCollider*)m_TargetObject->GetComponent(TEXT("Com_AABB")));
+		m_pModelCom->SetUp_AnimationIndex((_int)ANIMATION_STATE::IDLE);
 
 
 	return _int();
@@ -87,13 +75,35 @@ HRESULT GunTest::Render()
 		m_pModelCom->Render(i, 1);
 	}
 
-#ifdef _DEBUG
-	m_ColliderCom->Render();
-#endif // _DEBUG
-
 	RELEASE_INSTANCE(CGameInstance);
 	return S_OK;
 }
+
+void GunTest::SetUpWeapon(_fmatrix WeaponeBoneMatrix, _fmatrix PlayerWorldMatrix)
+{
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+ 	//_matrix WeaponBoneMatrix = static_cast<CPlayer*>(pGameInstance->GetObjectList(LEVEL_GAMEPLAY, TEXT("Layer_Player")).front())->SetUpWeapon();
+	//_matrix WorldMatrix = static_cast<CTransform*>(pGameInstance->GetObjectList(LEVEL_GAMEPLAY, TEXT("Layer_Player")).front()->GetComponent(TEXT("Com_Transform")))->Get_WorldMatrix();
+	RELEASE_INSTANCE(CGameInstance);
+	
+	_vector		vPosition = WeaponeBoneMatrix.r[3];
+	vPosition = XMVectorSetW(vPosition, 1.f);
+
+	_vector		vLook = PlayerWorldMatrix.r[2];
+	vLook = XMVector3Normalize(vLook);
+
+	_vector		vRight = XMVector3Cross(PlayerWorldMatrix.r[1], vLook);
+	vRight = XMVector3Normalize(vRight);
+
+	_vector		vUp = XMVector3Cross(vLook, vRight);
+	vUp = XMVector3Normalize(vUp);
+
+	m_pTransformCom->Set_State(CTransform::STATE_RIGHT, vRight);
+	m_pTransformCom->Set_State(CTransform::STATE_UP, vUp);
+	m_pTransformCom->Set_State(CTransform::STATE_LOOK, vLook);
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
+}
+
 
 HRESULT GunTest::SetUp_Components()
 {
@@ -111,14 +121,6 @@ HRESULT GunTest::SetUp_Components()
 
 	/* Com_Model */
 	if (FAILED(__super::SetUp_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_GunTest"), TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
-		return E_FAIL;
-
-	/* Com_Model */
-	CCollider::COLLISIONDESC CollisionDesc;
-	ZeroMemory(&CollisionDesc, sizeof(CCollider::COLLISIONDESC));
-	CollisionDesc.Scale = _float3(0.7f, 1.8f, 0.7f);
-	CollisionDesc.Position = _float3(0.f, 1.f, 0.0f);
-	if (FAILED(__super::SetUp_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_AABB"), TEXT("Com_AABB"), (CComponent**)&m_ColliderCom, &CollisionDesc)))
 		return E_FAIL;
 
 	return S_OK;
@@ -154,7 +156,6 @@ void GunTest::Free()
 {
 	__super::Free();
 
-	Safe_Release(m_ColliderCom);
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pRendererCom);
