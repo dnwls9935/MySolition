@@ -48,6 +48,8 @@ _int CPlayer::Tick(_double TimeDelta)
 	m_ColliderCom->Update(m_pTransformCom->Get_WorldMatrix());
 	SetCamAndSkyBox();
 	SetUpWeapon();
+	_vector Position = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(XMVectorGetX(Position), 0.f, XMVectorGetZ(Position), XMVectorGetW(Position)));
 	return _int();
 }
 

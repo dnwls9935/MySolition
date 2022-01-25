@@ -377,21 +377,41 @@ HRESULT CToolView::ReadyTerrainLayer(const _tchar* _layerTag)
 
 HRESULT CToolView::ReadyObjectLayer(const _tchar * _layerTag)
 {
-	m_form->tapMap->m_objectListBox.AddString(TEXT("Zero"));
-	m_form->tapMap->m_objectListBox.AddString(TEXT("HandsomeJack"));
-	m_form->tapMap->m_objectListBox.AddString(TEXT("HyperionChest"));
-	m_form->tapMap->m_objectListBox.AddString(TEXT("HandsomeJackGoldenStatue"));
-	m_form->tapMap->m_objectListBox.AddString(TEXT("SnowDrift"));
-	m_form->tapMap->m_objectListBox.AddString(TEXT("SnowPile0"));
-	m_form->tapMap->m_objectListBox.AddString(TEXT("SnowPile1"));
-	m_form->tapMap->m_objectListBox.AddString(TEXT("SnowPile2"));
-	m_form->tapMap->m_objectListBox.AddString(TEXT("SnowPile3"));
-	m_form->tapMap->m_objectListBox.AddString(TEXT("SnowPile4")); 
-	m_form->tapMap->m_objectListBox.AddString(TEXT("GlacialFlow_Straight0"));
-	m_form->tapMap->m_objectListBox.AddString(TEXT("GlacialFlow_Straight1"));
-	
-	
+	m_form->tapMap->m_objectListBox.AddString(TEXT("Player"));
+	m_form->tapMap->m_BatchObjectEnumArr.push_back((_int)CGameObject::OBJTYPE_ID::PLAYER);
 
+	m_form->tapMap->m_objectListBox.AddString(TEXT("HandsomeJack"));
+	m_form->tapMap->m_BatchObjectEnumArr.push_back((_int)CGameObject::OBJTYPE_ID::ENVIRONMENT);
+
+	m_form->tapMap->m_objectListBox.AddString(TEXT("HyperionChest"));
+	m_form->tapMap->m_BatchObjectEnumArr.push_back((_int)CGameObject::OBJTYPE_ID::ENVIRONMENT);
+
+	m_form->tapMap->m_objectListBox.AddString(TEXT("HandsomeJackGoldenStatue"));
+	m_form->tapMap->m_BatchObjectEnumArr.push_back((_int)CGameObject::OBJTYPE_ID::ENVIRONMENT);
+
+	m_form->tapMap->m_objectListBox.AddString(TEXT("SnowDrift"));
+	m_form->tapMap->m_BatchObjectEnumArr.push_back((_int)CGameObject::OBJTYPE_ID::ENVIRONMENT);
+
+	m_form->tapMap->m_objectListBox.AddString(TEXT("SnowPile0"));
+	m_form->tapMap->m_BatchObjectEnumArr.push_back((_int)CGameObject::OBJTYPE_ID::ENVIRONMENT);
+
+	m_form->tapMap->m_objectListBox.AddString(TEXT("SnowPile1"));
+	m_form->tapMap->m_BatchObjectEnumArr.push_back((_int)CGameObject::OBJTYPE_ID::ENVIRONMENT);
+
+	m_form->tapMap->m_objectListBox.AddString(TEXT("SnowPile2"));
+	m_form->tapMap->m_BatchObjectEnumArr.push_back((_int)CGameObject::OBJTYPE_ID::ENVIRONMENT);
+
+	m_form->tapMap->m_objectListBox.AddString(TEXT("SnowPile3"));
+	m_form->tapMap->m_BatchObjectEnumArr.push_back((_int)CGameObject::OBJTYPE_ID::ENVIRONMENT);
+
+	m_form->tapMap->m_objectListBox.AddString(TEXT("SnowPile4")); 
+	m_form->tapMap->m_BatchObjectEnumArr.push_back((_int)CGameObject::OBJTYPE_ID::ENVIRONMENT);
+
+	m_form->tapMap->m_objectListBox.AddString(TEXT("GlacialFlow_Straight0"));
+	m_form->tapMap->m_BatchObjectEnumArr.push_back((_int)CGameObject::OBJTYPE_ID::ENVIRONMENT);
+
+	m_form->tapMap->m_objectListBox.AddString(TEXT("GlacialFlow_Straight1"));
+	m_form->tapMap->m_BatchObjectEnumArr.push_back((_int)CGameObject::OBJTYPE_ID::ENVIRONMENT);
 
 	return S_OK;
 }

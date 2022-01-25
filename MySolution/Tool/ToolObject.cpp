@@ -124,42 +124,6 @@ _int ToolObject::Tick(_double TimeDelta)
 	{
 		m_PickChecking = FALSE;
 	}
-/*
-	if (gameInstance->Get_DIKeyState(DIK_W) & 0x80)
-	{
-		m_pModelCom->SetUp_AnimationIndex(9);
-	}
-	else if (gameInstance->Get_DIKeyState(DIK_S) & 0x80)
-	{
-		m_pModelCom->SetUp_AnimationIndex(9);
-	}
-	else if (gameInstance->Get_DIKeyState(DIK_D) & 0x80)
-	{
-		m_pModelCom->SetUp_AnimationIndex(11);
-	}
-	else if (gameInstance->Get_DIKeyState(DIK_A) & 0x80)
-	{
-		m_pModelCom->SetUp_AnimationIndex(10);
-	}
-	else if (gameInstance->Get_DIKeyState(DIK_LCONTROL) & 0x80)
-	{
-		m_pModelCom->SetUp_AnimationIndex(1);
-	}
-	else if (gameInstance->Get_DIKeyState(DIK_R) & 0x80)
-	{
-		m_pModelCom->SetUp_AnimationIndex(2);
-	}
-	else if (gameInstance->Get_DIKeyState(DIK_LSHIFT) & 0x80)
-	{
-		m_pModelCom->SetUp_AnimationIndex(12);
-	}
-	else if (gameInstance->Get_DIKeyState(DIK_SPACE) & 0x80)
-	{
-		m_pModelCom->SetUp_AnimationIndex(8);
-	}
-	*/
-	
-
 	RELEASE_INSTANCE(CGameInstance);
 
 	return _int();

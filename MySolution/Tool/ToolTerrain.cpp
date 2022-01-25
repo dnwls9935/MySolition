@@ -9,6 +9,7 @@
 #include "TapMap.h"
 #include "ToolObject.h"
 #include "NaviPoint.h"
+#include "Cell.h"
 
 ToolTerrain::ToolTerrain(ID3D11Device * _dx11Device, ID3D11DeviceContext * _dx11DeviceContext)
 	: CGameObject(_dx11Device, _dx11DeviceContext)
@@ -168,6 +169,7 @@ void ToolTerrain::BatchingObject(_double _timeDelta)
 	CGameInstance* gameInstance = GET_INSTANCE(CGameInstance);
 	_uint count = m_form->tapMap->m_objectListBox.GetCount();
 	_uint focus = m_form->tapMap->m_objectListBox.GetCurSel();
+	OBJTYPE_ID enumValue = (OBJTYPE_ID)m_form->tapMap->m_BatchObjectEnumArr[focus];
 
 	if (gameInstance->Get_MouseButtonState(CInput_Device::MBS_LBUTTON) &&
 		count >= focus)
@@ -194,7 +196,7 @@ void ToolTerrain::BatchingObject(_double _timeDelta)
 
 		objDesc.m_Position = { m_mousePos.x, m_mousePos.y, m_mousePos.z };
 
-		objDesc.m_Type = OBJTYPE_ID::ENVIRONMENT;
+		objDesc.m_Type = enumValue;
 
 		gameInstance->Add_GameObjectToLayer(1, TEXT("Object"), objDesc.m_ObjTag, &objDesc);
 
@@ -276,13 +278,28 @@ _fvector ToolTerrain::CalcMousePos()
 
 void ToolTerrain::Navigationing(_double TimeDelta)
 {
-	cout << m_NaviPointArr[0] << " / " << m_NaviPointArr[1] << " / " << m_NaviPointArr[2] << " / " << m_NavigationCom->CellsSize() << endl;
+	cout << m_NaviPointArr[0] << " / " << m_NaviPointArr[1] << " / " << m_NaviPointArr[2] << " / " << m_NavigationCom->CellsSize() << " / " << m_NavigationCom->GetCurrentCellIndex() << endl;
 	NavigationKeyChecking(TimeDelta);
 }
 
 void ToolTerrain::NavigationKeyChecking(_double TimeDelta)
 {
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+	if (pGameInstance->Get_DIKeyState(DIK_ESCAPE) & 0x80)
+	{
+		for (_int i = 0; i < 3; i++)
+			m_NaviPointArr[i] = nullptr;
+
+		m_NavigationCom->SetCurrentCellIndex();
+	}
+
+	if (pGameInstance->Get_DIKeyState(DIK_DELETE) & 0x80)
+	{
+		m_NavigationCom->DeleteCell(m_NavigationCom->GetCurrentCellIndex());
+		m_form->tapMap->m_Navigation.SetCheck(FALSE);
+	}
+
 
 	_bool LeftControlCheck = pGameInstance->Get_DIKeyState(DIK_LCONTROL) & 0x80;
 
@@ -311,27 +328,26 @@ void ToolTerrain::NavigationKeyChecking(_double TimeDelta)
 void ToolTerrain::SettingNavigation()
 {
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+	Calculator::CALCDESC CalDesc;
+	CalDesc._height = g_WIN_HEIGHT;
+	CalDesc._width = g_WIN_WIDHT;
+	CalDesc._hWnd = g_hWnd;
+	CalDesc._transformCom = m_pTransformCom;
+
+	pGameInstance->CalcMousePos(&CalDesc);
+	_vector Ray = CalDesc._rayPos;
+	_vector Dir = CalDesc._rayDir;
+
+	Ray = XMVector3TransformCoord(Ray, m_pTransformCom->Get_WorldMatrix());
+	Dir = XMVector3TransformNormal(Dir, m_pTransformCom->Get_WorldMatrix());
+	Dir = XMVector3Normalize(Dir);
+
 	if (pGameInstance->Get_MouseButtonState(CInput_Device::MOUSEBUTTONSTATE::MBS_LBUTTON))
 	{
-		Calculator::CALCDESC CalDesc;
-		CalDesc._height = g_WIN_HEIGHT;
-		CalDesc._width = g_WIN_WIDHT;
-		CalDesc._hWnd = g_hWnd;
-		CalDesc._transformCom = m_pTransformCom;
-
-		pGameInstance->CalcMousePos(&CalDesc);
-		_vector Ray = CalDesc._rayPos;
-		_vector Dir = CalDesc._rayDir;
-
-		Ray = XMVector3TransformCoord(Ray, m_pTransformCom->Get_WorldMatrix());
-		Dir = XMVector3TransformNormal(Dir, m_pTransformCom->Get_WorldMatrix());
-		Dir = XMVector3Normalize(Dir);
-
-
 		NaviPoint* NaviPoint = nullptr;
 		for (auto& pNaviPoint : m_NaviPoints)
 			pNaviPoint->CollisionSphere(Ray, Dir, &NaviPoint);
-
 
 		if (nullptr == m_NaviPointArr[0])
 		{
@@ -360,6 +376,10 @@ void ToolTerrain::SettingNavigation()
 				m_form->tapMap->m_Navigation.SetCheck(FALSE);
 			}
 		}
+	}
+	else if (pGameInstance->Get_MouseButtonState(CInput_Device::MBS_RBUTTON))
+	{
+		m_NavigationCom->CollisionRayToCell(Ray, Dir);
 	}
 	RELEASE_INSTANCE(CGameInstance);
 }

@@ -50,6 +50,7 @@ BEGIN_MESSAGE_MAP(TapMap, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON1, &TapMap::OnBnClickedButton1)
 	ON_BN_CLICKED(IDC_BUTTON2, &TapMap::OnBnClickedButton2)
 	ON_BN_CLICKED(IDC_CHECK4, &TapMap::OnBnClickedCheck4)
+	ON_LBN_SELCHANGE(IDC_LIST1, &TapMap::OnLbnSelchangeList1)
 END_MESSAGE_MAP()
 
 
@@ -266,13 +267,28 @@ void TapMap::OnBnClickedButton1()
 		if (INVALID_HANDLE_VALUE == hFile)
 			return;
 
+#ifdef _DEBUG
+		cout << "Save Terrain....." << endl;
+#endif // _DEBUG
 		if (FAILED(SaveTerrainLayer(hFile)))
 			return;
+		
+#ifdef _DEBUG
+		cout << "Save Navigation....." << endl;
+#endif // _DEBUG
 		if (FAILED(SaveNavigation(hFile)))
 			return;
+
+#ifdef _DEBUG
+		cout << "Save Object....." << endl;
+#endif // _DEBUG
 		if (FAILED(SaveObjectLayer(hFile)))
 			return;
 		
+
+#ifdef _DEBUG
+		cout << "Complited!!!" << endl;
+#endif // _DEBUG
 	CloseHandle(hFile);
 	}
 }
@@ -338,17 +354,30 @@ void TapMap::OnBnClickedButton2()
 		if (INVALID_HANDLE_VALUE == hFile)
 			return;
 
+#ifdef _DEBUG
+		cout << "Load Terrain....." << endl;
+#endif // _DEBUG
 		if (FAILED(LoadTerrainLayer(hFile)))
 			return;
+
+#ifdef _DEBUG
+		cout << "Load Navigation....." << endl;
+#endif // _DEBUG
 		if (FAILED(LoadNavigation(hFile)))
 			return;
+
+#ifdef _DEBUG
+		cout << "Load Object....." << endl;
+#endif // _DEBUG
 		if (FAILED(LoadObjectLayer(hFile)))
 			return;
-		
 
-
+#ifdef _DEBUG
+		cout << "Complited!!!" << endl;
+#endif // _DEBUG
 		CloseHandle(hFile);
 	}
+	
 }
 
 
@@ -359,4 +388,10 @@ void TapMap::OnBnClickedCheck4()
 		m_Modify.SetCheck(FALSE);
 	}
 	Invalidate(FALSE);
+}
+
+
+void TapMap::OnLbnSelchangeList1()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 }

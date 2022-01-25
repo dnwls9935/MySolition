@@ -1,7 +1,7 @@
 #include "..\public\Navigation.h"
 
 #include "Cell.h"
-
+#include <iostream>
 Navigation::Navigation(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CComponent(pDevice, pDeviceContext)
 {
@@ -77,7 +77,33 @@ void Navigation::AddCell(_float3 * _Points, const _tchar* _ShaderFilePath)
 	m_Cells.push_back(cell);
 }
 
+_bool Navigation::CollisionRayToCell(_fvector Pos, _fvector Dir)
+{
+	_float Dist = 0.f;
+
+	for (auto& Cell : m_Cells)
+	{
+		if(TriangleTests::Intersects(Pos, Dir,
+			Cell->GetPoint(Cell::POINT::POINT_1st),
+			Cell->GetPoint(Cell::POINT::POINT_2nd),
+			Cell->GetPoint(Cell::POINT::POINT_3rd),
+			Dist)
+			)
+		{
+			m_CurrentCellIndex = Cell->GetIndex();
+		}
+	}
+
+	return _bool();
+}
+
 #ifdef _DEBUG
+
+void Navigation::DeleteCell(_int CellIndex)
+{
+	m_Cells.erase(m_Cells.begin() + CellIndex, m_Cells.end());
+	m_Cells.shrink_to_fit();
+}
 
 HRESULT Navigation::Render(_fmatrix _WorldMatrix)
 {
@@ -106,7 +132,7 @@ HRESULT Navigation::LoadNavigationCells(const _tchar * _NavigationFilePath)
 		if (0 == dwByte)
 			break;
 
-		Cell* cell = Cell::Create(m_pDevice, m_pDeviceContext, pPoints, m_Cells.size());
+		Cell* cell = Cell::Create(m_pDevice, m_pDeviceContext, pPoints, (_uint)m_Cells.size());
 		if (nullptr == cell)
 			return E_FAIL;
 

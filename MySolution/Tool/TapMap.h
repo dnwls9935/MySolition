@@ -36,6 +36,9 @@ private:
 	HRESULT LoadNavigation(HANDLE& hFile);
 
 public:
+	vector<_int>		m_BatchObjectEnumArr;
+
+public:
 	virtual void PostNcDestroy();
 	virtual BOOL OnInitDialog();
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
@@ -54,4 +57,5 @@ public:
 	afx_msg void OnBnClickedButton2();
 	afx_msg void OnBnClickedCheck4();
 	CButton m_Navigation;
+	afx_msg void OnLbnSelchangeList1();
 };

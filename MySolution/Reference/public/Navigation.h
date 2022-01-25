@@ -23,6 +23,18 @@ public:
 	void		AddCell(_float3* _Points, const _tchar* _ShaderFilePath = nullptr);
 	_uint	CellsSize()const { return (_uint)m_Cells.size(); }
 
+	_bool	CollisionRayToCell(_fvector Pos, _fvector Dir);
+
+	_int		GetCurrentCellIndex()const { 
+		return m_CurrentCellIndex;
+	}
+
+	void		SetCurrentCellIndex(_int CellIndex = 0) {
+		m_CurrentCellIndex = CellIndex;
+	};
+
+	void		DeleteCell(_int CellIndex);
+
 #ifdef _DEBUG
 	HRESULT	Render(_fmatrix _WorldMatrix = XMMatrixIdentity());
 #endif // _DEBUG
