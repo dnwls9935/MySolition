@@ -49,9 +49,6 @@
     <Filter Include="02.GameObject\Monster">
       <UniqueIdentifier>{fe3a1594-ba6f-4b71-8cc7-640c6d5d286b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\Monster\Test">
-      <UniqueIdentifier>{4e8b3117-f4a2-4707-9d2f-a70f0c6d2948}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObject\Player\Weapon">
       <UniqueIdentifier>{e66f1302-1239-43aa-ba0c-6b28a570f86d}</UniqueIdentifier>
     </Filter>
@@ -60,6 +57,9 @@
     </Filter>
     <Filter Include="02.GameObject\EnvirionmentObject">
       <UniqueIdentifier>{74de07f4-dc7c-4459-ae46-f4eedd688454}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\BugMorph">
+      <UniqueIdentifier>{4e8b3117-f4a2-4707-9d2f-a70f0c6d2948}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -114,14 +114,14 @@
     <ClInclude Include="..\public\Player.h">
       <Filter>02.GameObject\Player</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\MonsterTest.h">
-      <Filter>02.GameObject\Monster\Test</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\GunTest.h">
       <Filter>02.GameObject\Player\Weapon\GunTest</Filter>
     </ClInclude>
     <ClInclude Include="..\public\EnvironmentObject.h">
       <Filter>02.GameObject\EnvirionmentObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\BugMorph.h">
+      <Filter>02.GameObject\Monster\BugMorph</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -161,14 +161,14 @@
     <ClCompile Include="..\private\Player.cpp">
       <Filter>02.GameObject\Player</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\MonsterTest.cpp">
-      <Filter>02.GameObject\Monster\Test</Filter>
-    </ClCompile>
     <ClCompile Include="..\private\GunTest.cpp">
       <Filter>02.GameObject\Player\Weapon\GunTest</Filter>
     </ClCompile>
     <ClCompile Include="..\private\EnvironmentObject.cpp">
       <Filter>02.GameObject\EnvirionmentObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\BugMorph.cpp">
+      <Filter>02.GameObject\Monster\BugMorph</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

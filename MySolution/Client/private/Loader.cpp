@@ -4,7 +4,7 @@
 #include "Camera_Dynamic.h"
 #include "Sky.h"
 #include "Player.h"
-#include "MonsterTest.h"
+#include "BugMorph.h"
 #include "GunTest.h"
 #include "EnvironmentObject.h"
 #include "GameInstance.h"
@@ -113,7 +113,7 @@ HRESULT CLoader::Loading_ForGamePlay()
 		return E_FAIL;
 
 	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(90.0f));
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_MonsterTest"), CModel::Create(m_pDevice, m_pDeviceContext, "../Bin/Resources/Meshes/BugMorph/", "BugMorph.FBX", TEXT("../Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_ANIM))))
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_BugMorph"), CModel::Create(m_pDevice, m_pDeviceContext, "../Bin/Resources/Meshes/BugMorph/", "BugMorph.FBX", TEXT("../Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_ANIM))))
 		return E_FAIL;
 
 	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
@@ -148,7 +148,6 @@ HRESULT CLoader::Loading_ForGamePlay()
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_GlacialFlow_Straight1"), CModel::Create(m_pDevice, m_pDeviceContext, "../Bin/Resources/Meshes/Static/", "GlacialFlow_Straight1.FBX", TEXT("../Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_STATIC))))
 		return E_FAIL;
 
-
 	/* 객체원형을 생성한다. */
 	wsprintf(m_szLoading, TEXT("객체를 생성한다. "));	
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Terrain"), CTerrain::Create(m_pDevice, m_pDeviceContext))))
@@ -157,13 +156,13 @@ HRESULT CLoader::Loading_ForGamePlay()
 		return E_FAIL;
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Cube"), Sky::Create(m_pDevice, m_pDeviceContext))))
 		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Player"), CPlayer::Create(m_pDevice, m_pDeviceContext))))
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Model_Player"), CPlayer::Create(m_pDevice, m_pDeviceContext))))
 		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_MonsterTest"), MonsterTest::Create(m_pDevice, m_pDeviceContext))))
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Model_BugMorph"), BugMorph::Create(m_pDevice, m_pDeviceContext))))
 		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_GunTest"), GunTest::Create(m_pDevice, m_pDeviceContext))))
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Model_GunTest"), GunTest::Create(m_pDevice, m_pDeviceContext))))
 		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_EnvironmentObject"), EnvrionmentObject::Create(m_pDevice, m_pDeviceContext))))
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Model_EnvironmentObject"), EnvrionmentObject::Create(m_pDevice, m_pDeviceContext))))
 		return E_FAIL;
 
 	wsprintf(m_szLoading, TEXT("로딩이 완료되었습니다. "));

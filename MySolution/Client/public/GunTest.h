@@ -37,6 +37,9 @@ public:
 	void SetUpWeapon(_fmatrix WeaponeBoneMatrix, _fmatrix PlayerWorldMatrix);
 
 private:
+	void KeyCheck();
+
+private:
 	CRenderer*				m_pRendererCom = nullptr;
 	CTransform*				m_pTransformCom = nullptr;
 	CModel*					m_pModelCom = nullptr;

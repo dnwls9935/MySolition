@@ -17,11 +17,11 @@ public:
 
 	_bool	MoveOnNavigation(_fvector _Position);
 
-	vector<class Cell*>	GetCells() { return m_Cells; }
+	vector<class Cell*>	GetCells() { return  (*m_Cells); }
 
 public:
 	void		AddCell(_float3* _Points, const _tchar* _ShaderFilePath = nullptr);
-	_uint	CellsSize()const { return (_uint)m_Cells.size(); }
+	_uint	CellsSize()const { return (_uint)(*m_Cells).size(); }
 
 	_bool	CollisionRayToCell(_fvector Pos, _fvector Dir);
 
@@ -41,11 +41,13 @@ public:
 
 private:
 	HRESULT	LoadNavigationCells(const _tchar* _NavigationFilePath);
+
+public:
 	HRESULT	SetUpNeighbor();
 	
 private:
-	vector<class Cell*>					m_Cells;
-	typedef vector<class Cell*>		CELLS;
+	vector<class Cell*>*					m_Cells = nullptr;
+	typedef vector<class Cell*>*		CELLS;
 	_uint											m_CurrentCellIndex = 0;
 
 public:

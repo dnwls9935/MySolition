@@ -2,6 +2,7 @@
 #include "..\public\Terrain.h"
 
 #include "GameInstance.h"
+#include <iostream>
 
 CTerrain::CTerrain(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -35,9 +36,6 @@ HRESULT CTerrain::NativeConstruct(void * pArg)
 
 _int CTerrain::Tick(_double TimeDelta)
 {
-
-
-
 	return _int();
 }
 
@@ -90,6 +88,10 @@ HRESULT CTerrain::SetUp_Components()
 
 	/* Com_Texture */
 	if (FAILED(__super::SetUp_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Terrain"), TEXT("Com_Texture"), (CComponent**)&m_pTextureCom)))
+		return E_FAIL;
+
+	/* Com_Navigation*/
+	if (FAILED(__super::SetUp_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Navigation"), TEXT("Com_Navigation"), (CComponent**)&m_NavigationCom)))
 		return E_FAIL;
 
 	return S_OK;

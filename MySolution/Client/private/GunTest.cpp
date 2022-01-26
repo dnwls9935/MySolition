@@ -41,6 +41,7 @@ HRESULT GunTest::NativeConstruct(void * pArg)
 
 _int GunTest::Tick(_double TimeDelta)
 {
+	KeyCheck();
 	m_pModelCom->Update_CombinedTransformationMatrix(TimeDelta);
 	return _int();
 }
@@ -102,6 +103,23 @@ void GunTest::SetUpWeapon(_fmatrix WeaponeBoneMatrix, _fmatrix PlayerWorldMatrix
 	m_pTransformCom->Set_State(CTransform::STATE_UP, vUp);
 	m_pTransformCom->Set_State(CTransform::STATE_LOOK, vLook);
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
+}
+
+void GunTest::KeyCheck()
+{
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+	if (pGameInstance->Get_DIKeyState(DIK_R) & 0x80)
+	{
+		m_pModelCom->SetUp_AnimationIndex((_int)ANIMATION_STATE::RELOAD);
+	}
+
+	if (pGameInstance->Get_MouseButtonState(CInput_Device::MOUSEBUTTONSTATE::MBS_LBUTTON))
+	{
+		m_pModelCom->SetUp_AnimationIndex((_int)ANIMATION_STATE::FIRE);
+	}
+
+	RELEASE_INSTANCE(CGameInstance);
 }
 
 

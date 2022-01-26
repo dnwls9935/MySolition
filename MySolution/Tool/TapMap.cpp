@@ -207,21 +207,9 @@ HRESULT TapMap::SaveObjectLayer(HANDLE& hFile)
 		XMStoreFloat4x4(&pToolObjDesc.m_pTransformMatrix , pTransformMatrix);
 
 		WriteFile(hFile, &pToolObjDesc, sizeof(CGameObject::TOOLOBJDESC), &dwByte, nullptr);
-/*
-		WriteFile(hFile, &pTransformMatrix, sizeof(_matrix), &dwByte, nullptr);
-
-		_int size = wcslen(pToolObjDesc.m_BufferTag);
-		WriteFile(hFile, &size, sizeof(_int), &dwByte, nullptr);
-		WriteFile(hFile, &pToolObjDesc.m_BufferTag, size * sizeof(_tchar), &dwByte, nullptr);
-		
-		size = wcslen(pToolObjDesc.m_ObjTag);
-		WriteFile(hFile, &size, sizeof(_int), &dwByte, nullptr);
-		WriteFile(hFile, &pToolObjDesc.m_ObjTag, size * sizeof(_tchar), &dwByte, nullptr);*/
 	}
 
-
 	RELEASE_INSTANCE(CGameInstance);
-
 	return S_OK;
 }
 
@@ -268,23 +256,22 @@ void TapMap::OnBnClickedButton1()
 			return;
 
 #ifdef _DEBUG
-		cout << "Save Terrain....." << endl;
-#endif // _DEBUG
-		if (FAILED(SaveTerrainLayer(hFile)))
-			return;
-		
-#ifdef _DEBUG
 		cout << "Save Navigation....." << endl;
 #endif // _DEBUG
 		if (FAILED(SaveNavigation(hFile)))
 			return;
 
 #ifdef _DEBUG
+		cout << "Save Terrain....." << endl;
+#endif // _DEBUG
+		if (FAILED(SaveTerrainLayer(hFile)))
+			return;
+		
+#ifdef _DEBUG
 		cout << "Save Object....." << endl;
 #endif // _DEBUG
 		if (FAILED(SaveObjectLayer(hFile)))
 			return;
-		
 
 #ifdef _DEBUG
 		cout << "Complited!!!" << endl;
@@ -309,9 +296,6 @@ void TapMap::OnEnChangeRadius()
 	// 이 알림 메시지를 보내지 않습니다.
 
 	// TODO:  여기에 컨트롤 알림 처리기 코드를 추가합니다.
-
-
-	
 	CString str;
 	m_BrushRadiusText.GetWindowTextW(str);
 	m_brushRadius = _ttoi(str);
@@ -355,15 +339,15 @@ void TapMap::OnBnClickedButton2()
 			return;
 
 #ifdef _DEBUG
-		cout << "Load Terrain....." << endl;
-#endif // _DEBUG
-		if (FAILED(LoadTerrainLayer(hFile)))
-			return;
-
-#ifdef _DEBUG
 		cout << "Load Navigation....." << endl;
 #endif // _DEBUG
 		if (FAILED(LoadNavigation(hFile)))
+			return;
+
+#ifdef _DEBUG
+		cout << "Load Terrain....." << endl;
+#endif // _DEBUG
+		if (FAILED(LoadTerrainLayer(hFile)))
 			return;
 
 #ifdef _DEBUG
@@ -371,6 +355,7 @@ void TapMap::OnBnClickedButton2()
 #endif // _DEBUG
 		if (FAILED(LoadObjectLayer(hFile)))
 			return;
+
 
 #ifdef _DEBUG
 		cout << "Complited!!!" << endl;

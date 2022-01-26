@@ -47,6 +47,11 @@ public:
 	ROTATION_TYPE	GetRotationType() const { return m_Rotation; }
 
 	void SetUpWeapon();
+
+	_bool		GetShot()const { 
+		return m_Shot;
+	};
+
 private:
 	void KeyCheck(_double TimeDelta);
 	void SetCamAndSkyBox();
@@ -73,6 +78,7 @@ private:
 	CHierarchyNode*			m_WeaponBone = nullptr;
 
 private:
+	_bool		m_Shot = FALSE;
 
 private:
 	virtual HRESULT SetUp_Components();

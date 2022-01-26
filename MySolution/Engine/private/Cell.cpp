@@ -80,6 +80,7 @@ _bool Cell::IsIn(_fvector _Position, Cell ** _OutNeighbor)
 	}
 	return TRUE;
 }
+
 #ifdef _DEBUG
 HRESULT Cell::ReadyDebugBuffer(const _tchar* _ShaderFilePath)
 {
@@ -127,6 +128,10 @@ Cell * Cell::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext
 
 void Cell::Free()
 {
+#ifdef _DEBUG
+	Safe_Release(m_VIBuffer);
+#endif // _DEBUG
+
 	Safe_Release(m_pDevice);
 	Safe_Release(m_pDeviceContext);
 }

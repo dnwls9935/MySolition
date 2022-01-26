@@ -110,8 +110,12 @@ HRESULT CToolView::ReadyProtoAll()
 		return E_FAIL;
 
 	_matrix			PivotMatrix;
-	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationX(XMConvertToRadians(-90.0f));
-	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Model_Zero"), CModel::Create(dx11Device, dx11DeviceContext, "../Client/Bin/Resources/Meshes/Zero/", "Test.FBX", TEXT("../Client/Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_ANIM))))
+	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationX(XMConvertToRadians(90.0f));
+	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Model_Zero"), CModel::Create(dx11Device, dx11DeviceContext, "../Client/Bin/Resources/Meshes/Zero/", "ZeroTest.FBX", TEXT("../Client/Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_STATIC))))
+		return E_FAIL;
+
+	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationX(XMConvertToRadians(90.0f));
+	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Model_BugMorph"), CModel::Create(dx11Device, dx11DeviceContext, "../Client/Bin/Resources/Meshes/BugMorph/", "BugMorph.FBX", TEXT("../Client/Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_STATIC))))
 		return E_FAIL;
 
 	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationX(XMConvertToRadians(90.0f)) * XMMatrixRotationY(XMConvertToRadians(90.0f));
@@ -148,6 +152,8 @@ HRESULT CToolView::ReadyProtoAll()
 		return E_FAIL;
 
 	if (FAILED(gameInstance->Add_Prototype(TEXT("Prototype_GameObject_Model_Zero"), ToolObject::Create(dx11Device, dx11DeviceContext))))
+		return E_FAIL;
+	if (FAILED(gameInstance->Add_Prototype(TEXT("Prototype_GameObject_Model_BugMorph"), ToolObject::Create(dx11Device, dx11DeviceContext))))
 		return E_FAIL;
 	if (FAILED(gameInstance->Add_Prototype(TEXT("Prototype_GameObject_Model_HandsomeJack"), ToolObject::Create(dx11Device, dx11DeviceContext))))
 		return E_FAIL;
@@ -310,7 +316,7 @@ HRESULT CToolView::ReadyLayer()
 {
 	if (FAILED(ReadyCameraLayer(TEXT("Camera"))))
 		return E_FAIL;
-
+	
 	if (FAILED(ReadyTerrainLayer(TEXT("Terrain"))))
 		return E_FAIL;
 
@@ -327,21 +333,6 @@ HRESULT CToolView::ReadyTexture()
 {
 	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Texture_Terrain"), CTexture::Create(dx11Device, dx11DeviceContext, TEXT("../Client/Bin/Resources/Textures/Terrain/Snow_256_Dif.tga")))))
 		return E_FAIL;
-/*
-	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Texture_Moon_Comp"), CTexture::Create(dx11Device, dx11DeviceContext, TEXT("../Client/Bin/Resources/Menumap/Texture2D/Moon_Comp.tga")))))
-		return E_FAIL;
-	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Texture_Moon_Dif"), CTexture::Create(dx11Device, dx11DeviceContext, TEXT("../Client/Bin/Resources/Menumap/Texture2D/Moon_Dif.tga")))))
-		return E_FAIL;
-	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Texture_MoonBase02_GRP"), CTexture::Create(dx11Device, dx11DeviceContext, TEXT("../Client/Bin/Resources/Menumap/Texture2D/MoonBase02_GRP.tga")))))
-		return E_FAIL;
-	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Texture_MoonBase02a_Dif"), CTexture::Create(dx11Device, dx11DeviceContext, TEXT("../Client/Bin/Resources/Menumap/Texture2D/MoonBase02a_Dif.tga")))))
-		return E_FAIL;
-	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Texture_MoonBase02a_Emis"), CTexture::Create(dx11Device, dx11DeviceContext, TEXT("../Client/Bin/Resources/Menumap/Texture2D/MoonBase02a_Emis.tga")))))
-		return E_FAIL;
-	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Texture_MoonBase02a_Nrm"), CTexture::Create(dx11Device, dx11DeviceContext, TEXT("../Client/Bin/Resources/Menumap/Texture2D/MoonBase02a_Nrm.tga")))))
-		return E_FAIL;
-
-*/
 	return S_OK;
 }
 
@@ -377,8 +368,11 @@ HRESULT CToolView::ReadyTerrainLayer(const _tchar* _layerTag)
 
 HRESULT CToolView::ReadyObjectLayer(const _tchar * _layerTag)
 {
-	m_form->tapMap->m_objectListBox.AddString(TEXT("Player"));
+	m_form->tapMap->m_objectListBox.AddString(TEXT("Zero"));
 	m_form->tapMap->m_BatchObjectEnumArr.push_back((_int)CGameObject::OBJTYPE_ID::PLAYER);
+
+	m_form->tapMap->m_objectListBox.AddString(TEXT("BugMorph"));
+	m_form->tapMap->m_BatchObjectEnumArr.push_back((_int)CGameObject::OBJTYPE_ID::ENEMY);
 
 	m_form->tapMap->m_objectListBox.AddString(TEXT("HandsomeJack"));
 	m_form->tapMap->m_BatchObjectEnumArr.push_back((_int)CGameObject::OBJTYPE_ID::ENVIRONMENT);

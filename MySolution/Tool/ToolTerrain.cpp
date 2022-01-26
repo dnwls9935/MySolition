@@ -169,11 +169,11 @@ void ToolTerrain::BatchingObject(_double _timeDelta)
 	CGameInstance* gameInstance = GET_INSTANCE(CGameInstance);
 	_uint count = m_form->tapMap->m_objectListBox.GetCount();
 	_uint focus = m_form->tapMap->m_objectListBox.GetCurSel();
-	OBJTYPE_ID enumValue = (OBJTYPE_ID)m_form->tapMap->m_BatchObjectEnumArr[focus];
 
 	if (gameInstance->Get_MouseButtonState(CInput_Device::MBS_LBUTTON) &&
 		count >= focus)
 	{
+		OBJTYPE_ID enumValue = (OBJTYPE_ID)m_form->tapMap->m_BatchObjectEnumArr[focus];
 		_vector calcVec = CalcMousePos();
 		_bool b = XMVector4Equal(_vector{ 0.f,0.f,0.f,0.f }, calcVec);
 		if (b)

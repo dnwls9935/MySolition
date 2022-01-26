@@ -7,6 +7,8 @@
 #include "GunTest.h"
 #include "Sky.h"
 
+#include <iostream>
+
 CPlayer::CPlayer(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
 {
@@ -30,13 +32,21 @@ HRESULT CPlayer::NativeConstruct(void * pArg)
 	if (FAILED(__super::NativeConstruct(pArg)))
 		return E_FAIL;
 
-
 	if (FAILED(SetUp_Components()))
 		return E_FAIL;
+
+	CGameObject::TOOLOBJDESC		ToolObjDesc;
+	ZeroMemory(&ToolObjDesc, sizeof(CGameObject::TOOLOBJDESC));
+	memcpy(&ToolObjDesc, (CGameObject::TOOLOBJDESC*)pArg, sizeof(CGameObject::TOOLOBJDESC));
+
+	_matrix TransformMatrix = XMLoadFloat4x4(&ToolObjDesc.m_pTransformMatrix);
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, TransformMatrix.r[3]);
 
 	m_CameraBone = m_pModelCom->Get_BoneMatrix("Camera");
 	m_WeaponBone = m_pModelCom->Get_BoneMatrix("R_Weapon_Bone");
 	m_pModelCom->SetUp_AnimationIndex((_int)ANIMATION_STATE::IDLE);
+
+	m_Navigation->SetCurrentCellIndex(1);
 
 	return S_OK;
 }
@@ -48,6 +58,7 @@ _int CPlayer::Tick(_double TimeDelta)
 	m_ColliderCom->Update(m_pTransformCom->Get_WorldMatrix());
 	SetCamAndSkyBox();
 	SetUpWeapon();
+
 	_vector Position = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(XMVectorGetX(Position), 0.f, XMVectorGetZ(Position), XMVectorGetW(Position)));
 	return _int();
@@ -59,7 +70,10 @@ _int CPlayer::LateTick(_double TimeDelta)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
 
 	if (m_pModelCom->GetAnimationFinished())
+	{
 		m_pModelCom->SetUp_AnimationIndex((_int)ANIMATION_STATE::IDLE);
+	}
+		
 
 	return _int();
 }
@@ -84,6 +98,7 @@ HRESULT CPlayer::Render()
 
 #ifdef _DEBUG
 	m_ColliderCom->Render();
+	m_Navigation->Render();
 #endif // _DEBUG
 
 	RELEASE_INSTANCE(CGameInstance);
@@ -104,17 +119,19 @@ _fmatrix CPlayer::GetCameraMatrix()
 
 void CPlayer::Shotting()
 {
-	RAY ray = CreateRay();
-	// 리팩토링 필수
-	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
-	list<CGameObject*> objList = pGameInstance->GetObjectList(LEVEL_GAMEPLAY, TEXT("Layer_Enemy"));
+	//RAY ray = CreateRay();
+	//// 리팩토링 필수
+	//// 이걸 몬스터마다 주면 되지않을까
+	//CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+	//list<CGameObject*> objList = pGameInstance->GetObjectList(LEVEL_GAMEPLAY, TEXT("Layer_Enemy"));
+	//for (auto& iter : objList)
+	//{
+	//	iter->CheckHit(ray.Ray, ray.Dir);
+	//}
+	//RELEASE_INSTANCE(CGameInstance);
 
-	for (auto& iter : objList)
-	{
-		iter->CheckHit(ray.Ray, ray.Dir);
-	}
 
-	RELEASE_INSTANCE(CGameInstance);
+
 }
 
 void CPlayer::SetUpWeapon()
@@ -126,7 +143,6 @@ void CPlayer::SetUpWeapon()
 	_matrix CombinedMatrix = m_WeaponBone->Get_CombinedMatrix() * XMMatrixScaling(0.01f, 0.01f, 0.01f);
 	_matrix PivotMatrix = m_pModelCom->Get_PivotMatrix();
 	_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
-
 
 	_matrix BoneMatrix = TransMatrix* PivotMatrix* OffsetMatrix * CombinedMatrix  * WorldMatrix;
 
@@ -173,7 +189,7 @@ void CPlayer::KeyCheck(_double TimeDelta)
 	{
 		if (pGameInstance->Get_DIKeyState(DIK_W) & 0x8000)
 		{
-			m_pTransformCom->Go_Straight(TimeDelta * 1.5f);
+			m_pTransformCom->Go_Straight(TimeDelta * 1.5f, m_Navigation);
 			m_pModelCom->SetUp_AnimationIndex((_int)ANIMATION_STATE::SPRINT);
 			m_Move = MOVE_TYPE::FRONT;
 		}
@@ -181,25 +197,25 @@ void CPlayer::KeyCheck(_double TimeDelta)
 	else {
 		if (pGameInstance->Get_DIKeyState(DIK_W) & 0x8000)
 		{
-			m_pTransformCom->Go_Straight(TimeDelta);
+			m_pTransformCom->Go_Straight(TimeDelta, m_Navigation);
 			m_pModelCom->SetUp_AnimationIndex((_int)ANIMATION_STATE::RUN_F);
 			m_Move = MOVE_TYPE::FRONT;
 		}
 		if (pGameInstance->Get_DIKeyState(DIK_S) & 0x8000)
 		{
-			m_pTransformCom->Go_BackWard(TimeDelta);
+			m_pTransformCom->Go_BackWard(TimeDelta, m_Navigation);
 			m_pModelCom->SetUp_AnimationIndex((_int)ANIMATION_STATE::RUN_F);
 			m_Move = MOVE_TYPE::BACK;
 		}
 		if (pGameInstance->Get_DIKeyState(DIK_A) & 0x8000)
 		{
-			m_pTransformCom->Go_Left(TimeDelta);
+			m_pTransformCom->Go_Left(TimeDelta, m_Navigation);
 			m_pModelCom->SetUp_AnimationIndex((_int)ANIMATION_STATE::RUN_L);
 			m_Move = MOVE_TYPE::LEFT;
 		}
 		if (pGameInstance->Get_DIKeyState(DIK_D) & 0x8000)
 		{
-			m_pTransformCom->Go_Right(TimeDelta);
+			m_pTransformCom->Go_Right(TimeDelta, m_Navigation);
 			m_pModelCom->SetUp_AnimationIndex((_int)ANIMATION_STATE::RUN_B);
 			m_Move = MOVE_TYPE::RIGHT;
 		}
@@ -210,7 +226,7 @@ void CPlayer::KeyCheck(_double TimeDelta)
 
 		if (pGameInstance->Get_MouseButtonState(CInput_Device::MOUSEBUTTONSTATE::MBS_LBUTTON))
 		{
-			Shotting();
+			m_Shot = TRUE;
 		}
 	}
 

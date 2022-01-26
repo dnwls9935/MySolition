@@ -27,8 +27,6 @@ HRESULT CLevel_Loading::NativeConstruct(LEVEL eNextLevel)
 	if (nullptr == m_pLoader)
 		return E_FAIL;
 
-
-
 	return S_OK;
 }
 

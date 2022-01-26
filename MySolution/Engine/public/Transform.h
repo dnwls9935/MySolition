@@ -50,10 +50,10 @@ public:
 	virtual HRESULT NativeConstruct(void* pArg);
 
 public:
-	void Go_Straight(_double TimeDelta);
-	void Go_Left(_double TimeDelta);
-	void Go_Right(_double TimeDelta);
-	void Go_BackWard(_double TimeDelta);
+	void Go_Straight(_double TimeDelta, class Navigation* _Navigation = nullptr);
+	void Go_Left(_double TimeDelta, class Navigation* _Navigation = nullptr);
+	void Go_Right(_double TimeDelta, class Navigation* _Navigation = nullptr);
+	void Go_BackWard(_double TimeDelta, class Navigation* _Navigation = nullptr);
 	void Chase_Target(const CTransform* pTargetTransform, _double TimeDelta);
 	void Face_Target(_fvector	vTargetPos);
 	void Rotation_Axis(_fvector vAxis, _double TimeDelta); /* 동적으로 TimeDelta이용한 회전. */

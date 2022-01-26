@@ -167,6 +167,7 @@
   <ItemGroup>
     <ClInclude Include="..\bin\ShaderFiles\Shader_RenderState.hpp" />
     <ClInclude Include="..\public\BackGround.h" />
+    <ClInclude Include="..\public\BugMorph.h" />
     <ClInclude Include="..\public\Camera_Dynamic.h" />
     <ClInclude Include="..\public\Client_Defines.h" />
     <ClInclude Include="..\public\EnvironmentObject.h" />
@@ -176,7 +177,6 @@
     <ClInclude Include="..\public\Level_Logo.h" />
     <ClInclude Include="..\public\Loader.h" />
     <ClInclude Include="..\public\MainApp.h" />
-    <ClInclude Include="..\public\MonsterTest.h" />
     <ClInclude Include="..\public\Player.h" />
     <ClInclude Include="..\public\Sky.h" />
     <ClInclude Include="..\public\Terrain.h" />
@@ -187,6 +187,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\BackGround.cpp" />
+    <ClCompile Include="..\private\BugMorph.cpp" />
     <ClCompile Include="..\private\Camera_Dynamic.cpp" />
     <ClCompile Include="..\private\EnvironmentObject.cpp" />
     <ClCompile Include="..\private\GunTest.cpp" />
@@ -195,7 +196,6 @@
     <ClCompile Include="..\private\Level_Logo.cpp" />
     <ClCompile Include="..\private\Loader.cpp" />
     <ClCompile Include="..\private\MainApp.cpp" />
-    <ClCompile Include="..\private\MonsterTest.cpp" />
     <ClCompile Include="..\private\Player.cpp" />
     <ClCompile Include="..\private\Sky.cpp" />
     <ClCompile Include="..\private\Terrain.cpp" />

@@ -1,5 +1,6 @@
 #include "..\public\Transform.h"
 #include "GameObject.h"
+#include "Navigation.h"
 
 CTransform::CTransform(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CComponent(pDevice, pDeviceContext)	
@@ -39,44 +40,52 @@ HRESULT CTransform::NativeConstruct(void * pArg)
 	return S_OK;
 }
 
-void CTransform::Go_Straight(_double TimeDelta)
+void CTransform::Go_Straight(_double TimeDelta, Navigation* _Navigation)
 {
 	_vector		vLook = Get_State(CTransform::STATE_LOOK);
 	_vector		vPosition = Get_State(CTransform::STATE_POSITION);
 
 	vPosition += XMVector3Normalize(vLook) * m_TransformDesc.fSpeedPerSec * (_float)TimeDelta;
 
-	Set_State(CTransform::STATE_POSITION, vPosition);
+	if( nullptr == _Navigation ||
+		TRUE == _Navigation->MoveOnNavigation(vPosition) )
+		Set_State(CTransform::STATE_POSITION, vPosition);
 }
 
-void CTransform::Go_Left(_double TimeDelta)
+void CTransform::Go_Left(_double TimeDelta, Navigation* _Navigation)
 {
 	_vector		vRight = Get_State(CTransform::STATE_RIGHT);
 	_vector		vPosition = Get_State(CTransform::STATE_POSITION);
 
 	vPosition += XMVector3Normalize(vRight) * -1.f * m_TransformDesc.fSpeedPerSec * (_float)TimeDelta;
 
-	Set_State(CTransform::STATE_POSITION, vPosition);	
+	if (nullptr == _Navigation ||
+		TRUE == _Navigation->MoveOnNavigation(vPosition))
+		Set_State(CTransform::STATE_POSITION, vPosition);
 }
 
-void CTransform::Go_Right(_double TimeDelta)
+void CTransform::Go_Right(_double TimeDelta, Navigation* _Navigation)
 {
 	_vector		vRight = Get_State(CTransform::STATE_RIGHT);
 	_vector		vPosition = Get_State(CTransform::STATE_POSITION);
 
 	vPosition += XMVector3Normalize(vRight) * m_TransformDesc.fSpeedPerSec * (_float)TimeDelta;
 
-	Set_State(CTransform::STATE_POSITION, vPosition);
+	if (nullptr == _Navigation ||
+		TRUE == _Navigation->MoveOnNavigation(vPosition))
+		Set_State(CTransform::STATE_POSITION, vPosition);
 }
 
-void CTransform::Go_BackWard(_double TimeDelta)
+void CTransform::Go_BackWard(_double TimeDelta, Navigation* _Navigation)
 {
 	_vector		vLook = Get_State(CTransform::STATE_LOOK);
 	_vector		vPosition = Get_State(CTransform::STATE_POSITION);
 
 	vPosition += XMVector3Normalize(vLook) * -1.f * m_TransformDesc.fSpeedPerSec * (_float)TimeDelta;
 
-	Set_State(CTransform::STATE_POSITION, vPosition);
+	if (nullptr == _Navigation ||
+		TRUE == _Navigation->MoveOnNavigation(vPosition))
+		Set_State(CTransform::STATE_POSITION, vPosition);
 }
 
 void CTransform::Chase_Target(const CTransform * pTargetTransform, _double TimeDelta)
