@@ -242,8 +242,8 @@ HRESULT CLevel_GamePlay::LoadEnvironment(HANDLE & hFile)
 		{
 		case CGameObject::OBJTYPE_ID::ENVIRONMENT:
 		{
-			if (FAILED(pGameInstance->Add_GameObjectToLayer(LEVEL_GAMEPLAY, TEXT("Layer_Envrionment"), TEXT("Prototype_GameObject_Model_EnvironmentObject"), &pToolObjDesc)))
-				return E_FAIL;
+			//if (FAILED(pGameInstance->Add_GameObjectToLayer(LEVEL_GAMEPLAY, TEXT("Layer_Envrionment"), TEXT("Prototype_GameObject_Model_EnvironmentObject"), &pToolObjDesc)))
+			//	return E_FAIL;
 		}
 			break;
 		case CGameObject::OBJTYPE_ID::INTERACTION:
@@ -252,7 +252,7 @@ HRESULT CLevel_GamePlay::LoadEnvironment(HANDLE & hFile)
 		{
 			if (FAILED(pGameInstance->Add_GameObjectToLayer(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Prototype_GameObject_Model_Player"), &pToolObjDesc)))
 				return E_FAIL;
-			if (FAILED(pGameInstance->Add_GameObjectToLayer(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Prototype_GameObject_Model_GunTest"))))
+			if (FAILED(pGameInstance->Add_GameObjectToLayer(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Prototype_GameObject_Model_SMG"))))
 				return E_FAIL;
 		}
 			break;

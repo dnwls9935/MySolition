@@ -4,7 +4,7 @@
 #include "GameInstance.h"
 #include "HierarchyNode.h"
 #include "Camera_Dynamic.h"
-#include "GunTest.h"
+#include "SMG.h"
 #include "Sky.h"
 
 #include <iostream>
@@ -108,7 +108,7 @@ HRESULT CPlayer::Render()
 
 _fmatrix CPlayer::GetCameraMatrix()
 {
-	_matrix		Transform = XMMatrixTranslation(0.f , -2500.f, 0.f);
+	_matrix		Transform = XMMatrixTranslation(0.f , -500.f, 0.f);
 	_matrix		OffsetMatrix = XMMatrixIdentity();
 	_matrix		CombinedMatrix = m_CameraBone->Get_CombinedMatrix() * XMMatrixScaling(0.01f, 0.01f, 0.01f);
 	_matrix		PivotMatrix = m_pModelCom->Get_PivotMatrix();
@@ -138,7 +138,9 @@ void CPlayer::SetUpWeapon()
 {
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 
-	_matrix TransMatrix = XMMatrixTranslation(-100.f, 3500.f, -2000.f);
+	_matrix testOffsetMatrix = m_WeaponBone->Get_OffsetMatrix();
+
+	_matrix TransMatrix = XMMatrixTranslation(-100.f, 5000.f, -2000.f);
 	_matrix OffsetMatrix = XMMatrixIdentity();//m_WeaponBone->Get_OffsetMatrix();
 	_matrix CombinedMatrix = m_WeaponBone->Get_CombinedMatrix() * XMMatrixScaling(0.01f, 0.01f, 0.01f);
 	_matrix PivotMatrix = m_pModelCom->Get_PivotMatrix();
@@ -149,7 +151,7 @@ void CPlayer::SetUpWeapon()
 	list<CGameObject*> m_LayerPlayer = pGameInstance->GetObjectList(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
 	auto& iter = m_LayerPlayer.begin();
 	std::advance(iter, 1);
-	static_cast<GunTest*>(*iter)->SetUpWeapon(BoneMatrix, WorldMatrix);
+	static_cast<SMG*>(*iter)->SetUpWeapon(BoneMatrix, WorldMatrix);
 
 	RELEASE_INSTANCE(CGameInstance);
 }
@@ -216,12 +218,12 @@ void CPlayer::KeyCheck(_double TimeDelta)
 		if (pGameInstance->Get_DIKeyState(DIK_D) & 0x8000)
 		{
 			m_pTransformCom->Go_Right(TimeDelta, m_Navigation);
-			m_pModelCom->SetUp_AnimationIndex((_int)ANIMATION_STATE::RUN_B);
+			m_pModelCom->SetUp_AnimationIndex((_int)ANIMATION_STATE::RUN_R);
 			m_Move = MOVE_TYPE::RIGHT;
 		}
 		if (pGameInstance->Get_DIKeyState(DIK_R) & 0x80)
 		{
-			m_pModelCom->SetUp_AnimationIndex((_int)ANIMATION_STATE::RELOAD);
+			m_pModelCom->SetUp_AnimationIndex((_int)ANIMATION_STATE::RE_HYPERION);
 		}
 
 		if (pGameInstance->Get_MouseButtonState(CInput_Device::MOUSEBUTTONSTATE::MBS_LBUTTON))

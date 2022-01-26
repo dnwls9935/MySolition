@@ -93,7 +93,7 @@ _int ToolObject::Tick(_double TimeDelta)
 						if (0 < MouseMove)
 							TimeDelta *= -1.f;
 
-						m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(position.x, position.y + (TimeDelta * 15), position.z, position.w));
+						m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(position.x, position.y + ((_float)TimeDelta * 15), position.z, position.w));
 					}
 				}
 			}

@@ -301,7 +301,7 @@ void ToolTerrain::NavigationKeyChecking(_double TimeDelta)
 	}
 
 
-	_bool LeftControlCheck = pGameInstance->Get_DIKeyState(DIK_LCONTROL) & 0x80;
+	_bool LeftControlCheck = (pGameInstance->Get_DIKeyState(DIK_LCONTROL) & 0x80);
 
 	if (FALSE == LeftControlCheck)
 	{
@@ -312,7 +312,7 @@ void ToolTerrain::NavigationKeyChecking(_double TimeDelta)
 			if (XMVector4Equal(XMVectorSet(0.f, 0.f, 0.f, 0.f), pCalculatingMousePosition))
 				return;
 
-			NaviPoint* pNaviPoint = NaviPoint::Create(m_pDevice, m_pDeviceContext, m_NaviPoints.size(), pCalculatingMousePosition);
+			NaviPoint* pNaviPoint = NaviPoint::Create(m_pDevice, m_pDeviceContext, (_int)m_NaviPoints.size(), pCalculatingMousePosition);
 			if (nullptr == pNaviPoint)
 				return;
 			m_NaviPoints.push_back(pNaviPoint);

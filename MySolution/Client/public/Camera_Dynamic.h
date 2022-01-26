@@ -25,6 +25,9 @@ public:
 	void	RotationXY(ROTATION_TYPE _type, _double MouseMove);
 
 	_matrix	Get_WorldMatrix() { return m_pTransform->Get_WorldMatrix(); };
+
+private:
+	_matrix		m_OriginWM = XMMatrixIdentity();
 	
 public:
 	static CCamera_Dynamic* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
