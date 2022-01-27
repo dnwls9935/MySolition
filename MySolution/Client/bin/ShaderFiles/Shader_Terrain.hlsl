@@ -12,11 +12,6 @@ cbuffer CamDesc
 	vector		g_vCamPosition;
 };
 
-cbuffer	BrushDesc {
-	vector		g_vBrushPos = { 20.f, 0.f, 10.f, 1.f };
-	float		g_fRadius = 5.f;
-};
-
 cbuffer LightDesc
 {
 	vector		g_vLightDirection = vector(1.f, -1.f, 1.f, 0.f);
@@ -33,6 +28,9 @@ cbuffer MtrlDesc
 };
 
 texture2D	g_DiffuseSourTexture;
+texture2D	g_DiffuseDestTexture;
+texture2D	g_FilterColor;
+texture2D	g_BrushColor;
 
 sampler DefaultSampler = sampler_state
 {
@@ -112,8 +110,15 @@ PS_OUT PS_MAIN(PS_IN In)
 	RANGE_IN	RANGEIN = (RANGE_IN)0;
 
 	vector	vSourDiffuse = g_DiffuseSourTexture.Sample(DefaultSampler, In.vTexUV * 10.f);
+	vector	vDestDiffuse = g_DiffuseDestTexture.Sample(DefaultSampler, In.vTexUV * 20.f);
+	vector	vFilterColor = g_FilterColor.Sample(DefaultSampler, In.vTexUV);
+	vector	vBrushColor = (vector)0;
 
-	vector vDiffuse = vSourDiffuse;
+
+	vector vDiffuse = vSourDiffuse * vFilterColor.r + vDestDiffuse * (1.f - vFilterColor.r) + vBrushColor;
+
+
+	RANGEIN.vWorldPos = In.vWorldPos;
 
 	Out.vColor = (g_vLightDiffuse * vDiffuse) * saturate(In.fShade + (g_vLightAmbient * g_vMtrlAmbient))
 		+ (g_vLightSpecular * g_vMtrlSpecular) * In.fSpecular;

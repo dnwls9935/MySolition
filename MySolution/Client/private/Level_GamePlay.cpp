@@ -23,10 +23,6 @@ HRESULT CLevel_GamePlay::NativeConstruct()
 		return E_FAIL;
 	if (FAILED(Ready_Layer_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
-	/*if (FAILED(Ready_Layer_Object(TEXT("Layer_Object"))))
-		return E_FAIL;
-	if (FAILED(Ready_Layer_Enemy(TEXT("Layer_Enemy"))))
-		return E_FAIL;*/
 
 	HANDLE hFile = CreateFile(L"../Bin/Data/Finally.dat", GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
 	if (0 == hFile)
@@ -242,8 +238,8 @@ HRESULT CLevel_GamePlay::LoadEnvironment(HANDLE & hFile)
 		{
 		case CGameObject::OBJTYPE_ID::ENVIRONMENT:
 		{
-			//if (FAILED(pGameInstance->Add_GameObjectToLayer(LEVEL_GAMEPLAY, TEXT("Layer_Envrionment"), TEXT("Prototype_GameObject_Model_EnvironmentObject"), &pToolObjDesc)))
-			//	return E_FAIL;
+			if (FAILED(pGameInstance->Add_GameObjectToLayer(LEVEL_GAMEPLAY, TEXT("Layer_Envrionment"), TEXT("Prototype_GameObject_Model_EnvironmentObject"), &pToolObjDesc)))
+				return E_FAIL;
 		}
 			break;
 		case CGameObject::OBJTYPE_ID::INTERACTION:

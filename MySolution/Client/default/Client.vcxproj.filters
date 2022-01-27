@@ -61,6 +61,9 @@
     <Filter Include="02.GameObject\Player\Weapon\SMG">
       <UniqueIdentifier>{1f21b4bb-ec05-4ffe-b101-2096b4f5bcd5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\Monster\PrimeBeast">
+      <UniqueIdentifier>{46f29de5-d9b3-43f6-8a25-be44265b24db}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />

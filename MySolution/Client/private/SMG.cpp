@@ -30,9 +30,6 @@ HRESULT SMG::NativeConstruct(void * pArg)
 	if (FAILED(SetUp_Components()))
 		return E_FAIL;
 
-
-	m_OriginMatrix = m_pTransformCom->Get_WorldMatrix();
-
 	m_Type = CGameObject::OBJTYPE_ID::PLAYER_WEAPONE;
 
 	return S_OK;

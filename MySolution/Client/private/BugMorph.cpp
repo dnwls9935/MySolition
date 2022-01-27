@@ -34,10 +34,13 @@ HRESULT BugMorph::NativeConstruct(void * pArg)
 	memcpy(&ToolObjDesc, (CGameObject::TOOLOBJDESC*)pArg, sizeof(CGameObject::TOOLOBJDESC));
 	
 	_matrix TransformMatrix = XMLoadFloat4x4(&ToolObjDesc.m_pTransformMatrix);
+	m_pTransformCom->Set_State(CTransform::STATE_RIGHT, TransformMatrix.r[0]);
+	m_pTransformCom->Set_State(CTransform::STATE_UP, TransformMatrix.r[1]);
+	m_pTransformCom->Set_State(CTransform::STATE_LOOK, TransformMatrix.r[2]);
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, TransformMatrix.r[3]);
 
 	m_HP = 10;
-	m_pModelCom->SetUp_AnimationIndex((_int)ANIMATION_STATE::IDLE_VAR);
+	m_pModelCom->SetUp_AnimationIndex((_int)ANIMATION_STATE::SPAWN_RUN);
 
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 	m_TargetObject = static_cast<CPlayer*>(pGameInstance->GetObjectList(LEVEL_GAMEPLAY, TEXT("Layer_Player")).front());
@@ -60,7 +63,7 @@ _int BugMorph::LateTick(_double TimeDelta)
 
 	if (m_pModelCom->GetAnimationFinished())
 	{
-		m_pModelCom->SetUp_AnimationIndex((_int)ANIMATION_STATE::IDLE_VAR);
+		m_pModelCom->SetUp_AnimationIndex((_int)ANIMATION_STATE::IDLE_FLIGHT);
 	}
 
 	//m_ColliderCom->CollisionAABB((CCollider*)m_TargetObject->GetComponent(TEXT("Com_AABB")));

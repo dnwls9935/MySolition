@@ -57,9 +57,6 @@ HRESULT CCamera_Dynamic::Render()
 void CCamera_Dynamic::SetCameraPosition(_matrix camPos, _matrix _PWM)
 {
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
-/*
-	_matrix camPos = static_cast<CPlayer*>(pGameInstance->GetObjectList(LEVEL_GAMEPLAY, TEXT("Layer_Player")).front())->GetCameraMatrix();
-*/
 	_vector		vPosition = camPos.r[3];
 	vPosition = XMVectorSetW(vPosition, 1.f);
 

@@ -108,13 +108,13 @@ HRESULT CPlayer::Render()
 
 _fmatrix CPlayer::GetCameraMatrix()
 {
-	_matrix		Transform = XMMatrixTranslation(0.f , -500.f, 0.f);
+	_matrix		Transform = XMMatrixIdentity();
 	_matrix		OffsetMatrix = XMMatrixIdentity();
-	_matrix		CombinedMatrix = m_CameraBone->Get_CombinedMatrix() * XMMatrixScaling(0.01f, 0.01f, 0.01f);
+	_matrix		CombinedMatrix = m_CameraBone->Get_CombinedMatrix();
 	_matrix		PivotMatrix = m_pModelCom->Get_PivotMatrix();
 	_matrix		WorldMatrix = m_pTransformCom->Get_WorldMatrix();
 
-	return Transform* PivotMatrix* OffsetMatrix * CombinedMatrix  * WorldMatrix;
+	return Transform * OffsetMatrix * CombinedMatrix * PivotMatrix * WorldMatrix;
 }
 
 void CPlayer::Shotting()

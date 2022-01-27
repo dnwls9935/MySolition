@@ -36,14 +36,17 @@ HRESULT CTerrain::NativeConstruct(void * pArg)
 
 _int CTerrain::Tick(_double TimeDelta)
 {
+	if (FAILED(__super::Tick(TimeDelta)))
+		return -1;
 	return _int();
 }
 
 _int CTerrain::LateTick(_double TimeDelta)
 {
-
+	if (FAILED(__super::LateTick(TimeDelta)))
+		return -1;
 	if (nullptr != m_pRendererCom)
-		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
+		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_PRIORITY, this);
 
 	return _int();
 }
@@ -57,13 +60,13 @@ HRESULT CTerrain::Render()
 	m_pVIBufferCom->SetUp_ValueOnShader("g_ProjMatrix", &XMMatrixTranspose(pGameInstance->Get_Transform(CPipeLine::D3DTS_PROJECTION)), sizeof(_matrix));
 
 	m_pVIBufferCom->SetUp_TextureOnShader("g_DiffuseSourTexture", m_pTextureCom, 0);
+	m_pVIBufferCom->SetUp_TextureOnShader("g_DiffuseDestTexture", m_pTextureCom, 0);
 
 	m_pVIBufferCom->SetUp_ValueOnShader("g_vCamPosition", (void*)&pGameInstance->Get_CamPosition(), sizeof(_vector));
 
-	m_pVIBufferCom->Render(0);
+	m_pVIBufferCom->Render(1);
 
 	RELEASE_INSTANCE(CGameInstance);
-
 	return S_OK;
 }
 
@@ -126,7 +129,7 @@ CGameObject * CTerrain::Clone(void * pArg)
 void CTerrain::Free()
 {
 	__super::Free();
-
+	
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pTextureCom);
 	Safe_Release(m_pVIBufferCom);
