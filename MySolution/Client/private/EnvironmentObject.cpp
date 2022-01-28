@@ -42,7 +42,6 @@ HRESULT EnvrionmentObject::NativeConstruct(void * pArg)
 	m_pTransformCom->Set_State(CTransform::STATE_LOOK, Transform.r[2]);
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, Transform.r[3]);
 	
-
 	return S_OK;
 }
 
@@ -56,7 +55,7 @@ _int EnvrionmentObject::Tick(_double TimeDelta)
 _int EnvrionmentObject::LateTick(_double TimeDelta)
 {
 	if (nullptr != m_pRendererCom)
-		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
+		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_PRIORITY, this);
 
 	return _int();
 }

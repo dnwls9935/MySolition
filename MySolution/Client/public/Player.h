@@ -62,7 +62,6 @@ public:
 private:
 	void KeyCheck(_double TimeDelta);
 	void SetCamAndSkyBox();
-	void Shotting();
 
 
 	RAY CreateRay();

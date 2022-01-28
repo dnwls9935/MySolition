@@ -39,19 +39,23 @@ _int SMG::Tick(_double TimeDelta)
 {
 	KeyCheck();
 
+	if (m_pModelCom->GetAnimationFinished())
+		m_AnimationPlay = FALSE;
 
 	return _int();
 }
 
 _int SMG::LateTick(_double TimeDelta)
 {
+	m_FireFrame = FALSE;
 	if (nullptr != m_pRendererCom)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
 
 	if (TRUE == m_AnimationPlay)
-		m_pModelCom->Update_CombinedTransformationMatrix(TimeDelta);
+		m_pModelCom->Update_CombinedTransformationMatrix(TimeDelta * m_FrameSpeed);
 	else
 		m_pModelCom->Update_CombinedTransformationMatrix(0.0);
+
 	return _int();
 }
 
@@ -80,17 +84,13 @@ HRESULT SMG::Render()
 void SMG::SetUpWeapon(_fmatrix WeaponeBoneMatrix, _fmatrix PlayerWorldMatrix)
 {
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
- 	//_matrix WeaponBoneMatrix = static_cast<CPlayer*>(pGameInstance->GetObjectList(LEVEL_GAMEPLAY, TEXT("Layer_Player")).front())->SetUpWeapon();
-	//_matrix WorldMatrix = static_cast<CTransform*>(pGameInstance->GetObjectList(LEVEL_GAMEPLAY, TEXT("Layer_Player")).front()->GetComponent(TEXT("Com_Transform")))->Get_WorldMatrix();
-	RELEASE_INSTANCE(CGameInstance);
-	
 	_vector		vPosition = WeaponeBoneMatrix.r[3];
 	vPosition = XMVectorSetW(vPosition, 1.f);
 
-	_vector		vLook = PlayerWorldMatrix.r[2];
+	_vector		vLook = WeaponeBoneMatrix.r[2];
 	vLook = XMVector3Normalize(vLook);
 
-	_vector		vRight = XMVector3Cross(PlayerWorldMatrix.r[1], vLook);
+	_vector		vRight = XMVector3Cross(WeaponeBoneMatrix.r[1], vLook);
 	vRight = XMVector3Normalize(vRight);
 
 	_vector		vUp = XMVector3Cross(vLook, vRight);
@@ -100,6 +100,7 @@ void SMG::SetUpWeapon(_fmatrix WeaponeBoneMatrix, _fmatrix PlayerWorldMatrix)
 	m_pTransformCom->Set_State(CTransform::STATE_UP, vUp);
 	m_pTransformCom->Set_State(CTransform::STATE_LOOK, vLook);
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
+
 }
 
 void SMG::KeyCheck()
@@ -107,10 +108,23 @@ void SMG::KeyCheck()
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 
 	if (pGameInstance->Get_DIKeyState(DIK_R) & 0x80)
+	{
+		m_AnimationPlay = TRUE;
+		m_FrameSpeed = 1.0;
 		m_pModelCom->SetUp_AnimationIndex((_int)ANIMATION_STATE::RE_HYPERION);
+	}
 
 	if (pGameInstance->Get_MouseButtonState(CInput_Device::MBS_LBUTTON))
+	{
+		m_FrameSpeed = 5.f;
+		m_AnimationPlay = TRUE;
 		m_pModelCom->SetUp_AnimationIndex((_int)ANIMATION_STATE::FIRE_HYPERION);
+
+		if (0 == m_pModelCom->GetCurrentAnimationFrame())
+		{
+			m_FireFrame = TRUE;
+		}
+	}
 
 	RELEASE_INSTANCE(CGameInstance);
 }

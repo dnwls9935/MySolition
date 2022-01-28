@@ -24,7 +24,7 @@ HRESULT CLevel_GamePlay::NativeConstruct()
 	if (FAILED(Ready_Layer_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
 
-	HANDLE hFile = CreateFile(L"../Bin/Data/Finally.dat", GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+	HANDLE hFile = CreateFile(L"../Bin/Data/FSMTest.dat", GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
 	if (0 == hFile)
 		return E_FAIL;
 	if (FAILED(LoadData(hFile)))
@@ -185,7 +185,7 @@ HRESULT CLevel_GamePlay::LoadTerrain(HANDLE & hFile)
 		{
 			_int		iIndex = i * x + j;
 			ReadFile(hFile, &y, sizeof(_float), &dwByte, nullptr);
-			pTerrain->SetVerticeY(iIndex, y);
+			//pTerrain->SetVerticeY(iIndex, y);
 		}
 	}
 

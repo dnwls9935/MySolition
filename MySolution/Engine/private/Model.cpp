@@ -124,6 +124,17 @@ HRESULT CModel::SetUp_TextureOnShader(const char * pConstantName, _uint iMeshCon
 	return S_OK;
 }
 
+void CModel::SetUp_AnimationIndex(_uint iAnimationIndex)
+{
+//	m_Animations[m_iCurrentAnimation]->SetTrackPositionAcc(0.0);
+	m_iCurrentAnimation = iAnimationIndex;
+}
+
+_int CModel::GetCurrentAnimationFrame()
+{
+	return (_int)m_Animations[m_iCurrentAnimation]->GetTrackPositionAcc();
+}
+
 HRESULT CModel::Bind_Buffers()
 {
 	if (nullptr == m_pDeviceContext)

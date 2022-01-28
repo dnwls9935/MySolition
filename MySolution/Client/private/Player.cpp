@@ -42,7 +42,7 @@ HRESULT CPlayer::NativeConstruct(void * pArg)
 	_matrix TransformMatrix = XMLoadFloat4x4(&ToolObjDesc.m_pTransformMatrix);
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, TransformMatrix.r[3]);
 
-	m_CameraBone = m_pModelCom->Get_BoneMatrix("Camera");
+	m_CameraBone = m_pModelCom->Get_BoneMatrix("Head");
 	m_WeaponBone = m_pModelCom->Get_BoneMatrix("R_Weapon_Bone");
 	m_pModelCom->SetUp_AnimationIndex((_int)ANIMATION_STATE::IDLE);
 
@@ -108,7 +108,7 @@ HRESULT CPlayer::Render()
 
 _fmatrix CPlayer::GetCameraMatrix()
 {
-	_matrix		Transform = XMMatrixIdentity();
+	_matrix		Transform =  XMMatrixTranslation(10.f, 0.f, -10.f);
 	_matrix		OffsetMatrix = XMMatrixIdentity();
 	_matrix		CombinedMatrix = m_CameraBone->Get_CombinedMatrix();
 	_matrix		PivotMatrix = m_pModelCom->Get_PivotMatrix();
@@ -117,36 +117,18 @@ _fmatrix CPlayer::GetCameraMatrix()
 	return Transform * OffsetMatrix * CombinedMatrix * PivotMatrix * WorldMatrix;
 }
 
-void CPlayer::Shotting()
-{
-	//RAY ray = CreateRay();
-	//// 리팩토링 필수
-	//// 이걸 몬스터마다 주면 되지않을까
-	//CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
-	//list<CGameObject*> objList = pGameInstance->GetObjectList(LEVEL_GAMEPLAY, TEXT("Layer_Enemy"));
-	//for (auto& iter : objList)
-	//{
-	//	iter->CheckHit(ray.Ray, ray.Dir);
-	//}
-	//RELEASE_INSTANCE(CGameInstance);
-
-
-
-}
 
 void CPlayer::SetUpWeapon()
 {
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 
-	_matrix testOffsetMatrix = m_WeaponBone->Get_OffsetMatrix();
-
-	_matrix TransMatrix = XMMatrixTranslation(-100.f, 5000.f, -2000.f);
-	_matrix OffsetMatrix = XMMatrixIdentity();//m_WeaponBone->Get_OffsetMatrix();
-	_matrix CombinedMatrix = m_WeaponBone->Get_CombinedMatrix() * XMMatrixScaling(0.01f, 0.01f, 0.01f);
+	_matrix TransMatrix = XMMatrixIdentity();
+	_matrix OffsetMatrix = XMMatrixIdentity();
+	_matrix CombinedMatrix = m_WeaponBone->Get_CombinedMatrix();
 	_matrix PivotMatrix = m_pModelCom->Get_PivotMatrix();
 	_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
 
-	_matrix BoneMatrix = TransMatrix* PivotMatrix* OffsetMatrix * CombinedMatrix  * WorldMatrix;
+	_matrix BoneMatrix = TransMatrix * OffsetMatrix * CombinedMatrix * PivotMatrix * WorldMatrix;
 
 	list<CGameObject*> m_LayerPlayer = pGameInstance->GetObjectList(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
 	auto& iter = m_LayerPlayer.begin();
@@ -192,7 +174,8 @@ void CPlayer::KeyCheck(_double TimeDelta)
 		if (pGameInstance->Get_DIKeyState(DIK_W) & 0x8000)
 		{
 			m_pTransformCom->Go_Straight(TimeDelta * 1.5f, m_Navigation);
-			m_pModelCom->SetUp_AnimationIndex((_int)ANIMATION_STATE::SPRINT);
+			if( ! (_int)ANIMATION_STATE::RE_HYPERION == m_pModelCom->GetCurrentAnimation())
+				m_pModelCom->SetUp_AnimationIndex((_int)ANIMATION_STATE::SPRINT);
 			m_Move = MOVE_TYPE::FRONT;
 		}
 	}
@@ -200,19 +183,22 @@ void CPlayer::KeyCheck(_double TimeDelta)
 		if (pGameInstance->Get_DIKeyState(DIK_W) & 0x8000)
 		{
 			m_pTransformCom->Go_Straight(TimeDelta, m_Navigation);
-			m_pModelCom->SetUp_AnimationIndex((_int)ANIMATION_STATE::RUN_F);
+			if (!(_int)ANIMATION_STATE::RE_HYPERION == m_pModelCom->GetCurrentAnimation())
+				m_pModelCom->SetUp_AnimationIndex((_int)ANIMATION_STATE::RUN_F);
 			m_Move = MOVE_TYPE::FRONT;
 		}
 		if (pGameInstance->Get_DIKeyState(DIK_S) & 0x8000)
 		{
 			m_pTransformCom->Go_BackWard(TimeDelta, m_Navigation);
-			m_pModelCom->SetUp_AnimationIndex((_int)ANIMATION_STATE::RUN_F);
+			if (!(_int)ANIMATION_STATE::RE_HYPERION == m_pModelCom->GetCurrentAnimation())
+				m_pModelCom->SetUp_AnimationIndex((_int)ANIMATION_STATE::RUN_F);
 			m_Move = MOVE_TYPE::BACK;
 		}
 		if (pGameInstance->Get_DIKeyState(DIK_A) & 0x8000)
 		{
 			m_pTransformCom->Go_Left(TimeDelta, m_Navigation);
-			m_pModelCom->SetUp_AnimationIndex((_int)ANIMATION_STATE::RUN_L);
+			if (!(_int)ANIMATION_STATE::RE_HYPERION == m_pModelCom->GetCurrentAnimation())
+				m_pModelCom->SetUp_AnimationIndex((_int)ANIMATION_STATE::RUN_L);
 			m_Move = MOVE_TYPE::LEFT;
 		}
 		if (pGameInstance->Get_DIKeyState(DIK_D) & 0x8000)
@@ -224,11 +210,6 @@ void CPlayer::KeyCheck(_double TimeDelta)
 		if (pGameInstance->Get_DIKeyState(DIK_R) & 0x80)
 		{
 			m_pModelCom->SetUp_AnimationIndex((_int)ANIMATION_STATE::RE_HYPERION);
-		}
-
-		if (pGameInstance->Get_MouseButtonState(CInput_Device::MOUSEBUTTONSTATE::MBS_LBUTTON))
-		{
-			m_Shot = TRUE;
 		}
 	}
 

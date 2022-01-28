@@ -64,6 +64,9 @@
     <Filter Include="02.GameObject\Monster\PrimeBeast">
       <UniqueIdentifier>{46f29de5-d9b3-43f6-8a25-be44265b24db}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\Monster\PrimeBeast\Rock">
+      <UniqueIdentifier>{35a30334-704a-47b3-84ce-f281a5f3bcb3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -126,6 +129,12 @@
     <ClInclude Include="..\public\SMG.h">
       <Filter>02.GameObject\Player\Weapon\SMG</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\PrimeBeast.h">
+      <Filter>02.GameObject\Monster\PrimeBeast</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\PrimeBeastRock.h">
+      <Filter>02.GameObject\Monster\PrimeBeast\Rock</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -172,6 +181,12 @@
     </ClCompile>
     <ClCompile Include="..\private\SMG.cpp">
       <Filter>02.GameObject\Player\Weapon\SMG</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\PrimeBeast.cpp">
+      <Filter>02.GameObject\Monster\PrimeBeast</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\PrimeBeastRock.cpp">
+      <Filter>02.GameObject\Monster\PrimeBeast\Rock</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

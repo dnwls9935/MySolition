@@ -177,6 +177,8 @@
     <ClInclude Include="..\public\Loader.h" />
     <ClInclude Include="..\public\MainApp.h" />
     <ClInclude Include="..\public\Player.h" />
+    <ClInclude Include="..\public\PrimeBeast.h" />
+    <ClInclude Include="..\public\PrimeBeastRock.h" />
     <ClInclude Include="..\public\Sky.h" />
     <ClInclude Include="..\public\SMG.h" />
     <ClInclude Include="..\public\Terrain.h" />
@@ -196,6 +198,8 @@
     <ClCompile Include="..\private\Loader.cpp" />
     <ClCompile Include="..\private\MainApp.cpp" />
     <ClCompile Include="..\private\Player.cpp" />
+    <ClCompile Include="..\private\PrimeBeast.cpp" />
+    <ClCompile Include="..\private\PrimeBeastRock.cpp" />
     <ClCompile Include="..\private\Sky.cpp" />
     <ClCompile Include="..\private\SMG.cpp" />
     <ClCompile Include="..\private\Terrain.cpp" />

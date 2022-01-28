@@ -8,7 +8,9 @@ BEGIN(Engine)
 class ENGINE_DLL CGameObject abstract : public CBase
 {
 public:
-	enum class OBJTYPE_ID { ENVIRONMENT, TERRAIN, INTERACTION , PLAYER, PLAYER_WEAPONE, ENEMY,  OBJTYPE_END};
+	enum class OBJTYPE_ID { ENVIRONMENT, TERRAIN, INTERACTION , 
+		PLAYER, PLAYER_WEAPONE,
+		ENEMY, ENEMY_OBJECT,  OBJTYPE_END};
 
 public:
 	typedef struct tagToolObjectDesc {

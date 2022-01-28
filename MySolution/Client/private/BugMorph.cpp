@@ -1,7 +1,10 @@
 #include "stdafx.h"
 #include "..\public\BugMorph.h"
-#include "Player.h"
 #include "GameInstance.h"
+#include "Player.h"
+#include "SMG.h"
+
+#include <iostream>
 
 BugMorph::BugMorph(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -39,19 +42,27 @@ HRESULT BugMorph::NativeConstruct(void * pArg)
 	m_pTransformCom->Set_State(CTransform::STATE_LOOK, TransformMatrix.r[2]);
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, TransformMatrix.r[3]);
 
-	m_HP = 10;
+	m_HP = 3000;
 	m_pModelCom->SetUp_AnimationIndex((_int)ANIMATION_STATE::SPAWN_RUN);
 
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
-	m_TargetObject = static_cast<CPlayer*>(pGameInstance->GetObjectList(LEVEL_GAMEPLAY, TEXT("Layer_Player")).front());
+	m_TargetObjectList = &pGameInstance->GetObjectList(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
 	RELEASE_INSTANCE(CGameInstance);
 	return S_OK;
 }
 
 _int BugMorph::Tick(_double TimeDelta)
 {
-	m_pModelCom->Update_CombinedTransformationMatrix(TimeDelta);
+	Animation();
+	
+
+	if(TRUE == m_FrameStart)
+		m_pModelCom->Update_CombinedTransformationMatrix(TimeDelta);
+	else
+		m_pModelCom->Update_CombinedTransformationMatrix(0.0);
 	m_ColliderCom->Update(m_pTransformCom->Get_WorldMatrix());
+
+	HitCheck();
 
 	return _int();
 }
@@ -107,6 +118,58 @@ HRESULT BugMorph::Render()
 	return S_OK;
 }
 
+void BugMorph::HitCheck()
+{
+	auto& LayerPlayer = m_TargetObjectList->begin();
+	std::advance(LayerPlayer, 1);
+	if (TRUE == static_cast<SMG*>(*LayerPlayer)->GetFireFrame())
+	{
+		CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+		Calculator::CALCDESC CalDesc;
+		CalDesc._width = g_iWinCX;
+		CalDesc._height = g_iWinCY;
+		CalDesc._transformCom = m_pTransformCom;
+		CalDesc._hWnd = g_hWnd;
+
+		pGameInstance->CalcMousePos(&CalDesc);
+
+		CalDesc._rayPos = XMVector3TransformCoord(CalDesc._rayPos, m_pTransformCom->Get_WorldMatrix());
+		CalDesc._rayDir = XMVector3TransformNormal(CalDesc._rayDir, m_pTransformCom->Get_WorldMatrix());
+		CalDesc._rayDir =  XMVector3Normalize(CalDesc._rayDir);
+		
+		if (TRUE == m_ColliderCom->CollisionAABBToRay(CalDesc._rayPos, CalDesc._rayDir))
+		{
+			m_HP--;
+		}
+		
+		RELEASE_INSTANCE(CGameInstance);
+	}
+}
+
+void BugMorph::Intro()
+{
+	_vector PlayerPosition = static_cast<CTransform*>(m_TargetObjectList->front()->GetComponent(TEXT("Com_Transform")))->Get_State(CTransform::STATE_POSITION);
+	_vector MyPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	_vector Distance = PlayerPosition - MyPosition;
+
+	_float DistanceFloat = XMVectorGetX(XMVector3Length(Distance));
+
+	cout << DistanceFloat << endl;
+	if (10 >= DistanceFloat)
+		m_FrameStart = TRUE;
+}
+
+void BugMorph::Animation()
+{
+	if(!m_FrameStart)
+		Intro();
+	else {
+
+	}
+
+}
+
 HRESULT BugMorph::SetUp_Components()
 {
 	/* Com_Transform */
@@ -128,7 +191,7 @@ HRESULT BugMorph::SetUp_Components()
 	/* Com_Model */
 	CCollider::COLLISIONDESC CollisionDesc;
 	ZeroMemory(&CollisionDesc, sizeof(CCollider::COLLISIONDESC));
-	CollisionDesc.Scale = _float3(0.7f, 1.8f, 0.7f);
+	CollisionDesc.Scale = _float3(0.3f, 1.3f, 0.3f);
 	CollisionDesc.Position = _float3(0.f, 1.f, 0.0f);
 	if (FAILED(__super::SetUp_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_AABB"), TEXT("Com_AABB"), (CComponent**)&m_ColliderCom, &CollisionDesc)))
 		return E_FAIL;

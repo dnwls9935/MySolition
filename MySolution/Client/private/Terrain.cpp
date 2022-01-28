@@ -64,7 +64,7 @@ HRESULT CTerrain::Render()
 
 	m_pVIBufferCom->SetUp_ValueOnShader("g_vCamPosition", (void*)&pGameInstance->Get_CamPosition(), sizeof(_vector));
 
-	m_pVIBufferCom->Render(1);
+	m_pVIBufferCom->Render(0);
 
 	RELEASE_INSTANCE(CGameInstance);
 	return S_OK;

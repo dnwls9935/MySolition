@@ -19,6 +19,12 @@ public:
 
 public:
 	_bool	GetFinished()const { return m_isFinished; };
+	void			SetTrackPositionAcc(_double _TrackPositionAcc) {
+		m_TrackPositionAcc = _TrackPositionAcc;
+	}
+	_double	GetTrackPositionAcc() const { 
+		return m_TrackPositionAcc;
+	};
 
 private:
 	char				m_szName[MAX_PATH] = "";

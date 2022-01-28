@@ -36,11 +36,16 @@ public:
 
 public:
 	void SetUpWeapon(_fmatrix WeaponeBoneMatrix, _fmatrix PlayerWorldMatrix);
+	_bool	GetFireFrame() const {
+		return m_FireFrame; 
+	}
 
 private:
 	void KeyCheck();
 
 	_bool	m_AnimationPlay = FALSE;
+	_bool	m_FireFrame = FALSE;
+	_double	m_FrameSpeed = 1.0;
 
 private:
 	CRenderer*				m_pRendererCom = nullptr;

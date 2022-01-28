@@ -36,12 +36,19 @@ public:
 	virtual HRESULT Render() override;
 
 private:
+	void		HitCheck();
+	void		Intro();
+	void		Animation();
+
+private:
 	CRenderer*				m_pRendererCom = nullptr;
 	CTransform*				m_pTransformCom = nullptr;
 	CModel*					m_pModelCom = nullptr;
 	CCollider*					m_ColliderCom = nullptr;
 
-	class CGameObject* m_TargetObject = nullptr;
+	list<class CGameObject*>* m_TargetObjectList = nullptr;
+
+	_bool						m_FrameStart = FALSE;
 
 private:
 	virtual HRESULT SetUp_Components();

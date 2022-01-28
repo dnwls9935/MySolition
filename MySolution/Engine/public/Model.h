@@ -30,9 +30,11 @@ public:
 	HRESULT NativeConstruct(void* pArg);
 public:
 	HRESULT SetUp_TextureOnShader(const char* pConstantName, _uint iMeshContainerIndex, aiTextureType eType);
-	void SetUp_AnimationIndex(_uint iAnimationIndex) {
-		m_iCurrentAnimation = iAnimationIndex;
+	void SetUp_AnimationIndex(_uint iAnimationIndex);
+	_int	GetCurrentAnimation() const {
+		return m_iCurrentAnimation;
 	}
+	_int		GetCurrentAnimationFrame();
 	HRESULT Bind_Buffers();
 	HRESULT Update_CombinedTransformationMatrix(_double TimeDelta);
 	HRESULT Render(_uint iMeshContainerIndex, _uint iPassIndex);
