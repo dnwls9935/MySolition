@@ -169,6 +169,7 @@ CPlayer::RAY CPlayer::CreateRay()
 	return ray;
 }
 
+
 void CPlayer::KeyCheck(_double TimeDelta)
 {
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
@@ -178,7 +179,7 @@ void CPlayer::KeyCheck(_double TimeDelta)
 		if (pGameInstance->Get_DIKeyState(DIK_W) & 0x8000)
 		{
 			m_pTransformCom->Go_Straight(TimeDelta * 1.5f, m_Navigation);
-			if( ! (_int)ANIMATION_STATE::RE_HYPERION == m_pModelCom->GetCurrentAnimation())
+			if((_int)ANIMATION_STATE::RE_HYPERION != m_pModelCom->GetCurrentAnimation())
 				m_pModelCom->SetUp_AnimationIndex((_int)ANIMATION_STATE::SPRINT);
 			m_Move = MOVE_TYPE::FRONT;
 		}
@@ -187,21 +188,21 @@ void CPlayer::KeyCheck(_double TimeDelta)
 		if (pGameInstance->Get_DIKeyState(DIK_W) & 0x8000)
 		{
 			m_pTransformCom->Go_Straight(TimeDelta, m_Navigation);
-			if (!(_int)ANIMATION_STATE::RE_HYPERION == m_pModelCom->GetCurrentAnimation())
+			if ((_int)ANIMATION_STATE::RE_HYPERION != m_pModelCom->GetCurrentAnimation())
 				m_pModelCom->SetUp_AnimationIndex((_int)ANIMATION_STATE::RUN_F);
 			m_Move = MOVE_TYPE::FRONT;
 		}
 		if (pGameInstance->Get_DIKeyState(DIK_S) & 0x8000)
 		{
 			m_pTransformCom->Go_BackWard(TimeDelta, m_Navigation);
-			if (!(_int)ANIMATION_STATE::RE_HYPERION == m_pModelCom->GetCurrentAnimation())
+			if ((_int)ANIMATION_STATE::RE_HYPERION != m_pModelCom->GetCurrentAnimation())
 				m_pModelCom->SetUp_AnimationIndex((_int)ANIMATION_STATE::RUN_F);
 			m_Move = MOVE_TYPE::BACK;
 		}
 		if (pGameInstance->Get_DIKeyState(DIK_A) & 0x8000)
 		{
 			m_pTransformCom->Go_Left(TimeDelta, m_Navigation);
-			if (!(_int)ANIMATION_STATE::RE_HYPERION == m_pModelCom->GetCurrentAnimation())
+			if ((_int)ANIMATION_STATE::RE_HYPERION != m_pModelCom->GetCurrentAnimation())
 				m_pModelCom->SetUp_AnimationIndex((_int)ANIMATION_STATE::RUN_L);
 			m_Move = MOVE_TYPE::LEFT;
 		}

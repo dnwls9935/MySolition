@@ -158,14 +158,14 @@ HRESULT PrimeBeast::Render()
 
 		m_pModelCom->Render(i, 1);
 	}
-
-#ifdef _DEBUG
-	m_ColliderCom->Render();
-	m_ColliderSphere1->Render();
-	m_ColliderSphere2->Render();
-	m_ColliderSphere3->Render();
-	m_ColliderSphere4->Render();
-#endif // _DEBUG
+//
+//#ifdef _DEBUG
+//	m_ColliderCom->Render();
+//	m_ColliderSphere1->Render();
+//	m_ColliderSphere2->Render();
+//	m_ColliderSphere3->Render();
+//	m_ColliderSphere4->Render();
+//#endif // _DEBUG
 
 	RELEASE_INSTANCE(CGameInstance);
 	return S_OK;
@@ -229,12 +229,12 @@ void PrimeBeast::HitCheck()
 
 void PrimeBeast::Animation(_double TimeDelta)
 {
-	if (15 >= m_TargetDistance && !m_FrameStart)
+	if (30 >= m_TargetDistance && !m_FrameStart)
 	{
 		m_FrameStart = TRUE;
 	}else if(m_FrameStart && m_IntroEnd)
 	{
-		if (5 >= m_TargetDistance)
+		if (10 >= m_TargetDistance)
 		{
 			Attack();
 		}

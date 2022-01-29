@@ -145,7 +145,7 @@ HRESULT PrimeBeastRock::SetUp_Components()
 	/* Com_Collider*/
 	CCollider::COLLISIONDESC CollisionDesc;
 	ZeroMemory(&CollisionDesc, sizeof(CCollider::COLLISIONDESC));
-	CollisionDesc.Scale = _float3(0.3f, 0.3f, 0.3f);
+	CollisionDesc.Scale = _float3(3.0f, 3.0f, 3.0f);
 	CollisionDesc.Position = _float3(0.0f, 0.0f, 0.0f);
 	if (FAILED(__super::SetUp_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_Sphere"), TEXT("Com_Sphere"), (CComponent**)&m_ColliderCom, &CollisionDesc)))
 		return E_FAIL;

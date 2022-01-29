@@ -122,12 +122,19 @@ HRESULT CToolView::ReadyProtoAll()
 	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Model_PrimeBeast"), CModel::Create(dx11Device, dx11DeviceContext, "../Client/Bin/Resources/Meshes/PrimeBeast/", "PBTest.FBX", TEXT("../Client/Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_ANIM))))
 		return E_FAIL;
 
+	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
+	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Model_Dahl_WeaponLocker"), CModel::Create(dx11Device, dx11DeviceContext, "../Client/Bin/Resources/Meshes/ItemBox/", "Dahl_WeaponLocker.FBX", TEXT("../Client/Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_ANIM))))
+		return E_FAIL;
+	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Model_DahlEpicCrate"), CModel::Create(dx11Device, dx11DeviceContext, "../Client/Bin/Resources/Meshes/ItemBox/", "DahlEpicCrate.FBX", TEXT("../Client/Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_ANIM))))
+		return E_FAIL;
+	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Model_HyperionChest"), CModel::Create(dx11Device, dx11DeviceContext, "../Client/Bin/Resources/Meshes/ItemBox/", "HyperionChest.FBX", TEXT("../Client/Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_ANIM))))
+		return E_FAIL;
+
+
 	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationX(XMConvertToRadians(90.0f)) * XMMatrixRotationY(XMConvertToRadians(90.0f));
 	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Model_HandsomeJack"), CModel::Create(dx11Device, dx11DeviceContext, "../Client/Bin/Resources/Meshes/Static/", "HandsomeJack.FBX", TEXT("../Client/Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_STATIC))))
 		return E_FAIL;
 	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Model_HandsomeJackGoldenStatue"), CModel::Create(dx11Device, dx11DeviceContext, "../Client/Bin/Resources/Meshes/Static/", "HandsomeJackGoldlStatue.FBX", TEXT("../Client/Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_STATIC))))
-		return E_FAIL;
-	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Model_HyperionChest"), CModel::Create(dx11Device, dx11DeviceContext, "../Client/Bin/Resources/Meshes/Static/", "HyperionChest.FBX", TEXT("../Client/Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_STATIC))))
 		return E_FAIL;
 	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Model_SnowDrift"), CModel::Create(dx11Device, dx11DeviceContext, "../Client/Bin/Resources/Meshes/Static/", "GlacialTest.FBX", TEXT("../Client/Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_STATIC))))
 		return E_FAIL;
@@ -144,8 +151,7 @@ HRESULT CToolView::ReadyProtoAll()
 	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Model_GlacialFlow_Straight0"), CModel::Create(dx11Device, dx11DeviceContext, "../Client/Bin/Resources/Meshes/Static/", "GlacialFlow_Straight0.FBX", TEXT("../Client/Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_STATIC))))
 		return E_FAIL;
 	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Model_GlacialFlow_Straight1"), CModel::Create(dx11Device, dx11DeviceContext, "../Client/Bin/Resources/Meshes/Static/", "GlacialFlow_Straight1.FBX", TEXT("../Client/Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_STATIC))))
-		return E_FAIL;
-
+		return E_FAIL; 
 	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Model_ArenaSign"), CModel::Create(dx11Device, dx11DeviceContext, "../Client/Bin/Resources/Meshes/Static/", "ArenaSign.FBX", TEXT("../Client/Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_STATIC))))
 		return E_FAIL;
 	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Model_AutoJunk"), CModel::Create(dx11Device, dx11DeviceContext, "../Client/Bin/Resources/Meshes/Static/", "AutoJunk.FBX", TEXT("../Client/Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_STATIC))))
@@ -190,28 +196,32 @@ HRESULT CToolView::ReadyProtoAll()
 		return E_FAIL;
 	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Model_TurbinFan"), CModel::Create(dx11Device, dx11DeviceContext, "../Client/Bin/Resources/Meshes/Static/", "TurbinFan.FBX", TEXT("../Client/Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_STATIC))))
 		return E_FAIL;
-	
-
 
 
 	///* 객체원형을 생성한다. */
+	/*		Static	*/
 	if (FAILED(gameInstance->Add_Prototype(TEXT("Prototype_GameObject_Terrain"), ToolTerrain::Create(dx11Device, dx11DeviceContext))))
 		return E_FAIL;
 	if (FAILED(gameInstance->Add_Prototype(TEXT("Prototype_GameObject_Dyanmic_Camera"), ToolCamera::Create(dx11Device, dx11DeviceContext))))
 		return E_FAIL;
-
-
 	if (FAILED(gameInstance->Add_Prototype(TEXT("Prototype_GameObject_Model_BugMorph"), ToolObject::Create(dx11Device, dx11DeviceContext))))
 		return E_FAIL;
 	if (FAILED(gameInstance->Add_Prototype(TEXT("Prototype_GameObject_Model_PrimeBeast"), ToolObject::Create(dx11Device, dx11DeviceContext))))
 		return E_FAIL;
 	if (FAILED(gameInstance->Add_Prototype(TEXT("Prototype_GameObject_Model_Zero"), ToolObject::Create(dx11Device, dx11DeviceContext))))
 		return E_FAIL;
+	if (FAILED(gameInstance->Add_Prototype(TEXT("Prototype_GameObject_Model_Dahl_WeaponLocker"), ToolObject::Create(dx11Device, dx11DeviceContext))))
+		return E_FAIL;
+	if (FAILED(gameInstance->Add_Prototype(TEXT("Prototype_GameObject_Model_DahlEpicCrate"), ToolObject::Create(dx11Device, dx11DeviceContext))))
+		return E_FAIL;
+	if (FAILED(gameInstance->Add_Prototype(TEXT("Prototype_GameObject_Model_HyperionChest"), ToolObject::Create(dx11Device, dx11DeviceContext))))
+		return E_FAIL;
+
+
+	/*		Dynamic		*/
 	if (FAILED(gameInstance->Add_Prototype(TEXT("Prototype_GameObject_Model_HandsomeJack"), ToolObject::Create(dx11Device, dx11DeviceContext))))
 		return E_FAIL;
 	if (FAILED(gameInstance->Add_Prototype(TEXT("Prototype_GameObject_Model_HandsomeJackGoldenStatue"), ToolObject::Create(dx11Device, dx11DeviceContext))))
-		return E_FAIL;
-	if (FAILED(gameInstance->Add_Prototype(TEXT("Prototype_GameObject_Model_HyperionChest"), ToolObject::Create(dx11Device, dx11DeviceContext))))
 		return E_FAIL;
 	if (FAILED(gameInstance->Add_Prototype(TEXT("Prototype_GameObject_Model_SnowDrift"), ToolObject::Create(dx11Device, dx11DeviceContext))))
 		return E_FAIL;
@@ -473,10 +483,16 @@ HRESULT CToolView::ReadyObjectLayer(const _tchar * _layerTag)
 	m_form->tapMap->m_objectListBox.AddString(TEXT("PrimeBeast"));
 	m_form->tapMap->m_BatchObjectEnumArr.push_back((_int)CGameObject::OBJTYPE_ID::ENEMY);
 
-	m_form->tapMap->m_objectListBox.AddString(TEXT("HandsomeJack"));
-	m_form->tapMap->m_BatchObjectEnumArr.push_back((_int)CGameObject::OBJTYPE_ID::ENVIRONMENT);
+	m_form->tapMap->m_objectListBox.AddString(TEXT("Dahl_WeaponLocker"));
+	m_form->tapMap->m_BatchObjectEnumArr.push_back((_int)CGameObject::OBJTYPE_ID::INTERACTION);
+
+	m_form->tapMap->m_objectListBox.AddString(TEXT("DahlEpicCrate"));
+	m_form->tapMap->m_BatchObjectEnumArr.push_back((_int)CGameObject::OBJTYPE_ID::INTERACTION);
 
 	m_form->tapMap->m_objectListBox.AddString(TEXT("HyperionChest"));
+	m_form->tapMap->m_BatchObjectEnumArr.push_back((_int)CGameObject::OBJTYPE_ID::INTERACTION);
+
+	m_form->tapMap->m_objectListBox.AddString(TEXT("HandsomeJack"));
 	m_form->tapMap->m_BatchObjectEnumArr.push_back((_int)CGameObject::OBJTYPE_ID::ENVIRONMENT);
 
 	m_form->tapMap->m_objectListBox.AddString(TEXT("HandsomeJackGoldenStatue"));
