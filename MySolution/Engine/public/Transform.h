@@ -36,6 +36,10 @@ public:
 	_fmatrix Get_WorldMatrixInverse() const {
 		return XMMatrixInverse(nullptr, XMLoadFloat4x4(&m_WorldMatrix));
 	}
+	
+	TRANSFORMDESC	Get_TransformDesc() const {
+		return m_TransformDesc;
+	}
 
 	void Set_State(STATE eState, _fvector vState) {
 		XMStoreFloat4((_float4*)&m_WorldMatrix.m[eState][0], vState);

@@ -145,6 +145,51 @@ HRESULT CToolView::ReadyProtoAll()
 		return E_FAIL;
 	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Model_GlacialFlow_Straight1"), CModel::Create(dx11Device, dx11DeviceContext, "../Client/Bin/Resources/Meshes/Static/", "GlacialFlow_Straight1.FBX", TEXT("../Client/Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_STATIC))))
 		return E_FAIL;
+
+	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Model_ArenaSign"), CModel::Create(dx11Device, dx11DeviceContext, "../Client/Bin/Resources/Meshes/Static/", "ArenaSign.FBX", TEXT("../Client/Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_STATIC))))
+		return E_FAIL;
+	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Model_AutoJunk"), CModel::Create(dx11Device, dx11DeviceContext, "../Client/Bin/Resources/Meshes/Static/", "AutoJunk.FBX", TEXT("../Client/Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_STATIC))))
+		return E_FAIL;
+	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Model_AutoJunk2"), CModel::Create(dx11Device, dx11DeviceContext, "../Client/Bin/Resources/Meshes/Static/", "AutoJunk2.FBX", TEXT("../Client/Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_STATIC))))
+		return E_FAIL;
+	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Model_BanditFlag"), CModel::Create(dx11Device, dx11DeviceContext, "../Client/Bin/Resources/Meshes/Static/", "BanditFlag.FBX", TEXT("../Client/Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_STATIC))))
+		return E_FAIL;
+	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Model_BanditHouse"), CModel::Create(dx11Device, dx11DeviceContext, "../Client/Bin/Resources/Meshes/Static/", "BanditHouse.FBX", TEXT("../Client/Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_STATIC))))
+		return E_FAIL;
+	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Model_BanditHouseDestory"), CModel::Create(dx11Device, dx11DeviceContext, "../Client/Bin/Resources/Meshes/Static/", "BanditHouseDestory.FBX", TEXT("../Client/Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_STATIC))))
+		return E_FAIL;
+	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Model_BrokenCrapTrapA"), CModel::Create(dx11Device, dx11DeviceContext, "../Client/Bin/Resources/Meshes/Static/", "BrokenCrapTrapA.FBX", TEXT("../Client/Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_STATIC))))
+		return E_FAIL;
+	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Model_BrokenCrapTrapB"), CModel::Create(dx11Device, dx11DeviceContext, "../Client/Bin/Resources/Meshes/Static/", "BrokenCrapTrapB.FBX", TEXT("../Client/Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_STATIC))))
+		return E_FAIL;
+	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Model_BrokenCrapTrapC"), CModel::Create(dx11Device, dx11DeviceContext, "../Client/Bin/Resources/Meshes/Static/", "BrokenCrapTrapC.FBX", TEXT("../Client/Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_STATIC))))
+		return E_FAIL;
+	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Model_BrokenCrapTrapD"), CModel::Create(dx11Device, dx11DeviceContext, "../Client/Bin/Resources/Meshes/Static/", "BrokenCrapTrapD.FBX", TEXT("../Client/Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_STATIC))))
+		return E_FAIL;
+	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Model_BrokenCrapTrapE"), CModel::Create(dx11Device, dx11DeviceContext, "../Client/Bin/Resources/Meshes/Static/", "BrokenCrapTrapE.FBX", TEXT("../Client/Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_STATIC))))
+		return E_FAIL;
+	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Model_BrokenCrapTrapF"), CModel::Create(dx11Device, dx11DeviceContext, "../Client/Bin/Resources/Meshes/Static/", "BrokenCrapTrapF.FBX", TEXT("../Client/Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_STATIC))))
+		return E_FAIL;
+	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Model_DoorWayLR"), CModel::Create(dx11Device, dx11DeviceContext, "../Client/Bin/Resources/Meshes/Static/", "DoorWayLR.FBX", TEXT("../Client/Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_STATIC))))
+		return E_FAIL;
+	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Model_FlagPole"), CModel::Create(dx11Device, dx11DeviceContext, "../Client/Bin/Resources/Meshes/Static/", "FlagPole.FBX", TEXT("../Client/Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_STATIC))))
+		return E_FAIL;
+	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Model_FlagPoleOptimizer"), CModel::Create(dx11Device, dx11DeviceContext, "../Client/Bin/Resources/Meshes/Static/", "FlagPoleOptimizer.FBX", TEXT("../Client/Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_STATIC))))
+		return E_FAIL;
+	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Model_Furace"), CModel::Create(dx11Device, dx11DeviceContext, "../Client/Bin/Resources/Meshes/Static/", "Furace.FBX", TEXT("../Client/Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_STATIC))))
+		return E_FAIL;
+	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Model_IceBlockLarge"), CModel::Create(dx11Device, dx11DeviceContext, "../Client/Bin/Resources/Meshes/Static/", "IceBlockLarge.FBX", TEXT("../Client/Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_STATIC))))
+		return E_FAIL;
+	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Model_SkyBoxMountain"), CModel::Create(dx11Device, dx11DeviceContext, "../Client/Bin/Resources/Meshes/Static/", "SkyBoxMountain.FBX", TEXT("../Client/Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_STATIC))))
+		return E_FAIL;
+	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Model_SnowDriftStatic"), CModel::Create(dx11Device, dx11DeviceContext, "../Client/Bin/Resources/Meshes/Static/", "SnowDrift.FBX", TEXT("../Client/Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_STATIC))))
+		return E_FAIL;
+	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Model_Tire"), CModel::Create(dx11Device, dx11DeviceContext, "../Client/Bin/Resources/Meshes/Static/", "Tire.FBX", TEXT("../Client/Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_STATIC))))
+		return E_FAIL;
+	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Model_TurbinBase"), CModel::Create(dx11Device, dx11DeviceContext, "../Client/Bin/Resources/Meshes/Static/", "TurbinBase.FBX", TEXT("../Client/Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_STATIC))))
+		return E_FAIL;
+	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Model_TurbinFan"), CModel::Create(dx11Device, dx11DeviceContext, "../Client/Bin/Resources/Meshes/Static/", "TurbinFan.FBX", TEXT("../Client/Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_STATIC))))
+		return E_FAIL;
 	
 
 
@@ -185,7 +230,50 @@ HRESULT CToolView::ReadyProtoAll()
 	if (FAILED(gameInstance->Add_Prototype(TEXT("Prototype_GameObject_Model_GlacialFlow_Straight1"), ToolObject::Create(dx11Device, dx11DeviceContext))))
 		return E_FAIL;
 
-
+	if (FAILED(gameInstance->Add_Prototype(TEXT("Prototype_GameObject_Model_ArenaSign"), ToolObject::Create(dx11Device, dx11DeviceContext))))
+		return E_FAIL;
+	if (FAILED(gameInstance->Add_Prototype(TEXT("Prototype_GameObject_Model_AutoJunk"), ToolObject::Create(dx11Device, dx11DeviceContext))))
+		return E_FAIL;
+	if (FAILED(gameInstance->Add_Prototype(TEXT("Prototype_GameObject_Model_AutoJunk2"), ToolObject::Create(dx11Device, dx11DeviceContext))))
+		return E_FAIL;
+	if (FAILED(gameInstance->Add_Prototype(TEXT("Prototype_GameObject_Model_BanditFlag"), ToolObject::Create(dx11Device, dx11DeviceContext))))
+		return E_FAIL;
+	if (FAILED(gameInstance->Add_Prototype(TEXT("Prototype_GameObject_Model_BanditHouse"), ToolObject::Create(dx11Device, dx11DeviceContext))))
+		return E_FAIL;
+	if (FAILED(gameInstance->Add_Prototype(TEXT("Prototype_GameObject_Model_BanditHouseDestory"), ToolObject::Create(dx11Device, dx11DeviceContext))))
+		return E_FAIL;
+	if (FAILED(gameInstance->Add_Prototype(TEXT("Prototype_GameObject_Model_BrokenCrapTrapA"), ToolObject::Create(dx11Device, dx11DeviceContext))))
+		return E_FAIL;
+	if (FAILED(gameInstance->Add_Prototype(TEXT("Prototype_GameObject_Model_BrokenCrapTrapB"), ToolObject::Create(dx11Device, dx11DeviceContext))))
+		return E_FAIL;																				
+	if (FAILED(gameInstance->Add_Prototype(TEXT("Prototype_GameObject_Model_BrokenCrapTrapC"), ToolObject::Create(dx11Device, dx11DeviceContext))))
+		return E_FAIL;																				
+	if (FAILED(gameInstance->Add_Prototype(TEXT("Prototype_GameObject_Model_BrokenCrapTrapD"), ToolObject::Create(dx11Device, dx11DeviceContext))))
+		return E_FAIL;																				
+	if (FAILED(gameInstance->Add_Prototype(TEXT("Prototype_GameObject_Model_BrokenCrapTrapE"), ToolObject::Create(dx11Device, dx11DeviceContext))))
+		return E_FAIL;																				
+	if (FAILED(gameInstance->Add_Prototype(TEXT("Prototype_GameObject_Model_BrokenCrapTrapF"), ToolObject::Create(dx11Device, dx11DeviceContext))))
+		return E_FAIL;																				
+	if (FAILED(gameInstance->Add_Prototype(TEXT("Prototype_GameObject_Model_DoorWayLR"), ToolObject::Create(dx11Device, dx11DeviceContext))))
+		return E_FAIL;																				
+	if (FAILED(gameInstance->Add_Prototype(TEXT("Prototype_GameObject_Model_FlagPole"), ToolObject::Create(dx11Device, dx11DeviceContext))))
+		return E_FAIL;																				
+	if (FAILED(gameInstance->Add_Prototype(TEXT("Prototype_GameObject_Model_FlagPoleOptimizer"), ToolObject::Create(dx11Device, dx11DeviceContext))))
+		return E_FAIL;																				
+	if (FAILED(gameInstance->Add_Prototype(TEXT("Prototype_GameObject_Model_Furace"), ToolObject::Create(dx11Device, dx11DeviceContext))))
+		return E_FAIL;																				
+	if (FAILED(gameInstance->Add_Prototype(TEXT("Prototype_GameObject_Model_IceBlockLarge"), ToolObject::Create(dx11Device, dx11DeviceContext))))
+		return E_FAIL;																				
+	if (FAILED(gameInstance->Add_Prototype(TEXT("Prototype_GameObject_Model_SkyBoxMountain"), ToolObject::Create(dx11Device, dx11DeviceContext))))
+		return E_FAIL;																				
+	if (FAILED(gameInstance->Add_Prototype(TEXT("Prototype_Component_Model_SnowDriftStatic"), ToolObject::Create(dx11Device, dx11DeviceContext))))
+		return E_FAIL;																				
+	if (FAILED(gameInstance->Add_Prototype(TEXT("Prototype_GameObject_Model_Tire"), ToolObject::Create(dx11Device, dx11DeviceContext))))
+		return E_FAIL;																				
+	if (FAILED(gameInstance->Add_Prototype(TEXT("Prototype_GameObject_Model_TurbinBase"), ToolObject::Create(dx11Device, dx11DeviceContext))))
+		return E_FAIL;																				
+	if (FAILED(gameInstance->Add_Prototype(TEXT("Prototype_GameObject_Model_TurbinFan"), ToolObject::Create(dx11Device, dx11DeviceContext))))
+		return E_FAIL;
 	
 
 	return S_OK;
@@ -416,6 +504,63 @@ HRESULT CToolView::ReadyObjectLayer(const _tchar * _layerTag)
 	m_form->tapMap->m_BatchObjectEnumArr.push_back((_int)CGameObject::OBJTYPE_ID::ENVIRONMENT);
 
 	m_form->tapMap->m_objectListBox.AddString(TEXT("GlacialFlow_Straight1"));
+	m_form->tapMap->m_BatchObjectEnumArr.push_back((_int)CGameObject::OBJTYPE_ID::ENVIRONMENT);
+
+	m_form->tapMap->m_objectListBox.AddString(TEXT("ArenaSign"));
+	m_form->tapMap->m_BatchObjectEnumArr.push_back((_int)CGameObject::OBJTYPE_ID::ENVIRONMENT);
+
+	m_form->tapMap->m_objectListBox.AddString(TEXT("AutoJunk"));
+	m_form->tapMap->m_BatchObjectEnumArr.push_back((_int)CGameObject::OBJTYPE_ID::ENVIRONMENT);
+
+	m_form->tapMap->m_objectListBox.AddString(TEXT("AutoJunk2"));
+	m_form->tapMap->m_BatchObjectEnumArr.push_back((_int)CGameObject::OBJTYPE_ID::ENVIRONMENT);
+
+	m_form->tapMap->m_objectListBox.AddString(TEXT("BanditFlag"));
+	m_form->tapMap->m_BatchObjectEnumArr.push_back((_int)CGameObject::OBJTYPE_ID::ENVIRONMENT);
+
+	m_form->tapMap->m_objectListBox.AddString(TEXT("BanditHouse"));
+	m_form->tapMap->m_BatchObjectEnumArr.push_back((_int)CGameObject::OBJTYPE_ID::ENVIRONMENT);
+
+	m_form->tapMap->m_objectListBox.AddString(TEXT("BanditHouseDestory"));
+	m_form->tapMap->m_BatchObjectEnumArr.push_back((_int)CGameObject::OBJTYPE_ID::ENVIRONMENT);
+
+	m_form->tapMap->m_objectListBox.AddString(TEXT("BrokenCrapTrapA"));
+	m_form->tapMap->m_BatchObjectEnumArr.push_back((_int)CGameObject::OBJTYPE_ID::ENVIRONMENT);
+
+	m_form->tapMap->m_objectListBox.AddString(TEXT("BrokenCrapTrapB"));
+	m_form->tapMap->m_BatchObjectEnumArr.push_back((_int)CGameObject::OBJTYPE_ID::ENVIRONMENT);
+
+	m_form->tapMap->m_objectListBox.AddString(TEXT("BrokenCrapTrapD"));
+	m_form->tapMap->m_BatchObjectEnumArr.push_back((_int)CGameObject::OBJTYPE_ID::ENVIRONMENT);
+
+	m_form->tapMap->m_objectListBox.AddString(TEXT("BrokenCrapTrapE"));
+	m_form->tapMap->m_BatchObjectEnumArr.push_back((_int)CGameObject::OBJTYPE_ID::ENVIRONMENT);
+
+	m_form->tapMap->m_objectListBox.AddString(TEXT("BrokenCrapTrapF"));
+	m_form->tapMap->m_BatchObjectEnumArr.push_back((_int)CGameObject::OBJTYPE_ID::ENVIRONMENT);
+
+	m_form->tapMap->m_objectListBox.AddString(TEXT("FlagPole"));
+	m_form->tapMap->m_BatchObjectEnumArr.push_back((_int)CGameObject::OBJTYPE_ID::ENVIRONMENT);
+
+	m_form->tapMap->m_objectListBox.AddString(TEXT("FlagPoleOptimizer"));
+	m_form->tapMap->m_BatchObjectEnumArr.push_back((_int)CGameObject::OBJTYPE_ID::ENVIRONMENT);
+
+	m_form->tapMap->m_objectListBox.AddString(TEXT("IceBlockLarge"));
+	m_form->tapMap->m_BatchObjectEnumArr.push_back((_int)CGameObject::OBJTYPE_ID::ENVIRONMENT);
+
+	m_form->tapMap->m_objectListBox.AddString(TEXT("SkyBoxMountain"));
+	m_form->tapMap->m_BatchObjectEnumArr.push_back((_int)CGameObject::OBJTYPE_ID::ENVIRONMENT);
+
+	m_form->tapMap->m_objectListBox.AddString(TEXT("SnowDriftStatic"));
+	m_form->tapMap->m_BatchObjectEnumArr.push_back((_int)CGameObject::OBJTYPE_ID::ENVIRONMENT);
+
+	m_form->tapMap->m_objectListBox.AddString(TEXT("Tire"));
+	m_form->tapMap->m_BatchObjectEnumArr.push_back((_int)CGameObject::OBJTYPE_ID::ENVIRONMENT);
+
+	m_form->tapMap->m_objectListBox.AddString(TEXT("TurbinBase"));
+	m_form->tapMap->m_BatchObjectEnumArr.push_back((_int)CGameObject::OBJTYPE_ID::ENVIRONMENT);
+
+	m_form->tapMap->m_objectListBox.AddString(TEXT("TurbinFan"));
 	m_form->tapMap->m_BatchObjectEnumArr.push_back((_int)CGameObject::OBJTYPE_ID::ENVIRONMENT);
 
 	return S_OK;

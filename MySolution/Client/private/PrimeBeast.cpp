@@ -79,6 +79,8 @@ _int PrimeBeast::Tick(_double TimeDelta)
 
 	HitCheck();
 
+#ifdef _DEBUG
+
 	_matrix BoneMatrix = XMMatrixIdentity();
 	_matrix Transform = XMMatrixIdentity();
 	_matrix OffsetMatrix = XMMatrixIdentity();
@@ -92,20 +94,22 @@ _int PrimeBeast::Tick(_double TimeDelta)
 	PivotMatrix = m_pModelCom->Get_PivotMatrix();
 	WorldMatrix = m_pTransformCom->Get_WorldMatrix();
 
-	BoneMatrix = Transform * OffsetMatrix * Combined * PivotMatrix * WorldMatrix;
+	BoneMatrix = Transform * OffsetMatrix * Combined * PivotMatrix * XMMatrixRotationY(XMConvertToRadians(180.f)) * WorldMatrix;
 	m_ColliderSphere1->Update(BoneMatrix);
-	
+
 	Combined = m_rHand2Bone->Get_CombinedMatrix();
-	BoneMatrix = Transform * OffsetMatrix * Combined * PivotMatrix * WorldMatrix;
+	BoneMatrix = Transform * OffsetMatrix * Combined * PivotMatrix * XMMatrixRotationY(XMConvertToRadians(180.f)) * WorldMatrix;
 	m_ColliderSphere2->Update(BoneMatrix);
 
 	Combined = m_lHand1Bone->Get_CombinedMatrix();
-	BoneMatrix = Transform * OffsetMatrix * Combined * PivotMatrix * WorldMatrix;
+	BoneMatrix = Transform * OffsetMatrix * Combined * PivotMatrix * XMMatrixRotationY(XMConvertToRadians(180.f)) * WorldMatrix;
 	m_ColliderSphere3->Update(BoneMatrix);
 
 	Combined = m_lHand2Bone->Get_CombinedMatrix();
-	BoneMatrix = Transform * OffsetMatrix * Combined * PivotMatrix * WorldMatrix;
+	BoneMatrix = Transform * OffsetMatrix * Combined * PivotMatrix * XMMatrixRotationY(XMConvertToRadians(180.f)) * WorldMatrix;
 	m_ColliderSphere4->Update(BoneMatrix);
+
+#endif // _DEBUG
 
 
 
@@ -178,13 +182,13 @@ _bool PrimeBeast::ThrowMotionFrame()
 
 _matrix PrimeBeast::SetRockPosition()
 {
-	_matrix		Transform = XMMatrixIdentity();
+	_matrix		Transform = XMMatrixTranslation(0.f, -30.f, 0.f);
 	_matrix		OffsetMatrix = m_rHand2Bone->Get_OffsetMatrix();
 	_matrix		CombinedMatrix = m_rHand2Bone->Get_CombinedMatrix();
 	_matrix		PivotMatrix = m_pModelCom->Get_PivotMatrix();
 	_matrix		WorldMatrix = m_pTransformCom->Get_WorldMatrix();
 
-	return Transform * OffsetMatrix * CombinedMatrix * PivotMatrix * WorldMatrix;
+	return Transform * OffsetMatrix * CombinedMatrix * PivotMatrix * XMMatrixRotationY(XMConvertToRadians(180.f)) * WorldMatrix;
 }
 
 void PrimeBeast::GetTargetDistance()
@@ -231,17 +235,27 @@ void PrimeBeast::Animation(_double TimeDelta)
 	}else if(m_FrameStart && m_IntroEnd)
 	{
 		if (5 >= m_TargetDistance)
+		{
 			Attack();
+		}
 		else
+		{
 			Moving(TimeDelta);
+		}
 	}
 }
 
 void PrimeBeast::Moving(_double TimeDelta)
 {
-	m_pModelCom->SetUp_AnimationIndex((_uint)ANIMATION_STATE::RUN_F_V1);
-	CTransform* PlayerTransformCom =	static_cast<CTransform*>(m_TargetPlayer->GetComponent(TEXT("Com_Transform")));
-	m_pTransformCom->Chase_Target(PlayerTransformCom, TimeDelta);
+	if (TRUE == m_pModelCom->GetAnimationFinished())
+		m_pModelCom->SetUp_AnimationIndex((_uint)ANIMATION_STATE::RUN_F_V1);
+
+
+	if ((_uint)ANIMATION_STATE::RUN_F_V1 == m_pModelCom->GetCurrentAnimation())
+	{
+		CTransform* PlayerTransformCom = static_cast<CTransform*>(m_TargetPlayer->GetComponent(TEXT("Com_Transform")));
+		m_pTransformCom->Chase_Target(PlayerTransformCom, TimeDelta);
+	}
 }
 
 void PrimeBeast::Attack()
@@ -249,12 +263,12 @@ void PrimeBeast::Attack()
 	m_pModelCom->SetUp_AnimationIndex( (_uint)ANIMATION_STATE::ATTACK_THROWROCK_V1 );
 
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
-	if (0 == m_pModelCom->GetCurrentAnimationFrame()) {
+	if (18 == m_pModelCom->GetCurrentAnimationFrame()) {
 		PrimeBeastRock::PRBDESC PrbDesc;
 		ZeroMemory(&PrbDesc, sizeof(PrimeBeastRock::PRBDESC));
 		PrbDesc.m_PrimeBeast = this;
-		XMStoreFloat3(&PrbDesc.m_TargetPosition ,(m_PlayerPosition - m_MyPosition));
-		PrbDesc.m_TypeRock = PrimeBeastRock::TYPE_ROCK::BIG;
+		PrbDesc.m_Target = m_TargetPlayer;
+		PrbDesc.m_TypeRock = PrimeBeastRock::TYPE_ROCK::SMALL;
 		PrbDesc.m_TypeThrow= PrimeBeastRock::TYPE_THROW::DIRECT;
 		if (FAILED(pGameInstance->Add_GameObjectToLayer(LEVEL_GAMEPLAY, TEXT("Layer_Enemy"), TEXT("Prototype_GameObject_Model_PrimeBeastRock"), &PrbDesc)))
 			return;

@@ -27,8 +27,9 @@ public:
 
 	typedef struct tagPrimeBeastRockDesc {
 		CGameObject* m_PrimeBeast = nullptr;
+		CGameObject* m_Target = nullptr;
 		_matrix				m_SpawnMatrix = XMMatrixIdentity();
-		_float3				m_TargetPosition = _float3();
+		_vector				m_TargetPosition = _vector();
 		TYPE_ROCK		m_TypeRock = TYPE_ROCK::TYPE_ROCK_END;
 		TYPE_THROW	m_TypeThrow = TYPE_THROW::TYPE_THROW_END;
 	}PRBDESC;
@@ -44,13 +45,16 @@ public:
 	virtual _int LateTick(_double TimeDelta) override;
 	virtual HRESULT Render() override;
 
+	void		CheckState(_double TimeDelta);
+
 private:
 	CRenderer*				m_pRendererCom = nullptr;
 	CTransform*				m_pTransformCom = nullptr;
 	CModel*					m_RockModel = nullptr;
-	CModel*					m_SnowModel = nullptr;
+	CCollider*					m_ColliderCom = nullptr;
 
 	PRBDESC					m_PrbDesc;
+	_bool							m_ChaseTarget = FALSE;
 
 private:
 	virtual HRESULT SetUp_Components();

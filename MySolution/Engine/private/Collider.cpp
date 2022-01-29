@@ -267,6 +267,19 @@ _bool CCollider::CollisionSphereToRay(_fvector Ray, _fvector Dir)
 	return TRUE;
 }
 
+_bool CCollider::CollisionSphereToAABB(CCollider * _TargetCollider)
+{
+	if (TYPE::TYPE_AABB != _TargetCollider->m_Type)
+		return FALSE;
+
+	if (!m_Sphere->Intersects(*_TargetCollider->m_AABB))
+		return FALSE;
+
+	m_IsCollision = TRUE;
+
+	return TRUE;
+}
+
 _fmatrix CCollider::RemoveScale(_fmatrix _transform)
 {
 	_matrix RemoveScaleMatrix = _transform;

@@ -8,9 +8,7 @@ BEGIN(Engine)
 class ENGINE_DLL CGameObject abstract : public CBase
 {
 public:
-	enum class OBJTYPE_ID { ENVIRONMENT, TERRAIN, INTERACTION , 
-		PLAYER, PLAYER_WEAPONE,
-		ENEMY, ENEMY_OBJECT,  OBJTYPE_END};
+	enum class OBJTYPE_ID { ENVIRONMENT, TERRAIN, INTERACTION , PLAYER, PLAYER_WEAPONE, ENEMY,ENEMY_OBJECT ,  OBJTYPE_END};
 
 public:
 	typedef struct tagToolObjectDesc {
@@ -38,6 +36,9 @@ public:
 public:
 	class CComponent*		GetComponent(const _tchar* _componentTag);
 	void	CheckHit(_fvector _AimRay, _fvector _AimDir);
+	void		SetHp(_int _Hp) {
+		m_HP += _Hp;
+	};
 
 protected:
 	ID3D11Device*			m_pDevice = nullptr;

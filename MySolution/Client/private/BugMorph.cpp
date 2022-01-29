@@ -4,8 +4,6 @@
 #include "Player.h"
 #include "SMG.h"
 
-#include <iostream>
-
 BugMorph::BugMorph(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
 {
@@ -155,7 +153,6 @@ void BugMorph::Intro()
 
 	_float DistanceFloat = XMVectorGetX(XMVector3Length(Distance));
 
-	cout << DistanceFloat << endl;
 	if (10 >= DistanceFloat)
 		m_FrameStart = TRUE;
 }
