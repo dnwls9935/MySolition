@@ -46,7 +46,7 @@ HRESULT CPlayer::NativeConstruct(void * pArg)
 	m_WeaponBone = m_pModelCom->Get_BoneMatrix("R_Weapon_Bone");
 	m_pModelCom->SetUp_AnimationIndex((_int)ANIMATION_STATE::IDLE);
 
-	m_Navigation->SetCurrentCellIndex(1);
+	m_Navigation->SetCurrentCellIndex(0);
 
 	m_HP = 1000;
 

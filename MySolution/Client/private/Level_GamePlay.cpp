@@ -24,7 +24,7 @@ HRESULT CLevel_GamePlay::NativeConstruct()
 	if (FAILED(Ready_Layer_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
 
-	HANDLE hFile = CreateFile(L"../Bin/Data/FSMTest.dat", GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+	HANDLE hFile = CreateFile(L"../Bin/Data/MapNavigation.dat", GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
 	if (0 == hFile)
 		return E_FAIL;
 	if (FAILED(LoadData(hFile)))

@@ -118,8 +118,8 @@ HRESULT CToolView::ReadyProtoAll()
 	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Model_BugMorph"), CModel::Create(dx11Device, dx11DeviceContext, "../Client/Bin/Resources/Meshes/BugMorph/", "BugMorph.FBX", TEXT("../Client/Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_STATIC))))
 		return E_FAIL;
 
-	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationX(XMConvertToRadians(90.0f));
-	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Model_PrimeBeast"), CModel::Create(dx11Device, dx11DeviceContext, "../Client/Bin/Resources/Meshes/PrimeBeast/", "PrimeBeast.FBX", TEXT("../Client/Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_STATIC))))
+	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(90.f));
+	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Model_PrimeBeast"), CModel::Create(dx11Device, dx11DeviceContext, "../Client/Bin/Resources/Meshes/PrimeBeast/", "PBTest.FBX", TEXT("../Client/Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_ANIM))))
 		return E_FAIL;
 
 	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationX(XMConvertToRadians(90.0f)) * XMMatrixRotationY(XMConvertToRadians(90.0f));

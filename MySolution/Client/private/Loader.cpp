@@ -129,7 +129,7 @@ HRESULT CLoader::Loading_ForGamePlay()
 	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationX(XMConvertToRadians(90.f));
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_SMG"), CModel::Create(m_pDevice, m_pDeviceContext, "../Bin/Resources/Meshes/Weapon/", "SMG.FBX", TEXT("../Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_ANIM))))
 		return E_FAIL;
-/*
+
 	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationX(XMConvertToRadians(-90.0f));
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Zero"), CModel::Create(m_pDevice, m_pDeviceContext, "../Bin/Resources/Meshes/Zero/", "Zero.FBX", TEXT("../Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_ANIM))))
 		return E_FAIL;
@@ -157,7 +157,53 @@ HRESULT CLoader::Loading_ForGamePlay()
 		return E_FAIL;
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_GlacialFlow_Straight1"), CModel::Create(m_pDevice, m_pDeviceContext, "../Bin/Resources/Meshes/Static/", "GlacialFlow_Straight1.FBX", TEXT("../Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_STATIC))))
 		return E_FAIL;
-*/
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_ArenaSign"), CModel::Create(m_pDevice, m_pDeviceContext, "../Bin/Resources/Meshes/Static/", "ArenaSign.FBX", TEXT("../Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_STATIC))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_AutoJunk"), CModel::Create(m_pDevice, m_pDeviceContext, "../Bin/Resources/Meshes/Static/", "AutoJunk.FBX", TEXT("../Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_STATIC))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_AutoJunk2"), CModel::Create(m_pDevice, m_pDeviceContext, "../Bin/Resources/Meshes/Static/", "AutoJunk2.FBX", TEXT("../Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_STATIC))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_BanditFlag"), CModel::Create(m_pDevice, m_pDeviceContext, "../Bin/Resources/Meshes/Static/", "BanditFlag.FBX", TEXT("../Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_STATIC))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_BanditHouse"), CModel::Create(m_pDevice, m_pDeviceContext, "../Bin/Resources/Meshes/Static/", "BanditHouse.FBX", TEXT("../Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_STATIC))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_BanditHouseDestory"), CModel::Create(m_pDevice, m_pDeviceContext, "../Bin/Resources/Meshes/Static/", "BanditHouseDestory.FBX", TEXT("../Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_STATIC))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_BrokenCrapTrapA"), CModel::Create(m_pDevice, m_pDeviceContext, "../Bin/Resources/Meshes/Static/", "BrokenCrapTrapA.FBX", TEXT("../Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_STATIC))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_BrokenCrapTrapB"), CModel::Create(m_pDevice, m_pDeviceContext, "../Bin/Resources/Meshes/Static/", "BrokenCrapTrapB.FBX", TEXT("../Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_STATIC))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_BrokenCrapTrapC"), CModel::Create(m_pDevice, m_pDeviceContext, "../Bin/Resources/Meshes/Static/", "BrokenCrapTrapC.FBX", TEXT("../Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_STATIC))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_BrokenCrapTrapD"), CModel::Create(m_pDevice, m_pDeviceContext, "../Bin/Resources/Meshes/Static/", "BrokenCrapTrapD.FBX", TEXT("../Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_STATIC))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_BrokenCrapTrapE"), CModel::Create(m_pDevice, m_pDeviceContext, "../Bin/Resources/Meshes/Static/", "BrokenCrapTrapE.FBX", TEXT("../Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_STATIC))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_BrokenCrapTrapF"), CModel::Create(m_pDevice, m_pDeviceContext, "../Bin/Resources/Meshes/Static/", "BrokenCrapTrapF.FBX", TEXT("../Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_STATIC))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_DoorWayLR"), CModel::Create(m_pDevice, m_pDeviceContext, "../Bin/Resources/Meshes/Static/", "DoorWayLR.FBX", TEXT("../Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_STATIC))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_FlagPole"), CModel::Create(m_pDevice, m_pDeviceContext, "../Bin/Resources/Meshes/Static/", "FlagPole.FBX", TEXT("../Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_STATIC))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_FlagPoleOptimizer"), CModel::Create(m_pDevice, m_pDeviceContext, "../Bin/Resources/Meshes/Static/", "FlagPoleOptimizer.FBX", TEXT("../Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_STATIC))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Furace"), CModel::Create(m_pDevice, m_pDeviceContext, "../Bin/Resources/Meshes/Static/", "Furace.FBX", TEXT("../Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_STATIC))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_IceBlockLarge"), CModel::Create(m_pDevice, m_pDeviceContext, "../Bin/Resources/Meshes/Static/", "IceBlockLarge.FBX", TEXT("../Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_STATIC))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_SkyBoxMountain"), CModel::Create(m_pDevice, m_pDeviceContext, "../Bin/Resources/Meshes/Static/", "SkyBoxMountain.FBX", TEXT("../Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_STATIC))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_SnowDriftStatic"), CModel::Create(m_pDevice, m_pDeviceContext, "../Bin/Resources/Meshes/Static/", "SnowDrift.FBX", TEXT("../Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_STATIC))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Tire"), CModel::Create(m_pDevice, m_pDeviceContext, "../Bin/Resources/Meshes/Static/", "Tire.FBX", TEXT("../Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_STATIC))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_TurbinBase"), CModel::Create(m_pDevice, m_pDeviceContext, "../Bin/Resources/Meshes/Static/", "TurbinBase.FBX", TEXT("../Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_STATIC))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_TurbinFan"), CModel::Create(m_pDevice, m_pDeviceContext, "../Bin/Resources/Meshes/Static/", "TurbinFan.FBX", TEXT("../Bin/ShaderFiles/Shader_Mesh_Tool.hlsl"), PivotMatrix, CModel::TYPE_STATIC))))
+		return E_FAIL;
+
+
+
 	/* 객체원형을 생성한다. */
 	wsprintf(m_szLoading, TEXT("객체를 생성한다. "));	
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Terrain"), CTerrain::Create(m_pDevice, m_pDeviceContext))))
@@ -176,8 +222,8 @@ HRESULT CLoader::Loading_ForGamePlay()
 		return E_FAIL;
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Model_SMG"), SMG::Create(m_pDevice, m_pDeviceContext))))
 		return E_FAIL;
-	//if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Model_EnvironmentObject"), EnvrionmentObject::Create(m_pDevice, m_pDeviceContext))))
-	//	return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Model_EnvironmentObject"), EnvrionmentObject::Create(m_pDevice, m_pDeviceContext))))
+		return E_FAIL;
 
 	wsprintf(m_szLoading, TEXT("로딩이 완료되었습니다. "));
 
