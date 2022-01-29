@@ -68,18 +68,6 @@ HRESULT CLevel_GamePlay::Ready_LightDesc()
 	return S_OK;
 }
 
-HRESULT CLevel_GamePlay::Ready_Layer_Environment(const _tchar * pLayerTag)
-{
-	
-	return S_OK;
-}
-
-HRESULT CLevel_GamePlay::Ready_Layer_Object(const _tchar * pLayerTag)
-{
-	
-	return S_OK;
-}
-
 HRESULT CLevel_GamePlay::Ready_Layer_Enemy(const _tchar * pLayerTag)
 {
 	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
@@ -88,16 +76,6 @@ HRESULT CLevel_GamePlay::Ready_Layer_Enemy(const _tchar * pLayerTag)
 		return E_FAIL;
 
 	RELEASE_INSTANCE(CGameInstance);
-	return S_OK;
-}
-
-HRESULT CLevel_GamePlay::Ready_Layer_Player(const _tchar * pLayerTag)
-{
-	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
-
-
-	RELEASE_INSTANCE(CGameInstance);
-
 	return S_OK;
 }
 
@@ -243,6 +221,10 @@ HRESULT CLevel_GamePlay::LoadEnvironment(HANDLE & hFile)
 		}
 			break;
 		case CGameObject::OBJTYPE_ID::INTERACTION:
+		{
+			if (FAILED(pGameInstance->Add_GameObjectToLayer(LEVEL_GAMEPLAY, TEXT("Layer_Interact"), pToolObjDesc.m_ObjTag, &pToolObjDesc)))
+				return E_FAIL;
+		}
 			break;
 		case CGameObject::OBJTYPE_ID::PLAYER:
 		{

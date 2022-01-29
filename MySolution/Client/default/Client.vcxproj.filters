@@ -67,6 +67,18 @@
     <Filter Include="02.GameObject\Monster\PrimeBeast\Rock">
       <UniqueIdentifier>{35a30334-704a-47b3-84ce-f281a5f3bcb3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\InteractObject">
+      <UniqueIdentifier>{3999c250-6a41-4a5b-a7da-4270d2ecddb1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\InteractObject\DahlWeaponLocker">
+      <UniqueIdentifier>{011d58b3-a023-4d3d-ac76-bfc652538950}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\InteractObject\DahlEpicCrate">
+      <UniqueIdentifier>{f1b1059e-947d-44c4-9d10-3eb4109e9104}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\InteractObject\HyperionChest">
+      <UniqueIdentifier>{14c75d84-c9ce-42dc-9b64-5eae001961dd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -135,6 +147,15 @@
     <ClInclude Include="..\public\PrimeBeastRock.h">
       <Filter>02.GameObject\Monster\PrimeBeast\Rock</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\DahlWeaponLocker.h">
+      <Filter>02.GameObject\InteractObject\DahlWeaponLocker</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\DahlEpicCrate.h">
+      <Filter>02.GameObject\InteractObject\DahlEpicCrate</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\HyperionChest.h">
+      <Filter>02.GameObject\InteractObject\HyperionChest</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -187,6 +208,15 @@
     </ClCompile>
     <ClCompile Include="..\private\PrimeBeastRock.cpp">
       <Filter>02.GameObject\Monster\PrimeBeast\Rock</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\DahlWeaponLocker.cpp">
+      <Filter>02.GameObject\InteractObject\DahlWeaponLocker</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\DahlEpicCrate.cpp">
+      <Filter>02.GameObject\InteractObject\DahlEpicCrate</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\HyperionChest.cpp">
+      <Filter>02.GameObject\InteractObject\HyperionChest</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

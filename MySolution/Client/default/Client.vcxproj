@@ -170,7 +170,10 @@
     <ClInclude Include="..\public\BugMorph.h" />
     <ClInclude Include="..\public\Camera_Dynamic.h" />
     <ClInclude Include="..\public\Client_Defines.h" />
+    <ClInclude Include="..\public\DahlEpicCrate.h" />
+    <ClInclude Include="..\public\DahlWeaponLocker.h" />
     <ClInclude Include="..\public\EnvironmentObject.h" />
+    <ClInclude Include="..\public\HyperionChest.h" />
     <ClInclude Include="..\public\Level_GamePlay.h" />
     <ClInclude Include="..\public\Level_Loading.h" />
     <ClInclude Include="..\public\Level_Logo.h" />
@@ -191,7 +194,10 @@
     <ClCompile Include="..\private\BackGround.cpp" />
     <ClCompile Include="..\private\BugMorph.cpp" />
     <ClCompile Include="..\private\Camera_Dynamic.cpp" />
+    <ClCompile Include="..\private\DahlEpicCrate.cpp" />
+    <ClCompile Include="..\private\DahlWeaponLocker.cpp" />
     <ClCompile Include="..\private\EnvironmentObject.cpp" />
+    <ClCompile Include="..\private\HyperionChest.cpp" />
     <ClCompile Include="..\private\Level_GamePlay.cpp" />
     <ClCompile Include="..\private\Level_Loading.cpp" />
     <ClCompile Include="..\private\Level_Logo.cpp" />
