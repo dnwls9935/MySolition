@@ -13,6 +13,7 @@
 #include "DahlWeaponLocker.h"
 #include "DahlEpicCrate.h"
 #include "HyperionChest.h"
+#include "HitBullet.h"
 
 CLoader::CLoader(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: m_pDevice(pDevice)
@@ -92,14 +93,19 @@ HRESULT CLoader::Loading_ForGamePlay()
 	wsprintf(m_szLoading, TEXT("버퍼를 생성한다. "));
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Terrain"), CVIBuffer_Terrain::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/ShaderFiles/Shader_Terrain.hlsl"), 200, 200))))
 		return E_FAIL;
-
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Cube"), CVIBuffer_Cube::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/ShaderFiles/Shader_Cube.hlsl")))))
 		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Rect"), CVIBuffer_Rect::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/ShaderFiles/Shader_RectEffect.hlsl")))))
+		return E_FAIL;
+
 	wsprintf(m_szLoading, TEXT("텍스쳐를 생성한다. "));
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Cube"), CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Textures/SkyBox/burger%d.dds"), 4))))
 		return E_FAIL;
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Terrain"), CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Textures/Terrain/Snow_256_Dif.tga")))))
 		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_HitBullet"), CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Textures/Effect/Blood_Flipbook_Dif.png")))))
+		return E_FAIL;
+
 	wsprintf(m_szLoading, TEXT("콜라이더를 생성한다. "));
 	/* For.Prototype_Component_Collider*/
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_AABB"), CCollider::Create(m_pDevice, m_pDeviceContext, CCollider::TYPE::TYPE_AABB))))
@@ -241,6 +247,10 @@ HRESULT CLoader::Loading_ForGamePlay()
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Model_DahlEpicCrate"), DahlEpicCrate::Create(m_pDevice, m_pDeviceContext))))
 		return E_FAIL;
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Model_HyperionChest"), HyperionChest::Create(m_pDevice, m_pDeviceContext))))
+		return E_FAIL;
+
+	// 이팩트들
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Effect_HitBullet"), HitBullet::Create(m_pDevice, m_pDeviceContext))))
 		return E_FAIL;
 
 	wsprintf(m_szLoading, TEXT("로딩이 완료되었습니다. "));

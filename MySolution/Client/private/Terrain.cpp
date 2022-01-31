@@ -46,7 +46,7 @@ _int CTerrain::LateTick(_double TimeDelta)
 	if (FAILED(__super::LateTick(TimeDelta)))
 		return -1;
 	if (nullptr != m_pRendererCom)
-		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_PRIORITY, this);
+		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
 
 	return _int();
 }

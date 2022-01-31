@@ -55,7 +55,7 @@ _int EnvrionmentObject::Tick(_double TimeDelta)
 _int EnvrionmentObject::LateTick(_double TimeDelta)
 {
 	if (nullptr != m_pRendererCom)
-		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_PRIORITY, this);
+		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
 
 	return _int();
 }

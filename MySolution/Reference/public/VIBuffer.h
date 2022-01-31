@@ -27,6 +27,7 @@ public:
 public:
 	HRESULT SetUp_ValueOnShader(const char* pConstantName, void* pData, _uint iSize);
 	HRESULT SetUp_TextureOnShader(const char* pConstantName, class CTexture* pTextureCom, _uint iTextureIndex = 0);
+	HRESULT SetUp_TextureOnShader(const char* pConstantName, ID3D11ShaderResourceView* _SRV);
 protected: /* For.VertexBuffer */
 	ID3D11Buffer*				m_pVB = nullptr;
 	D3D11_BUFFER_DESC			m_VBDesc;

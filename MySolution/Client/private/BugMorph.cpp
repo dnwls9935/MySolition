@@ -136,7 +136,9 @@ void BugMorph::HitCheck()
 		CalDesc._rayDir = XMVector3TransformNormal(CalDesc._rayDir, m_pTransformCom->Get_WorldMatrix());
 		CalDesc._rayDir =  XMVector3Normalize(CalDesc._rayDir);
 		
-		if (TRUE == m_ColliderCom->CollisionAABBToRay(CalDesc._rayPos, CalDesc._rayDir))
+		_float	Distance;
+
+		if (TRUE == m_ColliderCom->CollisionAABBToRay(CalDesc._rayPos, CalDesc._rayDir, Distance))
 		{
 			m_HP--;
 		}

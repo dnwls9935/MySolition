@@ -173,6 +173,7 @@
     <ClInclude Include="..\public\DahlEpicCrate.h" />
     <ClInclude Include="..\public\DahlWeaponLocker.h" />
     <ClInclude Include="..\public\EnvironmentObject.h" />
+    <ClInclude Include="..\public\HitBullet.h" />
     <ClInclude Include="..\public\HyperionChest.h" />
     <ClInclude Include="..\public\Level_GamePlay.h" />
     <ClInclude Include="..\public\Level_Loading.h" />
@@ -197,6 +198,7 @@
     <ClCompile Include="..\private\DahlEpicCrate.cpp" />
     <ClCompile Include="..\private\DahlWeaponLocker.cpp" />
     <ClCompile Include="..\private\EnvironmentObject.cpp" />
+    <ClCompile Include="..\private\HitBullet.cpp" />
     <ClCompile Include="..\private\HyperionChest.cpp" />
     <ClCompile Include="..\private\Level_GamePlay.cpp" />
     <ClCompile Include="..\private\Level_Loading.cpp" />
@@ -231,6 +233,7 @@
     <FxCompile Include="..\bin\ShaderFiles\Shader_Mesh.hlsl" />
     <FxCompile Include="..\bin\ShaderFiles\Shader_Mesh_Tool.hlsl" />
     <FxCompile Include="..\bin\ShaderFiles\Shader_Rect.hlsl" />
+    <FxCompile Include="..\bin\ShaderFiles\Shader_RectEffect.hlsl" />
     <FxCompile Include="..\bin\ShaderFiles\Shader_Terrain.hlsl" />
     <FxCompile Include="..\bin\ShaderFiles\Shader_Terrain_Tool.hlsl" />
   </ItemGroup>

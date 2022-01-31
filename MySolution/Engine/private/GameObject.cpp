@@ -59,17 +59,6 @@ CComponent * CGameObject::GetComponent(const _tchar * _componentTag)
 	return iter->second;
 }
 
-void CGameObject::CheckHit(_fvector _AimRay, _fvector _AimDir)
-{
-	CCollider* pColliderAABB = (CCollider*)GetComponent(TEXT("Com_AABB"));
-
-	if (pColliderAABB->CollisionAABBToRay(_AimRay, _AimDir))
-	{
-		m_HP--;
-	}
-		//pColliderAABB->IsCollision(TRUE);
-}
-
 HRESULT CGameObject::SetUp_Components(_uint iLevelIndex, const _tchar* pPrototypeTag, const _tchar* pComponentTag, CComponent** ppOut, void* pArg)
 {
 	auto	iter = find_if(m_Components.begin(), m_Components.end(), CTag_Finder(pComponentTag));

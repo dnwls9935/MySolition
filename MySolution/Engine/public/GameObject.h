@@ -35,7 +35,6 @@ public:
 
 public:
 	class CComponent*		GetComponent(const _tchar* _componentTag);
-	void	CheckHit(_fvector _AimRay, _fvector _AimDir);
 	void		SetHp(_int _Hp) {
 		m_HP += _Hp;
 	};

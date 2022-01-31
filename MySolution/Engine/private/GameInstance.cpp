@@ -11,7 +11,10 @@ CGameInstance::CGameInstance()
 	, m_pComponent_Manager(CComponent_Manager::GetInstance())
 	, m_pPipeLine(CPipeLine::GetInstance())
 	, m_pInput_Device(CInput_Device::GetInstance())
+	, m_RenderTargetManager(RenderTargetManager::GetInstance())
+	, m_LightManager(LightManager::GetInstance())
 {
+	Safe_AddRef(m_LightManager);
 	Safe_AddRef(m_pInput_Device);
 	Safe_AddRef(m_pPipeLine);
 	Safe_AddRef(m_pComponent_Manager);
@@ -19,6 +22,7 @@ CGameInstance::CGameInstance()
 	Safe_AddRef(m_pTimer_Manager);
 	Safe_AddRef(m_pLevel_Manager);
 	Safe_AddRef(m_pGraphic_Device);
+	Safe_AddRef(m_RenderTargetManager);
 }
 
 HRESULT CGameInstance::Initialize_Engine(HINSTANCE hInst, HWND hWnd, _uint iNumLevel, CGraphic_Device::WINMODE eWinMode, _uint iWinCX, _uint iWinCY, ID3D11Device** ppDeviceOut, ID3D11DeviceContext** ppDeviceContextOut)
@@ -305,17 +309,25 @@ void CGameInstance::Release_Engine()
 	if (0 != CInput_Device::GetInstance()->DestroyInstance())
 		MSGBOX("Failed to Release CInput_Device");
 
+	if (0 != LightManager::GetInstance()->DestroyInstance())
+		MSGBOX("Failed to Release LightManager");
+
+	if (0 != RenderTargetManager::GetInstance()->DestroyInstance())
+		MSGBOX("Failed to Release RenderTargetManager");
+
 	if (0 != CGraphic_Device::GetInstance()->DestroyInstance())
 		MSGBOX("Failed to Release CGraphic_Device");
 }
 
 void CGameInstance::Free()
 {
+	Safe_Release(m_LightManager);
 	Safe_Release(m_pInput_Device);
 	Safe_Release(m_pPipeLine);
 	Safe_Release(m_pComponent_Manager);
 	Safe_Release(m_pObject_Manager);
 	Safe_Release(m_pTimer_Manager);
+	Safe_Release(m_RenderTargetManager);
 	Safe_Release(m_pLevel_Manager);
 	Safe_Release(m_pGraphic_Device);
 }

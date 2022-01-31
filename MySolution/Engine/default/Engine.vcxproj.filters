@@ -121,6 +121,27 @@
     <Filter Include="00.Utility\03.Component\VIBuffer\TriangleToLine\Shader">
       <UniqueIdentifier>{7139293e-07c3-485f-98ab-97882cf1642d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="00.Utility\07. RenderTagers">
+      <UniqueIdentifier>{7d7e9184-5fa4-4fa4-801d-b8aab8ab1cc3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.Utility\07. RenderTagers\Manager">
+      <UniqueIdentifier>{41977969-f3a2-4950-87b0-55b5dd446175}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.Utility\07. RenderTagers\Target">
+      <UniqueIdentifier>{9d2292f2-1f91-4f77-ab63-7b154de89218}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.Utility\03.Component\VIBuffer\RectViewPort">
+      <UniqueIdentifier>{6f9c0e72-4af4-47bd-9f2e-30ea92fef26f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.Utility\03.Component\VIBuffer\RectViewPort\ShaderFiles">
+      <UniqueIdentifier>{d2cbc931-d99f-4617-9b15-3666718db1d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.Utility\08. Light">
+      <UniqueIdentifier>{d870fc6e-32e2-4961-afaf-19d1b5cfb82a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.Utility\08. Light\Manger">
+      <UniqueIdentifier>{6c26af8b-40d5-4550-8bf0-0d86648ac390}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Base.h">
@@ -240,6 +261,21 @@
     <ClInclude Include="..\public\VIBuffer_TriangleToLine.h">
       <Filter>00.Utility\03.Component\VIBuffer\TriangleToLine</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\RenderTarget.h">
+      <Filter>00.Utility\07. RenderTagers\Target</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\VIBuffer_RectViewPort.h">
+      <Filter>00.Utility\03.Component\VIBuffer\RectViewPort</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\RenderTargetManager.h">
+      <Filter>00.Utility\07. RenderTagers\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Light.h">
+      <Filter>00.Utility\08. Light</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\LightManager.h">
+      <Filter>00.Utility\08. Light\Manger</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
@@ -344,10 +380,28 @@
     <ClCompile Include="..\private\VIBuffer_TriangleToLine.cpp">
       <Filter>00.Utility\03.Component\VIBuffer\TriangleToLine</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\RenderTarget.cpp">
+      <Filter>00.Utility\07. RenderTagers\Target</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\VIBuffer_RectViewPort.cpp">
+      <Filter>00.Utility\03.Component\VIBuffer\RectViewPort</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\RenderTargetManager.cpp">
+      <Filter>00.Utility\07. RenderTagers\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Light.cpp">
+      <Filter>00.Utility\08. Light</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\LightManager.cpp">
+      <Filter>00.Utility\08. Light\Manger</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\bin\ShaderFiles\Shader_TriangleToLine.hlsl">
       <Filter>00.Utility\03.Component\VIBuffer\TriangleToLine\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="..\bin\ShaderFiles\Shader_RectViewPort.hlsl">
+      <Filter>00.Utility\03.Component\VIBuffer\RectViewPort\ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

@@ -19,6 +19,18 @@ public:
 public:
 	HRESULT Add_RenderGroup(RENDER eRenderID, class CGameObject* pGameObject);
 	HRESULT Draw_RenderGroup();
+
+private:
+	HRESULT		RenderPriority();
+	HRESULT		RenderNonAlpha();
+	HRESULT		RenderAlpha();
+	HRESULT		RenderUI();
+
+	HRESULT		RenderLightAcc();
+
+private:
+	class RenderTargetManager*				m_RenderTargetManager = nullptr;
+
 private:
 	list<class CGameObject*>			m_RenderGroup[RENDER_END];
 	typedef list<class CGameObject*>	RENDERGROUP;

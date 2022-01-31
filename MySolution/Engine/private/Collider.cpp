@@ -238,7 +238,7 @@ _bool CCollider::CollisionSPHERE(CCollider * _targetCollider)
 	return TRUE;
 }
 
-_bool CCollider::CollisionAABBToRay(_fvector Ray, _fvector Dir)
+_bool CCollider::CollisionAABBToRay(_fvector Ray, _fvector Dir, _float& _OutDistance)
 {
 	_float pDistance = 0;
 	m_IsCollision = FALSE;
@@ -249,7 +249,7 @@ _bool CCollider::CollisionAABBToRay(_fvector Ray, _fvector Dir)
 	}
 
 	m_IsCollision = TRUE;
-
+	_OutDistance = pDistance;
 	return TRUE;
 }
 

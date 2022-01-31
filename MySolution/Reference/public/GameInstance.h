@@ -6,6 +6,8 @@
 #include "Timer_Manager.h"
 #include "Object_Manager.h"
 #include "Component_Manager.h"
+#include "RenderTargetManager.h"
+ #include "LightManager.h"
 #include "PipeLine.h"
 #include "Calculator.h"
 
@@ -74,6 +76,8 @@ private:
 	CComponent_Manager*			m_pComponent_Manager = nullptr;
 	CPipeLine*					m_pPipeLine = nullptr;
 	CInput_Device*				m_pInput_Device = nullptr;
+	RenderTargetManager*		m_RenderTargetManager = nullptr;
+	LightManager*					m_LightManager = nullptr;
 public:
 
 	static void Release_Engine();

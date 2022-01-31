@@ -40,7 +40,7 @@ public:
 	_bool	CollisionAABB(CCollider* _targetCollider);
 	_bool	CollisionOBB(CCollider* _targetCollider);
 	_bool	CollisionSPHERE(CCollider* _targetCollider);
-	_bool	CollisionAABBToRay(_fvector Ray, _fvector Dir);
+	_bool	CollisionAABBToRay(_fvector Ray, _fvector Dir, _float& _OutDistance);
 	_bool	CollisionSphereToRay(_fvector Ray, _fvector Dir);
 	_bool	CollisionSphereToAABB(CCollider* _TargetCollider);
 

@@ -111,6 +111,15 @@ HRESULT CVIBuffer::SetUp_TextureOnShader(const char * pConstantName, CTexture * 
 	return pVariable->SetResource(pShaderResourceView);
 }
 
+HRESULT CVIBuffer::SetUp_TextureOnShader(const char * pConstantName, ID3D11ShaderResourceView * _SRV)
+{
+	ID3DX11EffectShaderResourceVariable*		Variable = m_pEffect->GetVariableByName(pConstantName)->AsShaderResource();
+	if (nullptr == Variable)
+		return E_FAIL;
+
+	return Variable->SetResource(_SRV);
+}
+
 
 HRESULT CVIBuffer::Create_VertexBuffer()
 {

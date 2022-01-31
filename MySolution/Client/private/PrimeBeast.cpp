@@ -5,6 +5,7 @@
 #include "Player.h"
 #include "SMG.h"
 #include "PrimeBeastRock.h"
+#include "HitBullet.h"
 
 #include <iostream>
 
@@ -80,7 +81,7 @@ _int PrimeBeast::Tick(_double TimeDelta)
 	HitCheck();
 
 #ifdef _DEBUG
-
+/*
 	_matrix BoneMatrix = XMMatrixIdentity();
 	_matrix Transform = XMMatrixIdentity();
 	_matrix OffsetMatrix = XMMatrixIdentity();
@@ -108,7 +109,7 @@ _int PrimeBeast::Tick(_double TimeDelta)
 	Combined = m_lHand2Bone->Get_CombinedMatrix();
 	BoneMatrix = Transform * OffsetMatrix * Combined * PivotMatrix * XMMatrixRotationY(XMConvertToRadians(180.f)) * WorldMatrix;
 	m_ColliderSphere4->Update(BoneMatrix);
-
+*/
 #endif // _DEBUG
 
 
@@ -158,7 +159,7 @@ HRESULT PrimeBeast::Render()
 
 		m_pModelCom->Render(i, 1);
 	}
-//
+
 //#ifdef _DEBUG
 //	m_ColliderCom->Render();
 //	m_ColliderSphere1->Render();
@@ -218,9 +219,18 @@ void PrimeBeast::HitCheck()
 		CalDesc._rayDir = XMVector3TransformNormal(CalDesc._rayDir, m_pTransformCom->Get_WorldMatrix());
 		CalDesc._rayDir =  XMVector3Normalize(CalDesc._rayDir);
 		
-		if (TRUE == m_ColliderCom->CollisionAABBToRay(CalDesc._rayPos, CalDesc._rayDir))
+		_float Distance = 0.f;
+
+		if (TRUE == m_ColliderCom->CollisionAABBToRay(CalDesc._rayPos, CalDesc._rayDir, Distance))
 		{
 			m_HP--;
+			HitBullet::EFFECTDESC EffectDesc;
+			ZeroMemory(&EffectDesc, sizeof(HitBullet::EFFECTDESC));
+			XMStoreFloat3(&EffectDesc.Position, CalDesc._rayPos + CalDesc._rayDir * Distance);
+			EffectDesc.Duration = 5.0;
+
+			if (FAILED(pGameInstance->Add_GameObjectToLayer(LEVEL_GAMEPLAY, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Effect_HitBullet"), &EffectDesc)))
+				MSGBOX("Failed to Create HitBullet Effect!!!");
 		}
 		
 		RELEASE_INSTANCE(CGameInstance);

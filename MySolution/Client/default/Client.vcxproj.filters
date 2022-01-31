@@ -79,6 +79,12 @@
     <Filter Include="02.GameObject\InteractObject\HyperionChest">
       <UniqueIdentifier>{14c75d84-c9ce-42dc-9b64-5eae001961dd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\Effect">
+      <UniqueIdentifier>{c2ee037c-7798-47a0-b233-cfd2a8c08784}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Effect\HitBullet">
+      <UniqueIdentifier>{61f659ed-b1df-4063-9bee-23be40c60c05}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -156,6 +162,9 @@
     <ClInclude Include="..\public\HyperionChest.h">
       <Filter>02.GameObject\InteractObject\HyperionChest</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\HitBullet.h">
+      <Filter>02.GameObject\Effect\HitBullet</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -218,6 +227,9 @@
     <ClCompile Include="..\private\HyperionChest.cpp">
       <Filter>02.GameObject\InteractObject\HyperionChest</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\HitBullet.cpp">
+      <Filter>02.GameObject\Effect\HitBullet</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -255,6 +267,9 @@
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\bin\ShaderFiles\Shader_Loading.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\bin\ShaderFiles\Shader_RectEffect.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>
