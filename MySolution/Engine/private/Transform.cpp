@@ -40,16 +40,21 @@ HRESULT CTransform::NativeConstruct(void * pArg)
 	return S_OK;
 }
 
-void CTransform::Go_Straight(_double TimeDelta, Navigation* _Navigation)
+_bool CTransform::Go_Straight(_double TimeDelta, Navigation* _Navigation)
 {
 	_vector		vLook = Get_State(CTransform::STATE_LOOK);
 	_vector		vPosition = Get_State(CTransform::STATE_POSITION);
 
 	vPosition += XMVector3Normalize(vLook) * m_TransformDesc.fSpeedPerSec * (_float)TimeDelta;
 
-	if( nullptr == _Navigation ||
-		TRUE == _Navigation->MoveOnNavigation(vPosition) )
+	if (nullptr == _Navigation ||
+		TRUE == _Navigation->MoveOnNavigation(vPosition))
+	{
 		Set_State(CTransform::STATE_POSITION, vPosition);
+		return TRUE;
+	}
+	else
+		return FALSE;
 }
 
 void CTransform::Go_Left(_double TimeDelta, Navigation* _Navigation)

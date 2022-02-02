@@ -45,6 +45,9 @@ public:
 	_bool	CollisionSphereToAABB(CCollider* _TargetCollider);
 
 	void	IsCollision(_bool b) { m_IsCollision = b; };
+	_bool	GetIsCollision() const { 
+		return m_IsCollision; 
+	}
 
 private:
 	_fmatrix RemoveScale(_fmatrix _transform);

@@ -88,6 +88,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 			pGameInstance->Update_TimeDelta(TEXT("Timer_60"));
 
+
 			if (0 > pMainApp->Tick(pGameInstance->Get_TimeDelta(TEXT("Timer_60"))))
 				break;
 

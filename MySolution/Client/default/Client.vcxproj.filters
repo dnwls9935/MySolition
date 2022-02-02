@@ -55,17 +55,8 @@
     <Filter Include="02.GameObject\EnvirionmentObject">
       <UniqueIdentifier>{74de07f4-dc7c-4459-ae46-f4eedd688454}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\Monster\BugMorph">
-      <UniqueIdentifier>{4e8b3117-f4a2-4707-9d2f-a70f0c6d2948}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObject\Player\Weapon\SMG">
       <UniqueIdentifier>{1f21b4bb-ec05-4ffe-b101-2096b4f5bcd5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\Monster\PrimeBeast">
-      <UniqueIdentifier>{46f29de5-d9b3-43f6-8a25-be44265b24db}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\Monster\PrimeBeast\Rock">
-      <UniqueIdentifier>{35a30334-704a-47b3-84ce-f281a5f3bcb3}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObject\InteractObject">
       <UniqueIdentifier>{3999c250-6a41-4a5b-a7da-4270d2ecddb1}</UniqueIdentifier>
@@ -84,6 +75,27 @@
     </Filter>
     <Filter Include="02.GameObject\Effect\HitBullet">
       <UniqueIdentifier>{61f659ed-b1df-4063-9bee-23be40c60c05}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\Boss">
+      <UniqueIdentifier>{571bdc15-98ce-4b52-87c6-beece3776891}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\Normal">
+      <UniqueIdentifier>{3e15c25e-10c9-488b-ae17-5d17524efb0e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\Normal\BugMorph">
+      <UniqueIdentifier>{4e8b3117-f4a2-4707-9d2f-a70f0c6d2948}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\Normal\PrimeBeast">
+      <UniqueIdentifier>{46f29de5-d9b3-43f6-8a25-be44265b24db}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\Normal\PrimeBeast\Rock">
+      <UniqueIdentifier>{35a30334-704a-47b3-84ce-f281a5f3bcb3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\Boss\PrimeBeast">
+      <UniqueIdentifier>{a33cc72e-733f-4316-a49f-9ed38d00ee03}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Monster\Boss\PrimeBeast\BossPrimeBeastRock">
+      <UniqueIdentifier>{101d07fb-dd40-450c-901a-601f21b06e17}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -142,16 +154,16 @@
       <Filter>02.GameObject\EnvirionmentObject</Filter>
     </ClInclude>
     <ClInclude Include="..\public\BugMorph.h">
-      <Filter>02.GameObject\Monster\BugMorph</Filter>
+      <Filter>02.GameObject\Monster\Normal\BugMorph</Filter>
     </ClInclude>
     <ClInclude Include="..\public\SMG.h">
       <Filter>02.GameObject\Player\Weapon\SMG</Filter>
     </ClInclude>
     <ClInclude Include="..\public\PrimeBeast.h">
-      <Filter>02.GameObject\Monster\PrimeBeast</Filter>
+      <Filter>02.GameObject\Monster\Normal\PrimeBeast</Filter>
     </ClInclude>
     <ClInclude Include="..\public\PrimeBeastRock.h">
-      <Filter>02.GameObject\Monster\PrimeBeast\Rock</Filter>
+      <Filter>02.GameObject\Monster\Normal\PrimeBeast\Rock</Filter>
     </ClInclude>
     <ClInclude Include="..\public\DahlWeaponLocker.h">
       <Filter>02.GameObject\InteractObject\DahlWeaponLocker</Filter>
@@ -164,6 +176,12 @@
     </ClInclude>
     <ClInclude Include="..\public\HitBullet.h">
       <Filter>02.GameObject\Effect\HitBullet</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\BossPrimeBeast.h">
+      <Filter>02.GameObject\Monster\Boss\PrimeBeast</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\BossPrimeBeastRock.h">
+      <Filter>02.GameObject\Monster\Boss\PrimeBeast\BossPrimeBeastRock</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -207,16 +225,16 @@
       <Filter>02.GameObject\EnvirionmentObject</Filter>
     </ClCompile>
     <ClCompile Include="..\private\BugMorph.cpp">
-      <Filter>02.GameObject\Monster\BugMorph</Filter>
+      <Filter>02.GameObject\Monster\Normal\BugMorph</Filter>
     </ClCompile>
     <ClCompile Include="..\private\SMG.cpp">
       <Filter>02.GameObject\Player\Weapon\SMG</Filter>
     </ClCompile>
     <ClCompile Include="..\private\PrimeBeast.cpp">
-      <Filter>02.GameObject\Monster\PrimeBeast</Filter>
+      <Filter>02.GameObject\Monster\Normal\PrimeBeast</Filter>
     </ClCompile>
     <ClCompile Include="..\private\PrimeBeastRock.cpp">
-      <Filter>02.GameObject\Monster\PrimeBeast\Rock</Filter>
+      <Filter>02.GameObject\Monster\Normal\PrimeBeast\Rock</Filter>
     </ClCompile>
     <ClCompile Include="..\private\DahlWeaponLocker.cpp">
       <Filter>02.GameObject\InteractObject\DahlWeaponLocker</Filter>
@@ -229,6 +247,12 @@
     </ClCompile>
     <ClCompile Include="..\private\HitBullet.cpp">
       <Filter>02.GameObject\Effect\HitBullet</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\BossPrimeBeast.cpp">
+      <Filter>02.GameObject\Monster\Boss\PrimeBeast</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\BossPrimeBeastRock.cpp">
+      <Filter>02.GameObject\Monster\Boss\PrimeBeast\BossPrimeBeastRock</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

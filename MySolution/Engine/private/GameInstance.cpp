@@ -208,6 +208,14 @@ list<CGameObject*>& CGameInstance::GetObjectList(_uint _levelIdx, const _tchar *
 	return m_pObject_Manager->GetObjectList(_levelIdx, _tag);
 }
 
+CGameObject * CGameInstance::GetPlayer(_int _LevelIndex)
+{
+	if (nullptr == m_pObject_Manager)
+		return nullptr;
+
+	return m_pObject_Manager->GetPlayer(_LevelIndex);
+}
+
 //
 //_uint CGameInstance::GetNumLevel()
 //{

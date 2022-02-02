@@ -9,6 +9,7 @@ class CRenderer;
 class CTransform;
 class CVIBuffer_Terrain;
 class Navigation;
+class CCollider;
 END
 
 BEGIN(Client)
@@ -34,6 +35,13 @@ private:
 	CTransform*				m_pTransformCom = nullptr;
 	CVIBuffer_Terrain*		m_pVIBufferCom = nullptr;
 	Navigation*					m_NavigationCom = nullptr;
+
+	CCollider*					m_FirstColliderCom = nullptr;
+	CCollider*					m_SecondColliderCom = nullptr;
+	CCollider*					m_BossColliderCom = nullptr;
+
+	CGameObject*			m_Player = nullptr;
+
 private:
 	virtual HRESULT SetUp_Components();
 

@@ -25,6 +25,7 @@ public:
 	HRESULT Clear_Object_Manager(_uint iLevelIndex);
 	CGameObject*	FindObject(const _tchar* _tag);
 	list<class CGameObject*>& GetObjectList(_uint _levelIdx, const _tchar* _tag);
+	CGameObject*	GetPlayer(_int _LevelIndex);
 	//_uint		GetNumLevel() const { return m_iNumLevels; };
 
 private:

@@ -59,7 +59,7 @@ HRESULT TapMap::SaveNavigation(HANDLE & hFile)
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 
 	vector<Cell*> pNavigationCells = static_cast<Navigation*>(pGameInstance->GetObjectList(1, TEXT("Terrain")).front()->GetComponent(TEXT("Com_Navigation")))->GetCells();
-	_int size = pNavigationCells.size();
+	_int size = (_int)pNavigationCells.size();
 	_ulong		dwByte;
 
 	WriteFile(hFile, &size, sizeof(_int), &dwByte, nullptr);

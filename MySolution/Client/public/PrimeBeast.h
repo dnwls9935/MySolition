@@ -16,12 +16,15 @@ class PrimeBeast final : public CGameObject
 {
 public:
 	enum class ANIMATION_STATE {ALL,
-		ATTACK_PUNCH_V1, ATTACK_THROWROCK_V1, ATTACK_THROWROCK_V4, 
-		DEATH_CORROSIVE_V1, DEATH_CRITICAL,
+		ATT_C_END , ATT_C_HITWALL , ATT_C_LOOP, ATT_C_START, ATT_C_STRIKE,
+		ATT_L_END, ATT_L_IDLE, ATT_L_START,
+		ATT_P_V1, ATT_P_V2, ATT_P_V3, ATT_P_V4, ATT_P_V5, 
+		ATT_TG_V1, ATT_TG_V2, 
+		ATT_TR_V1, ATT_TR_V2, ATT_TR_V3, ATT_TR_V4,
+		DEA_CORROSIVE_V1, DEA_CRITICAL, DEA_FIRE_V1, DEA_LEFT_V1, DEA_RIGHT_V1, DEA_SHOCK_V1, 
 		PHASELOCK_FALL, PHASELOCK_LAND, 
-		ROAR_V1,
-		RUN_B, RUN_F_V1, RUN_F_V4, RUN_L, RUN_R, 
-		SPAWN_DENLERP_V1, SPAWN_DROP, SPAWN_WALLDROPJUMP,
+		ROAR_V1, RUN_B, RUN_F_V1, RUN_F_V4, RUN_L, RUN_R, 
+		SPAWN_DE, SPAWN_DROPDOWNJUMP, SPAWN_WALLJUMP, SPAWN_WALKOUT, SPAWN_BREAKTHROUGH, SPAWN_CLIMBOVER,
 		ANIMATION_STATE_END};
 protected:
 	explicit PrimeBeast(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
@@ -63,13 +66,14 @@ private:
 	CCollider*					m_ColliderSphere3 = nullptr;
 	CCollider*					m_ColliderSphere4 = nullptr;
 
-
 	_bool							m_FrameStart = FALSE;
 	_bool							m_IntroEnd = FALSE;
+
 
 private:
 	CGameObject* m_TargetPlayer = nullptr;
 	CGameObject* m_TargetPlayerWeapon = nullptr;
+	CGameObject*	m_Terrain = nullptr;
 
 	_vector				m_PlayerPosition = _vector();
 	_vector				m_MyPosition = _vector();

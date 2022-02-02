@@ -18,13 +18,6 @@ public:
 	enum class TYPE_ROCK { SMALL, BIG, TYPE_ROCK_END };
 	enum class TYPE_THROW {DIRECT, CURVE, TYPE_THROW_END};
 
-	enum class ANIMATION_STATE {
-		ALL,
-		RE_DAHL, RE_HYPERION, FIRE_TEDIORE, FIRE_MALIWAN, FIRE_HYPERION, FIRE_DAHL, RE_TEDIORE_F, RE_BANDITMADE_F, RE_MALIWAN_F,
-		RE_DAHL_F, RE_BANDITMADE, RE_MALIWAN, RE_HYPERION_F, RE_MALIWAN_F_V2, RE_TEDIORE, RE_MALIWAN_V2,
-		ANIMATION_STATE_END
-	};
-
 	typedef struct tagPrimeBeastRockDesc {
 		CGameObject* m_PrimeBeast = nullptr;
 		CGameObject* m_Target = nullptr;

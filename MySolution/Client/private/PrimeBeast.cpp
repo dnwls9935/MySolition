@@ -46,8 +46,8 @@ HRESULT PrimeBeast::NativeConstruct(void * pArg)
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, TransformMatrix.r[3]);
 
 	m_HP = 3000;
-	m_pModelCom->SetUp_AnimationIndex((_int)ANIMATION_STATE::SPAWN_WALLDROPJUMP);
-
+	m_pModelCom->SetUp_AnimationIndex((_int)ANIMATION_STATE::SPAWN_WALLJUMP);
+	
 	m_rHand1Bone = m_pModelCom->Get_BoneMatrix("rHand1");
 	m_rHand2Bone = m_pModelCom->Get_BoneMatrix("rHand2");
 	m_lHand1Bone = m_pModelCom->Get_BoneMatrix("lHand1");
@@ -62,6 +62,7 @@ HRESULT PrimeBeast::NativeConstruct(void * pArg)
 	advance(iter, 1);
 	m_TargetPlayerWeapon = *iter;
 
+	m_Terrain = pGameInstance->GetObjectList(LEVEL_GAMEPLAY, TEXT("Layer_Terrain")).front();
 
 	RELEASE_INSTANCE(CGameInstance);
 	return S_OK;
@@ -112,8 +113,6 @@ _int PrimeBeast::Tick(_double TimeDelta)
 */
 #endif // _DEBUG
 
-
-
 	return _int();
 }
 
@@ -124,14 +123,14 @@ _int PrimeBeast::LateTick(_double TimeDelta)
 
 	if (m_pModelCom->GetAnimationFinished())
 	{
-		if((_uint)ANIMATION_STATE::SPAWN_WALLDROPJUMP == m_pModelCom->GetCurrentAnimation())
+		if((_uint)ANIMATION_STATE::SPAWN_WALLJUMP == m_pModelCom->GetCurrentAnimation())
 			m_IntroEnd = TRUE;
 		m_pModelCom->SetUp_AnimationIndex((_int)ANIMATION_STATE::RUN_F_V1);
 	}
 
 	if (0 >= m_HP)
 	{
-		m_pModelCom->SetUp_AnimationIndex((_uint)ANIMATION_STATE::DEATH_CRITICAL);
+		m_pModelCom->SetUp_AnimationIndex((_uint)ANIMATION_STATE::DEA_CRITICAL);
 		if (m_pModelCom->GetAnimationFinished())
 		{
 			m_Dead = TRUE;
@@ -174,7 +173,7 @@ HRESULT PrimeBeast::Render()
 
 _bool PrimeBeast::ThrowMotionFrame()
 {
-	if ((_uint)ANIMATION_STATE::ATTACK_THROWROCK_V1 == m_pModelCom->GetCurrentAnimation() &&
+	if ((_uint)ANIMATION_STATE::ATT_TR_V1 == m_pModelCom->GetCurrentAnimation() &&
 		38 == m_pModelCom->GetCurrentAnimationFrame())
 		return TRUE;
 
@@ -239,9 +238,10 @@ void PrimeBeast::HitCheck()
 
 void PrimeBeast::Animation(_double TimeDelta)
 {
-	if (30 >= m_TargetDistance && !m_FrameStart)
+	if (!m_FrameStart)
 	{
-		m_FrameStart = TRUE;
+		if(TRUE == static_cast<CCollider*>(m_Terrain->GetComponent(TEXT("Com_FirstColliderCom")))->GetIsCollision())
+			m_FrameStart = TRUE;
 	}else if(m_FrameStart && m_IntroEnd)
 	{
 		if (10 >= m_TargetDistance)
@@ -270,7 +270,7 @@ void PrimeBeast::Moving(_double TimeDelta)
 
 void PrimeBeast::Attack()
 {
-	m_pModelCom->SetUp_AnimationIndex( (_uint)ANIMATION_STATE::ATTACK_THROWROCK_V1 );
+	m_pModelCom->SetUp_AnimationIndex( (_uint)ANIMATION_STATE::ATT_TR_V1);
 
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 	if (18 == m_pModelCom->GetCurrentAnimationFrame()) {

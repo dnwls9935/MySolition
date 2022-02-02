@@ -64,7 +64,6 @@ _int CPlayer::Tick(_double TimeDelta)
 	_vector Position = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(XMVectorGetX(Position), 0.f, XMVectorGetZ(Position), XMVectorGetW(Position)));
 
-	cout << m_HP << endl;
 	return _int();
 }
 

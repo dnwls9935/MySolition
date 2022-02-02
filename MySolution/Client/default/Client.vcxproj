@@ -167,6 +167,8 @@
   <ItemGroup>
     <ClInclude Include="..\bin\ShaderFiles\Shader_RenderState.hpp" />
     <ClInclude Include="..\public\BackGround.h" />
+    <ClInclude Include="..\public\BossPrimeBeast.h" />
+    <ClInclude Include="..\public\BossPrimeBeastRock.h" />
     <ClInclude Include="..\public\BugMorph.h" />
     <ClInclude Include="..\public\Camera_Dynamic.h" />
     <ClInclude Include="..\public\Client_Defines.h" />
@@ -193,6 +195,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\BackGround.cpp" />
+    <ClCompile Include="..\private\BossPrimeBeast.cpp" />
+    <ClCompile Include="..\private\BossPrimeBeastRock.cpp" />
     <ClCompile Include="..\private\BugMorph.cpp" />
     <ClCompile Include="..\private\Camera_Dynamic.cpp" />
     <ClCompile Include="..\private\DahlEpicCrate.cpp" />

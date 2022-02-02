@@ -132,6 +132,15 @@ list<CGameObject*>& CObject_Manager::GetObjectList(_uint _levelIdx, const _tchar
 	return iter->second->GetObjectList();
 }
 
+CGameObject * CObject_Manager::GetPlayer(_int _LevelIndex)
+{
+	auto iter = find_if(m_pLayers[_LevelIndex].begin(), m_pLayers[_LevelIndex].end(), CTag_Finder(TEXT("Layer_Player")));
+	if (m_pLayers[_LevelIndex].end() == iter)
+		return nullptr;
+
+	return iter->second->GetObjectList().front();
+}
+
 CGameObject * CObject_Manager::Find_Prototype(const _tchar * pPrototypeTag)
 {
 	auto	iter = find_if(m_Prototype.begin(), m_Prototype.end(), CTag_Finder(pPrototypeTag));
