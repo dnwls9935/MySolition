@@ -1,6 +1,9 @@
 #include "stdafx.h"
 #include "..\public\BugMorph.h"
 #include "GameInstance.h"
+#include "HierarchyNode.h"
+#include "Player.h"
+#include "SMG.h"
 #include "Player.h"
 #include "SMG.h"
 
@@ -40,8 +43,8 @@ HRESULT BugMorph::NativeConstruct(void * pArg)
 	m_pTransformCom->Set_State(CTransform::STATE_LOOK, TransformMatrix.r[2]);
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, TransformMatrix.r[3]);
 
-	m_HP = 3000;
-	m_pModelCom->SetUp_AnimationIndex((_int)ANIMATION_STATE::SPAWN_RUN);
+	m_HP = 2000;
+	m_pModelCom->SetUp_AnimationIndex((_int)ANIMATION_STATE::SPAWN);
 
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 	m_TargetObjectList = &pGameInstance->GetObjectList(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
@@ -51,6 +54,11 @@ HRESULT BugMorph::NativeConstruct(void * pArg)
 
 _int BugMorph::Tick(_double TimeDelta)
 {
+	if (TRUE == m_Dead)
+	{
+		m_pModelCom->Update_CombinedTransformationMatrix(TimeDelta);
+		return _int();
+	}
 	Animation();
 	
 

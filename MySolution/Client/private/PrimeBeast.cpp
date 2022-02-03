@@ -7,8 +7,6 @@
 #include "PrimeBeastRock.h"
 #include "HitBullet.h"
 
-#include <iostream>
-
 PrimeBeast::PrimeBeast(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
 {
@@ -197,13 +195,13 @@ HRESULT PrimeBeast::Render()
 		m_pModelCom->Render(i, 1);
 	}
 
-//#ifdef _DEBUG
+#ifdef _DEBUG
 	m_ColliderCom->Render();
 	m_ColliderSphere1->Render();
 	m_ColliderSphere2->Render();
 	m_ColliderSphere3->Render();
 	m_ColliderSphere4->Render();
-//#endif // _DEBUG
+#endif // _DEBUG
 
 	RELEASE_INSTANCE(CGameInstance);
 	return S_OK;

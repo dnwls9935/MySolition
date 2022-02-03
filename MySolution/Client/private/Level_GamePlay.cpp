@@ -248,7 +248,7 @@ HRESULT CLevel_GamePlay::LoadEnvironment(HANDLE & hFile)
 			break;
 		case CGameObject::OBJTYPE_ID::COLLISION_ENVIORNMENT:
 		{
-			if (0 == lstrcmp(pToolObjDesc.m_ObjTag, TEXT("GlacialFlowWall")))
+			if (0 == lstrcmp(pToolObjDesc.m_ObjTag, TEXT("Prototype_GameObject_Model_GlacialFlowWall")))
 			{
 				if (FAILED(pGameInstance->Add_GameObjectToLayer(LEVEL_GAMEPLAY, TEXT("Layer_Wall"), pToolObjDesc.m_ObjTag, &pToolObjDesc)))
 					return E_FAIL;

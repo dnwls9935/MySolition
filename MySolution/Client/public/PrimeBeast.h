@@ -69,7 +69,6 @@ private:
 	CCollider*					m_ColliderSphere3 = nullptr;
 	CCollider*					m_ColliderSphere4 = nullptr;
 
-
 	Navigation*				m_Navigation = nullptr;
 
 	_bool							m_FrameStart = FALSE;

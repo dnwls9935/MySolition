@@ -16,11 +16,7 @@ class BugMorph final : public CGameObject
 {
 public:
 	enum class ANIMATION_STATE {ALL,
-		FLY_F, FLY_B, FLY_L,
-		IDLE_FLIGHT, IDLE_VAR, 
-		RUN_F, SPRINT_F,
-		SPAWN_RUN, DEATH_CRITICAL,
-		ATTACK_STING, ATTACK_SPIT, ATTACK_RADIUS, ATTACK_FLIGHT_SPIT ,
+		ATT_BITE, BURROW_ENTER, BURROW_EXIT, RUN_F, DEA_CRITICAL, SPAWN,
 		ANIMATION_STATE_END};
 protected:
 	explicit BugMorph(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
@@ -46,9 +42,26 @@ private:
 	CModel*					m_pModelCom = nullptr;
 	CCollider*					m_ColliderCom = nullptr;
 
+	CHierarchyNode*		m_LowerJawBone = nullptr;
+
+	CCollider*					m_ColliderLowerJaw = nullptr;
+
+	Navigation*				m_Navigation = nullptr;
+
 	list<class CGameObject*>* m_TargetObjectList = nullptr;
 
-	_bool						m_FrameStart = FALSE;
+	_bool							m_FrameStart = FALSE;
+	_bool							m_IntroEnd = FALSE;
+	/* BugMorph 작업해야함 */	
+private:
+	CGameObject* m_TargetPlayer = nullptr;
+	CGameObject* m_TargetPlayerWeapon = nullptr;
+	CGameObject*	m_Terrain = nullptr;
+
+	_vector				m_PlayerPosition = _vector();
+	_vector				m_MyPosition = _vector();
+	_float					m_TargetDistance = 0.f;
+
 
 private:
 	virtual HRESULT SetUp_Components();

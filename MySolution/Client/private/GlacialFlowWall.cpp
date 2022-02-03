@@ -47,7 +47,7 @@ HRESULT GlcialFlowWall::NativeConstruct(void * pArg)
 
 _int GlcialFlowWall::Tick(_double TimeDelta)
 {
-	
+	m_ColliderAABB->Update(m_pTransformCom->Get_WorldMatrix());
 
 	return _int();
 }
@@ -78,6 +78,10 @@ HRESULT GlcialFlowWall::Render()
 		m_ModelCom->Render(i, 0);
 	}
 
+#ifdef _DEBUG
+	if (FAILED(m_ColliderAABB->Render()))
+		return E_FAIL;
+#endif // _DEBUG
 
 	RELEASE_INSTANCE(CGameInstance);
 	return S_OK;
@@ -101,7 +105,13 @@ HRESULT GlcialFlowWall::SetUp_Components()
 	if (FAILED(__super::SetUp_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Terrain"), TEXT("Com_Texture"), (CComponent**)&m_pTextureCom)))
 		return E_FAIL;
 
-
+	/* Com_Collider */
+	CCollider::COLLISIONDESC CollisionDesc;
+	ZeroMemory(&CollisionDesc, sizeof(CCollider::COLLISIONDESC));
+	CollisionDesc.Scale = _float3(20.f, 5.f, 10.f);
+	CollisionDesc.Position = _float3(0.f, 1.f, 0.0f);
+	if (FAILED(__super::SetUp_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_AABB"), TEXT("Com_AABB"), (CComponent**)&m_ColliderAABB, &CollisionDesc)))
+		return E_FAIL;
 
 	return S_OK;
 }

@@ -67,7 +67,6 @@ HRESULT BossPrimeBeast::NativeConstruct(void * pArg)
 	m_TargetPlayerWeapon = *iter;
 
 	m_Terrain = pGameInstance->GetObjectList(LEVEL_GAMEPLAY, TEXT("Layer_Terrain")).front();
-
 	RELEASE_INSTANCE(CGameInstance);
 
 	m_NavigationCom->SetCurrentCellIndex(32);
@@ -367,16 +366,19 @@ void BossPrimeBeast::ChargeAttack(_double _TimeDelta)
 	}
 	else if ((_uint)ANIMATION_STATE::ATT_C_LOOP == m_pModelCom->GetCurrentAnimation())
 	{
+		CGameInstance* GameInstance = GET_INSTANCE(CGameInstance);
+		CCollider* GlacialFlowWall = static_cast<CCollider*>(GameInstance->GetObjectList(LEVEL_GAMEPLAY, TEXT("Layer_Wall")).front()->GetComponent(TEXT("Com_AABB")));
+		RELEASE_INSTANCE(CGameInstance);
+
 		if (FALSE == m_pTransformCom->Go_Straight(_TimeDelta * 4.f, m_NavigationCom))
 		{
 			m_pModelCom->SetUp_AnimationIndex((_uint)ANIMATION_STATE::ATT_C_HITWALL);
 		}
+		else if ( nullptr != GlacialFlowWall && TRUE == m_ColliderCom->CollisionAABB(GlacialFlowWall))
+		{
+			m_pModelCom->SetUp_AnimationIndex((_uint)ANIMATION_STATE::ATT_C_HITWALL);
+		}
 	}
-	
-}
-
-void BossPrimeBeast::ChargeMove(_double _TimeDelta)
-{
 }
 
 _matrix BossPrimeBeast::GetBoneMatrix(CHierarchyNode*	_HierachyNode)

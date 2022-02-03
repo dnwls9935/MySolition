@@ -80,9 +80,9 @@ private:
 	_bool							m_IntroEnd = FALSE;
 
 private:
-	CGameObject* m_TargetPlayer = nullptr;
-	CGameObject* m_TargetPlayerWeapon = nullptr;
-	CGameObject* m_Terrain = nullptr;
+	CGameObject*		m_TargetPlayer = nullptr;
+	CGameObject*		m_TargetPlayerWeapon = nullptr;
+	CGameObject*		m_Terrain = nullptr;
 
 	_vector				m_PlayerPosition = _vector();
 	_vector				m_MyPosition = _vector();
