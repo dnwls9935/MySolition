@@ -46,10 +46,18 @@ HRESULT PrimeBeastRock::NativeConstruct(void * pArg)
 
 _int PrimeBeastRock::Tick(_double TimeDelta)
 {
-	if(FALSE == m_ChaseTarget)
-		CheckState(TimeDelta);
-	else
+	if (FALSE == m_ChaseTarget)
 	{
+		if (TRUE == m_PrbDesc.m_PrimeBeast->GetDead()) {
+			_vector MyPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+			MyPosition = XMVectorSetY(MyPosition, XMVectorGetY(MyPosition) - TimeDelta * 2.5f);
+			m_pTransformCom->Set_State(CTransform::STATE_POSITION, MyPosition);
+		}
+		else {
+			CheckState(TimeDelta);
+		}
+	}
+	else {
 		_vector		vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 		_vector		vLook = m_PrbDesc.m_TargetPosition - vPosition;
 
@@ -108,7 +116,9 @@ HRESULT PrimeBeastRock::Render()
 
 void PrimeBeastRock::CheckState(_double TimeDelta)
 {
-	if (38 == static_cast<CModel*>(m_PrbDesc.m_PrimeBeast->GetComponent(TEXT("Com_Model")))->GetCurrentAnimationFrame()) {
+	CModel* ParentModel = static_cast<CModel*>(m_PrbDesc.m_PrimeBeast->GetComponent(TEXT("Com_Model")));
+	if ((_uint)PrimeBeast::ANIMATION_STATE::ATT_TR_V1 == ParentModel->GetCurrentAnimation() &&
+		38 == ParentModel->GetCurrentAnimationFrame()) {
 
 		m_ChaseTarget = TRUE;
 

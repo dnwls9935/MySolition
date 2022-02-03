@@ -8,6 +8,7 @@ class CRenderer;
 class CTransform;
 class CModel;
 class CCollider;
+class Navigation;
 END
 
 BEGIN(Client)
@@ -24,7 +25,7 @@ public:
 		DEA_CORROSIVE_V1, DEA_CRITICAL, DEA_FIRE_V1, DEA_LEFT_V1, DEA_RIGHT_V1, DEA_SHOCK_V1, 
 		PHASELOCK_FALL, PHASELOCK_LAND, 
 		ROAR_V1, RUN_B, RUN_F_V1, RUN_F_V4, RUN_L, RUN_R, 
-		SPAWN_DE, SPAWN_DROPDOWNJUMP, SPAWN_WALLJUMP, SPAWN_WALKOUT, SPAWN_BREAKTHROUGH, SPAWN_CLIMBOVER,
+		SPAWN_DE, SPAWN_DROPDOWNJUMP, SPAWN_WALLJUMP, SPAWN_WALKOUT, SPAWN_BREAKTHROUGH, SPAWN_CLIMBOVER, DODGE_L,
 		ANIMATION_STATE_END};
 protected:
 	explicit PrimeBeast(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
@@ -42,12 +43,14 @@ public:
 	_bool		ThrowMotionFrame();
 	_matrix	SetRockPosition();
 
+
 private:
 	void		GetTargetDistance();
 	void		HitCheck();
 	void		Animation(_double TimeDelta);
 	void		Moving(_double TimeDelta);
 	void		Attack();
+	void		Dodge(_double TimeDelta);
 
 private:
 	CRenderer*				m_pRendererCom = nullptr;
@@ -66,6 +69,9 @@ private:
 	CCollider*					m_ColliderSphere3 = nullptr;
 	CCollider*					m_ColliderSphere4 = nullptr;
 
+
+	Navigation*				m_Navigation = nullptr;
+
 	_bool							m_FrameStart = FALSE;
 	_bool							m_IntroEnd = FALSE;
 
@@ -78,6 +84,11 @@ private:
 	_vector				m_PlayerPosition = _vector();
 	_vector				m_MyPosition = _vector();
 	_float					m_TargetDistance = 0.f;
+
+private:
+	_bool					m_Dodge = FALSE;
+	_bool					m_Hit = FALSE;
+	_double				m_AccDodgeTime = 0.0;
 
 
 private:

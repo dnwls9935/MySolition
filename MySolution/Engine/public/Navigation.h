@@ -44,6 +44,9 @@ private:
 
 public:
 	HRESULT	SetUpNeighbor();
+
+public:
+	void		SettingDefaultIndex(class CTransform* _Transform);
 	
 private:
 	vector<class Cell*>*					m_Cells = nullptr;

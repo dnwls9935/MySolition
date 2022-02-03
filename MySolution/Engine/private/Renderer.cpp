@@ -38,32 +38,32 @@ HRESULT CRenderer::NativeConstruct_Prototype()
 	RTDesc.Color = _float4(0.f, 1.f, 0.f, 1.f);
 	if (FAILED(m_RenderTargetManager->AddRenderTarget(m_pDevice, m_pDeviceContext, TEXT("Target_Shade"), RTDesc)))
 		return E_FAIL;*/
-
+/*
 	if (FAILED(m_RenderTargetManager->AddMRT(TEXT("MRT_Deferred"), TEXT("Target_Diffuse"))))
 		return E_FAIL;
 	if (FAILED(m_RenderTargetManager->AddMRT(TEXT("MRT_Deferred"), TEXT("Target_Normal"))))
-		return E_FAIL;
+		return E_FAIL;*/
 	/*if (FAILED(m_RenderTargetManager->AddMRT(TEXT("MRT_LightAcc"), TEXT("Target_Shade"))))
 		return E_FAIL;*/
 
 
 #ifdef _DEBUG
-	/*RenderTargetManager::DBDESC DBDesc;
-	ZeroMemory(&DBDesc, sizeof(RenderTargetManager::DBDESC));
-	DBDesc.X = 0.f;
-	DBDesc.Y = 0.f;
-	DBDesc.SizeX = 200.f;
-	DBDesc.SizeY = 200.f;
-	if (FAILED(m_RenderTargetManager->ReadyDebugBuffer(TEXT("Target_Diffuse"), DBDesc)))
-		return E_FAIL;
+	//RenderTargetManager::DBDESC DBDesc;
+	//ZeroMemory(&DBDesc, sizeof(RenderTargetManager::DBDESC));
+	//DBDesc.X = 0.f;
+	//DBDesc.Y = 0.f;
+	//DBDesc.SizeX = 200.f;
+	//DBDesc.SizeY = 200.f;
+	//if (FAILED(m_RenderTargetManager->ReadyDebugBuffer(TEXT("Target_Diffuse"), DBDesc)))
+	//	return E_FAIL;
 
-	ZeroMemory(&DBDesc, sizeof(RenderTargetManager::DBDESC));
-	DBDesc.X = 0.f;
-	DBDesc.Y = 200.f;
-	DBDesc.SizeX = 200.f;
-	DBDesc.SizeY = 200.f;
-	if (FAILED(m_RenderTargetManager->ReadyDebugBuffer(TEXT("Target_Normal"), DBDesc)))
-		return E_FAIL;*/
+	//ZeroMemory(&DBDesc, sizeof(RenderTargetManager::DBDESC));
+	//DBDesc.X = 0.f;
+	//DBDesc.Y = 200.f;
+	//DBDesc.SizeX = 200.f;
+	//DBDesc.SizeY = 200.f;
+	//if (FAILED(m_RenderTargetManager->ReadyDebugBuffer(TEXT("Target_Normal"), DBDesc)))
+	//	return E_FAIL;
 
 	/*ZeroMemory(&DBDesc, sizeof(RenderTargetManager::DBDESC));
 	DBDesc.X = 0.f;
@@ -113,8 +113,8 @@ HRESULT CRenderer::Draw_RenderGroup()
 		return E_FAIL;
 
 #ifdef _DEBUG
-	/*if (FAILED(m_RenderTargetManager->RenderDebugBuffer(TEXT("MRT_Deferred"))))
-		return E_FAIL;*/
+	//if (FAILED(m_RenderTargetManager->RenderDebugBuffer(TEXT("MRT_Deferred"))))
+	//	return E_FAIL;
 	//if (FAILED(m_RenderTargetManager->RenderDebugBuffer(TEXT("MRT_LightAcc"))))
 	//	return E_FAIL;
 #endif // _DEBUG

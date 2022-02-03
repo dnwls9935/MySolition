@@ -97,6 +97,9 @@
     <Filter Include="02.GameObject\Monster\Boss\PrimeBeast\BossPrimeBeastRock">
       <UniqueIdentifier>{101d07fb-dd40-450c-901a-601f21b06e17}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\GlacialFlowWall">
+      <UniqueIdentifier>{cfb5f637-f81c-4ca8-a516-4e7b2b3f7a79}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -183,6 +186,9 @@
     <ClInclude Include="..\public\BossPrimeBeastRock.h">
       <Filter>02.GameObject\Monster\Boss\PrimeBeast\BossPrimeBeastRock</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\GlacialFlowWall.h">
+      <Filter>02.GameObject\GlacialFlowWall</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -253,6 +259,9 @@
     </ClCompile>
     <ClCompile Include="..\private\BossPrimeBeastRock.cpp">
       <Filter>02.GameObject\Monster\Boss\PrimeBeast\BossPrimeBeastRock</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\GlacialFlowWall.cpp">
+      <Filter>02.GameObject\GlacialFlowWall</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -154,6 +154,36 @@ void CTransform::SetUp_Rotation(_fvector vAxis, _float fRadian)
 	Set_State(CTransform::STATE_LOOK, vLook);
 }
 
+void CTransform::GoSideBDodge(_double TimeDelta)
+{
+	//_matrix		RotationMatrix = XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 1.f), -30.f);
+	//_vector		vPosition = Get_State(CTransform::STATE_POSITION);
+	//_vector		Look = Get_State(CTransform::STATE_LOOK);
+	//Look = XMVector4Transform(Look, RotationMatrix);
+
+	//vPosition += XMVector3Normalize(Look) * m_TransformDesc.fSpeedPerSec * (_float)TimeDelta;
+	//Set_State(CTransform::STATE_POSITION, vPosition);
+}
+
+_bool CTransform::GoSideFDodge(_double TimeDelta, class Navigation* _Navigation)
+{
+	_matrix		RotationMatrix = XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 1.f), XMConvertToRadians(-60.f));
+	_vector		vPosition = Get_State(CTransform::STATE_POSITION);
+	_vector		Look  = Get_State(CTransform::STATE_LOOK);
+	Look = XMVector4Transform(Look, RotationMatrix);
+
+	vPosition += XMVector3Normalize(Look) * m_TransformDesc.fSpeedPerSec * (_float)TimeDelta;
+	
+	if (nullptr == _Navigation ||
+		TRUE == _Navigation->MoveOnNavigation(vPosition))
+	{
+		Set_State(CTransform::STATE_POSITION, vPosition);
+		return TRUE;
+	}
+	else
+		return FALSE;
+}
+
 
 CTransform * CTransform::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 {

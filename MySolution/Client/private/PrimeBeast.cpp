@@ -65,11 +65,25 @@ HRESULT PrimeBeast::NativeConstruct(void * pArg)
 	m_Terrain = pGameInstance->GetObjectList(LEVEL_GAMEPLAY, TEXT("Layer_Terrain")).front();
 
 	RELEASE_INSTANCE(CGameInstance);
+
+	m_Navigation->SettingDefaultIndex(m_pTransformCom);
+
 	return S_OK;
 }
 
 _int PrimeBeast::Tick(_double TimeDelta)
 {
+	if (TRUE == m_Dead)
+	{
+		m_pModelCom->Update_CombinedTransformationMatrix(TimeDelta);
+		return _int();
+	}
+
+	if (TRUE == m_Hit && m_AccDodgeTime >= 6)
+		m_Dodge = TRUE;
+	else
+		m_AccDodgeTime += TimeDelta;
+
 	GetTargetDistance();
 	Animation(TimeDelta);
 	
@@ -79,10 +93,21 @@ _int PrimeBeast::Tick(_double TimeDelta)
 		m_pModelCom->Update_CombinedTransformationMatrix(0.0);
 	m_ColliderCom->Update(m_pTransformCom->Get_WorldMatrix());
 
+	if ((_uint)ANIMATION_STATE::ATT_TR_V1 == m_pModelCom->GetCurrentAnimation() ||
+		(_uint)ANIMATION_STATE::DODGE_L == m_pModelCom->GetCurrentAnimation())
+	{
+		_vector Look = m_PlayerPosition - m_MyPosition;
+		Look = XMVector3Normalize(Look);
+		_vector Right = XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), Look);
+		m_pTransformCom->Set_State(CTransform::STATE_RIGHT, Right);
+		m_pTransformCom->Set_State(CTransform::STATE_LOOK, Look);
+	}
+
+
 	HitCheck();
 
 #ifdef _DEBUG
-/*
+
 	_matrix BoneMatrix = XMMatrixIdentity();
 	_matrix Transform = XMMatrixIdentity();
 	_matrix OffsetMatrix = XMMatrixIdentity();
@@ -110,7 +135,7 @@ _int PrimeBeast::Tick(_double TimeDelta)
 	Combined = m_lHand2Bone->Get_CombinedMatrix();
 	BoneMatrix = Transform * OffsetMatrix * Combined * PivotMatrix * XMMatrixRotationY(XMConvertToRadians(180.f)) * WorldMatrix;
 	m_ColliderSphere4->Update(BoneMatrix);
-*/
+
 #endif // _DEBUG
 
 	return _int();
@@ -123,8 +148,19 @@ _int PrimeBeast::LateTick(_double TimeDelta)
 
 	if (m_pModelCom->GetAnimationFinished())
 	{
-		if((_uint)ANIMATION_STATE::SPAWN_WALLJUMP == m_pModelCom->GetCurrentAnimation())
+		if ((_uint)ANIMATION_STATE::SPAWN_WALLJUMP == m_pModelCom->GetCurrentAnimation())
 			m_IntroEnd = TRUE;
+
+		//else if ((_uint)ANIMATION_STATE::ATT_TR_V1 == m_pModelCom->GetCurrentAnimation())
+			//m_Dodge = TRUE;
+
+		else if ((_uint)ANIMATION_STATE::DODGE_L == m_pModelCom->GetCurrentAnimation())
+		{
+			m_Dodge = FALSE;
+			m_Hit = FALSE;
+			m_AccDodgeTime = 0.0;
+		}
+
 		m_pModelCom->SetUp_AnimationIndex((_int)ANIMATION_STATE::RUN_F_V1);
 	}
 
@@ -134,7 +170,6 @@ _int PrimeBeast::LateTick(_double TimeDelta)
 		if (m_pModelCom->GetAnimationFinished())
 		{
 			m_Dead = TRUE;
-			return m_Dead;
 		}
 	}
 
@@ -143,6 +178,9 @@ _int PrimeBeast::LateTick(_double TimeDelta)
 
 HRESULT PrimeBeast::Render()
 {
+	if (TRUE == m_Dead)
+		return S_OK;
+
 	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 
 	m_pModelCom->SetUp_ValueOnShader("g_WorldMatrix", &XMMatrixTranspose(m_pTransformCom->Get_WorldMatrix()), sizeof(_matrix));
@@ -160,11 +198,11 @@ HRESULT PrimeBeast::Render()
 	}
 
 //#ifdef _DEBUG
-//	m_ColliderCom->Render();
-//	m_ColliderSphere1->Render();
-//	m_ColliderSphere2->Render();
-//	m_ColliderSphere3->Render();
-//	m_ColliderSphere4->Render();
+	m_ColliderCom->Render();
+	m_ColliderSphere1->Render();
+	m_ColliderSphere2->Render();
+	m_ColliderSphere3->Render();
+	m_ColliderSphere4->Render();
 //#endif // _DEBUG
 
 	RELEASE_INSTANCE(CGameInstance);
@@ -222,7 +260,8 @@ void PrimeBeast::HitCheck()
 
 		if (TRUE == m_ColliderCom->CollisionAABBToRay(CalDesc._rayPos, CalDesc._rayDir, Distance))
 		{
-			m_HP--;
+			m_HP-=300;
+			m_Hit = TRUE;
 			HitBullet::EFFECTDESC EffectDesc;
 			ZeroMemory(&EffectDesc, sizeof(HitBullet::EFFECTDESC));
 			XMStoreFloat3(&EffectDesc.Position, CalDesc._rayPos + CalDesc._rayDir * Distance);
@@ -244,13 +283,16 @@ void PrimeBeast::Animation(_double TimeDelta)
 			m_FrameStart = TRUE;
 	}else if(m_FrameStart && m_IntroEnd)
 	{
-		if (10 >= m_TargetDistance)
+		if (FALSE == m_Dodge)
 		{
-			Attack();
+			if (10 >= m_TargetDistance)
+				Attack();
+			else
+				Moving(TimeDelta);
 		}
 		else
 		{
-			Moving(TimeDelta);
+			Dodge(TimeDelta);
 		}
 	}
 }
@@ -284,7 +326,16 @@ void PrimeBeast::Attack()
 			return;
 	}
 
+
 	RELEASE_INSTANCE(CGameInstance);
+}
+
+void PrimeBeast::Dodge(_double TimeDelta)
+{
+	if (TRUE == m_pTransformCom->GoSideFDodge(TimeDelta * 2.5f, m_Navigation))
+		m_pModelCom->SetUp_AnimationIndex((_uint)ANIMATION_STATE::DODGE_L);
+	else
+		m_pTransformCom->Chase_Target(static_cast<CTransform*>(m_TargetPlayer->GetComponent(TEXT("Com_Transform"))), TimeDelta);
 }
 
 HRESULT PrimeBeast::SetUp_Components()
@@ -304,6 +355,11 @@ HRESULT PrimeBeast::SetUp_Components()
 	/* Com_Model */
 	if (FAILED(__super::SetUp_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_PrimeBeast"), TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
 		return E_FAIL;
+
+	/* Com_Navigation*/
+	if (FAILED(__super::SetUp_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Navigation"), TEXT("Com_Navigation"), (CComponent**)&m_Navigation)))
+		return E_FAIL;
+
 
 	/* Com_Model */
 	CCollider::COLLISIONDESC CollisionDesc;
@@ -374,4 +430,5 @@ void PrimeBeast::Free()
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pRendererCom);
+	Safe_Release(m_Navigation);
 }

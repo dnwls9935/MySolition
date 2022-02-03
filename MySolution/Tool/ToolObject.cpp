@@ -173,13 +173,13 @@ void ToolObject::KeyCheck(_double TimeDelta)
 {
 	CGameInstance* gameInstance = GET_INSTANCE(CGameInstance);
 	if (gameInstance->Get_DIKeyState(DIK_W) & 0x80)
-		m_pTransformCom->Go_Straight(TimeDelta * 5.f);
+		m_pTransformCom->Go_Straight(TimeDelta * 2.f);
 	if (gameInstance->Get_DIKeyState(DIK_S) & 0x80)
-		m_pTransformCom->Go_BackWard(TimeDelta * 5.f);
+		m_pTransformCom->Go_BackWard(TimeDelta * 2.f);
 	if (gameInstance->Get_DIKeyState(DIK_D) & 0x80)
-		m_pTransformCom->Go_Right(TimeDelta * 5.f);
+		m_pTransformCom->Go_Right(TimeDelta * 2.f);
 	if (gameInstance->Get_DIKeyState(DIK_A) & 0x80)
-		m_pTransformCom->Go_Left(TimeDelta * 5.f);
+		m_pTransformCom->Go_Left(TimeDelta * 2.f);
 
 	RELEASE_INSTANCE(CGameInstance);
 }

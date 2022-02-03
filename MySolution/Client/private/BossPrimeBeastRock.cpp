@@ -69,7 +69,7 @@ _int BossPrimeBeastRock::LateTick(_double TimeDelta)
 		m_Dead = TRUE;
 
 	if (m_ColliderCom->CollisionSphereToAABB(static_cast<CCollider*>(m_PrbDesc.m_Target->GetComponent(TEXT("Com_AABB"))))) {
-		m_PrbDesc.m_Target->SetHp(-1);
+		m_PrbDesc.m_Target->SetHp(-100);
 		m_Dead = TRUE;
 	}
 
@@ -106,6 +106,9 @@ HRESULT BossPrimeBeastRock::Render()
 
 void BossPrimeBeastRock::CheckState(_double TimeDelta)
 {
+	if (0 >= m_PrbDesc.m_PrimeBeast->GetHP())
+		return;
+
 	_int		ThrowAnimationFrame = 0;
 	switch (m_PrbDesc.m_Type_Attack)
 	{
@@ -144,7 +147,7 @@ HRESULT BossPrimeBeastRock::SetUp_Components()
 {
 	/* Com_Transform */
 	CTransform::TRANSFORMDESC		TransformDesc;
-	TransformDesc.fSpeedPerSec = 40.f;
+	TransformDesc.fSpeedPerSec = 30.f;
 	TransformDesc.fRotationPerSec = XMConvertToRadians(120.0f);
 
 	if (FAILED(__super::SetUp_Components(LEVEL_STATIC, TEXT("Prototype_Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &TransformDesc)))
@@ -202,4 +205,5 @@ void BossPrimeBeastRock::Free()
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_RockModel);
 	Safe_Release(m_pRendererCom);
+	Safe_Release(m_ColliderCom);
 }

@@ -1,7 +1,7 @@
 #include "..\public\Navigation.h"
-
+#include "Transform.h"
 #include "Cell.h"
-#include <iostream>
+
 Navigation::Navigation(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CComponent(pDevice, pDeviceContext)
 {
@@ -168,6 +168,19 @@ HRESULT Navigation::SetUpNeighbor()
 		}
 	}
 	return S_OK;
+}
+
+void Navigation::SettingDefaultIndex(CTransform* _Transform)
+{
+	_vector MyPosition = _Transform->Get_State(CTransform::STATE_POSITION);
+	Cell* pCell = nullptr;
+
+	for (auto& Cell : (*m_Cells))
+	{
+		if (TRUE == Cell->IsIn(MyPosition, &pCell)) {
+			m_CurrentCellIndex = Cell->GetIndex();
+		}
+	}
 }
 
 Navigation * Navigation::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext,const _tchar* _NavigationFilePath)

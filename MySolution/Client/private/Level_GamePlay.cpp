@@ -24,7 +24,7 @@ HRESULT CLevel_GamePlay::NativeConstruct()
 	if (FAILED(Ready_Layer_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
 
-	HANDLE hFile = CreateFile(L"../Bin/Data/BossBatch.dat", GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+	HANDLE hFile = CreateFile(L"../Bin/Data/Finally.dat", GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
 	if (0 == hFile)
 		return E_FAIL;
 	if (FAILED(LoadData(hFile)))
@@ -236,8 +236,8 @@ HRESULT CLevel_GamePlay::LoadEnvironment(HANDLE & hFile)
 			break;
 		case CGameObject::OBJTYPE_ID::ENEMY:
 		{
-			/*if (FAILED(pGameInstance->Add_GameObjectToLayer(LEVEL_GAMEPLAY, TEXT("Layer_Enemy"), pToolObjDesc.m_ObjTag, &pToolObjDesc)))
-				return E_FAIL;*/
+			if (FAILED(pGameInstance->Add_GameObjectToLayer(LEVEL_GAMEPLAY, TEXT("Layer_Enemy"), pToolObjDesc.m_ObjTag, &pToolObjDesc)))
+				return E_FAIL;
 		}
 			break;
 		case CGameObject::OBJTYPE_ID::BOSS:
@@ -245,7 +245,20 @@ HRESULT CLevel_GamePlay::LoadEnvironment(HANDLE & hFile)
 			if (FAILED(pGameInstance->Add_GameObjectToLayer(LEVEL_GAMEPLAY, TEXT("Layer_Enemy"), pToolObjDesc.m_ObjTag, &pToolObjDesc)))
 				return E_FAIL;
 		}
-		break;
+			break;
+		case CGameObject::OBJTYPE_ID::COLLISION_ENVIORNMENT:
+		{
+			if (0 == lstrcmp(pToolObjDesc.m_ObjTag, TEXT("GlacialFlowWall")))
+			{
+				if (FAILED(pGameInstance->Add_GameObjectToLayer(LEVEL_GAMEPLAY, TEXT("Layer_Wall"), pToolObjDesc.m_ObjTag, &pToolObjDesc)))
+					return E_FAIL;
+			}
+			else {
+				if (FAILED(pGameInstance->Add_GameObjectToLayer(LEVEL_GAMEPLAY, TEXT("Layer_Envrionment"), TEXT("Prototype_GameObject_Model_EnvironmentObject"), &pToolObjDesc)))
+					return E_FAIL;
+			}
+		}
+			break;
 		}
 	}
 	RELEASE_INSTANCE(CGameInstance);

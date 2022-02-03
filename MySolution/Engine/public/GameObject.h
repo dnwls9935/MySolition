@@ -8,7 +8,7 @@ BEGIN(Engine)
 class ENGINE_DLL CGameObject abstract : public CBase
 {
 public:
-	enum class OBJTYPE_ID { ENVIRONMENT, TERRAIN, INTERACTION , PLAYER, PLAYER_WEAPONE, ENEMY,ENEMY_OBJECT ,BOSS,  OBJTYPE_END};
+	enum class OBJTYPE_ID { ENVIRONMENT,  COLLISION_ENVIORNMENT, TERRAIN, INTERACTION , PLAYER, PLAYER_WEAPONE, ENEMY,ENEMY_OBJECT ,BOSS, OBJTYPE_END};
 
 public:
 	typedef struct tagToolObjectDesc {
@@ -32,6 +32,13 @@ public:
 	virtual _int Tick(_double TimeDelta);
 	virtual _int LateTick(_double TimeDelta);
 	virtual HRESULT Render();
+
+	_int		GetHP() const { 
+		return m_HP; 
+	};
+	_bool		GetDead() const {
+		return m_Dead;
+	};
 
 public:
 	class CComponent*		GetComponent(const _tchar* _componentTag);

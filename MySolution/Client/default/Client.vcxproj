@@ -175,6 +175,7 @@
     <ClInclude Include="..\public\DahlEpicCrate.h" />
     <ClInclude Include="..\public\DahlWeaponLocker.h" />
     <ClInclude Include="..\public\EnvironmentObject.h" />
+    <ClInclude Include="..\public\GlacialFlowWall.h" />
     <ClInclude Include="..\public\HitBullet.h" />
     <ClInclude Include="..\public\HyperionChest.h" />
     <ClInclude Include="..\public\Level_GamePlay.h" />
@@ -202,6 +203,7 @@
     <ClCompile Include="..\private\DahlEpicCrate.cpp" />
     <ClCompile Include="..\private\DahlWeaponLocker.cpp" />
     <ClCompile Include="..\private\EnvironmentObject.cpp" />
+    <ClCompile Include="..\private\GlacialFlowWall.cpp" />
     <ClCompile Include="..\private\HitBullet.cpp" />
     <ClCompile Include="..\private\HyperionChest.cpp" />
     <ClCompile Include="..\private\Level_GamePlay.cpp" />
