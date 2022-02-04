@@ -69,7 +69,8 @@ HRESULT BossPrimeBeast::NativeConstruct(void * pArg)
 	m_Terrain = pGameInstance->GetObjectList(LEVEL_GAMEPLAY, TEXT("Layer_Terrain")).front();
 	RELEASE_INSTANCE(CGameInstance);
 
-	m_NavigationCom->SetCurrentCellIndex(32);
+	//
+	m_NavigationCom->SettingDefaultIndex(m_pTransformCom);
 
 	return S_OK;
 }
@@ -484,7 +485,7 @@ HRESULT BossPrimeBeast::SetUp_Components()
 {
 	/* Com_Transform */
 	CTransform::TRANSFORMDESC		TransformDesc;
-	TransformDesc.fSpeedPerSec = 6.f;
+	TransformDesc.fSpeedPerSec = 10.f;
 	TransformDesc.fRotationPerSec = XMConvertToRadians(60.0f);
 
 	if (FAILED(__super::SetUp_Components(LEVEL_STATIC, TEXT("Prototype_Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &TransformDesc)))

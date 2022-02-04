@@ -52,6 +52,8 @@ private:
 	void		Attack();
 	void		Dodge(_double TimeDelta);
 
+	void		UpdateCollider(_double _TimeDelta);
+
 private:
 	CRenderer*				m_pRendererCom = nullptr;
 	CTransform*				m_pTransformCom = nullptr;

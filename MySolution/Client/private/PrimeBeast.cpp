@@ -103,39 +103,7 @@ _int PrimeBeast::Tick(_double TimeDelta)
 
 
 	HitCheck();
-
-#ifdef _DEBUG
-
-	_matrix BoneMatrix = XMMatrixIdentity();
-	_matrix Transform = XMMatrixIdentity();
-	_matrix OffsetMatrix = XMMatrixIdentity();
-	_matrix Combined = XMMatrixIdentity();
-	_matrix PivotMatrix = XMMatrixIdentity();
-	_matrix WorldMatrix = XMMatrixIdentity();
-
-	Transform = XMMatrixIdentity();
-	OffsetMatrix = m_rHand1Bone->Get_OffsetMatrix();
-	Combined = m_rHand1Bone->Get_CombinedMatrix();
-	PivotMatrix = m_pModelCom->Get_PivotMatrix();
-	WorldMatrix = m_pTransformCom->Get_WorldMatrix();
-
-	BoneMatrix = Transform * OffsetMatrix * Combined * PivotMatrix * XMMatrixRotationY(XMConvertToRadians(180.f)) * WorldMatrix;
-	m_ColliderSphere1->Update(BoneMatrix);
-
-	Combined = m_rHand2Bone->Get_CombinedMatrix();
-	BoneMatrix = Transform * OffsetMatrix * Combined * PivotMatrix * XMMatrixRotationY(XMConvertToRadians(180.f)) * WorldMatrix;
-	m_ColliderSphere2->Update(BoneMatrix);
-
-	Combined = m_lHand1Bone->Get_CombinedMatrix();
-	BoneMatrix = Transform * OffsetMatrix * Combined * PivotMatrix * XMMatrixRotationY(XMConvertToRadians(180.f)) * WorldMatrix;
-	m_ColliderSphere3->Update(BoneMatrix);
-
-	Combined = m_lHand2Bone->Get_CombinedMatrix();
-	BoneMatrix = Transform * OffsetMatrix * Combined * PivotMatrix * XMMatrixRotationY(XMConvertToRadians(180.f)) * WorldMatrix;
-	m_ColliderSphere4->Update(BoneMatrix);
-
-#endif // _DEBUG
-
+	UpdateCollider(TimeDelta);
 	return _int();
 }
 
@@ -275,11 +243,11 @@ void PrimeBeast::HitCheck()
 
 void PrimeBeast::Animation(_double TimeDelta)
 {
-	if (!m_FrameStart)
+	if (FALSE == m_FrameStart)
 	{
 		if(TRUE == static_cast<CCollider*>(m_Terrain->GetComponent(TEXT("Com_FirstColliderCom")))->GetIsCollision())
 			m_FrameStart = TRUE;
-	}else if(m_FrameStart && m_IntroEnd)
+	}else if(TRUE == m_FrameStart && TRUE == m_IntroEnd)
 	{
 		if (FALSE == m_Dodge)
 		{
@@ -334,6 +302,42 @@ void PrimeBeast::Dodge(_double TimeDelta)
 		m_pModelCom->SetUp_AnimationIndex((_uint)ANIMATION_STATE::DODGE_L);
 	else
 		m_pTransformCom->Chase_Target(static_cast<CTransform*>(m_TargetPlayer->GetComponent(TEXT("Com_Transform"))), TimeDelta);
+}
+
+void PrimeBeast::UpdateCollider(_double _TimeDelta)
+{
+#ifdef _DEBUG
+	_matrix BoneMatrix = XMMatrixIdentity();
+	_matrix Transform = XMMatrixIdentity();
+	_matrix OffsetMatrix = XMMatrixIdentity();
+	_matrix Combined = XMMatrixIdentity();
+	_matrix PivotMatrix = XMMatrixIdentity();
+	_matrix WorldMatrix = XMMatrixIdentity();
+
+	Transform = XMMatrixIdentity();
+	OffsetMatrix = m_rHand1Bone->Get_OffsetMatrix();
+	Combined = m_rHand1Bone->Get_CombinedMatrix();
+	PivotMatrix = m_pModelCom->Get_PivotMatrix();
+	WorldMatrix = m_pTransformCom->Get_WorldMatrix();
+
+	BoneMatrix = Transform * OffsetMatrix * Combined * PivotMatrix * XMMatrixRotationY(XMConvertToRadians(180.f)) * WorldMatrix;
+	m_ColliderSphere1->Update(BoneMatrix);
+
+	OffsetMatrix = m_rHand2Bone->Get_OffsetMatrix();
+	Combined = m_rHand2Bone->Get_CombinedMatrix();
+	BoneMatrix = Transform * OffsetMatrix * Combined * PivotMatrix * XMMatrixRotationY(XMConvertToRadians(180.f)) * WorldMatrix;
+	m_ColliderSphere2->Update(BoneMatrix);
+
+	OffsetMatrix = m_lHand1Bone->Get_OffsetMatrix();
+	Combined = m_lHand1Bone->Get_CombinedMatrix();
+	BoneMatrix = Transform * OffsetMatrix * Combined * PivotMatrix * XMMatrixRotationY(XMConvertToRadians(180.f)) * WorldMatrix;
+	m_ColliderSphere3->Update(BoneMatrix);
+
+	OffsetMatrix = m_lHand2Bone->Get_OffsetMatrix();
+	Combined = m_lHand2Bone->Get_CombinedMatrix();
+	BoneMatrix = Transform * OffsetMatrix * Combined * PivotMatrix * XMMatrixRotationY(XMConvertToRadians(180.f)) * WorldMatrix;
+	m_ColliderSphere4->Update(BoneMatrix);
+#endif // _DEBUG
 }
 
 HRESULT PrimeBeast::SetUp_Components()

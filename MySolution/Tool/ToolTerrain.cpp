@@ -116,6 +116,9 @@ HRESULT ToolTerrain::Render()
 	for (auto& pNaviPoint : m_NaviPoints)
 		pNaviPoint->Render();
 
+#ifdef _DEBUG
+	m_NavigationCom->Render();
+#endif // _DEBUG
 
 	return S_OK;
 }

@@ -41,14 +41,28 @@ HRESULT GlcialFlowWall::NativeConstruct(void * pArg)
 	m_pTransformCom->Set_State(CTransform::STATE_UP, Transform.r[1]);
 	m_pTransformCom->Set_State(CTransform::STATE_LOOK, Transform.r[2]);
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, Transform.r[3]);
-	
+
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+	m_Terrain = pGameInstance->GetObjectList(LEVEL_GAMEPLAY, TEXT("Layer_Terrain")).front();
+	RELEASE_INSTANCE(CGameInstance);
+
+
 	return S_OK;
 }
+
 
 _int GlcialFlowWall::Tick(_double TimeDelta)
 {
 	m_ColliderAABB->Update(m_pTransformCom->Get_WorldMatrix());
 
+	if (nullptr != m_Terrain)
+	{
+		if (TRUE == static_cast<CCollider*>(m_Terrain->GetComponent(TEXT("Com_BossColliderCom")))->GetIsCollision())
+		{
+			m_Show = TRUE;
+		}
+	}
+	
 	return _int();
 }
 
@@ -62,6 +76,9 @@ _int GlcialFlowWall::LateTick(_double TimeDelta)
 
 HRESULT GlcialFlowWall::Render()
 {
+	if (FALSE == m_Show)
+		return E_FAIL;
+
 	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 
 	m_ModelCom->SetUp_ValueOnShader("g_WorldMatrix", &XMMatrixTranspose(m_pTransformCom->Get_WorldMatrix()), sizeof(_matrix));
@@ -79,8 +96,11 @@ HRESULT GlcialFlowWall::Render()
 	}
 
 #ifdef _DEBUG
-	if (FAILED(m_ColliderAABB->Render()))
-		return E_FAIL;
+	if (TRUE == m_Show)
+	{
+		if (FAILED(m_ColliderAABB->Render()))
+			return E_FAIL;
+	}
 #endif // _DEBUG
 
 	RELEASE_INSTANCE(CGameInstance);

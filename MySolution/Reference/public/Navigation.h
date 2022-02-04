@@ -45,6 +45,9 @@ private:
 public:
 	HRESULT	SetUpNeighbor();
 
+private:
+	void SortingCCW(_float3*	_Points);
+
 public:
 	void		SettingDefaultIndex(class CTransform* _Transform);
 	

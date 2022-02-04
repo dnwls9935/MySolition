@@ -46,9 +46,10 @@ HRESULT CPlayer::NativeConstruct(void * pArg)
 	m_WeaponBone = m_pModelCom->Get_BoneMatrix("R_Weapon_Bone");
 	m_pModelCom->SetUp_AnimationIndex((_int)ANIMATION_STATE::IDLE);
 
-	m_Navigation->SetCurrentCellIndex(0);
+	m_Navigation->SettingDefaultIndex(m_pTransformCom);
 
 	m_HP = 1000;
+
 
 	return S_OK;
 }
@@ -175,7 +176,8 @@ void CPlayer::KeyCheck(_double TimeDelta)
 {
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 
-	if (pGameInstance->Get_DIKeyState(DIK_LSHIFT) & 0x80)
+	if ((_int)ANIMATION_STATE::RE_HYPERION != m_pModelCom->GetCurrentAnimation() &&
+		pGameInstance->Get_DIKeyState(DIK_LSHIFT) & 0x80)
 	{
 		if (pGameInstance->Get_DIKeyState(DIK_W) & 0x8000)
 		{
@@ -210,7 +212,8 @@ void CPlayer::KeyCheck(_double TimeDelta)
 		if (pGameInstance->Get_DIKeyState(DIK_D) & 0x8000)
 		{
 			m_pTransformCom->Go_Right(TimeDelta, m_Navigation);
-			m_pModelCom->SetUp_AnimationIndex((_int)ANIMATION_STATE::RUN_R);
+			if ((_int)ANIMATION_STATE::RE_HYPERION != m_pModelCom->GetCurrentAnimation())
+				m_pModelCom->SetUp_AnimationIndex((_int)ANIMATION_STATE::RUN_R);
 			m_Move = MOVE_TYPE::RIGHT;
 		}
 		if (pGameInstance->Get_DIKeyState(DIK_R) & 0x80)

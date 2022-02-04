@@ -67,13 +67,13 @@ HRESULT TapMap::SaveNavigation(HANDLE & hFile)
 	{
 		_float3 Points;
 		XMStoreFloat3(&Points , Cell->GetPoint(Cell::POINT::POINT_1st));
-		//WriteFile(hFile, &Points, sizeof(_float3), &dwByte, nullptr);
+		WriteFile(hFile, &Points, sizeof(_float3), &dwByte, nullptr);
 
 		XMStoreFloat3(&Points, Cell->GetPoint(Cell::POINT::POINT_2nd));
-		//WriteFile(hFile, &Points, sizeof(_float3), &dwByte, nullptr);
+		WriteFile(hFile, &Points, sizeof(_float3), &dwByte, nullptr);
 
 		XMStoreFloat3(&Points, Cell->GetPoint(Cell::POINT::POINT_3rd));
-		//WriteFile(hFile, &Points, sizeof(_float3), &dwByte, nullptr);
+		WriteFile(hFile, &Points, sizeof(_float3), &dwByte, nullptr);
 	}
 
 	RELEASE_INSTANCE(CGameInstance);
@@ -174,7 +174,7 @@ HRESULT TapMap::LoadNavigation(HANDLE & hFile)
 	_int size = 0;
 	ReadFile(hFile, &size, sizeof(_int), &dwByte, nullptr);
 
-	/*for (_int i = 0; i < size; i++)
+	for (_int i = 0; i < size; i++)
 	{
 		_float3 Points[3];
 		_float3 Point;
@@ -188,7 +188,7 @@ HRESULT TapMap::LoadNavigation(HANDLE & hFile)
 		Points[2] = Point;
 
 		static_cast<Navigation*>(pGameInstance->GetObjectList(1, TEXT("Terrain")).front()->GetComponent(TEXT("Com_Navigation")))->AddCell(Points, TEXT("../Client/Bin/ShaderFiles/Shader_TriangleToLine.hlsl"));
-	}*/
+	}
 	RELEASE_INSTANCE(CGameInstance);
 	return S_OK;
 }

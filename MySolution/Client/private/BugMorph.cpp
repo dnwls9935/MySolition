@@ -46,9 +46,33 @@ HRESULT BugMorph::NativeConstruct(void * pArg)
 	m_HP = 2000;
 	m_pModelCom->SetUp_AnimationIndex((_int)ANIMATION_STATE::SPAWN);
 
+
+	m_LowerJawBone = m_pModelCom->Get_BoneMatrix("LowerJaw");
+	if (nullptr == m_LowerJawBone)
+		return E_FAIL;
+
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
-	m_TargetObjectList = &pGameInstance->GetObjectList(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
+	list<CGameObject*> TargetObjectList = pGameInstance->GetObjectList(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
+
+	auto& iter = TargetObjectList.begin();
+	advance(iter, 0);
+	m_TargetPlayer = *iter;
+	if (nullptr == m_TargetPlayer)
+		return E_FAIL;
+
+	advance(iter, 1);
+	m_TargetPlayerWeapon = *iter;
+	if (nullptr == m_TargetPlayerWeapon)
+		return E_FAIL;
+	
+
+	m_Terrain = pGameInstance->GetObjectList(LEVEL_GAMEPLAY,TEXT("Layer_Terrain")).front();
+	if (nullptr == m_Terrain)
+		return E_FAIL;
+
 	RELEASE_INSTANCE(CGameInstance);
+
+	m_Navigation->SettingDefaultIndex(m_pTransformCom);
 	return S_OK;
 }
 
@@ -56,19 +80,26 @@ _int BugMorph::Tick(_double TimeDelta)
 {
 	if (TRUE == m_Dead)
 	{
+		m_pModelCom->SetUp_AnimationIndex((_uint)ANIMATION_STATE::DEA_CRITICAL);
 		m_pModelCom->Update_CombinedTransformationMatrix(TimeDelta);
 		return _int();
 	}
-	Animation();
-	
+	GetTargetDistance();
+	Animation(TimeDelta);
 
-	if(TRUE == m_FrameStart)
-		m_pModelCom->Update_CombinedTransformationMatrix(TimeDelta);
+	if (TRUE == m_FrameStart)
+	{
+		if ((_uint)ANIMATION_STATE::ATT_BITE == m_pModelCom->GetCurrentAnimation())
+			m_pModelCom->Update_CombinedTransformationMatrix(TimeDelta * 0.7f);
+		else
+			m_pModelCom->Update_CombinedTransformationMatrix(TimeDelta);
+	}
 	else
 		m_pModelCom->Update_CombinedTransformationMatrix(0.0);
 	m_ColliderCom->Update(m_pTransformCom->Get_WorldMatrix());
 
 	HitCheck();
+	UpdateCollider(TimeDelta);
 
 	return _int();
 }
@@ -80,18 +111,21 @@ _int BugMorph::LateTick(_double TimeDelta)
 
 	if (m_pModelCom->GetAnimationFinished())
 	{
-		m_pModelCom->SetUp_AnimationIndex((_int)ANIMATION_STATE::IDLE_FLIGHT);
-	}
+		if ((_uint)ANIMATION_STATE::SPAWN == m_pModelCom->GetCurrentAnimation())
+			m_IntroEnd = TRUE;
 
-	//m_ColliderCom->CollisionAABB((CCollider*)m_TargetObject->GetComponent(TEXT("Com_AABB")));
+		else  if ((_uint)ANIMATION_STATE::ATT_BITE == m_pModelCom->GetCurrentAnimation())
+			m_Dodge = TRUE;
+
+		m_pModelCom->SetUp_AnimationIndex((_int)ANIMATION_STATE::RUN_F);
+	}
 
 	if (0 >= m_HP)
 	{
-		m_pModelCom->SetUp_AnimationIndex((_uint)ANIMATION_STATE::DEATH_CRITICAL);
+		m_pModelCom->SetUp_AnimationIndex((_uint)ANIMATION_STATE::DEA_CRITICAL);
 		if (m_pModelCom->GetAnimationFinished())
 		{
 			m_Dead = TRUE;
-			return m_Dead;
 		}
 	}
 
@@ -100,6 +134,9 @@ _int BugMorph::LateTick(_double TimeDelta)
 
 HRESULT BugMorph::Render()
 {
+	if (TRUE == m_Dead)
+		return S_OK;
+
 	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 
 	m_pModelCom->SetUp_ValueOnShader("g_WorldMatrix", &XMMatrixTranspose(m_pTransformCom->Get_WorldMatrix()), sizeof(_matrix));
@@ -118,6 +155,7 @@ HRESULT BugMorph::Render()
 
 #ifdef _DEBUG
 	m_ColliderCom->Render();
+	m_ColliderLowerJaw->Render();
 #endif // _DEBUG
 
 	RELEASE_INSTANCE(CGameInstance);
@@ -126,9 +164,7 @@ HRESULT BugMorph::Render()
 
 void BugMorph::HitCheck()
 {
-	auto& LayerPlayer = m_TargetObjectList->begin();
-	std::advance(LayerPlayer, 1);
-	if (TRUE == static_cast<SMG*>(*LayerPlayer)->GetFireFrame())
+	if (TRUE == static_cast<SMG*>(m_TargetPlayerWeapon)->GetFireFrame())
 	{
 		CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 
@@ -148,40 +184,105 @@ void BugMorph::HitCheck()
 
 		if (TRUE == m_ColliderCom->CollisionAABBToRay(CalDesc._rayPos, CalDesc._rayDir, Distance))
 		{
-			m_HP--;
+			m_HP -= 300;
+			/* ««∞› ¿Ã∆—∆Æ */
 		}
 		
 		RELEASE_INSTANCE(CGameInstance);
 	}
 }
 
-void BugMorph::Intro()
+void BugMorph::Animation(_double _TimeDelta)
 {
-	_vector PlayerPosition = static_cast<CTransform*>(m_TargetObjectList->front()->GetComponent(TEXT("Com_Transform")))->Get_State(CTransform::STATE_POSITION);
-	_vector MyPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-	_vector Distance = PlayerPosition - MyPosition;
-
-	_float DistanceFloat = XMVectorGetX(XMVector3Length(Distance));
-
-	if (10 >= DistanceFloat)
-		m_FrameStart = TRUE;
+	if (FALSE == m_FrameStart)
+	{
+		if (/*TRUE == static_cast<CCollider*>(m_Terrain->GetComponent(TEXT("Com_SecondColliderCom")))->GetIsCollision() && */10 >= m_TargetDistance)
+			m_FrameStart= TRUE;
+	}
+	else if(TRUE == m_FrameStart && TRUE == m_IntroEnd) {
+		if (7 >= m_TargetDistance && FALSE == m_Attack)
+		{
+			Attack();
+		}
+		else if (7 < m_TargetDistance && FALSE == m_Attack)
+			Moving(_TimeDelta);
+		else {
+			Dodge(_TimeDelta);
+		}
+	}
 }
 
-void BugMorph::Animation()
+void BugMorph::GetTargetDistance()
 {
-	if(!m_FrameStart)
-		Intro();
-	else {
+	m_PlayerPosition = static_cast<CTransform*>(m_TargetPlayer->GetComponent(TEXT("Com_Transform")))->Get_State(CTransform::STATE_POSITION);
+	m_MyPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	_vector	Distance = m_PlayerPosition - m_MyPosition;
 
+	m_TargetDistance = XMVectorGetX(XMVector3Length(Distance));
+}
+
+void BugMorph::UpdateCollider(_double TimeDelta)
+{
+	_matrix BoneMatrix = XMMatrixIdentity();
+
+	_matrix TransformMatrix = XMMatrixIdentity();
+	_matrix OffsetMatrix = XMMatrixIdentity();
+	_matrix CombinedMatrix = XMMatrixIdentity();
+	_matrix PivotMatrix = XMMatrixIdentity();
+	_matrix WorldMatrix = XMMatrixIdentity();
+
+
+	OffsetMatrix = m_LowerJawBone->Get_OffsetMatrix();
+	CombinedMatrix = m_LowerJawBone->Get_CombinedMatrix();
+	PivotMatrix = m_pModelCom->Get_PivotMatrix();
+	WorldMatrix = m_pTransformCom->Get_WorldMatrix();
+
+	BoneMatrix = TransformMatrix * OffsetMatrix * CombinedMatrix * PivotMatrix * XMMatrixRotationY(XMConvertToRadians(180.f)) * WorldMatrix;
+	m_ColliderLowerJaw->Update(BoneMatrix);
+}
+
+void BugMorph::Attack()
+{
+	m_pModelCom->SetUp_AnimationIndex((_uint)ANIMATION_STATE::ATT_BITE);
+	m_AttackPosition = m_MyPosition;
+	m_Attack = TRUE;
+}
+
+void BugMorph::Moving(_double _TimeDelta)
+{
+	if ((_uint)ANIMATION_STATE::RUN_F == m_pModelCom->GetCurrentAnimation())
+	{
+		CTransform*		PlayerTransformCom = static_cast<CTransform*>(m_TargetPlayer->GetComponent(TEXT("Com_Transform")));
+		m_pTransformCom->Chase_Target(PlayerTransformCom, _TimeDelta * 0.5f);
 	}
+}
 
+void BugMorph::Dodge(_double _TimeDelta)
+{
+	if ((_uint)ANIMATION_STATE::ATT_BITE == m_pModelCom->GetCurrentAnimation())
+		return;
+	if (TRUE == m_Dodge)
+	{
+		m_pTransformCom->Rotation_Axis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(90.f));
+		m_Dodge = FALSE;
+	}
+	
+	
+	if (15 >= XMVectorGetX(XMVector3Length(m_AttackPosition - m_MyPosition)))
+	{
+		m_pTransformCom->Go_Straight(_TimeDelta);
+	}
+	else {
+		m_AttackPosition = _vector();
+		m_Attack = FALSE;
+	}
 }
 
 HRESULT BugMorph::SetUp_Components()
 {
 	/* Com_Transform */
 	CTransform::TRANSFORMDESC		TransformDesc;
-	TransformDesc.fSpeedPerSec = 10.f;
+	TransformDesc.fSpeedPerSec = 15.f;
 	TransformDesc.fRotationPerSec = XMConvertToRadians(120.0f);
 
 	if (FAILED(__super::SetUp_Components(LEVEL_STATIC, TEXT("Prototype_Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &TransformDesc)))
@@ -195,12 +296,22 @@ HRESULT BugMorph::SetUp_Components()
 	if (FAILED(__super::SetUp_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_BugMorph"), TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
 		return E_FAIL;
 
-	/* Com_Model */
+	/* Com_Navigation*/
+	if (FAILED(__super::SetUp_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Navigation"), TEXT("Com_Navigation"), (CComponent**)&m_Navigation)))
+		return E_FAIL;
+
+	/* Com_Collider */
 	CCollider::COLLISIONDESC CollisionDesc;
 	ZeroMemory(&CollisionDesc, sizeof(CCollider::COLLISIONDESC));
 	CollisionDesc.Scale = _float3(0.3f, 1.3f, 0.3f);
 	CollisionDesc.Position = _float3(0.f, 1.f, 0.0f);
 	if (FAILED(__super::SetUp_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_AABB"), TEXT("Com_AABB"), (CComponent**)&m_ColliderCom, &CollisionDesc)))
+		return E_FAIL;
+
+	ZeroMemory(&CollisionDesc, sizeof(CCollider::COLLISIONDESC));
+	CollisionDesc.Scale = _float3(1.0f, 1.0f, 1.0f);
+	CollisionDesc.Position = _float3(0.f, 0.f, 0.0f);
+	if (FAILED(__super::SetUp_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_Sphere"), TEXT("Com_Sphere"), (CComponent**)&m_ColliderLowerJaw, &CollisionDesc)))
 		return E_FAIL;
 
 	return S_OK;
@@ -240,4 +351,6 @@ void BugMorph::Free()
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pRendererCom);
+	Safe_Release(m_ColliderLowerJaw);
+	Safe_Release(m_Navigation);
 }

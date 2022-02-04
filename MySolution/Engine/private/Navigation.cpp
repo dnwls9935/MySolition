@@ -66,10 +66,17 @@ _bool Navigation::MoveOnNavigation(_fvector _Position)
 void Navigation::AddCell(_float3 * _Points, const _tchar* _ShaderFilePath)
 {
 	Cell* cell = nullptr;
-	if(nullptr == _ShaderFilePath)
-		 cell = Cell::Create(m_pDevice, m_pDeviceContext, _Points, (_uint)(*m_Cells).size());
+
+	SortingCCW(_Points);
+
+	if (nullptr == _ShaderFilePath)
+	{
+		cell = Cell::Create(m_pDevice, m_pDeviceContext, _Points, (_uint)(*m_Cells).size());
+	}
 	else
+	{
 		cell = Cell::Create(m_pDevice, m_pDeviceContext, _Points, (_uint)(*m_Cells).size(), _ShaderFilePath);
+	}
 	(*m_Cells).push_back(cell);
 }
 
@@ -168,6 +175,31 @@ HRESULT Navigation::SetUpNeighbor()
 		}
 	}
 	return S_OK;
+}
+
+void Navigation::SortingCCW(_float3* _Points)
+{
+	_int Temp = (_Points[0].x * _Points[1].z) +
+		(_Points[1].x * _Points[2].z) +
+		(_Points[2].x * _Points[0].z);
+
+	Temp = Temp - (_Points[0].z * _Points[1].x) -
+		(_Points[1].z * _Points[2].x) -
+		(_Points[2].z * _Points[0].x);
+
+	if (Temp > 0)
+	{
+		_float3	PointTemp = _Points[1];
+		_Points[1] = _Points[2];
+		_Points[2] = PointTemp;
+		SortingCCW(_Points);
+	}
+	else if (Temp < 0) {
+		return;
+	}
+	else
+		MSGBOX("Failed 일직선입니다.");
+
 }
 
 void Navigation::SettingDefaultIndex(CTransform* _Transform)

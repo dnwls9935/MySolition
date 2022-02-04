@@ -8,6 +8,7 @@ class CRenderer;
 class CTransform;
 class CModel;
 class CCollider;
+class Navigation;
 END
 
 BEGIN(Client)
@@ -33,8 +34,13 @@ public:
 
 private:
 	void		HitCheck();
-	void		Intro();
-	void		Animation();
+	void		Animation(_double TimeDelta);
+	void		GetTargetDistance();
+	void		UpdateCollider(_double TimeDelta);
+
+	void		Attack();
+	void		Moving(_double _TimeDelta);
+	void		Dodge(_double _TimeDelta);
 
 private:
 	CRenderer*				m_pRendererCom = nullptr;
@@ -48,11 +54,15 @@ private:
 
 	Navigation*				m_Navigation = nullptr;
 
-	list<class CGameObject*>* m_TargetObjectList = nullptr;
-
 	_bool							m_FrameStart = FALSE;
 	_bool							m_IntroEnd = FALSE;
-	/* BugMorph 작업해야함 */	
+
+private:
+	_bool							m_Attack = FALSE;
+	_bool							m_Dodge = FALSE;
+	_float							m_DodgeDistance = 0.f;
+	_vector						m_AttackPosition = _vector();
+
 private:
 	CGameObject* m_TargetPlayer = nullptr;
 	CGameObject* m_TargetPlayerWeapon = nullptr;

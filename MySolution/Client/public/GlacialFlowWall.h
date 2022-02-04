@@ -34,6 +34,10 @@ private:
 
 	const _tchar*			m_ObjectTag = nullptr;
 
+	_bool				m_Show = FALSE;
+
+	CGameObject*				m_Terrain = nullptr;
+
 private:
 	virtual HRESULT SetUp_Components();
 
