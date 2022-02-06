@@ -50,7 +50,6 @@ HRESULT CPlayer::NativeConstruct(void * pArg)
 
 	m_HP = 1000;
 
-
 	return S_OK;
 }
 
@@ -62,7 +61,7 @@ _int CPlayer::Tick(_double TimeDelta)
 	SetCamAndSkyBox();
 	SetUpWeapon();
 
-	cout << m_HP << endl;
+	cout << m_Navigation->GetCurrentCellIndex() << endl;
 
 	_vector Position = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(XMVectorGetX(Position), 0.f, XMVectorGetZ(Position), XMVectorGetW(Position)));
@@ -253,7 +252,7 @@ HRESULT CPlayer::SetUp_Components()
 {
 	/* Com_Transform */
 	CTransform::TRANSFORMDESC		TransformDesc;
-	TransformDesc.fSpeedPerSec = 10.f;
+	TransformDesc.fSpeedPerSec = 6.f;
 	TransformDesc.fRotationPerSec = XMConvertToRadians(120.0f);
 
 	if (FAILED(__super::SetUp_Components(LEVEL_STATIC, TEXT("Prototype_Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &TransformDesc)))

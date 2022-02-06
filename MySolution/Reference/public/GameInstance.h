@@ -6,7 +6,7 @@
 #include "Timer_Manager.h"
 #include "Object_Manager.h"
 #include "Component_Manager.h"
-#include "RenderTargetManager.h"
+#include "TargetManager.h"
  #include "LightManager.h"
 #include "PipeLine.h"
 #include "Calculator.h"
@@ -66,6 +66,10 @@ public: /* for.Input_Device */
 	_long Get_MouseMoveState(CInput_Device::MOUSEMOVESTATE eMoveState) const;
 	_byte Get_MouseButtonState(CInput_Device::MOUSEBUTTONSTATE eButtonState) const;
 
+public: /* For.Light_Manager */
+	const LIGHTDESC* Get_LightDesc(_uint iIndex = 0);
+	HRESULT Add_Light(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, const LIGHTDESC& LightDesc);
+
 public: /* For.Calculator */
 	void		CalcMousePos(Calculator::CALCDESC* _calDesc);
 	
@@ -77,8 +81,8 @@ private:
 	CComponent_Manager*			m_pComponent_Manager = nullptr;
 	CPipeLine*					m_pPipeLine = nullptr;
 	CInput_Device*				m_pInput_Device = nullptr;
-	RenderTargetManager*		m_RenderTargetManager = nullptr;
-	LightManager*					m_LightManager = nullptr;
+	CTarget_Manager*		m_RenderTargetManager = nullptr;
+	CLight_Manager*					m_LightManager = nullptr;
 public:
 
 	static void Release_Engine();

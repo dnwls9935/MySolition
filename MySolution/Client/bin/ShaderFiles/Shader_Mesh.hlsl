@@ -17,6 +17,7 @@ cbuffer	BoneMatricesBuffer
 	BoneMatrixArray		g_BoneMatrices;
 };
 
+
 texture2D	g_DiffuseTexture;
 
 sampler DefaultSampler = sampler_state
@@ -25,6 +26,7 @@ sampler DefaultSampler = sampler_state
 	AddressU = wrap;
 	AddressV = wrap;
 };
+
 
 struct VS_IN
 {
@@ -39,13 +41,15 @@ struct VS_IN
 struct VS_OUT
 {
 	float4		vPosition : SV_POSITION;
-	float4		vNormal	 : NORMAL;
+	float4		vNormal : NORMAL;
 	float2		vTexUV : TEXCOORD0;
+	float4		vProjPos : TEXCOORD1;
 };
 
 VS_OUT VS_MAIN_STATIC(VS_IN In)
 {
 	VS_OUT			Out = (VS_OUT)0;
+
 
 	matrix			matWV, matWVP;
 
@@ -55,6 +59,7 @@ VS_OUT VS_MAIN_STATIC(VS_IN In)
 	Out.vPosition = mul(vector(In.vPosition, 1.f), matWVP);
 	Out.vNormal = normalize(mul(vector(In.vNormal, 0.f), g_WorldMatrix));
 	Out.vTexUV = In.vTexUV;
+	Out.vProjPos = Out.vPosition;
 
 	return Out;
 
@@ -84,31 +89,40 @@ VS_OUT VS_MAIN_DYNAMIC(VS_IN In)
 	vPosition = mul(vPosition, matWVP);
 
 	Out.vPosition = vPosition;
-	Out.vNormal = normalize(mul(vector(In.vNormal, 0.f), g_WorldMatrix));
+
+	vector		vNormal = mul(vector(In.vNormal, 0.f), BoneMatrix);
+	Out.vNormal = normalize(mul(vNormal, g_WorldMatrix));
 	Out.vTexUV = In.vTexUV;
+	Out.vProjPos = Out.vPosition;
 
 	return Out;
+
 }
 
 struct PS_IN
 {
 	float4		vPosition : SV_POSITION;
-	float4		vNormal	 : NORMAL;
+	float4		vNormal : NORMAL;
 	float2		vTexUV : TEXCOORD0;
+	float4		vProjPos : TEXCOORD1;
 };
 
 struct PS_OUT
 {
-	vector		vColor : SV_TARGET0;
-	float4		vNormal	 : SV_TARGET1;
+	vector		vDiffuse : SV_TARGET0;
+	vector		vNormal : SV_TARGET1;
+	vector		vDepth : SV_TARGET2;
 };
 
 PS_OUT PS_MAIN(PS_IN In)
 {
 	PS_OUT		Out = (PS_OUT)0;
 
-	Out.vColor = g_DiffuseTexture.Sample(DefaultSampler, In.vTexUV);
+	Out.vDiffuse = g_DiffuseTexture.Sample(DefaultSampler, In.vTexUV);
+	Out.vDiffuse.a = 1.f;
+
 	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
+	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 300.0f, 0.0f, 0.0f);
 
 	return Out;
 }
@@ -127,7 +141,8 @@ technique11			DefaultTechnique
 		GeometryShader = NULL;
 		PixelShader = compile ps_5_0  PS_MAIN();
 	}
-	pass DynamicMesh
+
+	pass AnimMesh
 	{
 		SetRasterizerState(CullMode_Default);
 		SetDepthStencilState(ZBuffer_Default, 0);
@@ -139,7 +154,3 @@ technique11			DefaultTechnique
 		PixelShader = compile ps_5_0  PS_MAIN();
 	}
 }
-
-
-
-

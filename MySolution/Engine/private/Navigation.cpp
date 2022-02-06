@@ -51,10 +51,14 @@ _bool Navigation::MoveOnNavigation(_fvector _Position)
 		{
 			while (TRUE) 
 			{
-				if (TRUE == pNeighbor->IsIn(_Position, &pNeighbor))
-				{
-					m_CurrentCellIndex = pNeighbor->GetIndex();
-					return TRUE;
+				if (nullptr == pNeighbor)
+					return FALSE;
+				else {
+					if (TRUE == pNeighbor->IsIn(_Position, &pNeighbor))
+					{
+						m_CurrentCellIndex = pNeighbor->GetIndex();
+						return TRUE;
+					}
 				}
 			}
 		}

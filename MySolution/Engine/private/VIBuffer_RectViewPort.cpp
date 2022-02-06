@@ -11,7 +11,7 @@ CVIBuffer_RectViewPort::CVIBuffer_RectViewPort(const CVIBuffer_RectViewPort & rh
 {
 }
 
-HRESULT CVIBuffer_RectViewPort::NativeConstruct_Prototype(RVPDESC RVPDesc, const _tchar* pShaderFilePath)
+HRESULT CVIBuffer_RectViewPort::NativeConstruct_Prototype(_float fX, _float fY, _float fSizeX, _float fSizeY, const _tchar* pShaderFilePath)
 {
 	if (FAILED(__super::NativeConstruct_Prototype()))
 		return E_FAIL;
@@ -29,29 +29,31 @@ HRESULT CVIBuffer_RectViewPort::NativeConstruct_Prototype(RVPDESC RVPDesc, const
 	m_VBDesc.MiscFlags = 0;
 	m_VBDesc.StructureByteStride = m_iStride;
 
-	D3D11_VIEWPORT		ViewPortDesc;
-	_uint		NumViewPort = 1;
-	m_pDeviceContext->RSGetViewports(&NumViewPort, &ViewPortDesc);
+	D3D11_VIEWPORT		ViewportDesc;
 
-	
+	_uint		iNumViewport = 1;
+
+	m_pDeviceContext->RSGetViewports(&iNumViewport, &ViewportDesc);
+
+
 	/* D3D11_SUBRESOURCE_DATA */
 	ZeroMemory(&m_VBSubresourceData, sizeof(D3D11_SUBRESOURCE_DATA));
 	m_pVertices = new VTXTEX[m_iNumVertices];
 	ZeroMemory(m_pVertices, sizeof(VTXTEX) * m_iNumVertices);
 
-	((VTXTEX*)m_pVertices)[0].vPosition = _float3(RVPDesc.X / (ViewPortDesc.Width * 0.5f) -1.f, RVPDesc.Y / (ViewPortDesc.Height * -0.5f) + 1.f , 0.f);
+	((VTXTEX*)m_pVertices)[0].vPosition = _float3(fX / (ViewportDesc.Width * 0.5f) - 1.f, fY / (ViewportDesc.Height * -0.5f) + 1.f, 0.f);
 	((VTXTEX*)m_pVertices)[0].vTexUV = _float2(0.0f, 0.f);
 
-	((VTXTEX*)m_pVertices)[1].vPosition = _float3((RVPDesc.X + RVPDesc.SizeX) / (ViewPortDesc.Width * 0.5f) - 1.f, RVPDesc.Y / (ViewPortDesc.Height * -0.5f) + 1.f, 0.f);
+	((VTXTEX*)m_pVertices)[1].vPosition = _float3((fX + fSizeX) / (ViewportDesc.Width * 0.5f) - 1.f, fY / (ViewportDesc.Height * -0.5f) + 1.f, 0.f);
 	((VTXTEX*)m_pVertices)[1].vTexUV = _float2(1.0f, 0.f);
 
-	((VTXTEX*)m_pVertices)[2].vPosition = _float3((RVPDesc.X + RVPDesc.SizeX) / (ViewPortDesc.Width * 0.5f) - 1.f, (RVPDesc.Y + RVPDesc.SizeY) / (ViewPortDesc.Height * -0.5f) + 1.f, 0.f);
+	((VTXTEX*)m_pVertices)[2].vPosition = _float3((fX + fSizeX) / (ViewportDesc.Width * 0.5f) - 1.f, (fY + fSizeY) / (ViewportDesc.Height * -0.5f) + 1.f, 0.f);
 	((VTXTEX*)m_pVertices)[2].vTexUV = _float2(1.0f, 1.f);
 
-	((VTXTEX*)m_pVertices)[3].vPosition = _float3((RVPDesc.X) / (ViewPortDesc.Width * 0.5f) - 1.f, (RVPDesc.Y + RVPDesc.SizeY) / (ViewPortDesc.Height * -0.5f) + 1.f, 0.f);
+	((VTXTEX*)m_pVertices)[3].vPosition = _float3((fX) / (ViewportDesc.Width * 0.5f) - 1.f, (fY + fSizeY) / (ViewportDesc.Height * -0.5f) + 1.f, 0.f);
 	((VTXTEX*)m_pVertices)[3].vTexUV = _float2(0.0f, 1.f);
 
-	
+
 	m_VBSubresourceData.pSysMem = m_pVertices;
 
 	if (FAILED(__super::Create_VertexBuffer()))
@@ -94,10 +96,10 @@ HRESULT CVIBuffer_RectViewPort::NativeConstruct_Prototype(RVPDESC RVPDesc, const
 
 	Safe_Delete_Array(pIndices);
 
-	D3D11_INPUT_ELEMENT_DESC		ElementDescs[] = 
-	{		
+	D3D11_INPUT_ELEMENT_DESC		ElementDescs[] =
+	{
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 }		
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 }
 	};
 
 	if (FAILED(Compile_ShaderFiles(pShaderFilePath, ElementDescs, 2)))
@@ -114,11 +116,11 @@ HRESULT CVIBuffer_RectViewPort::NativeConstruct(void * pArg)
 	return S_OK;
 }
 
-CVIBuffer_RectViewPort * CVIBuffer_RectViewPort::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, RVPDESC RVPDesc, const _tchar* pShaderFilePath)
+CVIBuffer_RectViewPort * CVIBuffer_RectViewPort::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, _float fX, _float fY, _float fSizeX, _float fSizeY, const _tchar* pShaderFilePath)
 {
 	CVIBuffer_RectViewPort*		pInstance = new CVIBuffer_RectViewPort(pDevice, pDeviceContext);
 
-	if (FAILED(pInstance->NativeConstruct_Prototype(RVPDesc, pShaderFilePath)))
+	if (FAILED(pInstance->NativeConstruct_Prototype(fX, fY, fSizeX, fSizeY, pShaderFilePath)))
 	{
 		MSGBOX("Failed to Creating CVIBuffer_RectViewPort");
 		Safe_Release(pInstance);

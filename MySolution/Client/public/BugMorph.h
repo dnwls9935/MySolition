@@ -72,6 +72,12 @@ private:
 	_vector				m_MyPosition = _vector();
 	_float					m_TargetDistance = 0.f;
 
+private:
+	_bool					m_Burrow = FALSE;
+	_bool					m_BurrowLoop = FALSE;
+	_double				m_BurrowTime = 0.0;
+	_int						m_BurrowCount = 2;
+
 
 private:
 	virtual HRESULT SetUp_Components();

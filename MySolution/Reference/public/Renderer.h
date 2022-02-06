@@ -19,21 +19,23 @@ public:
 public:
 	HRESULT Add_RenderGroup(RENDER eRenderID, class CGameObject* pGameObject);
 	HRESULT Draw_RenderGroup();
-
-private:
-	HRESULT		RenderPriority();
-	HRESULT		RenderNonAlpha();
-	HRESULT		RenderAlpha();
-	HRESULT		RenderUI();
-
-	HRESULT		RenderLightAcc();
-
-private:
-	class RenderTargetManager*				m_RenderTargetManager = nullptr;
-
 private:
 	list<class CGameObject*>			m_RenderGroup[RENDER_END];
 	typedef list<class CGameObject*>	RENDERGROUP;
+
+private:
+	class CTarget_Manager*					m_pTarget_Manager = nullptr;
+	class CVIBuffer_RectViewPort*			m_pVIBuffer = nullptr;
+
+private:
+	HRESULT Render_Priority();
+	HRESULT Render_NonAlpha();
+	HRESULT Render_Alpha();
+	HRESULT Render_UI();
+private:
+	HRESULT Render_LightAcc();
+	HRESULT Render_Blend();
+
 public:
 	static CRenderer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual CComponent* Clone(void* pArg) override;

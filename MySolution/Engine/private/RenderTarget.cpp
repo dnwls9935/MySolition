@@ -1,76 +1,80 @@
 #include "..\public\RenderTarget.h"
 #include "VIBuffer_RectViewPort.h"
 
-RenderTarget::RenderTarget(ID3D11Device * _Device, ID3D11DeviceContext * _DeviceContext)
-	:	m_Device(_Device)
-	,	m_DeviceContext(_DeviceContext)
+CRenderTarget::CRenderTarget(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
+	: m_pDevice(pDevice)
+	, m_pDeviceContext(pDeviceContext)
 {
-	Safe_AddRef(m_Device);
-	Safe_AddRef(m_DeviceContext);
+	Safe_AddRef(m_pDevice);
+	Safe_AddRef(m_pDeviceContext);
+
+
+
+
 }
 
-HRESULT RenderTarget::NativeConstruct(RTDESC RTDesc)
+HRESULT CRenderTarget::NativeConstruct(_uint iWidth, _uint iHeight, DXGI_FORMAT eFormat, _float4 vClearColor)
 {
-	if (nullptr == m_Device)
+	if (nullptr == m_pDevice)
 		return E_FAIL;
 
 	D3D11_TEXTURE2D_DESC		TextureDesc;
 	ZeroMemory(&TextureDesc, sizeof(D3D11_TEXTURE2D_DESC));
 
-	TextureDesc.Width = RTDesc.Width;
-	TextureDesc.Height = RTDesc.Height;
+	TextureDesc.Width = iWidth;
+	TextureDesc.Height = iHeight;
 	TextureDesc.MipLevels = 1;
 	TextureDesc.ArraySize = 1;
-	TextureDesc.Format = RTDesc.Format;
+	TextureDesc.Format = eFormat;
 	TextureDesc.SampleDesc.Quality = 0;
 	TextureDesc.SampleDesc.Count = 1;
 	TextureDesc.Usage = D3D11_USAGE_DEFAULT;
 	TextureDesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
 
-	if (FAILED(m_Device->CreateTexture2D(&TextureDesc, nullptr, &m_Texture)))
+	if (FAILED(m_pDevice->CreateTexture2D(&TextureDesc, nullptr, &m_pTexture)))
 		return E_FAIL;
 
-	D3D11_RENDER_TARGET_VIEW_DESC RTVDesc;
+	D3D11_RENDER_TARGET_VIEW_DESC		RTVDesc;
 	ZeroMemory(&RTVDesc, sizeof(D3D11_RENDER_TARGET_VIEW_DESC));
 
-	RTVDesc.Format = RTDesc.Format;
+	RTVDesc.Format = eFormat;
 	RTVDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
 	RTVDesc.Texture2D.MipSlice = 0;
 
-	if (FAILED(m_Device->CreateRenderTargetView(m_Texture, &RTVDesc, &m_RTV)))
+	if (FAILED(m_pDevice->CreateRenderTargetView(m_pTexture, &RTVDesc, &m_pRTV)))
 		return E_FAIL;
 
-	D3D11_SHADER_RESOURCE_VIEW_DESC SRVDesc;
+	D3D11_SHADER_RESOURCE_VIEW_DESC		SRVDesc;
 	ZeroMemory(&SRVDesc, sizeof(D3D11_SHADER_RESOURCE_VIEW_DESC));
 
-	SRVDesc.Format = RTDesc.Format;
+	SRVDesc.Format = eFormat;
 	SRVDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
 	SRVDesc.Texture2D.MipLevels = 1;
 
-	if (FAILED(m_Device->CreateShaderResourceView(m_Texture, &SRVDesc, &m_SRV)))
+	if (FAILED(m_pDevice->CreateShaderResourceView(m_pTexture, &SRVDesc, &m_pSRV)))
 		return E_FAIL;
 
-	m_ClearColor = RTDesc.Color;
+	m_vClearColor = vClearColor;
 
 	return S_OK;
 }
 
-HRESULT RenderTarget::Clear()
+HRESULT CRenderTarget::Clear()
 {
-	if (nullptr == m_RTV &&
-		nullptr == m_DeviceContext)
+	if (nullptr == m_pRTV ||
+		nullptr == m_pDeviceContext)
 		return E_FAIL;
 
-	m_DeviceContext->ClearRenderTargetView(m_RTV, (_float*)&m_ClearColor);
+	m_pDeviceContext->ClearRenderTargetView(m_pRTV, (_float*)&m_vClearColor);
 
 	return S_OK;
 }
 
 #ifdef _DEBUG
-HRESULT RenderTarget::ReadyDebugBuffer(_float X, _float Y, _float SizeX, _float SizeY)
+HRESULT CRenderTarget::Ready_Debug_Buffer(_float fX, _float fY, _float fSizeX, _float fSizeY)
 {
-	m_DebugBuffer = CVIBuffer_RectViewPort::Create(m_Device, m_DeviceContext, CVIBuffer_RectViewPort::RVPDESC(X, Y, SizeX, SizeY), TEXT("../Bin/ShaderFiles/Shader_RectViewPort.hlsl"));
-	if (nullptr == m_DebugBuffer)
+	m_pDebugBuffer = CVIBuffer_RectViewPort::Create(m_pDevice, m_pDeviceContext, fX, fY, fSizeX, fSizeY, TEXT("../Bin/ShaderFiles/Shader_RectViewPort.hlsl"));
+	if (nullptr == m_pDebugBuffer)
 		return E_FAIL;
 
 	Clear();
@@ -78,39 +82,42 @@ HRESULT RenderTarget::ReadyDebugBuffer(_float X, _float Y, _float SizeX, _float 
 	return S_OK;
 }
 
-HRESULT RenderTarget::RenderDebugBuffer()
+HRESULT CRenderTarget::Render_Debug_Buffer()
 {
-	if (FAILED(m_DebugBuffer->SetUp_TextureOnShader("g_DiffuseTexture", m_SRV)))
+	if (FAILED(m_pDebugBuffer->SetUp_TextureOnShader("g_DiffuseTexture", m_pSRV)))
 		return E_FAIL;
 
-	m_DebugBuffer->Render(0);
+	m_pDebugBuffer->Render(0);
 
 	return S_OK;
 }
+
 #endif // _DEBUG
 
-RenderTarget * RenderTarget::Create(ID3D11Device* _Device, ID3D11DeviceContext*	_DeviceContext, RTDESC RTDesc)
+
+CRenderTarget * CRenderTarget::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, _uint iWidth, _uint iHeight, DXGI_FORMAT eFormat, _float4 vClearColor)
 {
-	RenderTarget*		pInstance = new RenderTarget(_Device, _DeviceContext);
-	if (FAILED(pInstance->NativeConstruct(RTDesc)))
+	CRenderTarget*		pInstance = new CRenderTarget(pDevice, pDeviceContext);
+
+	if (FAILED(pInstance->NativeConstruct(iWidth, iHeight, eFormat, vClearColor)))
 	{
-		MSGBOX("Failed to Create RenderTarget");
+		MSGBOX("Failed to Creating CRenderTarget");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-void RenderTarget::Free()
+void CRenderTarget::Free()
 {
 #ifdef _DEBUG
-	Safe_Release(m_DebugBuffer);
+	Safe_Release(m_pDebugBuffer);
 #endif // _DEBUG
 
-	Safe_Release(m_RTV);
-	Safe_Release(m_SRV);
-	Safe_Release(m_Texture);
+	Safe_Release(m_pSRV);
+	Safe_Release(m_pRTV);
+	Safe_Release(m_pTexture);
 
-	Safe_Release(m_Device);
-	Safe_Release(m_DeviceContext);
+	Safe_Release(m_pDevice);
+	Safe_Release(m_pDeviceContext);
 }

@@ -34,7 +34,13 @@ namespace Engine
 
 	typedef struct tagLightDesc
 	{
+		enum TYPE { TYPE_DIRECTIONAL, TYPE_POINT, TYPE_END };
+
+		TYPE			eType = TYPE_END;
+		/* 방향성 광원의 방향. */
 		XMFLOAT3		vDirection;
+		XMFLOAT3		vPosition;
+		float			fRange;
 
 		XMFLOAT4		vDiffuse;
 		XMFLOAT4		vAmbient;

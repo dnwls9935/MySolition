@@ -4,31 +4,30 @@
 
 BEGIN(Engine)
 
-class Light final : public CBase
+class CLight final : public CBase
 {
 private:
-	explicit Light(ID3D11Device* _Device, ID3D11DeviceContext* _DeviceContext);
-	virtual ~Light() = default;
+	explicit CLight(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	virtual ~CLight() = default;
 
 public:
-	const LIGHTDESC*	GetLightDesc() {
+	const LIGHTDESC* Get_LightDesc() const {
 		return &m_LightDesc;
-	};
-
+	}
 public:
-	HRESULT		NativeConstruct(const LIGHTDESC&	_LightDesc);
-	HRESULT		Render();
+	HRESULT NativeConstruct(const LIGHTDESC& LightDesc);
+	HRESULT Render();
 
 private:
-	ID3D11Device*						m_Device = nullptr;
-	ID3D11DeviceContext*		m_DeviceContext = nullptr;
+	ID3D11Device*				m_pDevice = nullptr;
+	ID3D11DeviceContext*		m_pDeviceContext = nullptr;
 
 private:
-	LIGHTDESC											m_LightDesc;
-	class CVIBuffer_RectViewPort*		m_VIBuffer = nullptr;
+	LIGHTDESC						m_LightDesc;
+	class CVIBuffer_RectViewPort*	m_pVIBuffer = nullptr;
 
 public:
-	static Light*	Create(ID3D11Device* _Device, ID3D11DeviceContext* _DeviceContext, const LIGHTDESC& _LightDesc);
+	static CLight* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, const LIGHTDESC& LightDesc);
 	virtual void Free() override;
 };
 

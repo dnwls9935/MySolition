@@ -71,7 +71,7 @@ HRESULT PrimeBeast::NativeConstruct(void * pArg)
 
 _int PrimeBeast::Tick(_double TimeDelta)
 {
-	if (TRUE == m_Dead)
+	if ((_uint)ANIMATION_STATE::DEA_CRITICAL == m_pModelCom->GetCurrentAnimation())
 	{
 		m_pModelCom->Update_CombinedTransformationMatrix(TimeDelta);
 		return _int();

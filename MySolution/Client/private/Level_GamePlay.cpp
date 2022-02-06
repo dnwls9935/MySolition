@@ -57,13 +57,48 @@ HRESULT CLevel_GamePlay::Render()
 
 HRESULT CLevel_GamePlay::Ready_LightDesc()
 {
+	CGameInstance*	pGameInstance = GET_INSTANCE(CGameInstance);
+
 	LIGHTDESC			LightDesc;
+	/*ZeroMemory(&LightDesc, sizeof(LIGHTDESC));
+
+	LightDesc.eType = LIGHTDESC::TYPE_POINT;
+
+	LightDesc.vPosition = _float3(5.f, 3.f, 5.f);
+	LightDesc.fRange = 100.f;
+
+	LightDesc.vDiffuse = _float4(1.f, 0.0f, 0.0f, 1.f);
+	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
+	LightDesc.vAmbient = _float4(0.6f, 0.6f, 0.6f, 1.f);
+
+	if (FAILED(pGameInstance->Add_Light(m_pDevice, m_pDeviceContext, LightDesc)))
+		return E_FAIL;*/
+
+
 	ZeroMemory(&LightDesc, sizeof(LIGHTDESC));
 
-	LightDesc.vDirection = _float3();
-	LightDesc.vDiffuse = _float4();
-	LightDesc.vSpecular = _float4();
-	LightDesc.vAmbient = _float4();
+	LightDesc.eType = LIGHTDESC::TYPE_POINT;
+
+	LightDesc.vPosition = _float3(100.f, 10.f, 100.f);
+	LightDesc.fRange = 150.f;
+
+	LightDesc.vDiffuse = _float4(1.f, 1.f, 0.8f, 1.f);
+	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
+	LightDesc.vAmbient = _float4(0.4f, 0.4f, 0.4f, 1.f);
+
+	if (FAILED(pGameInstance->Add_Light(m_pDevice, m_pDeviceContext, LightDesc)))
+		return E_FAIL;
+
+	/*LightDesc.eType = LIGHTDESC::TYPE_DIRECTIONAL;
+	LightDesc.vDirection = _float3(1.f, -1.f, 1.f);
+	LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
+	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
+	LightDesc.vAmbient = _float4(0.4f, 0.4f, 0.4f, 1.f);
+
+	if (FAILED(pGameInstance->Add_Light(m_pDevice, m_pDeviceContext, LightDesc)))
+		return E_FAIL;*/
+
+	RELEASE_INSTANCE(CGameInstance);
 
 	return S_OK;
 }
@@ -116,7 +151,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const _tchar * pLayerTag)
 	CameraDesc.fFovy = XMConvertToRadians(60.f);
 	CameraDesc.fAspect = _float(g_iWinCX) / g_iWinCY;
 	CameraDesc.fNear = 0.01f;
-	CameraDesc.fFar = 1000.f;
+	CameraDesc.fFar = 300.f;
 
 	CameraDesc.TransformDesc.fSpeedPerSec = 10.f;
 	CameraDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(120.0f);

@@ -11,8 +11,8 @@ CGameInstance::CGameInstance()
 	, m_pComponent_Manager(CComponent_Manager::GetInstance())
 	, m_pPipeLine(CPipeLine::GetInstance())
 	, m_pInput_Device(CInput_Device::GetInstance())
-	, m_RenderTargetManager(RenderTargetManager::GetInstance())
-	, m_LightManager(LightManager::GetInstance())
+	, m_RenderTargetManager(CTarget_Manager::GetInstance())
+	, m_LightManager(CLight_Manager::GetInstance())
 {
 	Safe_AddRef(m_LightManager);
 	Safe_AddRef(m_pInput_Device);
@@ -289,6 +289,21 @@ _byte CGameInstance::Get_MouseButtonState(CInput_Device::MOUSEBUTTONSTATE eButto
 	return m_pInput_Device->Get_MouseButtonState(eButtonState);
 }
 
+const LIGHTDESC* CGameInstance::Get_LightDesc(_uint iIndex)
+{
+	if (nullptr == m_LightManager)
+		return nullptr;
+
+	return m_LightManager->Get_LightDesc(iIndex);
+}
+
+HRESULT CGameInstance::Add_Light(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, const LIGHTDESC & LightDesc)
+{
+	if (nullptr == m_LightManager)
+		return E_FAIL;
+
+	return m_LightManager->Add_Light(pDevice, pDeviceContext, LightDesc);
+}
 void CGameInstance::CalcMousePos(Calculator::CALCDESC* _calDesc)
 {
 	Calculator::CalcMousePos(_calDesc);
@@ -317,10 +332,10 @@ void CGameInstance::Release_Engine()
 	if (0 != CInput_Device::GetInstance()->DestroyInstance())
 		MSGBOX("Failed to Release CInput_Device");
 
-	if (0 != LightManager::GetInstance()->DestroyInstance())
+	if (0 != CLight_Manager::GetInstance()->DestroyInstance())
 		MSGBOX("Failed to Release LightManager");
 
-	if (0 != RenderTargetManager::GetInstance()->DestroyInstance())
+	if (0 != CTarget_Manager::GetInstance()->DestroyInstance())
 		MSGBOX("Failed to Release RenderTargetManager");
 
 	if (0 != CGraphic_Device::GetInstance()->DestroyInstance())

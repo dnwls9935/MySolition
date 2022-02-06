@@ -4,58 +4,45 @@
 
 BEGIN(Engine)
 
-class RenderTarget final : public CBase
+class CRenderTarget final : public CBase
 {
-public:
-	typedef struct tagRenderTargetDesc
-	{
-		_uint					Width = 0;
-		_uint					Height = 0;
-		DXGI_FORMAT Format = DXGI_FORMAT_UNKNOWN;
-		_float4				Color = _float4();
-	}RTDESC;
-
 private:
-	explicit RenderTarget(ID3D11Device* _Device, ID3D11DeviceContext* _DeviceContext);
-	virtual ~RenderTarget() = default;
-
+	CRenderTarget(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	virtual ~CRenderTarget() = default;
 public:
-	ID3D11RenderTargetView*		Get_RTV() {
-		return m_RTV;
+	ID3D11RenderTargetView* Get_RTV() {
+		return m_pRTV;
 	}
-	ID3D11ShaderResourceView*		Get_SRV() {
-		return m_SRV;
+	ID3D11ShaderResourceView* Get_STV() {
+		return m_pSRV;
 	}
+public:
+	HRESULT NativeConstruct(_uint iWidth, _uint iHeight, DXGI_FORMAT eFormat, _float4 vClearColor);
+	HRESULT Clear();
 
-	HRESULT		Clear();
-
-private:
-	HRESULT		NativeConstruct(RTDESC RTDesc);
-	
 #ifdef _DEBUG
 public:
-	HRESULT		ReadyDebugBuffer(_float X, _float Y, _float SizeX, _float SizeY);
-	HRESULT		RenderDebugBuffer();
-#endif // DEBUG
-
-private:
-	ID3D11Device*						m_Device = nullptr;
-	ID3D11DeviceContext*		m_DeviceContext = nullptr;
-
-private:
-	ID3D11Texture2D*						m_Texture = nullptr;
-	ID3D11RenderTargetView*		m_RTV = nullptr;
-	ID3D11ShaderResourceView*	m_SRV = nullptr;
-	_float4											m_ClearColor;
-
-#ifdef _DEBUG
-private:
-	class CVIBuffer_RectViewPort*				m_DebugBuffer = nullptr;
+	HRESULT Ready_Debug_Buffer(_float fX, _float fY, _float fSizeX, _float fSizeY);
+	HRESULT Render_Debug_Buffer();
 #endif // _DEBUG
 
+private:
+	ID3D11Device*			m_pDevice = nullptr;
+	ID3D11DeviceContext*	m_pDeviceContext = nullptr;
+
+private:
+	ID3D11Texture2D*			m_pTexture = nullptr;
+	ID3D11RenderTargetView*		m_pRTV = nullptr;
+	ID3D11ShaderResourceView*	m_pSRV = nullptr;
+	_float4						m_vClearColor;
+
+#ifdef _DEBUG
+private:
+	class CVIBuffer_RectViewPort*		m_pDebugBuffer = nullptr;
+#endif // _DEBUG
 
 public:
-	static RenderTarget*	Create(ID3D11Device* _Device, ID3D11DeviceContext*	_DeviceContext, RTDESC RTDesc);
+	static CRenderTarget* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, _uint iWidth, _uint iHeight, DXGI_FORMAT eFormat, _float4 vClearColor);
 	virtual void Free() override;
 };
 

@@ -54,6 +54,7 @@ protected:
 
 	_bool			Dying = FALSE;
 	_int				m_HP = 0;
+	_int				m_MaxHP = 0;
 
 	OBJTYPE_ID		m_Type = OBJTYPE_ID::OBJTYPE_END;
 

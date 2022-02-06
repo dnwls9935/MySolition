@@ -4,26 +4,25 @@
 
 BEGIN(Engine)
 
-class LightManager final : public CBase
+class CLight_Manager final : public CBase
 {
-	DECLARE_SINGLETON(LightManager);
+	DECLARE_SINGLETON(CLight_Manager)
+public:
+	CLight_Manager();
+	virtual ~CLight_Manager() = default;
+
+public:
+	const LIGHTDESC* Get_LightDesc(_uint iIndex = 0);
+
+public:
+	HRESULT Add_Light(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, const LIGHTDESC& LightDesc);
+	HRESULT Render_Lights();
 private:
-	explicit LightManager();
-	virtual ~LightManager() = default;
+	list<class CLight*>				m_Lights;
+	typedef list<class CLight*>		LIGHTS;
 
 public:
-	const LIGHTDESC*		GetLightDesc(_uint	Index = 0);
-
-public:
-	HRESULT		AddLight(ID3D11Device* _Device, ID3D11DeviceContext* _DeviceContext, const LIGHTDESC& _LightDesc);
-	HRESULT		RenderLights();
-
-private:
-	list<class Light*>					m_Lights;
-	typedef list<class Light*>	LIGHTS;
-
-public:
-	virtual void Free() override;
+	virtual void Free();
 };
 
 END

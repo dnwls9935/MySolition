@@ -1,3 +1,4 @@
+
 #include "Shader_RenderState.hpp"
 
 cbuffer Matrices
@@ -7,30 +8,16 @@ cbuffer Matrices
 	matrix		g_ProjMatrix;
 };
 
-cbuffer CamDesc
+cbuffer BrushDesc
 {
-	vector		g_vCamPosition;
-};
-
-cbuffer LightDesc
-{
-	vector		g_vLightDirection = vector(1.f, -1.f, 1.f, 0.f);
-	vector		g_vLightDiffuse = vector(1.f, 1.f, 1.f, 1.f);
-	vector		g_vLightAmbient = vector(1.f, 1.f, 1.f, 1.f);
-	vector		g_vLightSpecular = vector(1.f, 1.f, 1.f, 1.f);
-};
-
-cbuffer MtrlDesc
-{
-	vector		g_vMtrlDiffuse = vector(1.f, 1.f, 1.f, 1.f);
-	vector		g_vMtrlAmbient = vector(0.4f, 0.4f, 0.4f, 1.f);
-	vector		g_vMtrlSpecular = vector(1.f, 1.f, 1.f, 1.f);
+	vector		g_vBrushPos = vector(20.f, 0.f, 10.f, 1.f);
+	float		g_fRadius = 10.f;
 };
 
 texture2D	g_DiffuseSourTexture;
 texture2D	g_DiffuseDestTexture;
-texture2D	g_FilterColor;
-texture2D	g_BrushColor;
+texture2D	g_FilterTexture;
+texture2D	g_BrushTexture;
 
 sampler DefaultSampler = sampler_state
 {
@@ -49,10 +36,11 @@ struct VS_IN
 struct VS_OUT
 {
 	float4		vPosition : SV_POSITION;
+	float4		vNormal : NORMAL;
 	float2		vTexUV : TEXCOORD0;
-	float		fShade : TEXCOORD1;
-	float		fSpecular : TEXCOORD2;
-	float4		vWorldPos	: WORLDPOS;
+	float4		vWorldPos : TEXCOORD1;
+	float4		vProjPos : TEXCOORD2;
+
 };
 
 
@@ -68,70 +56,64 @@ VS_OUT VS_MAIN(VS_IN In)
 	Out.vPosition = mul(vector(In.vPosition, 1.f), matWVP);
 	Out.vTexUV = In.vTexUV;
 
-	vector		vWorldNormal = mul(vector(In.vNormal, 0.f), g_WorldMatrix);
-	vector		vWorldPosition = mul(vector(In.vPosition, 1.f), g_WorldMatrix);
-
-	Out.fShade = saturate(dot(normalize(g_vLightDirection) * -1.f, normalize(vWorldNormal)));
-
-	vector		vReflect = reflect(normalize(g_vLightDirection), normalize(vWorldNormal));
-	vector		vLook = vWorldPosition - g_vCamPosition;
-
-	Out.fSpecular = pow(saturate(dot(normalize(vReflect) * -1.f, normalize(vLook))), 30.f);
-
-	Out.vWorldPos = vWorldPosition;
+	Out.vNormal = normalize(mul(vector(In.vNormal, 0.f), g_WorldMatrix));
+	Out.vWorldPos = mul(vector(In.vPosition, 1.f), g_WorldMatrix);
+	Out.vProjPos = Out.vPosition;
 
 	return Out;
-};
-
-
-struct RANGE_IN
-{
-	float4		vWorldPos	: WORLDPOS;
-};
-
+}
 
 struct PS_IN
 {
 	float4		vPosition : SV_POSITION;
+	float4		vNormal : NORMAL;
 	float2		vTexUV : TEXCOORD0;
-	float		fShade : TEXCOORD1;
-	float		fSpecular : TEXCOORD2;
-	float4		vWorldPos	: WORLDPOS;
+	float4		vWorldPos : TEXCOORD1;
+	float4		vProjPos : TEXCOORD2;
 };
 
 struct PS_OUT
 {
-	vector		vColor : SV_TARGET0;
+	vector		vDiffuse : SV_TARGET0;
+	vector		vNormal : SV_TARGET1;
+	vector		vDepth : SV_TARGET2;
 };
 
 PS_OUT PS_MAIN(PS_IN In)
 {
 	PS_OUT		Out = (PS_OUT)0;
-	RANGE_IN	RANGEIN = (RANGE_IN)0;
 
 	vector	vSourDiffuse = g_DiffuseSourTexture.Sample(DefaultSampler, In.vTexUV * 10.f);
 	vector	vDestDiffuse = g_DiffuseDestTexture.Sample(DefaultSampler, In.vTexUV * 20.f);
-	vector	vFilterColor = g_FilterColor.Sample(DefaultSampler, In.vTexUV);
+	vector	vFilterColor = g_FilterTexture.Sample(DefaultSampler, In.vTexUV);
+
 	vector	vBrushColor = (vector)0;
 
+	if (g_vBrushPos.x - g_fRadius <= In.vWorldPos.x && In.vWorldPos.x < g_vBrushPos.x + g_fRadius &&
+		g_vBrushPos.z - g_fRadius <= In.vWorldPos.z && In.vWorldPos.z < g_vBrushPos.z + g_fRadius)
+	{
+		float2		vTexUV = float2((In.vWorldPos.x - (g_vBrushPos.x - g_fRadius)) / (2.f * g_fRadius),
+			((g_vBrushPos.z + g_fRadius) - In.vWorldPos.z) / (2.f * g_fRadius));
+		vBrushColor = g_BrushTexture.Sample(DefaultSampler, vTexUV);
 
-	vector vDiffuse = vSourDiffuse * vFilterColor.r + vDestDiffuse * (1.f - vFilterColor.r) + vBrushColor;
+	}
 
-
-	RANGEIN.vWorldPos = In.vWorldPos;
-
-	Out.vColor = (g_vLightDiffuse * vDiffuse) * saturate(In.fShade + (g_vLightAmbient * g_vMtrlAmbient))
-		+ (g_vLightSpecular * g_vMtrlSpecular) * In.fSpecular;
+	Out.vDiffuse = vSourDiffuse * vFilterColor.r + vDestDiffuse * (1.f - vFilterColor.r) + vBrushColor;
+	Out.vDiffuse.a = 1.f;
+	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
+	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 300.0f, 0.0f, 0.0f);
 
 	return Out;
-};
+}
+
+
 
 
 technique11			DefaultTechnique
 {
 	pass Default
 	{
-		SetRasterizerState(CullMode_None);
+		SetRasterizerState(CullMode_Default);
 		SetDepthStencilState(ZBuffer_Default, 0);
 		SetBlendState(BlendDisable, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
@@ -139,14 +121,9 @@ technique11			DefaultTechnique
 		GeometryShader = NULL;
 		PixelShader = compile ps_5_0  PS_MAIN();
 	}
-	pass FillMode_WireFrame
-	{
-		SetRasterizerState(FillMode_WireFrame);
-		SetDepthStencilState(ZBuffer_Default, 0);
-		SetBlendState(BlendDisable, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+}
 
-		VertexShader = compile vs_5_0 VS_MAIN();
-		GeometryShader = NULL;
-		PixelShader = compile ps_5_0  PS_MAIN();
-	}
-};
+
+
+
+

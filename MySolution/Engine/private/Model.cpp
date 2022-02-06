@@ -304,7 +304,12 @@ HRESULT CModel::Create_MeshContainer()
 
 			XMStoreFloat3(&((VTXMESH*)m_pVertices)[iVertexIndex].vPosition, vPosition);
 
-			memcpy(&((VTXMESH*)m_pVertices)[iVertexIndex].vNormal, &pMesh->mNormals[j], sizeof(_float3));
+			_vector			vNormal;
+			memcpy(&vNormal, &pMesh->mNormals[j], sizeof(_float3));
+			vNormal = XMVectorSetW(vNormal, 0.f);
+			vNormal = XMVector3Transform(vNormal, XMLoadFloat4x4(&m_PivotMatrix));
+			XMStoreFloat3(&((VTXMESH*)m_pVertices)[iVertexIndex].vNormal, vNormal);
+
 			memcpy(&((VTXMESH*)m_pVertices)[iVertexIndex].vTexUV, &pMesh->mTextureCoords[0][j], sizeof(_float2));
 			memcpy(&((VTXMESH*)m_pVertices)[iVertexIndex].vTangent, &pMesh->mTangents[j], sizeof(_float3));
 			++iVertexIndex;

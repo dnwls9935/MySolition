@@ -1,24 +1,26 @@
 #include "..\public\LightManager.h"
 #include "Light.h"
 
-IMPLEMENT_SINGLETON(LightManager);
+IMPLEMENT_SINGLETON(CLight_Manager)
 
-LightManager::LightManager()
+CLight_Manager::CLight_Manager()
 {
+
 }
 
-const LIGHTDESC * LightManager::GetLightDesc(_uint Index)
+const LIGHTDESC* CLight_Manager::Get_LightDesc(_uint iIndex)
 {
-	auto iter = m_Lights.begin();
-	for (_uint i = 0; i < Index; i++)
-		iter++;
+	auto	iter = m_Lights.begin();
 
-	return (*iter)->GetLightDesc();
+	for (_uint i = 0; i < iIndex; ++i)
+		++iter;
+
+	return (*iter)->Get_LightDesc();
 }
 
-HRESULT LightManager::AddLight(ID3D11Device * _Device, ID3D11DeviceContext * _DeviceContext, const LIGHTDESC & _LightDesc)
+HRESULT CLight_Manager::Add_Light(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, const LIGHTDESC & LightDesc)
 {
-	Light*		pLight = Light::Create(_Device, _DeviceContext, _LightDesc);
+	CLight*		pLight = CLight::Create(pDevice, pDeviceContext, LightDesc);
 	if (nullptr == pLight)
 		return E_FAIL;
 
@@ -27,18 +29,15 @@ HRESULT LightManager::AddLight(ID3D11Device * _Device, ID3D11DeviceContext * _De
 	return S_OK;
 }
 
-HRESULT LightManager::RenderLights()
+HRESULT CLight_Manager::Render_Lights()
 {
 	for (auto& pLight : m_Lights)
-	{
-		if (FAILED(pLight->Render()))
-			return E_FAIL;
-	}
+		pLight->Render();
 
 	return S_OK;
 }
 
-void LightManager::Free()
+void CLight_Manager::Free()
 {
 	for (auto& pLight : m_Lights)
 		Safe_Release(pLight);

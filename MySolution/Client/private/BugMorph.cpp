@@ -5,7 +5,6 @@
 #include "Player.h"
 #include "SMG.h"
 #include "Player.h"
-#include "SMG.h"
 
 BugMorph::BugMorph(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -44,6 +43,7 @@ HRESULT BugMorph::NativeConstruct(void * pArg)
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, TransformMatrix.r[3]);
 
 	m_HP = 2000;
+	m_MaxHP = 2000;
 	m_pModelCom->SetUp_AnimationIndex((_int)ANIMATION_STATE::SPAWN);
 
 
@@ -78,14 +78,34 @@ HRESULT BugMorph::NativeConstruct(void * pArg)
 
 _int BugMorph::Tick(_double TimeDelta)
 {
-	if (TRUE == m_Dead)
+
+	if ((_uint)ANIMATION_STATE::DEA_CRITICAL == m_pModelCom->GetCurrentAnimation())
 	{
-		m_pModelCom->SetUp_AnimationIndex((_uint)ANIMATION_STATE::DEA_CRITICAL);
 		m_pModelCom->Update_CombinedTransformationMatrix(TimeDelta);
 		return _int();
 	}
+
+	if (TRUE == m_BurrowLoop)
+	{
+		m_pModelCom->SetUp_AnimationIndex((_uint)ANIMATION_STATE::BURROW_EXIT);
+		m_HP+= 50;
+		if (m_MaxHP <= m_HP)
+		{
+			m_HP = m_MaxHP;
+			m_pModelCom->Update_CombinedTransformationMatrix(TimeDelta);
+		}
+		else
+		{
+			m_pModelCom->Update_CombinedTransformationMatrix(0.0);
+		}
+		return _int();
+	}
+
+
 	GetTargetDistance();
-	Animation(TimeDelta);
+
+	if((_uint)ANIMATION_STATE::DEA_CRITICAL != m_pModelCom->GetCurrentAnimation() && FALSE == m_Burrow)
+		Animation(TimeDelta);
 
 	if (TRUE == m_FrameStart)
 	{
@@ -98,7 +118,8 @@ _int BugMorph::Tick(_double TimeDelta)
 		m_pModelCom->Update_CombinedTransformationMatrix(0.0);
 	m_ColliderCom->Update(m_pTransformCom->Get_WorldMatrix());
 
-	HitCheck();
+	if(FALSE == m_Burrow || TRUE == m_IntroEnd)
+		HitCheck();
 	UpdateCollider(TimeDelta);
 
 	return _int();
@@ -117,8 +138,24 @@ _int BugMorph::LateTick(_double TimeDelta)
 		else  if ((_uint)ANIMATION_STATE::ATT_BITE == m_pModelCom->GetCurrentAnimation())
 			m_Dodge = TRUE;
 
+		else if ((_uint)ANIMATION_STATE::BURROW_ENTER == m_pModelCom->GetCurrentAnimation())
+		{
+			m_BurrowCount--;
+			m_BurrowLoop = TRUE;
+		}
+
+		else if ((_uint)ANIMATION_STATE::BURROW_EXIT == m_pModelCom->GetCurrentAnimation())
+		{
+			m_Burrow = FALSE;
+			m_BurrowTime = 0.0;
+			m_BurrowLoop = FALSE;
+		}
+
 		m_pModelCom->SetUp_AnimationIndex((_int)ANIMATION_STATE::RUN_F);
 	}
+
+	if (TRUE == m_Burrow)
+		return _int();
 
 	if (0 >= m_HP)
 	{
@@ -127,6 +164,9 @@ _int BugMorph::LateTick(_double TimeDelta)
 		{
 			m_Dead = TRUE;
 		}
+	}else if( 0 <= m_BurrowCount && m_MaxHP * 0.5f >= m_HP ){
+		m_Burrow = TRUE;
+		m_pModelCom->SetUp_AnimationIndex((_uint)ANIMATION_STATE::BURROW_ENTER);
 	}
 
 	return _int();
@@ -270,7 +310,7 @@ void BugMorph::Dodge(_double _TimeDelta)
 	
 	if (15 >= XMVectorGetX(XMVector3Length(m_AttackPosition - m_MyPosition)))
 	{
-		m_pTransformCom->Go_Straight(_TimeDelta);
+		m_pTransformCom->Go_Straight(_TimeDelta, m_Navigation);
 	}
 	else {
 		m_AttackPosition = _vector();
