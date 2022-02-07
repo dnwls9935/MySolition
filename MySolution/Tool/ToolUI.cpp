@@ -64,11 +64,11 @@ _int ToolUI::Tick(_double TimeDelta)
 			CString str = L"";
 			m_form->tapUI->UIListBox.GetText(focus, str);
 
-
-			UIObject::UIOBJDESC		UIObjDesc;
+			CGameObject::UIOBJDESC		UIObjDesc;
 			ZeroMemory(&UIObjDesc, sizeof(UIObject::UIOBJDESC));
 			UIObjDesc.m_Position = WindowPosition;
 			lstrcpy(UIObjDesc.m_TextureTag, str);
+			UIObjDesc.m_UITypeID = (CGameObject::UITYPE_ID)(m_form->VecUIType[focus]);
 
 			if (FAILED(pGameInstance->Add_GameObjectToLayer(1, TEXT("UI"), TEXT("Prototype_GameObject_UIObject"), &UIObjDesc)))
 				return 0;

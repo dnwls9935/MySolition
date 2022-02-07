@@ -90,7 +90,6 @@ void TapUI::OnBnClickedButton1()
 		for (auto& Object : ObjectList)
 		{
 			UIObject::UIOBJDESC UIOBJDesc = static_cast<UIObject*>(Object)->m_UIOBJDesc;
-
 			UIOBJDesc.m_LoadMatrix = static_cast<CTransform*>(Object->GetComponent(TEXT("Com_Transform")))->Get_WorldMatrix();
 
 			WriteFile(hFile, &UIOBJDesc, sizeof(UIObject::UIOBJDESC), &dwByte, nullptr);
@@ -131,7 +130,8 @@ void TapUI::OnBnClickedButton2()
 			if (0 == dwByte)
 				break;
 
-			pGameInstance->Add_GameObjectToLayer(1, TEXT("UI"), TEXT("Prototype_GameObject_UIObject"), &UIObjectDesc);
+			if (FAILED(pGameInstance->Add_GameObjectToLayer(1, TEXT("UI"), TEXT("Prototype_GameObject_UIObject"), &UIObjectDesc)))
+				return;
 		}
 
 		RELEASE_INSTANCE(CGameInstance);

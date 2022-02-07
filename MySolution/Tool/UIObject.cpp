@@ -133,23 +133,23 @@ _int UIObject::Tick(_double TimeDelta)
 		if (pGameInstance->Get_DIKeyState(DIK_W) & 0x80)
 		{
 			_float Y = XMVectorGetY(Position);
-			Y += TimeDelta * 300.f;
+			Y += TimeDelta * 50.f;
 			m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetY(Position, Y));
 		}else if (pGameInstance->Get_DIKeyState(DIK_S) & 0x80)
 		{
 			_float Y = XMVectorGetY(Position);
-			Y -= TimeDelta * 300.f;
+			Y -= TimeDelta * 50.f;
 			m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetY(Position, Y));
 		}else if (pGameInstance->Get_DIKeyState(DIK_A) & 0x80)
 		{
 			_float X = XMVectorGetX(Position);
-			X -= TimeDelta * 300.f;
+			X -= TimeDelta * 50.f;
 			m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetX(Position, X));
 		}
 		else if (pGameInstance->Get_DIKeyState(DIK_D) & 0x80)
 		{
 			_float X = XMVectorGetX(Position);
-			X += TimeDelta * 300.f;
+			X += TimeDelta * 50.f;
 			m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetX(Position, X));
 		}
 	}
@@ -161,11 +161,19 @@ _int UIObject::Tick(_double TimeDelta)
 		else if (pGameInstance->Get_DIKeyState(DIK_RIGHT) & 0x80)
 			m_pTransformCom->Rotation_Axis(XMVectorSet(0.f, 0.f, 1.f, 0.f), -0.3f);
 	}
-	
+	/*
 	if (pGameInstance->Get_DIKeyState(DIK_SPACE) & 0x80)
 	{
-		m_pTransformCom->Rotation_Axis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(180.f));
-	}
+		_vector Right = m_pTransformCom->Get_State(CTransform::STATE_RIGHT);
+		_vector Up = m_pTransformCom->Get_State(CTransform::STATE_UP);
+		_vector Look = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
+
+		Look *= -1.f;
+
+		m_pTransformCom->Set_State(CTransform::STATE_RIGHT, Right);
+		m_pTransformCom->Set_State(CTransform::STATE_RIGHT, Up);
+		m_pTransformCom->Set_State(CTransform::STATE_RIGHT, Look);
+	}*/
 
 	RELEASE_INSTANCE(CGameInstance);
 

@@ -25,6 +25,8 @@ public:
 
 private:
 	class CGameInstance*		gameInstance = nullptr;
+public:
+	vector<_int>		VecUIType;
 
 private:
 	HRESULT		ReadyTabSetting();

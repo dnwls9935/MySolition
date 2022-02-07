@@ -10,6 +10,8 @@ class ENGINE_DLL CGameObject abstract : public CBase
 public:
 	enum class OBJTYPE_ID { ENVIRONMENT,  COLLISION_ENVIORNMENT, TERRAIN, INTERACTION , PLAYER, PLAYER_WEAPONE, ENEMY,ENEMY_OBJECT ,BOSS, OBJTYPE_END};
 
+	enum class UITYPE_ID {PLAYER_HP, PLAYER_SHILED, EXP, GRENADE, AMMO, UITYPE_END};
+
 public:
 	typedef struct tagToolObjectDesc {
 		_tchar	m_BufferTag[MAX_PATH] = TEXT("");
@@ -19,6 +21,15 @@ public:
 		_bool				loadCheck = FALSE;
 		OBJTYPE_ID		m_Type = OBJTYPE_ID::OBJTYPE_END;
 	}TOOLOBJDESC;
+
+public:
+	typedef struct tagUiObject {
+		_vector			m_Position;
+		_tchar				m_TextureTag[MAX_PATH] = L"";
+		_bool				m_LoadCheck = FALSE;
+		_matrix			m_LoadMatrix = XMMatrixIdentity();
+		UITYPE_ID		m_UITypeID = UITYPE_ID::UITYPE_END;
+	}UIOBJDESC;
 
 protected:
 	explicit CGameObject(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

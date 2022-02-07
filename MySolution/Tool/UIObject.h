@@ -11,14 +11,6 @@ END
 
 class UIObject final : public CGameObject
 {
-public:
-	typedef struct tagUiObject {
-		_vector			m_Position;
-		_tchar				m_TextureTag[MAX_PATH] = L"";
-		_bool				m_LoadCheck = FALSE;
-		_matrix			m_LoadMatrix = XMMatrixIdentity();
-	}UIOBJDESC;
-
 private:
 	explicit UIObject(ID3D11Device* _dx11Device, ID3D11DeviceContext* _dx11DeviceContext);
 	explicit UIObject(const UIObject& rhs);

@@ -517,70 +517,92 @@ HRESULT CToolView::ReadyTexture()
 	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Texture_Ammo"), CTexture::Create(dx11Device, dx11DeviceContext, TEXT("../Client/Bin/Resources/Textures/UI/UI_HUD/Ammo.png")))))
 		return E_FAIL;
 	m_form->tapUI->UIListBox.AddString(TEXT("Prototype_Component_Texture_Ammo"));
+	m_form->VecUIType.push_back((_int)CGameObject::UITYPE_ID::UITYPE_END);
 
 	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Texture_GrenadeBar"), CTexture::Create(dx11Device, dx11DeviceContext, TEXT("../Client/Bin/Resources/Textures/UI/UI_HUD/GrenadeBar.png")))))
 		return E_FAIL;
 	m_form->tapUI->UIListBox.AddString(TEXT("Prototype_Component_Texture_GrenadeBar"));
+	m_form->VecUIType.push_back((_int)CGameObject::UITYPE_ID::GRENADE);
 
 	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Texture_HeartCross"), CTexture::Create(dx11Device, dx11DeviceContext, TEXT("../Client/Bin/Resources/Textures/UI/UI_HUD/HeartCross.png")))))
 		return E_FAIL;
 	m_form->tapUI->UIListBox.AddString(TEXT("Prototype_Component_Texture_HeartCross"));
+	m_form->VecUIType.push_back((_int)CGameObject::UITYPE_ID::UITYPE_END);
 
 	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Texture_HUD_I2CD"), CTexture::Create(dx11Device, dx11DeviceContext, TEXT("../Client/Bin/Resources/Textures/UI/UI_HUD/HUD_I2CD.png")))))
 		return E_FAIL;
 	m_form->tapUI->UIListBox.AddString(TEXT("Prototype_Component_Texture_HUD_I2CD"));
+	m_form->VecUIType.push_back((_int)CGameObject::UITYPE_ID::UITYPE_END);
 
 	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Texture_HUD_I2D3"), CTexture::Create(dx11Device, dx11DeviceContext, TEXT("../Client/Bin/Resources/Textures/UI/UI_HUD/HUD_I2D3.png")))))
 		return E_FAIL;
 	m_form->tapUI->UIListBox.AddString(TEXT("Prototype_Component_Texture_HUD_I2D3"));
+	m_form->VecUIType.push_back((_int)CGameObject::UITYPE_ID::UITYPE_END);
 
 	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Texture_HUD_I3AD"), CTexture::Create(dx11Device, dx11DeviceContext, TEXT("../Client/Bin/Resources/Textures/UI/UI_HUD/HUD_I3AD.png")))))
 		return E_FAIL;
 	m_form->tapUI->UIListBox.AddString(TEXT("Prototype_Component_Texture_HUD_I3AD"));
+	m_form->VecUIType.push_back((_int)CGameObject::UITYPE_ID::PLAYER_SHILED);
 
 	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Texture_HUD_I3B3"), CTexture::Create(dx11Device, dx11DeviceContext, TEXT("../Client/Bin/Resources/Textures/UI/UI_HUD/HUD_I3B3.png")))))
 		return E_FAIL;
 	m_form->tapUI->UIListBox.AddString(TEXT("Prototype_Component_Texture_HUD_I3B3"));
+	m_form->VecUIType.push_back((_int)CGameObject::UITYPE_ID::PLAYER_HP);
 
 	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Texture_HUD_I3B9"), CTexture::Create(dx11Device, dx11DeviceContext, TEXT("../Client/Bin/Resources/Textures/UI/UI_HUD/HUD_I3B9.png")))))
 		return E_FAIL;
 	m_form->tapUI->UIListBox.AddString(TEXT("Prototype_Component_Texture_HUD_I3B9"));
+	m_form->VecUIType.push_back((_int)CGameObject::UITYPE_ID::AMMO);
 
 	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Texture_HUD_I15D"), CTexture::Create(dx11Device, dx11DeviceContext, TEXT("../Client/Bin/Resources/Textures/UI/UI_HUD/HUD_I15D.png")))))
 		return E_FAIL;
 	m_form->tapUI->UIListBox.AddString(TEXT("Prototype_Component_Texture_HUD_I15D"));
+	m_form->VecUIType.push_back((_int)CGameObject::UITYPE_ID::UITYPE_END);
 
 	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Texture_HUD_I101"), CTexture::Create(dx11Device, dx11DeviceContext, TEXT("../Client/Bin/Resources/Textures/UI/UI_HUD/HUD_I101.png")))))
 		return E_FAIL;
 	m_form->tapUI->UIListBox.AddString(TEXT("Prototype_Component_Texture_HUD_I101"));
+	m_form->VecUIType.push_back((_int)CGameObject::UITYPE_ID::UITYPE_END);
 
 	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Texture_HUD_I316"), CTexture::Create(dx11Device, dx11DeviceContext, TEXT("../Client/Bin/Resources/Textures/UI/UI_HUD/HUD_I316.png")))))
 		return E_FAIL;
 	m_form->tapUI->UIListBox.AddString(TEXT("Prototype_Component_Texture_HUD_I316"));
+	m_form->VecUIType.push_back((_int)CGameObject::UITYPE_ID::UITYPE_END);
 
 	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Texture_HUD_IB8"), CTexture::Create(dx11Device, dx11DeviceContext, TEXT("../Client/Bin/Resources/Textures/UI/UI_HUD/HUD_IB8.png")))))
 		return E_FAIL;
 	m_form->tapUI->UIListBox.AddString(TEXT("Prototype_Component_Texture_HUD_IB8"));
+	m_form->VecUIType.push_back((_int)CGameObject::UITYPE_ID::EXP);
 
 	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Texture_HUD_IB8_B"), CTexture::Create(dx11Device, dx11DeviceContext, TEXT("../Client/Bin/Resources/Textures/UI/UI_HUD/HUD_IB8_B.png")))))
 		return E_FAIL;
 	m_form->tapUI->UIListBox.AddString(TEXT("Prototype_Component_Texture_HUD_IB8_B"));
+	m_form->VecUIType.push_back((_int)CGameObject::UITYPE_ID::UITYPE_END);
 
 	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Texture_HUD_IF8"), CTexture::Create(dx11Device, dx11DeviceContext, TEXT("../Client/Bin/Resources/Textures/UI/UI_HUD/HUD_IF8.png")))))
 		return E_FAIL;
 	m_form->tapUI->UIListBox.AddString(TEXT("Prototype_Component_Texture_HUD_IF8"));
+	m_form->VecUIType.push_back((_int)CGameObject::UITYPE_ID::UITYPE_END);
 
 	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Texture_Large"), CTexture::Create(dx11Device, dx11DeviceContext, TEXT("../Client/Bin/Resources/Textures/UI/UI_HUD/Large.png")))))
 		return E_FAIL;
 	m_form->tapUI->UIListBox.AddString(TEXT("Prototype_Component_Texture_Large"));
+	m_form->VecUIType.push_back((_int)CGameObject::UITYPE_ID::UITYPE_END);
+
+	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Texture_Large_Reverse"), CTexture::Create(dx11Device, dx11DeviceContext, TEXT("../Client/Bin/Resources/Textures/UI/UI_HUD/Large_Reverse.png")))))
+		return E_FAIL;
+	m_form->tapUI->UIListBox.AddString(TEXT("Prototype_Component_Texture_Large_Reverse"));
+	m_form->VecUIType.push_back((_int)CGameObject::UITYPE_ID::UITYPE_END);
 
 	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Texture_Sheld"), CTexture::Create(dx11Device, dx11DeviceContext, TEXT("../Client/Bin/Resources/Textures/UI/UI_HUD/Sheld.png")))))
 		return E_FAIL;
 	m_form->tapUI->UIListBox.AddString(TEXT("Prototype_Component_Texture_Sheld"));
+	m_form->VecUIType.push_back((_int)CGameObject::UITYPE_ID::UITYPE_END);
 
 	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Texture_Small"), CTexture::Create(dx11Device, dx11DeviceContext, TEXT("../Client/Bin/Resources/Textures/UI/UI_HUD/Small.png")))))
 		return E_FAIL;
 	m_form->tapUI->UIListBox.AddString(TEXT("Prototype_Component_Texture_Small"));
+	m_form->VecUIType.push_back((_int)CGameObject::UITYPE_ID::UITYPE_END);
 
 
 	return S_OK;

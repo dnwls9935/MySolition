@@ -1,7 +1,7 @@
 #pragma once
 #include "afxwin.h"
 
-
+#include "ToolDefines.h"
 // TapUI 대화 상자입니다.
 
 class TapUI : public CDialogEx
@@ -21,8 +21,10 @@ protected:
 	virtual void PostNcDestroy();
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.
 
+
 	DECLARE_MESSAGE_MAP()
 private:
+	
 
 public:
 	afx_msg void OnLbnSelchangeList1();

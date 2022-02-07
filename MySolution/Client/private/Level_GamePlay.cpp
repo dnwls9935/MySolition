@@ -29,11 +29,11 @@ HRESULT CLevel_GamePlay::NativeConstruct()
 		return E_FAIL;
 	if (FAILED(LoadData(hFile)))
 		return E_FAIL;
+	CloseHandle(hFile);
 
 	if (FAILED(Ready_Layer_UI(TEXT("Layer_UI"))))
 		return E_FAIL;
 
-	CloseHandle(hFile);
 	return S_OK;
 }
 
@@ -170,12 +170,26 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const _tchar * pLayerTag)
 
 HRESULT CLevel_GamePlay::Ready_Layer_UI(const _tchar * pLayerTag)
 {
+	HANDLE hFile = CreateFile(L"../Bin/Data/UITEST.dat", GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 
-	pGameInstance->Add_GameObjectToLayer(LEVEL_GAMEPLAY, pLayerTag, TEXT("Prototype_GameObject_UI_PlayerHP"));
+	CGameObject::UIOBJDESC UIOBJDesc;
+	ZeroMemory(&UIOBJDesc, sizeof(CGameObject::UIOBJDESC));
+	DWORD dwByte = 0;
+	while(TRUE) {
+		ReadFile(hFile, &UIOBJDesc, sizeof(CGameObject::UIOBJDESC), &dwByte, nullptr);
 
+		if (0 == dwByte)
+			break;
+		
+		if (FAILED(pGameInstance->Add_GameObjectToLayer(LEVEL_GAMEPLAY, TEXT("Layer_UI"), TEXT("Prototype_GameObject_UI"), &UIOBJDesc)))
+			return E_FAIL;
+	}
 
 	RELEASE_INSTANCE(CGameInstance);
+
+
+	CloseHandle(hFile);
 	return S_OK;
 }
 
