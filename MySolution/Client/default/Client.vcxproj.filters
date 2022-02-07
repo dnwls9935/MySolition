@@ -100,6 +100,12 @@
     <Filter Include="02.GameObject\GlacialFlowWall">
       <UniqueIdentifier>{cfb5f637-f81c-4ca8-a516-4e7b2b3f7a79}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\UI">
+      <UniqueIdentifier>{6a705741-5836-44aa-9eaa-4e6de28fc632}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\UI\PlayerHP">
+      <UniqueIdentifier>{48d8cff2-c86f-45c1-8286-9e4130636f64}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -189,6 +195,9 @@
     <ClInclude Include="..\public\GlacialFlowWall.h">
       <Filter>02.GameObject\GlacialFlowWall</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\PlayerHP.h">
+      <Filter>02.GameObject\UI\PlayerHP</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -262,6 +271,9 @@
     </ClCompile>
     <ClCompile Include="..\private\GlacialFlowWall.cpp">
       <Filter>02.GameObject\GlacialFlowWall</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\PlayerHP.cpp">
+      <Filter>02.GameObject\UI\PlayerHP</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

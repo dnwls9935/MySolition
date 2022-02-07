@@ -49,6 +49,12 @@
     <Filter Include="Object\ToolTerrain\NaviPoint">
       <UniqueIdentifier>{367e8257-69d4-4fd7-8648-be6eac2b339e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Object\ToolUI">
+      <UniqueIdentifier>{58f41a37-b5e1-4100-8034-78b71894d0f9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object\UIObject">
+      <UniqueIdentifier>{ee4685f4-528d-4feb-aaa4-24fbc339d654}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainFrm.h">
@@ -71,9 +77,6 @@
     </ClInclude>
     <ClInclude Include="Form.h">
       <Filter>02.View\Form</Filter>
-    </ClInclude>
-    <ClInclude Include="TapMap.h">
-      <Filter>02.View\Form\Map</Filter>
     </ClInclude>
     <ClInclude Include="ToolDefines.h">
       <Filter>99.Default</Filter>
@@ -107,6 +110,15 @@
     </ClInclude>
     <ClInclude Include="NaviPoint.h">
       <Filter>Object\ToolTerrain\NaviPoint</Filter>
+    </ClInclude>
+    <ClInclude Include="ToolUI.h">
+      <Filter>Object\ToolUI</Filter>
+    </ClInclude>
+    <ClInclude Include="UIObject.h">
+      <Filter>Object\UIObject</Filter>
+    </ClInclude>
+    <ClInclude Include="TapMap.h">
+      <Filter>02.View\Form\Map</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -157,6 +169,12 @@
     </ClCompile>
     <ClCompile Include="NaviPoint.cpp">
       <Filter>Object\ToolTerrain\NaviPoint</Filter>
+    </ClCompile>
+    <ClCompile Include="ToolUI.cpp">
+      <Filter>Object\ToolUI</Filter>
+    </ClCompile>
+    <ClCompile Include="UIObject.cpp">
+      <Filter>Object\UIObject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

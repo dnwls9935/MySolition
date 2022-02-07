@@ -79,7 +79,7 @@ _int BossPrimeBeast::Tick(_double TimeDelta)
 {
 	if(TRUE == m_FrameStart && 
 		(_uint)ANIMATION_STATE::RUN_F_V1)
-		m_ChargeTime += TimeDelta * 2.f;
+		m_ChargeTime += TimeDelta * 3.f;
 
 	GetDistance();
 	Animation(TimeDelta);
@@ -149,7 +149,6 @@ _int BossPrimeBeast::LateTick(_double TimeDelta)
 		if (m_pModelCom->GetAnimationFinished())
 		{
 			m_Dead = TRUE;
-			return m_Dead;
 		}
 	}
 
@@ -158,6 +157,9 @@ _int BossPrimeBeast::LateTick(_double TimeDelta)
 
 HRESULT BossPrimeBeast::Render()
 {
+	if (TRUE == m_Dead)
+		return S_OK;
+
 	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 
 	m_pModelCom->SetUp_ValueOnShader("g_WorldMatrix", &XMMatrixTranspose(m_pTransformCom->Get_WorldMatrix()), sizeof(_matrix));

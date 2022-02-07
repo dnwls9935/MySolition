@@ -20,6 +20,11 @@ sampler DefaultSampler = sampler_state
 	AddressV = wrap;
 };
 
+cbuffer PickCheck{
+	bool			g_PickCheck;
+};
+
+
 /* 1. m_pDeviceContext->DrawIndexed() */
 /* 2. 인덱스가 가지고 있던 인덱스 세개에 해당하는 정점 세개를 정점버퍼로부터 얻어온다. */
 /* 3. VS_MAIN함수를 호출하면서 가져온 정점 세개중 하나씩 전달해준다.  */
@@ -52,8 +57,8 @@ VS_OUT VS_MAIN(VS_IN In)
 	Out.vTexUV = In.vTexUV;	
 
 	return Out;
-
 }
+
 
 /* SV_POSITION을 가진 데잍처에대해서만 원근투영.(정점의 w값으로 xyzw를 나눈다.) */
 /* 뷰포트로 변환한다. */
@@ -83,6 +88,24 @@ PS_OUT PS_MAIN(PS_IN In)
 		discard;
 	
 	return Out;	
+};
+
+PS_OUT PS_MAIN_TOOL(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	Out.vColor = g_DiffuseTexture.Sample(DefaultSampler, In.vTexUV);
+
+
+	if (true == g_PickCheck)
+	{
+		Out.vColor += vector(0.1f, 0.1f, 0.f, 1.f);
+	}
+
+	if (Out.vColor.a < 0.01)
+		discard;
+
+	return Out;
 }
 
 
@@ -96,11 +119,23 @@ technique11			DefaultTechnique
 	{
 		SetRasterizerState(CullMode_Default);
 		SetDepthStencilState(ZBuffer_Default, 0);
+		SetBlendState(BlendDisable, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
 		/* 진입점함수를 지정한다. */
 		VertexShader = compile vs_5_0 VS_MAIN();
 		GeometryShader = NULL;
 		PixelShader = compile ps_5_0  PS_MAIN();
+	}
+	pass Tool 
+	{
+		SetRasterizerState(CullMode_Default);
+		SetDepthStencilState(ZBuffer_Default, 0);
+		SetBlendState(BlendDisable, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		/* 진입점함수를 지정한다. */
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		PixelShader = compile ps_5_0  PS_MAIN_TOOL();
 	}
 }
 

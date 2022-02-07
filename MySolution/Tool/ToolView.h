@@ -45,7 +45,6 @@ private:
 	HRESULT	ReadyCameraLayer(const _tchar* _layerTag);
 	HRESULT ReadyTerrainLayer(const _tchar* _layerTag);
 	HRESULT ReadyObjectLayer(const _tchar* _layerTag);
-	HRESULT ReadyEffectLayer(const _tchar* _layerTag);
 
 
 // 재정의입니다.

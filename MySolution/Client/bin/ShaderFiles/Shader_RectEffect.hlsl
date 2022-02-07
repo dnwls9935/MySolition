@@ -76,10 +76,10 @@ PS_OUT PS_MAIN(PS_IN In)
 	PS_OUT		Out = (PS_OUT)0;
 
 	Out.vColor = g_DiffuseTexture.Sample(DefaultSampler, In.vTexUV);
-
+/*
 	if (Out.vColor.a < 0.01)
 		discard;
-	
+	*/
 	return Out;	
 }
 

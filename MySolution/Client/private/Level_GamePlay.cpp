@@ -30,6 +30,9 @@ HRESULT CLevel_GamePlay::NativeConstruct()
 	if (FAILED(LoadData(hFile)))
 		return E_FAIL;
 
+	if (FAILED(Ready_Layer_UI(TEXT("Layer_UI"))))
+		return E_FAIL;
+
 	CloseHandle(hFile);
 	return S_OK;
 }
@@ -82,7 +85,7 @@ HRESULT CLevel_GamePlay::Ready_LightDesc()
 	LightDesc.vPosition = _float3(100.f, 10.f, 100.f);
 	LightDesc.fRange = 150.f;
 
-	LightDesc.vDiffuse = _float4(1.f, 1.f, 0.8f, 1.f);
+	LightDesc.vDiffuse = _float4(1.f, 1.f, 0.9f, 1.f);
 	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
 	LightDesc.vAmbient = _float4(0.4f, 0.4f, 0.4f, 1.f);
 
@@ -162,6 +165,17 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const _tchar * pLayerTag)
 
 	RELEASE_INSTANCE(CGameInstance);
 
+	return S_OK;
+}
+
+HRESULT CLevel_GamePlay::Ready_Layer_UI(const _tchar * pLayerTag)
+{
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+	pGameInstance->Add_GameObjectToLayer(LEVEL_GAMEPLAY, pLayerTag, TEXT("Prototype_GameObject_UI_PlayerHP"));
+
+
+	RELEASE_INSTANCE(CGameInstance);
 	return S_OK;
 }
 

@@ -45,3 +45,30 @@ void Calculator::CalcMousePos(CALCDESC* _calDesc)
 	RELEASE_INSTANCE(CGameInstance);
 }
 
+_vector Calculator::GetWindowPos(ID3D11DeviceContext* _DeviceContext, _float _WindowX, _float _WindowY, _float _PositionX, _float _PositionY)
+{
+	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+	D3D11_VIEWPORT		Viewport;
+	ZeroMemory(&Viewport, sizeof(D3D11_VIEWPORT));
+	_uint NumViewport = 1;
+	_DeviceContext->RSGetViewports(&NumViewport, &Viewport);
+
+	_vector Position = XMVectorZero();
+
+	Position = XMVectorSetX(Position, _PositionX / (Viewport.Width * 0.5f) - 1.f);
+	Position = XMVectorSetY(Position, _PositionY / -(Viewport.Height * 0.5f) + 1.f);
+	Position = XMVectorSetZ(Position, 0.f);
+	Position = XMVectorSetW(Position, 1.f);
+
+	_matrix		MatProj =XMMatrixOrthographicLH((_float)_WindowX, (_float)_WindowY, 0.f, 1.f);;
+	MatProj = XMMatrixInverse(nullptr, MatProj);
+	Position = XMVector3TransformCoord(Position, MatProj);
+
+	_matrix		MatView = XMMatrixIdentity();
+	MatView = XMMatrixInverse(nullptr, MatView);
+	Position = XMVector3TransformCoord(Position, MatView);
+
+	RELEASE_INSTANCE(CGameInstance);
+	return Position;
+}
+

@@ -127,7 +127,11 @@ list<CGameObject*>& CObject_Manager::GetObjectList(_uint _levelIdx, const _tchar
 	auto	iter = find_if(m_pLayers[_levelIdx].begin(), m_pLayers[_levelIdx].end(), CTag_Finder(_tag));
 
 	if (iter == m_pLayers[_levelIdx].end())
-		return list<CGameObject*>();
+	{
+		list<CGameObject*> temp = list<CGameObject*>();
+		temp.resize(0);
+		return temp;
+	}
 
 	return iter->second->GetObjectList();
 }

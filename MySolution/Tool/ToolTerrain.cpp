@@ -49,6 +49,8 @@ _int ToolTerrain::Tick(_double TimeDelta)
 {
 	if (FAILED(__super::Tick(TimeDelta)))
 		return -1;
+	if (0 != m_form->m_tabCtrl.GetCurSel())
+		return _int();
 
 
 	if (m_form->tapMap->m_BatchObject.GetCheck())
@@ -94,6 +96,8 @@ _int ToolTerrain::LateTick(_double TimeDelta)
 
 HRESULT ToolTerrain::Render()
 {
+	if (0 != m_form->m_tabCtrl.GetCurSel())
+		return _int();
 	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 
 	m_pVIBufferCom->SetUp_ValueOnShader("g_WorldMatrix", &XMMatrixTranspose(m_pTransformCom->Get_WorldMatrix()), sizeof(_matrix));

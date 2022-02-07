@@ -19,6 +19,8 @@ public:
 	virtual HRESULT NativeConstruct_Prototype(const _tchar* pTextureFilePath, _uint iNumTextures);
 	virtual HRESULT NativeConstruct(void* pArg);
 
+	_float2	GetTextureInfo(_uint _TextureIndex = 0);
+
 private:	
 	vector<ID3D11ShaderResourceView*>			m_Textures;
 	typedef vector<ID3D11ShaderResourceView*>	TEXTURES;

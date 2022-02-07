@@ -309,6 +309,11 @@ void CGameInstance::CalcMousePos(Calculator::CALCDESC* _calDesc)
 	Calculator::CalcMousePos(_calDesc);
 }
 
+_vector CGameInstance::GetWindowPos(ID3D11DeviceContext* _DeviceContext, _float _WindowX, _float _WindowY, _float _PositionX, _float _PositionY)
+{
+	return Calculator::GetWindowPos(_DeviceContext, _WindowX, _WindowY, _PositionX, _PositionY);
+}
+
 void CGameInstance::Release_Engine()
 {
 	if (0 != CGameInstance::GetInstance()->DestroyInstance())

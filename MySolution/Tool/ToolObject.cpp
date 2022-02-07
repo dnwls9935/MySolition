@@ -56,10 +56,11 @@ HRESULT ToolObject::NativeConstruct(void * pArg)
 
 _int ToolObject::Tick(_double TimeDelta)
 {
-	CGameInstance* gameInstance = GET_INSTANCE(CGameInstance);
-
 	CMainFrame* m_mainFrm = dynamic_cast<CMainFrame*>(AfxGetApp()->GetMainWnd());
-	Form* m_form = dynamic_cast<Form*>(m_mainFrm->m_MainSpliiter.GetPane(0, 0));
+	Form * m_form = dynamic_cast<Form*>(m_mainFrm->m_MainSpliiter.GetPane(0, 0));
+	if (0 != m_form->m_tabCtrl.GetCurSel())
+		return _int();
+	CGameInstance* gameInstance = GET_INSTANCE(CGameInstance);
 
 	if (m_form->tapMap->m_Modify.GetCheck())
 	{
@@ -84,7 +85,6 @@ _int ToolObject::Tick(_double TimeDelta)
 
 				if (gameInstance->Get_DIKeyState(DIK_LALT) & 0x80)
 				{
-
 					if (MouseMove = gameInstance->Get_MouseMoveState(CInput_Device::MMS_Y))
 					{
 						_float4 position;
@@ -132,7 +132,9 @@ _int ToolObject::Tick(_double TimeDelta)
 _int ToolObject::LateTick(_double TimeDelta)
 {
 	CMainFrame* m_mainFrm = dynamic_cast<CMainFrame*>(AfxGetApp()->GetMainWnd());
-	Form* m_form = dynamic_cast<Form*>(m_mainFrm->m_MainSpliiter.GetPane(0, 0));
+	Form * m_form = dynamic_cast<Form*>(m_mainFrm->m_MainSpliiter.GetPane(0, 0));
+	if (0 != m_form->m_tabCtrl.GetCurSel())
+		return _int();
 
 	if (nullptr != m_pRendererCom && 0 == m_form->m_tabCtrl.GetCurSel())
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
@@ -145,6 +147,10 @@ _int ToolObject::LateTick(_double TimeDelta)
 
 HRESULT ToolObject::Render()
 {
+	CMainFrame* m_mainFrm = dynamic_cast<CMainFrame*>(AfxGetApp()->GetMainWnd());
+	Form * m_form = dynamic_cast<Form*>(m_mainFrm->m_MainSpliiter.GetPane(0, 0));
+	if (0 != m_form->m_tabCtrl.GetCurSel())
+		return _int();
 	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 
 	m_pModelCom->SetUp_ValueOnShader("g_WorldMatrix", &XMMatrixTranspose(m_pTransformCom->Get_WorldMatrix()), sizeof(_matrix));

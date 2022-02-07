@@ -17,6 +17,7 @@
 #include "HyperionChest.h"
 #include "HitBullet.h"
 #include "GlacialFlowWall.h"
+#include "PlayerHP.h"
 
 CLoader::CLoader(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: m_pDevice(pDevice)
@@ -107,6 +108,8 @@ HRESULT CLoader::Loading_ForGamePlay()
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Terrain"), CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Textures/Terrain/Snow_256_Dif.tga")))))
 		return E_FAIL;
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_HitBullet"), CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Textures/Effect/Blood_Flipbook_Dif.png")))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_PlayerHP"), CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Textures/UI/UI_HUD/HUD_I3B3.png")))))
 		return E_FAIL;
 
 	wsprintf(m_szLoading, TEXT("콜라이더를 생성한다. "));
@@ -293,6 +296,10 @@ HRESULT CLoader::Loading_ForGamePlay()
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Model_GlacialFlowWall"), GlcialFlowWall::Create(m_pDevice, m_pDeviceContext))))
 		return E_FAIL;
 
+
+	/* UI들 */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_PlayerHP"), PlayerHP::Create(m_pDevice, m_pDeviceContext))))
+		return E_FAIL;
 
 	// 이팩트들
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Effect_HitBullet"), HitBullet::Create(m_pDevice, m_pDeviceContext))))

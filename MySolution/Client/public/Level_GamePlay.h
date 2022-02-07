@@ -16,14 +16,12 @@ public:
 	virtual HRESULT Render();
 
 private:
-	HRESULT Ready_LightDesc();
-	HRESULT	Ready_Layer_Environment(const _tchar* pLayerTag);
-	HRESULT	Ready_Layer_Object(const _tchar* pLayerTag);
-	HRESULT	Ready_Layer_Enemy(const _tchar* pLayerTag);
-	HRESULT Ready_Layer_Player(const _tchar* pLayerTag);
-	HRESULT Ready_Layer_BackGround(const _tchar* pLayerTag);
-	HRESULT Ready_Layer_SkyBox(const _tchar* pLayerTag);
-	HRESULT Ready_Layer_Camera(const _tchar* pLayerTag);
+	HRESULT		Ready_LightDesc();
+	HRESULT		Ready_Layer_Enemy(const _tchar* pLayerTag);
+	HRESULT		Ready_Layer_BackGround(const _tchar* pLayerTag);
+	HRESULT		Ready_Layer_SkyBox(const _tchar* pLayerTag);
+	HRESULT		Ready_Layer_Camera(const _tchar* pLayerTag);
+	HRESULT		Ready_Layer_UI(const _tchar* pLayerTag);
 
 	HRESULT LoadData(HANDLE& hFile);
 	HRESULT LoadTerrain(HANDLE& hFile);

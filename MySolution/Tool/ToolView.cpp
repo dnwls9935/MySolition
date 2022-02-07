@@ -20,6 +20,9 @@
 #include "ToolRect.h"
 #include "ToolObject.h"
 #include "TapMap.h"
+#include "TapUI.h"
+#include "ToolUI.h"
+#include "UIObject.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -236,6 +239,10 @@ HRESULT CToolView::ReadyProtoAll()
 	/*		Static	*/
 	if (FAILED(gameInstance->Add_Prototype(TEXT("Prototype_GameObject_Terrain"), ToolTerrain::Create(dx11Device, dx11DeviceContext))))
 		return E_FAIL;
+	if (FAILED(gameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI"), ToolUI::Create(dx11Device, dx11DeviceContext))))
+		return E_FAIL;
+	if (FAILED(gameInstance->Add_Prototype(TEXT("Prototype_GameObject_UIObject"), UIObject::Create(dx11Device, dx11DeviceContext))))
+		return E_FAIL;
 	if (FAILED(gameInstance->Add_Prototype(TEXT("Prototype_GameObject_Dyanmic_Camera"), ToolCamera::Create(dx11Device, dx11DeviceContext))))
 		return E_FAIL;
 	if (FAILED(gameInstance->Add_Prototype(TEXT("Prototype_GameObject_Model_BugMorph"), ToolObject::Create(dx11Device, dx11DeviceContext))))
@@ -348,6 +355,11 @@ HRESULT CToolView::ReadyProtoAll()
 		return E_FAIL;
 	if (FAILED(gameInstance->Add_Prototype(TEXT("Prototype_GameObject_Model_Wire3"), ToolObject::Create(dx11Device, dx11DeviceContext))))
 		return E_FAIL;
+
+
+
+	/* UI ฐüทร */
+
 
 	return S_OK;
 }
@@ -492,8 +504,6 @@ HRESULT CToolView::ReadyLayer()
 	if (FAILED(ReadyObjectLayer(TEXT("Object"))))
 		return E_FAIL;
 
-	if (FAILED(ReadyEffectLayer(TEXT("Effect"))))
-		return E_FAIL;
 
 	return S_OK;
 }
@@ -502,6 +512,77 @@ HRESULT CToolView::ReadyTexture()
 {
 	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Texture_Terrain"), CTexture::Create(dx11Device, dx11DeviceContext, TEXT("../Client/Bin/Resources/Textures/Terrain/Snow_256_Dif.tga")))))
 		return E_FAIL;
+
+
+	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Texture_Ammo"), CTexture::Create(dx11Device, dx11DeviceContext, TEXT("../Client/Bin/Resources/Textures/UI/UI_HUD/Ammo.png")))))
+		return E_FAIL;
+	m_form->tapUI->UIListBox.AddString(TEXT("Prototype_Component_Texture_Ammo"));
+
+	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Texture_GrenadeBar"), CTexture::Create(dx11Device, dx11DeviceContext, TEXT("../Client/Bin/Resources/Textures/UI/UI_HUD/GrenadeBar.png")))))
+		return E_FAIL;
+	m_form->tapUI->UIListBox.AddString(TEXT("Prototype_Component_Texture_GrenadeBar"));
+
+	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Texture_HeartCross"), CTexture::Create(dx11Device, dx11DeviceContext, TEXT("../Client/Bin/Resources/Textures/UI/UI_HUD/HeartCross.png")))))
+		return E_FAIL;
+	m_form->tapUI->UIListBox.AddString(TEXT("Prototype_Component_Texture_HeartCross"));
+
+	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Texture_HUD_I2CD"), CTexture::Create(dx11Device, dx11DeviceContext, TEXT("../Client/Bin/Resources/Textures/UI/UI_HUD/HUD_I2CD.png")))))
+		return E_FAIL;
+	m_form->tapUI->UIListBox.AddString(TEXT("Prototype_Component_Texture_HUD_I2CD"));
+
+	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Texture_HUD_I2D3"), CTexture::Create(dx11Device, dx11DeviceContext, TEXT("../Client/Bin/Resources/Textures/UI/UI_HUD/HUD_I2D3.png")))))
+		return E_FAIL;
+	m_form->tapUI->UIListBox.AddString(TEXT("Prototype_Component_Texture_HUD_I2D3"));
+
+	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Texture_HUD_I3AD"), CTexture::Create(dx11Device, dx11DeviceContext, TEXT("../Client/Bin/Resources/Textures/UI/UI_HUD/HUD_I3AD.png")))))
+		return E_FAIL;
+	m_form->tapUI->UIListBox.AddString(TEXT("Prototype_Component_Texture_HUD_I3AD"));
+
+	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Texture_HUD_I3B3"), CTexture::Create(dx11Device, dx11DeviceContext, TEXT("../Client/Bin/Resources/Textures/UI/UI_HUD/HUD_I3B3.png")))))
+		return E_FAIL;
+	m_form->tapUI->UIListBox.AddString(TEXT("Prototype_Component_Texture_HUD_I3B3"));
+
+	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Texture_HUD_I3B9"), CTexture::Create(dx11Device, dx11DeviceContext, TEXT("../Client/Bin/Resources/Textures/UI/UI_HUD/HUD_I3B9.png")))))
+		return E_FAIL;
+	m_form->tapUI->UIListBox.AddString(TEXT("Prototype_Component_Texture_HUD_I3B9"));
+
+	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Texture_HUD_I15D"), CTexture::Create(dx11Device, dx11DeviceContext, TEXT("../Client/Bin/Resources/Textures/UI/UI_HUD/HUD_I15D.png")))))
+		return E_FAIL;
+	m_form->tapUI->UIListBox.AddString(TEXT("Prototype_Component_Texture_HUD_I15D"));
+
+	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Texture_HUD_I101"), CTexture::Create(dx11Device, dx11DeviceContext, TEXT("../Client/Bin/Resources/Textures/UI/UI_HUD/HUD_I101.png")))))
+		return E_FAIL;
+	m_form->tapUI->UIListBox.AddString(TEXT("Prototype_Component_Texture_HUD_I101"));
+
+	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Texture_HUD_I316"), CTexture::Create(dx11Device, dx11DeviceContext, TEXT("../Client/Bin/Resources/Textures/UI/UI_HUD/HUD_I316.png")))))
+		return E_FAIL;
+	m_form->tapUI->UIListBox.AddString(TEXT("Prototype_Component_Texture_HUD_I316"));
+
+	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Texture_HUD_IB8"), CTexture::Create(dx11Device, dx11DeviceContext, TEXT("../Client/Bin/Resources/Textures/UI/UI_HUD/HUD_IB8.png")))))
+		return E_FAIL;
+	m_form->tapUI->UIListBox.AddString(TEXT("Prototype_Component_Texture_HUD_IB8"));
+
+	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Texture_HUD_IB8_B"), CTexture::Create(dx11Device, dx11DeviceContext, TEXT("../Client/Bin/Resources/Textures/UI/UI_HUD/HUD_IB8_B.png")))))
+		return E_FAIL;
+	m_form->tapUI->UIListBox.AddString(TEXT("Prototype_Component_Texture_HUD_IB8_B"));
+
+	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Texture_HUD_IF8"), CTexture::Create(dx11Device, dx11DeviceContext, TEXT("../Client/Bin/Resources/Textures/UI/UI_HUD/HUD_IF8.png")))))
+		return E_FAIL;
+	m_form->tapUI->UIListBox.AddString(TEXT("Prototype_Component_Texture_HUD_IF8"));
+
+	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Texture_Large"), CTexture::Create(dx11Device, dx11DeviceContext, TEXT("../Client/Bin/Resources/Textures/UI/UI_HUD/Large.png")))))
+		return E_FAIL;
+	m_form->tapUI->UIListBox.AddString(TEXT("Prototype_Component_Texture_Large"));
+
+	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Texture_Sheld"), CTexture::Create(dx11Device, dx11DeviceContext, TEXT("../Client/Bin/Resources/Textures/UI/UI_HUD/Sheld.png")))))
+		return E_FAIL;
+	m_form->tapUI->UIListBox.AddString(TEXT("Prototype_Component_Texture_Sheld"));
+
+	if (FAILED(gameInstance->Add_Prototype(0, TEXT("Prototype_Component_Texture_Small"), CTexture::Create(dx11Device, dx11DeviceContext, TEXT("../Client/Bin/Resources/Textures/UI/UI_HUD/Small.png")))))
+		return E_FAIL;
+	m_form->tapUI->UIListBox.AddString(TEXT("Prototype_Component_Texture_Small"));
+
+
 	return S_OK;
 }
 
@@ -530,6 +611,9 @@ HRESULT CToolView::ReadyCameraLayer(const _tchar * _layerTag)
 HRESULT CToolView::ReadyTerrainLayer(const _tchar* _layerTag)
 {
 	if (FAILED(gameInstance->Add_GameObjectToLayer(1, _layerTag, TEXT("Prototype_GameObject_Terrain"))))
+		return E_FAIL;
+
+	if (FAILED(gameInstance->Add_GameObjectToLayer(1, _layerTag, TEXT("Prototype_GameObject_UI"))))
 		return E_FAIL;
 
 	return S_OK;
@@ -684,10 +768,5 @@ HRESULT CToolView::ReadyObjectLayer(const _tchar * _layerTag)
 	m_form->tapMap->m_objectListBox.AddString(TEXT("Wire3"));
 	m_form->tapMap->m_BatchObjectEnumArr.push_back((_int)CGameObject::OBJTYPE_ID::COLLISION_ENVIORNMENT);
 
-	return S_OK;
-}
-
-HRESULT CToolView::ReadyEffectLayer(const _tchar * _layerTag)
-{
 	return S_OK;
 }

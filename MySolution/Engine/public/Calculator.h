@@ -21,6 +21,7 @@ private:
 
 public:
 	static void		CalcMousePos(CALCDESC* _calDesc);
+	static _vector	GetWindowPos(ID3D11DeviceContext* _DeviceContext , _float _WindowX, _float _WindowY, _float _PositionX, _float _PositionY);
 };
 
 END

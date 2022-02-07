@@ -211,7 +211,9 @@
     <ClInclude Include="ToolObject.h" />
     <ClInclude Include="ToolRect.h" />
     <ClInclude Include="ToolTerrain.h" />
+    <ClInclude Include="ToolUI.h" />
     <ClInclude Include="ToolView.h" />
+    <ClInclude Include="UIObject.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Form.cpp" />
@@ -234,7 +236,9 @@
     <ClCompile Include="ToolObject.cpp" />
     <ClCompile Include="ToolRect.cpp" />
     <ClCompile Include="ToolTerrain.cpp" />
+    <ClCompile Include="ToolUI.cpp" />
     <ClCompile Include="ToolView.cpp" />
+    <ClCompile Include="UIObject.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Tool.rc" />

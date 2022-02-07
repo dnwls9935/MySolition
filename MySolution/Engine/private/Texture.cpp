@@ -62,24 +62,40 @@ HRESULT CTexture::NativeConstruct_Prototype(const _tchar * pTextureFilePath, _ui
 		ScratchImage.Release();
 	}
 
-
-
-	
-	
-
-	
-
-
-
-
-	
-
 	return S_OK;
 }
 
 HRESULT CTexture::NativeConstruct(void * pArg)
 {
 	return S_OK;
+}
+
+_float2 CTexture::GetTextureInfo(_uint _TextureIndex)
+{
+	ID3D11Resource* 	Resource;
+	m_Textures[_TextureIndex]->GetResource(&Resource);
+	if (nullptr == Resource)
+		return _float2();
+
+	ID3D11Texture2D	*	Texture2D = nullptr;
+	HRESULT hr = Resource->QueryInterface(&Texture2D);
+
+	_float2 TextureSize = _float2();
+
+	if (SUCCEEDED(hr))
+	{
+		D3D11_TEXTURE2D_DESC		TextureDesc;
+		ZeroMemory(&TextureDesc, sizeof(TextureDesc));
+
+		Texture2D->GetDesc(&TextureDesc);
+		TextureSize.x = (_float)TextureDesc.Width;
+		TextureSize.y = (_float)TextureDesc.Height;
+
+	}
+	Safe_Release(Texture2D);
+	Safe_Release(Resource);
+
+	return TextureSize;
 }
 
 CTexture * CTexture::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, const _tchar * pTextureFilePath, _uint iNumTextures)
