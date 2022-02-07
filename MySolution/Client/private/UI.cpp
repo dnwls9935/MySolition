@@ -86,7 +86,7 @@ HRESULT UI::SetUp_Components()
 		return E_FAIL;
 
 	/* Com_Texture */
-	if (FAILED(__super::SetUp_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_PlayerHP"), TEXT("Com_Texture"), (CComponent**)&m_pTextureCom)))
+	if (FAILED(__super::SetUp_Components(LEVEL_GAMEPLAY, m_UIDesc.m_TextureTag, TEXT("Com_Texture"), (CComponent**)&m_pTextureCom)))
 		return E_FAIL;
 
 	return S_OK;
