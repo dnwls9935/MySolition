@@ -101,7 +101,13 @@ PS_OUT_LIGHTACC PS_MAIN_LIGHTACC_DIRECTIONAL(PS_IN In)
 	/* 0 ~ 1*/
 	/* -1 ~ 1*/
 	vector		vNormal = vector(vNormalDesc.xyz * 2.f - 1.f, 0.f);
-	Out.vShade = g_vLightDiffuse * (saturate(dot(normalize(g_vLightDir) * -1.f, vNormal)) + (g_vLightAmbient * g_vMtrlAmbient));
+
+	float fShade = g_vLightDiffuse * (saturate(dot(normalize(g_vLightDir) * -1.f, vNormal)));
+
+	fShade = (ceil(fShade * 5) / 5.f);
+
+	Out.vShade = fShade + (g_vLightAmbient * g_vMtrlAmbient);
+
 	Out.vShade.a = 1.f;
 
 	vector		vReflect = reflect(normalize(g_vLightDir), vNormal);
@@ -155,9 +161,14 @@ PS_OUT_LIGHTACC PS_MAIN_LIGHTACC_POINT(PS_IN In)
 	/* 0 ~ 1*/
 	/* -1 ~ 1*/
 	vector		vNormal = vector(vNormalDesc.xyz * 2.f - 1.f, 0.f);
-	Out.vShade = g_vLightDiffuse * (saturate(dot(normalize(vLightDir) * -1.f, vNormal)) + (g_vLightAmbient * g_vMtrlAmbient)) * fAtt;
-	Out.vShade.a = 1.f;
+	
+	float fShade = g_vLightDiffuse * (saturate(dot(normalize(g_vLightDir) * -1.f, vNormal)));
 
+	fShade = (ceil(fShade * 5) / 5.f);
+
+	Out.vShade = fShade + (g_vLightAmbient * g_vMtrlAmbient);
+
+	Out.vShade.a = 1.f;
 	vector		vReflect = reflect(normalize(vLightDir), vNormal);
 
 	vector		vLook = normalize(vWorldPos - g_vCamPosition);
