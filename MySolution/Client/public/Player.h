@@ -59,6 +59,8 @@ public:
 		return m_Shot;
 	};
 
+	void		Hit(_int	_HP);
+
 private:
 	void KeyCheck(_double TimeDelta);
 	void SetCamAndSkyBox();

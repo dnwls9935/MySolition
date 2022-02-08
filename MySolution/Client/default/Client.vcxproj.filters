@@ -103,6 +103,12 @@
     <Filter Include="02.GameObject\UI">
       <UniqueIdentifier>{6a705741-5836-44aa-9eaa-4e6de28fc632}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\UI\CrossSight">
+      <UniqueIdentifier>{574ad408-9c2c-4a1f-aeec-7ca228ec5ea3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\UI\PlayerUI">
+      <UniqueIdentifier>{a017ab54-a6d1-4c94-80e3-5c2c416a82ac}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -193,7 +199,10 @@
       <Filter>02.GameObject\GlacialFlowWall</Filter>
     </ClInclude>
     <ClInclude Include="..\public\UI.h">
-      <Filter>02.GameObject\UI</Filter>
+      <Filter>02.GameObject\UI\PlayerUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\CrossSight.h">
+      <Filter>02.GameObject\UI\CrossSight</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -270,7 +279,10 @@
       <Filter>02.GameObject\GlacialFlowWall</Filter>
     </ClCompile>
     <ClCompile Include="..\private\UI.cpp">
-      <Filter>02.GameObject\UI</Filter>
+      <Filter>02.GameObject\UI\PlayerUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\CrossSIght.cpp">
+      <Filter>02.GameObject\UI\CrossSight</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

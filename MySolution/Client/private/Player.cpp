@@ -6,8 +6,7 @@
 #include "Camera_Dynamic.h"
 #include "SMG.h"
 #include "Sky.h"
-
-#include <iostream>
+#include "UI.h"
 
 CPlayer::CPlayer(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -48,7 +47,8 @@ HRESULT CPlayer::NativeConstruct(void * pArg)
 
 	m_Navigation->SettingDefaultIndex(m_pTransformCom);
 
-	m_HP = 1000;
+	m_MaxHP = 1000;
+	m_HP = m_MaxHP;
 
 	return S_OK;
 }
@@ -60,8 +60,6 @@ _int CPlayer::Tick(_double TimeDelta)
 	m_ColliderCom->Update(m_pTransformCom->Get_WorldMatrix());
 	SetCamAndSkyBox();
 	SetUpWeapon();
-
-	cout << m_Navigation->GetCurrentCellIndex() << endl;
 
 	_vector Position = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(XMVectorGetX(Position), 0.f, XMVectorGetZ(Position), XMVectorGetW(Position)));
@@ -170,6 +168,29 @@ CPlayer::RAY CPlayer::CreateRay()
 	return ray;
 }
 
+
+void CPlayer::Hit(_int _HP)
+{
+	m_HP += _HP;
+
+	if (m_HP <= 0)
+	{
+		m_HP = 0;
+	}
+
+	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+	list<CGameObject*> pObjectList = pGameInstance->GetObjectList(LEVEL_GAMEPLAY, TEXT("Layer_UI"));
+	_float Percent =0.f;
+	for (auto& pObject : pObjectList)
+	{
+		if (CGameObject::UITYPE_ID::PLAYER_HP == static_cast<UI*>(pObject)->GetUIDesc().m_UITypeID)
+		{
+			Percent = (_float)m_HP / (_float)m_MaxHP;
+			static_cast<UI*>(pObject)->SetLength(Percent, TRUE);
+		}
+	}
+	RELEASE_INSTANCE(CGameInstance);
+}
 
 void CPlayer::KeyCheck(_double TimeDelta)
 {

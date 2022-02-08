@@ -3,6 +3,9 @@
 #include "Player.h"
 #include "HierarchyNode.h"
 #include "GameInstance.h"
+#include "UI.h"
+
+#include <iostream>
 
 SMG::SMG(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -37,11 +40,25 @@ HRESULT SMG::NativeConstruct(void * pArg)
 
 _int SMG::Tick(_double TimeDelta)
 {
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 	KeyCheck();
+	m_BarPercent = (_float)m_Ammo / (_float)m_MaxAmmo;
+
+
+	list<CGameObject*> ObjectList = pGameInstance->GetObjectList(LEVEL_GAMEPLAY, TEXT("Layer_UI"));
+	for (auto& Object : ObjectList)
+	{
+		if (CGameObject::UITYPE_ID::AMMO == static_cast<UI*>(Object)->GetUIDesc().m_UITypeID)
+		{
+			static_cast<UI*>(Object)->SetLength(m_BarPercent, FALSE);
+		}
+	}
+
 
 	if (m_pModelCom->GetAnimationFinished())
 		m_AnimationPlay = FALSE;
 
+	RELEASE_INSTANCE(CGameInstance);
 	return _int();
 }
 
@@ -55,6 +72,15 @@ _int SMG::LateTick(_double TimeDelta)
 		m_pModelCom->Update_CombinedTransformationMatrix(TimeDelta * m_FrameSpeed);
 	else
 		m_pModelCom->Update_CombinedTransformationMatrix(0.0);
+
+	if (m_pModelCom->GetAnimationFinished())
+	{
+		if ((_int)ANIMATION_STATE::RE_HYPERION == m_pModelCom->GetCurrentAnimation())
+		{
+			m_Reload = FALSE;
+			Reloading();
+		}
+	}
 
 	return _int();
 }
@@ -107,26 +133,40 @@ void SMG::KeyCheck()
 {
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 
-	if (pGameInstance->Get_DIKeyState(DIK_R) & 0x80)
+	if (pGameInstance->Get_DIKeyState(DIK_R) & 0x80 &&
+		m_Ammo <= 25)
 	{
 		m_AnimationPlay = TRUE;
 		m_FrameSpeed = 1.0;
 		m_pModelCom->SetUp_AnimationIndex((_int)ANIMATION_STATE::RE_HYPERION);
+
+		m_Reload = TRUE;
 	}
 
-	if (pGameInstance->Get_MouseButtonState(CInput_Device::MBS_LBUTTON))
+	if (pGameInstance->Get_MouseButtonState(CInput_Device::MBS_LBUTTON) && 
+		m_Ammo > 0)
 	{
 		m_FrameSpeed = 5.f;
 		m_AnimationPlay = TRUE;
+
 		m_pModelCom->SetUp_AnimationIndex((_int)ANIMATION_STATE::FIRE_HYPERION);
 
 		if (0 == m_pModelCom->GetCurrentAnimationFrame())
 		{
+			m_Ammo--;
 			m_FireFrame = TRUE;
 		}
 	}
 
 	RELEASE_INSTANCE(CGameInstance);
+}
+
+void SMG::Reloading()
+{
+	_int Ammo = m_MaxAmmo - m_Ammo;
+
+	m_Magazine -= Ammo;
+	m_Ammo = m_MaxAmmo;
 }
 
 

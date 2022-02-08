@@ -38,7 +38,7 @@ HRESULT DahlWeaponLocker::NativeConstruct(void * pArg)
 	m_pTransformCom->Set_State(CTransform::STATE_LOOK, TransformMatrix.r[2]);
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, TransformMatrix.r[3]);
 
-	m_pModelCom->SetUp_AnimationIndex((_int)ANIMATION_STATE::OPENED_IDLE);
+	m_pModelCom->SetUp_AnimationIndex((_int)ANIMATION_STATE::CLOSED_IDLE);
 	return S_OK;
 }
 

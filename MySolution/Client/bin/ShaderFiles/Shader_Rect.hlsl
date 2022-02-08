@@ -24,6 +24,11 @@ cbuffer PickCheck{
 	bool			g_PickCheck;
 };
 
+cbuffer BarPercent {
+	bool			g_LRCheck;
+	float			g_BarPercent;
+};
+
 
 /* 1. m_pDeviceContext->DrawIndexed() */
 /* 2. 인덱스가 가지고 있던 인덱스 세개에 해당하는 정점 세개를 정점버퍼로부터 얻어온다. */
@@ -84,29 +89,57 @@ PS_OUT PS_MAIN(PS_IN In)
 
 	Out.vColor = g_DiffuseTexture.Sample(DefaultSampler, In.vTexUV);
 
-	if (Out.vColor.a < 0.01)
+	if (Out.vColor.a <= 0.5)
 		discard;
-	
+
 	return Out;	
 };
 
-PS_OUT PS_MAIN_TOOL(PS_IN In)
+PS_OUT PS_MAIN_TOOL(PS_IN In) 
 {
 	PS_OUT		Out = (PS_OUT)0;
 
 	Out.vColor = g_DiffuseTexture.Sample(DefaultSampler, In.vTexUV);
 
-
 	if (true == g_PickCheck)
 	{
-		Out.vColor += vector(0.1f, 0.1f, 0.f, 1.f);
+		Out.vColor.rgb += 0.2f;
 	}
 
-	if (Out.vColor.a < 0.01)
+	if (Out.vColor.a <= 0.5)
 		discard;
 
 	return Out;
 }
+
+PS_OUT PS_LEFT(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	if (In.vTexUV.x > g_BarPercent)
+		discard;
+
+	Out.vColor = g_DiffuseTexture.Sample(DefaultSampler, In.vTexUV);
+
+	if (Out.vColor.a <= 0.5)
+		discard;
+
+	return Out;
+};
+PS_OUT PS_RIGHT(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	if (In.vTexUV.x < 1 - g_BarPercent)
+		discard;
+
+	Out.vColor = g_DiffuseTexture.Sample(DefaultSampler, In.vTexUV);
+
+	if (Out.vColor.a <= 0.5)
+		discard;
+
+	return Out;
+};
 
 
 
@@ -136,6 +169,28 @@ technique11			DefaultTechnique
 		VertexShader = compile vs_5_0 VS_MAIN();
 		GeometryShader = NULL;
 		PixelShader = compile ps_5_0  PS_MAIN_TOOL();
+	}
+	pass LeftUI
+	{
+		SetRasterizerState(CullMode_Default);
+		SetDepthStencilState(ZBuffer_Default, 0);
+		SetBlendState(BlendDisable, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		/* 진입점함수를 지정한다. */
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		PixelShader = compile ps_5_0  PS_LEFT();
+	}
+	pass RightUI
+	{
+		SetRasterizerState(CullMode_Default);
+		SetDepthStencilState(ZBuffer_Default, 0);
+		SetBlendState(BlendDisable, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		/* 진입점함수를 지정한다. */
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		PixelShader = compile ps_5_0  PS_RIGHT();
 	}
 }
 

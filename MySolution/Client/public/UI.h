@@ -27,6 +27,12 @@ public:
 	virtual _int LateTick(_double TimeDelta) override;
 	virtual HRESULT Render() override;
 
+	CGameObject::UIOBJDESC		GetUIDesc() {
+		return m_UIDesc;
+	};
+
+	void			SetLength(_float	_Percent, _bool _LRCheck);
+
 private:
 	CTexture*				m_pTextureCom = nullptr;
 	CTransform*			m_pTransformCom = nullptr;
@@ -36,6 +42,9 @@ private:
 	XMMATRIX				m_ProjMatrix;
 
 	CGameObject::UIOBJDESC			m_UIDesc;
+
+	_float							m_BarPercent = 1.f;
+	_bool							m_LRCheck = FALSE;
 
 private:
 	virtual HRESULT SetUp_Components();

@@ -103,11 +103,8 @@ PS_OUT_LIGHTACC PS_MAIN_LIGHTACC_DIRECTIONAL(PS_IN In)
 	vector		vNormal = vector(vNormalDesc.xyz * 2.f - 1.f, 0.f);
 
 	float fShade = g_vLightDiffuse * (saturate(dot(normalize(g_vLightDir) * -1.f, vNormal)));
-
 	fShade = (ceil(fShade * 3.5f) / 3.5f);
-
 	Out.vShade = fShade + (g_vLightAmbient * g_vMtrlAmbient);
-
 	Out.vShade.a = 1.f;
 
 	vector		vReflect = reflect(normalize(g_vLightDir), vNormal);

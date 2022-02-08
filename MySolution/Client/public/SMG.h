@@ -42,10 +42,19 @@ public:
 
 private:
 	void KeyCheck();
-
+	void		Reloading();
+	
+private:
 	_bool	m_AnimationPlay = FALSE;
 	_bool	m_FireFrame = FALSE;
 	_double	m_FrameSpeed = 1.0;
+
+private:
+	_int		m_MaxAmmo = 35;
+	_int		m_Ammo = 35;
+	_int		m_Magazine = 70;
+	_bool		m_Reload = FALSE;
+	_float m_BarPercent = 0.f;
 
 private:
 	CRenderer*				m_pRendererCom = nullptr;

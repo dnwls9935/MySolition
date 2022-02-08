@@ -48,15 +48,15 @@ HRESULT CRenderer::NativeConstruct_Prototype()
 		return E_FAIL;
 
 #ifdef _DEBUG
-	if (FAILED(m_pTarget_Manager->Ready_Debug_Buffer(TEXT("Target_Diffuse"), 0.f, 0.f, 200.f, 200.f)))
+	if (FAILED(m_pTarget_Manager->Ready_Debug_Buffer(TEXT("Target_Diffuse"), 0.f, 0.f, 100, 100)))
 		return E_FAIL;
-	if (FAILED(m_pTarget_Manager->Ready_Debug_Buffer(TEXT("Target_Normal"), 0.f, 200.f, 200.f, 200.f)))
+	if (FAILED(m_pTarget_Manager->Ready_Debug_Buffer(TEXT("Target_Normal"), 0.f, 100.f, 100, 100)))
 		return E_FAIL;
-	if (FAILED(m_pTarget_Manager->Ready_Debug_Buffer(TEXT("Target_Depth"), 0.f, 400.f, 200.f, 200.f)))
+	if (FAILED(m_pTarget_Manager->Ready_Debug_Buffer(TEXT("Target_Depth"), 0.f, 200.f, 100.f, 100.f)))
 		return E_FAIL;
-	if (FAILED(m_pTarget_Manager->Ready_Debug_Buffer(TEXT("Target_Shade"), 200.f, 0.f, 200.f, 200.f)))
+	if (FAILED(m_pTarget_Manager->Ready_Debug_Buffer(TEXT("Target_Shade"), 100.f, 0.f, 100.f, 100.f)))
 		return E_FAIL;
-	if (FAILED(m_pTarget_Manager->Ready_Debug_Buffer(TEXT("Target_Specular"), 200.f, 200.f, 200.f, 200.f)))
+	if (FAILED(m_pTarget_Manager->Ready_Debug_Buffer(TEXT("Target_Specular"), 100.f, 100.f, 100.f, 100.f)))
 		return E_FAIL;
 #endif // _DEBUG
 
@@ -98,6 +98,7 @@ HRESULT CRenderer::Draw_RenderGroup()
 		return E_FAIL;
 	if (FAILED(Render_UI()))
 		return E_FAIL;
+
 
 #ifdef _DEBUG
 	if (FAILED(m_pTarget_Manager->Render_Debug_Buffer(TEXT("MRT_Deferred"))))

@@ -101,7 +101,6 @@ _int PrimeBeast::Tick(_double TimeDelta)
 		m_pTransformCom->Set_State(CTransform::STATE_LOOK, Look);
 	}
 
-
 	HitCheck();
 	UpdateCollider(TimeDelta);
 	return _int();

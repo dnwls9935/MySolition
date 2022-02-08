@@ -4,6 +4,7 @@
 #include "Player.h"
 #include "HierarchyNode.h"
 #include "PrimeBeast.h"
+#include "Player.h"
 
 #include <iostream>
 
@@ -79,7 +80,7 @@ _int PrimeBeastRock::LateTick(_double TimeDelta)
 
 	if (m_ColliderCom->CollisionSphereToAABB(static_cast<CCollider*>(m_PrbDesc.m_Target->GetComponent(TEXT("Com_AABB"))))) {
 
-		m_PrbDesc.m_Target->SetHp(-1);
+		static_cast<CPlayer*>(m_PrbDesc.m_Target)->Hit(-100);
 		m_Dead = TRUE;
 	}
 

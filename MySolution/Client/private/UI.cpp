@@ -45,8 +45,6 @@ HRESULT UI::NativeConstruct(void * pArg)
 _int UI::Tick(_double TimeDelta)
 {
 
-
-
 	return _int();
 }
 
@@ -62,13 +60,28 @@ _int UI::LateTick(_double TimeDelta)
 HRESULT UI::Render()
 {
 	m_pVIBufferCom->SetUp_ValueOnShader("g_WorldMatrix", &XMMatrixTranspose(m_pTransformCom->Get_WorldMatrix()), sizeof(_float) * 16);
-	m_pVIBufferCom->SetUp_ValueOnShader("g_ViewMatrix", &XMMatrixIdentity(), sizeof(_float) * 16);	
+	m_pVIBufferCom->SetUp_ValueOnShader("g_ViewMatrix", &XMMatrixIdentity(), sizeof(_float) * 16);
 	m_pVIBufferCom->SetUp_ValueOnShader("g_ProjMatrix", &XMMatrixTranspose(m_ProjMatrix), sizeof(XMMATRIX));
+
+	m_pVIBufferCom->SetUp_ValueOnShader("g_BarPercent", &m_BarPercent, sizeof(_float));
+	
 	m_pVIBufferCom->SetUp_TextureOnShader("g_DiffuseTexture", m_pTextureCom, 0);
 
-	m_pVIBufferCom->Render(0);
+	if (CGameObject::UITYPE_ID::AMMO == m_UIDesc.m_UITypeID)
+		m_pVIBufferCom->Render(3);
+	else if (CGameObject::UITYPE_ID::PLAYER_HP == m_UIDesc.m_UITypeID ||
+		CGameObject::UITYPE_ID::PLAYER_SHILED == m_UIDesc.m_UITypeID)
+		m_pVIBufferCom->Render(2);
+	else
+		m_pVIBufferCom->Render(0);
 
 	return S_OK;
+}
+
+void UI::SetLength(_float _Percent, _bool _LRCheck)
+{
+	m_BarPercent = _Percent;
+	m_LRCheck = _LRCheck;
 }
 
 HRESULT UI::SetUp_Components()
@@ -78,7 +91,7 @@ HRESULT UI::SetUp_Components()
 		return E_FAIL;
 
 	/* Com_VIBuffer */
-	if (FAILED(__super::SetUp_Components(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Rect"), TEXT("Com_VIBuffer"), (CComponent**)&m_pVIBufferCom)))
+	if (FAILED(__super::SetUp_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Rect"), TEXT("Com_VIBuffer"), (CComponent**)&m_pVIBufferCom)))
 		return E_FAIL;
 
 	/* Com_Transfom */
@@ -123,6 +136,7 @@ void UI::Free()
 	__super::Free();
 
 	Safe_Release(m_pTextureCom);
+	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pVIBufferCom);
 	Safe_Release(m_pRendererCom);
 }
