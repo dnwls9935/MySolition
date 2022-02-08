@@ -44,12 +44,17 @@ public:
 	virtual _int LateTick(_double TimeDelta);
 	virtual HRESULT Render();
 
+	virtual	_bool		Picked();
+
 	_int		GetHP() const { 
 		return m_HP; 
 	};
 	_bool		GetDead() const {
 		return m_Dead;
 	};
+	_bool		GetIntroEnd() const {
+		return m_IntroEnd;
+	}
 
 public:
 	class CComponent*		GetComponent(const _tchar* _componentTag);
@@ -66,6 +71,8 @@ protected:
 	_bool			Dying = FALSE;
 	_int				m_HP = 0;
 	_int				m_MaxHP = 0;
+
+	_bool			m_IntroEnd = FALSE;
 
 	OBJTYPE_ID		m_Type = OBJTYPE_ID::OBJTYPE_END;
 

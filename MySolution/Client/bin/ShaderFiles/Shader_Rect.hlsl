@@ -29,6 +29,10 @@ cbuffer BarPercent {
 	float			g_BarPercent;
 };
 
+cbuffer CrossIsCollision {
+	bool			g_CrossCollision;
+};
+
 
 /* 1. m_pDeviceContext->DrawIndexed() */
 /* 2. 인덱스가 가지고 있던 인덱스 세개에 해당하는 정점 세개를 정점버퍼로부터 얻어온다. */
@@ -140,7 +144,20 @@ PS_OUT PS_RIGHT(PS_IN In)
 
 	return Out;
 };
+PS_OUT PS_CROSS(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
 
+	Out.vColor = g_DiffuseTexture.Sample(DefaultSampler, In.vTexUV);
+
+	if (Out.vColor.r <= 0)
+		discard;
+
+	if (true == g_CrossCollision)
+		Out.vColor.r += 0.5f;
+
+	return Out;
+};
 
 
 
@@ -191,6 +208,17 @@ technique11			DefaultTechnique
 		VertexShader = compile vs_5_0 VS_MAIN();
 		GeometryShader = NULL;
 		PixelShader = compile ps_5_0  PS_RIGHT();
+	}
+	pass CrossSight
+	{
+		SetRasterizerState(CullMode_Default);
+		SetDepthStencilState(ZBuffer_Default, 0);
+		SetBlendState(BlendDisable, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		/* 진입점함수를 지정한다. */
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		PixelShader = compile ps_5_0  PS_CROSS();
 	}
 }
 

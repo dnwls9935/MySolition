@@ -77,7 +77,6 @@ private:
 
 
 	_bool							m_FrameStart = FALSE;
-	_bool							m_IntroEnd = FALSE;
 
 private:
 	CGameObject*		m_TargetPlayer = nullptr;

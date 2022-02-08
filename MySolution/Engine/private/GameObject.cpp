@@ -49,6 +49,11 @@ HRESULT CGameObject::Render()
 	return S_OK;
 }
 
+_bool CGameObject::Picked()
+{
+	return FALSE;
+}
+
 CComponent * CGameObject::GetComponent(const _tchar * _componentTag)
 {
 	auto& iter = find_if(m_Components.begin(), m_Components.end(), CTag_Finder(_componentTag));

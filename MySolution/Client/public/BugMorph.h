@@ -55,7 +55,6 @@ private:
 	Navigation*				m_Navigation = nullptr;
 
 	_bool							m_FrameStart = FALSE;
-	_bool							m_IntroEnd = FALSE;
 
 private:
 	_bool							m_Attack = FALSE;

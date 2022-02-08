@@ -43,7 +43,6 @@ _int CLevel_GamePlay::Tick(_double TimeDelta)
 	ClientToScreen(g_hWnd, &pt);
 	SetCursorPos(pt.x, pt.y);
 
-
 	if (0 > (__super::Tick(TimeDelta)))
 		return -1;
 
@@ -170,8 +169,8 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const _tchar * pLayerTag)
 
 HRESULT CLevel_GamePlay::Ready_Layer_UI(const _tchar * pLayerTag)
 {
-	HANDLE hFile = CreateFile(L"../Bin/Data/UIModify.dat", GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+	HANDLE hFile = CreateFile(L"../Bin/Data/UIModify.dat", GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
 
 	CGameObject::UIOBJDESC UIOBJDesc;
 	ZeroMemory(&UIOBJDesc, sizeof(CGameObject::UIOBJDESC));
@@ -186,10 +185,12 @@ HRESULT CLevel_GamePlay::Ready_Layer_UI(const _tchar * pLayerTag)
 			return E_FAIL;
 	}
 
-	RELEASE_INSTANCE(CGameInstance);
-
-
 	CloseHandle(hFile);
+
+	if (FAILED(pGameInstance->Add_GameObjectToLayer(LEVEL_GAMEPLAY, TEXT("Layer_UI"), TEXT("Prototype_GameObject_UI_CrossSight"))))
+		return E_FAIL;
+
+	RELEASE_INSTANCE(CGameInstance);
 	return S_OK;
 }
 

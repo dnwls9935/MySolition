@@ -39,6 +39,7 @@ public:
 	virtual _int Tick(_double TimeDelta) override;
 	virtual _int LateTick(_double TimeDelta) override;
 	virtual HRESULT Render() override;
+	virtual _bool		Picked() override;
 
 	_bool		ThrowMotionFrame();
 	_matrix	SetRockPosition();
@@ -74,7 +75,6 @@ private:
 	Navigation*				m_Navigation = nullptr;
 
 	_bool							m_FrameStart = FALSE;
-	_bool							m_IntroEnd = FALSE;
 
 
 private:

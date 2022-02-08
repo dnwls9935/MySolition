@@ -174,6 +174,31 @@ HRESULT PrimeBeast::Render()
 	return S_OK;
 }
 
+_bool PrimeBeast::Picked()
+{
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+	Calculator::CALCDESC CalDesc;
+	CalDesc._width = g_iWinCX;
+	CalDesc._height = g_iWinCY;
+	CalDesc._transformCom = m_pTransformCom;
+	CalDesc._hWnd = g_hWnd;
+
+	pGameInstance->CalcMousePos(&CalDesc);
+
+	CalDesc._rayPos = XMVector3TransformCoord(CalDesc._rayPos, m_pTransformCom->Get_WorldMatrix());
+	CalDesc._rayDir = XMVector3TransformNormal(CalDesc._rayDir, m_pTransformCom->Get_WorldMatrix());
+	CalDesc._rayDir = XMVector3Normalize(CalDesc._rayDir);
+
+	_float Distance = 0.f;
+
+	if (TRUE == m_ColliderCom->CollisionAABBToRay(CalDesc._rayPos, CalDesc._rayDir, Distance))
+	{
+		return TRUE;
+	}
+	return FALSE;
+}
+
 _bool PrimeBeast::ThrowMotionFrame()
 {
 	if ((_uint)ANIMATION_STATE::ATT_TR_V1 == m_pModelCom->GetCurrentAnimation() &&

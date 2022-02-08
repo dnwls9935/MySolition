@@ -17,7 +17,8 @@
 #include "HyperionChest.h"
 #include "HitBullet.h"
 #include "GlacialFlowWall.h"
-#include	"UI.h"
+#include "UI.h"
+#include "CrossSight.h"
 
 CLoader::CLoader(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: m_pDevice(pDevice)
@@ -144,6 +145,9 @@ HRESULT CLoader::Loading_ForGamePlay()
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Sheld"), CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Textures/UI/UI_HUD/Sheld.png")))))
 		return E_FAIL;
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Small"), CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Textures/UI/UI_HUD/Small.png")))))
+		return E_FAIL;
+	
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Hyperion_Sight_SMG"), CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Textures/UI/Textures/Tex_Hyperion_Sight_SMG.png")))))
 		return E_FAIL;
 
 
@@ -334,6 +338,8 @@ HRESULT CLoader::Loading_ForGamePlay()
 
 	/* UIµÈ */
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI"), UI::Create(m_pDevice, m_pDeviceContext))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_CrossSight"), CrossSight::Create(m_pDevice, m_pDeviceContext))))
 		return E_FAIL;
 
 	// ¿Ã∆—∆ÆµÈ

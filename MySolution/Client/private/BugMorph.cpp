@@ -345,7 +345,7 @@ HRESULT BugMorph::SetUp_Components()
 	ZeroMemory(&CollisionDesc, sizeof(CCollider::COLLISIONDESC));
 	CollisionDesc.Scale = _float3(0.3f, 1.3f, 0.3f);
 	CollisionDesc.Position = _float3(0.f, 1.f, 0.0f);
-	if (FAILED(__super::SetUp_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_AABB"), TEXT("Com_AABB"), (CComponent**)&m_ColliderCom, &CollisionDesc)))
+	if (FAILED(__super::SetUp_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_AABB"), TEXT("Com_Collider"), (CComponent**)&m_ColliderCom, &CollisionDesc)))
 		return E_FAIL;
 
 	ZeroMemory(&CollisionDesc, sizeof(CCollider::COLLISIONDESC));
