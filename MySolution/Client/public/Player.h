@@ -72,10 +72,8 @@ private:
 	CRenderer*				m_pRendererCom = nullptr;
 	CTransform*				m_pTransformCom = nullptr;
 	CModel*					m_pModelCom = nullptr;
-
 	CCollider*					m_ColliderCom = nullptr;
 	CCollider*					m_ColliderSphereCom = nullptr;
-
 	Navigation*				m_Navigation = nullptr;
 
 	MOVE_TYPE				m_Move = MOVE_TYPE::MOVE_TYPE_END;

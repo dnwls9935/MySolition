@@ -314,6 +314,11 @@ _vector CGameInstance::GetWindowPos(ID3D11DeviceContext* _DeviceContext, _float 
 	return Calculator::GetWindowPos(_DeviceContext, _WindowX, _WindowY, _PositionX, _PositionY);
 }
 
+_int CGameInstance::CalcRandom(_int _Input)
+{
+	return Calculator::CalcRandom(_Input);
+}
+
 void CGameInstance::Release_Engine()
 {
 	if (0 != CGameInstance::GetInstance()->DestroyInstance())

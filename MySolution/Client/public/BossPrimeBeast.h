@@ -40,6 +40,7 @@ public:
 	virtual _int Tick(_double TimeDelta) override;
 	virtual _int LateTick(_double TimeDelta) override;
 	virtual HRESULT Render() override;
+	virtual _bool		Picked() override;
 
 private:
 	void		Animation(_double TimeDelta);
@@ -50,9 +51,10 @@ private:
 
 	void		AttackBlockCreate(_uint _AnimationState);
 	void		ChargeAttack(_double _TimeDelta);
-	void		ChargeMove(_double _TimeDelta);
 	void		BoneColliderTick(_double _TimeDelta);
 	void		AttackCollision(_double _TimeDelta);
+
+	void		HitCheck();
 
 public:
 	_matrix	GetBoneMatrix(CHierarchyNode*	_HierachyNode);
@@ -64,12 +66,13 @@ private:
 	CCollider*					m_ColliderCom = nullptr;
 	Navigation*				m_NavigationCom = nullptr;
 
+	CHierarchyNode*			m_HeadBone = nullptr;
 	CHierarchyNode*			m_rHand1Bone = nullptr;
 	CHierarchyNode*			m_rHand2Bone = nullptr;
 	CHierarchyNode*			m_lHand1Bone = nullptr;
 	CHierarchyNode*			m_lHand2Bone = nullptr;
 
-
+	CCollider*					m_HeadCollider = nullptr;
 	CCollider*					m_rHand1Collider = nullptr;
 	CCollider*					m_rHand2Collider = nullptr;
 	CCollider*					m_lHand1Collider = nullptr;

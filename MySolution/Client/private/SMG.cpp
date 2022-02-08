@@ -35,6 +35,10 @@ HRESULT SMG::NativeConstruct(void * pArg)
 
 	m_Type = CGameObject::OBJTYPE_ID::PLAYER_WEAPONE;
 
+	CGameInstance*	pGameInstance = GET_INSTANCE(CGameInstance);
+	m_TargetObject = pGameInstance->GetObjectList(LEVEL_GAMEPLAY, TEXT("Layer_Player")).front();
+	RELEASE_INSTANCE(CGameInstance);
+
 	return S_OK;
 }
 
@@ -44,7 +48,6 @@ _int SMG::Tick(_double TimeDelta)
 	KeyCheck();
 	m_BarPercent = (_float)m_Ammo / (_float)m_MaxAmmo;
 
-
 	list<CGameObject*> ObjectList = pGameInstance->GetObjectList(LEVEL_GAMEPLAY, TEXT("Layer_UI"));
 	for (auto& Object : ObjectList)
 	{
@@ -53,7 +56,6 @@ _int SMG::Tick(_double TimeDelta)
 			static_cast<UI*>(Object)->SetLength(m_BarPercent, FALSE);
 		}
 	}
-
 
 	if (m_pModelCom->GetAnimationFinished())
 		m_AnimationPlay = FALSE;
@@ -132,6 +134,10 @@ void SMG::SetUpWeapon(_fmatrix WeaponeBoneMatrix, _fmatrix PlayerWorldMatrix)
 void SMG::KeyCheck()
 {
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+	CModel* PlayerModelCom = static_cast<CModel*>(m_TargetObject->GetComponent(TEXT("Com_Model")));
+	if ((_uint)CPlayer::ANIMATION_STATE::SPRINT == PlayerModelCom->GetCurrentAnimation())
+		return;
 
 	if (pGameInstance->Get_DIKeyState(DIK_R) & 0x80 &&
 		m_Ammo <= 25)

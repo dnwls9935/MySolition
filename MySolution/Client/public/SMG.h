@@ -40,6 +40,10 @@ public:
 		return m_FireFrame; 
 	}
 
+	_int		GetAttackDamage() const {
+		return m_AttackDamage;
+	}
+
 private:
 	void KeyCheck();
 	void		Reloading();
@@ -50,11 +54,14 @@ private:
 	_double	m_FrameSpeed = 1.0;
 
 private:
-	_int		m_MaxAmmo = 35;
-	_int		m_Ammo = 35;
-	_int		m_Magazine = 70;
+	_int			m_MaxAmmo = 35;
+	_int			m_Ammo = 35;
+	_int			m_Magazine = 70;
 	_bool		m_Reload = FALSE;
-	_float m_BarPercent = 0.f;
+	_float		m_BarPercent = 0.f;
+
+private:
+	_int			m_AttackDamage = 80;
 
 private:
 	CRenderer*				m_pRendererCom = nullptr;

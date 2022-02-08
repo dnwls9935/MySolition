@@ -73,3 +73,11 @@ _vector Calculator::GetWindowPos(ID3D11DeviceContext* _DeviceContext, _float _Wi
 	return Position;
 }
 
+_int Calculator::CalcRandom(_int _Input)
+{
+	_int Percent = _Input / 10;
+	_int Random = (rand() % Percent) - Percent;
+
+	return _Input += Random;
+}
+

@@ -45,9 +45,13 @@ HRESULT BossPrimeBeast::NativeConstruct(void * pArg)
 	m_pTransformCom->Set_State(CTransform::STATE_LOOK, TransformMatrix.r[2]);
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, TransformMatrix.r[3]);
 
-	m_HP = 10000;
+	m_MaxHP = 10000;
+	m_HP = m_MaxHP;
+
 	m_pModelCom->SetUp_AnimationIndex((_int)ANIMATION_STATE::SPAWN_CLIMBOVER);
 
+	m_HeadBone = m_pModelCom->Get_BoneMatrix("Head");
+	Safe_AddRef(m_HeadBone);
 	m_rHand1Bone = m_pModelCom->Get_BoneMatrix("rHand1");
 	Safe_AddRef(m_rHand1Bone);
 	m_rHand2Bone = m_pModelCom->Get_BoneMatrix("rHand2");
@@ -81,6 +85,8 @@ _int BossPrimeBeast::Tick(_double TimeDelta)
 		(_uint)ANIMATION_STATE::RUN_F_V1)
 		m_ChargeTime += TimeDelta * 3.f;
 
+	cout << m_HP << endl;
+
 	GetDistance();
 	Animation(TimeDelta);
 	BoneColliderTick(TimeDelta);
@@ -105,8 +111,10 @@ _int BossPrimeBeast::Tick(_double TimeDelta)
 		m_pTransformCom->Set_State(CTransform::STATE_LOOK, Look);
 	}
 
-	AttackBlockCreate(m_pModelCom->GetCurrentAnimation());
+	if (TRUE == m_IntroEnd)
+		HitCheck();
 
+	AttackBlockCreate(m_pModelCom->GetCurrentAnimation());
 	AttackCollision(TimeDelta);
 
 	return _int();
@@ -178,6 +186,7 @@ HRESULT BossPrimeBeast::Render()
 
 #ifdef _DEBUG
 	m_ColliderCom->Render();
+	m_HeadCollider->Render();
 	m_rHand1Collider->Render();
 	m_rHand2Collider->Render();
 	m_lHand1Collider->Render();
@@ -186,6 +195,31 @@ HRESULT BossPrimeBeast::Render()
 
 	RELEASE_INSTANCE(CGameInstance);
 	return S_OK;
+}
+
+_bool BossPrimeBeast::Picked()
+{
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+	Calculator::CALCDESC CalDesc;
+	CalDesc._width = g_iWinCX;
+	CalDesc._height = g_iWinCY;
+	CalDesc._transformCom = m_pTransformCom;
+	CalDesc._hWnd = g_hWnd;
+
+	pGameInstance->CalcMousePos(&CalDesc);
+
+	CalDesc._rayPos = XMVector3TransformCoord(CalDesc._rayPos, m_pTransformCom->Get_WorldMatrix());
+	CalDesc._rayDir = XMVector3TransformNormal(CalDesc._rayDir, m_pTransformCom->Get_WorldMatrix());
+	CalDesc._rayDir = XMVector3Normalize(CalDesc._rayDir);
+
+	_float Distance = 0.f;
+
+	if (TRUE == m_ColliderCom->CollisionAABBToRay(CalDesc._rayPos, CalDesc._rayDir, Distance))
+	{
+		return TRUE;
+	}
+	return FALSE;
 }
 
 void BossPrimeBeast::Animation(_double TimeDelta)
@@ -410,18 +444,28 @@ void BossPrimeBeast::BoneColliderTick(_double TimeDelta)
 	PivotMatrix = m_pModelCom->Get_PivotMatrix();
 	WorldMatrix = m_pTransformCom->Get_WorldMatrix();
 
+	Combined = m_HeadBone->Get_CombinedMatrix();
+	OffsetMatrix = m_HeadBone->Get_OffsetMatrix();
+	BoneMatrix = Transform * OffsetMatrix * Combined * PivotMatrix * XMMatrixRotationY(XMConvertToRadians(180.f)) * WorldMatrix;
+	m_HeadCollider->Update(BoneMatrix);
+
+	Combined = m_rHand1Bone->Get_CombinedMatrix();
+	OffsetMatrix = m_rHand1Bone->Get_OffsetMatrix();
 	BoneMatrix = Transform * OffsetMatrix * Combined * PivotMatrix * XMMatrixRotationY(XMConvertToRadians(180.f)) * WorldMatrix;
 	m_rHand1Collider->Update(BoneMatrix);
 
 	Combined = m_rHand2Bone->Get_CombinedMatrix();
+	OffsetMatrix = m_rHand2Bone->Get_OffsetMatrix();
 	BoneMatrix = Transform * OffsetMatrix * Combined * PivotMatrix * XMMatrixRotationY(XMConvertToRadians(180.f)) * WorldMatrix;
 	m_rHand2Collider->Update(BoneMatrix);
 
 	Combined = m_lHand1Bone->Get_CombinedMatrix();
+	OffsetMatrix = m_lHand1Bone->Get_OffsetMatrix();
 	BoneMatrix = Transform * OffsetMatrix * Combined * PivotMatrix * XMMatrixRotationY(XMConvertToRadians(180.f)) * WorldMatrix;
 	m_lHand1Collider ->Update(BoneMatrix);
 
 	Combined = m_lHand2Bone->Get_CombinedMatrix();
+	OffsetMatrix = m_lHand2Bone->Get_OffsetMatrix();
 	BoneMatrix = Transform * OffsetMatrix * Combined * PivotMatrix * XMMatrixRotationY(XMConvertToRadians(180.f)) * WorldMatrix;
 	m_lHand2Collider->Update(BoneMatrix);
 
@@ -442,7 +486,7 @@ void BossPrimeBeast::AttackCollision(_double _TimeDelta)
 			TRUE == m_rHand2Collider->CollisionSphereToAABB(PlayerAABB))
 		{
 			m_MeleeAttackIsCollisionCheck = TRUE;
-			m_TargetPlayer->SetHp(-45);
+			static_cast<CPlayer*>(m_TargetPlayer)->Hit(-45);
 		}
 		break;
 	case ANIMATION_STATE::ATT_P_V2:
@@ -451,7 +495,7 @@ void BossPrimeBeast::AttackCollision(_double _TimeDelta)
 			TRUE == m_lHand2Collider->CollisionSphereToAABB(PlayerAABB))
 		{
 			m_MeleeAttackIsCollisionCheck = TRUE;
-			m_TargetPlayer->SetHp(-45);
+			static_cast<CPlayer*>(m_TargetPlayer)->Hit(-45);
 		}
 		break;
 	case ANIMATION_STATE::ATT_P_V3:
@@ -461,7 +505,7 @@ void BossPrimeBeast::AttackCollision(_double _TimeDelta)
 			TRUE == m_lHand2Collider->CollisionSphereToAABB(PlayerAABB))
 		{
 			m_MeleeAttackIsCollisionCheck = TRUE;
-			m_TargetPlayer->SetHp(-45);
+			static_cast<CPlayer*>(m_TargetPlayer)->Hit(-45);
 		}
 		break;
 	case ANIMATION_STATE::ATT_P_V4:
@@ -469,7 +513,7 @@ void BossPrimeBeast::AttackCollision(_double _TimeDelta)
 			TRUE == m_lHand2Collider->CollisionSphereToAABB(PlayerAABB))
 		{
 			m_MeleeAttackIsCollisionCheck = TRUE;
-			m_TargetPlayer->SetHp(-45);
+			static_cast<CPlayer*>(m_TargetPlayer)->Hit(-45);
 		}
 		break;
 	case ANIMATION_STATE::ATT_P_V5:
@@ -477,9 +521,56 @@ void BossPrimeBeast::AttackCollision(_double _TimeDelta)
 			TRUE == m_lHand1Collider->CollisionSphereToAABB(PlayerAABB))
 		{
 			m_MeleeAttackIsCollisionCheck = TRUE;
-			m_TargetPlayer->SetHp(-45);
+			static_cast<CPlayer*>(m_TargetPlayer)->Hit(-45);
 		}
 		break;
+	case ANIMATION_STATE::ATT_C_LOOP:
+		if (TRUE == m_ColliderCom->CollisionAABB(PlayerAABB))
+		{
+			m_MeleeAttackIsCollisionCheck = TRUE;
+			static_cast<CPlayer*>(m_TargetPlayer)->Hit(-500);
+		}
+		break;
+	}
+}
+
+void BossPrimeBeast::HitCheck()
+{
+	if (TRUE == static_cast<SMG*>(m_TargetPlayerWeapon)->GetFireFrame())
+	{
+		CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+		Calculator::CALCDESC CalDesc;
+		CalDesc._width = g_iWinCX;
+		CalDesc._height = g_iWinCY;
+		CalDesc._transformCom = m_pTransformCom;
+		CalDesc._hWnd = g_hWnd;
+
+		pGameInstance->CalcMousePos(&CalDesc);
+
+		CalDesc._rayPos = XMVector3TransformCoord(CalDesc._rayPos, m_pTransformCom->Get_WorldMatrix());
+		CalDesc._rayDir = XMVector3TransformNormal(CalDesc._rayDir, m_pTransformCom->Get_WorldMatrix());
+		CalDesc._rayDir = XMVector3Normalize(CalDesc._rayDir);
+
+		_float	Distance;
+
+		if (TRUE == m_HeadCollider->CollisionSphereToRay(CalDesc._rayPos, CalDesc._rayDir))
+		{
+			_int AttDmg = static_cast<SMG*>(m_TargetPlayerWeapon)->GetAttackDamage();
+			CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+			m_HP -= AttDmg = pGameInstance->CalcRandom(AttDmg * 1.5f);
+			RELEASE_INSTANCE(CGameInstance);
+		}
+		else if (TRUE == m_ColliderCom->CollisionAABBToRay(CalDesc._rayPos, CalDesc._rayDir, Distance))
+		{
+			_int AttDmg = static_cast<SMG*>(m_TargetPlayerWeapon)->GetAttackDamage();
+			CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+			m_HP -= AttDmg = pGameInstance->CalcRandom(AttDmg);
+			RELEASE_INSTANCE(CGameInstance);
+			/* ««∞› ¿Ã∆—∆Æ */
+		}
+
+		RELEASE_INSTANCE(CGameInstance);
 	}
 }
 
@@ -513,7 +604,13 @@ HRESULT BossPrimeBeast::SetUp_Components()
 	if (FAILED(__super::SetUp_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_AABB"), TEXT("Com_Collider"), (CComponent**)&m_ColliderCom, &CollisionDesc)))
 		return E_FAIL;
 	
-	
+
+	ZeroMemory(&CollisionDesc, sizeof(CCollider::COLLISIONDESC));
+	CollisionDesc.Scale = _float3(1.5f, 1.5f, 1.5f);
+	CollisionDesc.Position = _float3(0.f, 0.f, 0.0f);
+	if (FAILED(__super::SetUp_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_Sphere"), TEXT("Com_Collider_Head"), (CComponent**)&m_HeadCollider, &CollisionDesc)))
+		return E_FAIL;
+
 	ZeroMemory(&CollisionDesc, sizeof(CCollider::COLLISIONDESC));
 	CollisionDesc.Scale = _float3(2.0f, 2.0f, 2.0f);
 	CollisionDesc.Position = _float3(0.f, 0.f, 0.0f);

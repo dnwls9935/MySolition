@@ -79,7 +79,6 @@ _int PrimeBeastRock::LateTick(_double TimeDelta)
 		m_Dead = TRUE;
 
 	if (m_ColliderCom->CollisionSphereToAABB(static_cast<CCollider*>(m_PrbDesc.m_Target->GetComponent(TEXT("Com_AABB"))))) {
-
 		static_cast<CPlayer*>(m_PrbDesc.m_Target)->Hit(-100);
 		m_Dead = TRUE;
 	}

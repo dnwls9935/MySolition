@@ -31,6 +31,7 @@ public:
 	virtual _int Tick(_double TimeDelta) override;
 	virtual _int LateTick(_double TimeDelta) override;
 	virtual HRESULT Render() override;
+	virtual _bool		Picked() override;
 
 private:
 	void		HitCheck();
@@ -42,6 +43,8 @@ private:
 	void		Moving(_double _TimeDelta);
 	void		Dodge(_double _TimeDelta);
 
+	void		AttackCollision(_double	_TimeDelta);
+
 private:
 	CRenderer*				m_pRendererCom = nullptr;
 	CTransform*				m_pTransformCom = nullptr;
@@ -51,15 +54,13 @@ private:
 	CHierarchyNode*		m_LowerJawBone = nullptr;
 
 	CCollider*					m_ColliderLowerJaw = nullptr;
-
 	Navigation*				m_Navigation = nullptr;
-
 	_bool							m_FrameStart = FALSE;
 
 private:
 	_bool							m_Attack = FALSE;
 	_bool							m_Dodge = FALSE;
-	_float							m_DodgeDistance = 0.f;
+	_double						m_DodgeCount = 0.f;
 	_vector						m_AttackPosition = _vector();
 
 private:
@@ -77,6 +78,8 @@ private:
 	_double				m_BurrowTime = 0.0;
 	_int						m_BurrowCount = 2;
 
+private:
+	_bool					m_MeleeAttackIsCollisionCheck = FALSE;
 
 private:
 	virtual HRESULT SetUp_Components();

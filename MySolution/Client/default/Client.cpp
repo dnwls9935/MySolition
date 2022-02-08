@@ -5,6 +5,7 @@
 #include "Client.h"
 #include "MainApp.h"
 #include "GameInstance.h"
+#include <ctime>
 
 #define MAX_LOADSTRING 100
 
@@ -62,6 +63,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		return E_FAIL;
 
 	_double		TimerAcc = 0.0;
+	srand((size_t)time(NULL));
 
     // 기본 메시지 루프입니다.
 	while (true)

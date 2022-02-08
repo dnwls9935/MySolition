@@ -38,7 +38,6 @@ _int CLevel_Loading::Tick(_double TimeDelta)
 	if (0 > (__super::Tick(TimeDelta)))
 		return -1;
 
-	/* 로더야 다했냐? */
 	if (true == m_pLoader->Get_Finished())
 	{
 		if (GetKeyState(VK_RETURN) < 0)

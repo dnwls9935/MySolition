@@ -6,6 +6,8 @@
 #include "SMG.h"
 #include "Player.h"
 
+#include <iostream>
+
 BugMorph::BugMorph(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
 {
@@ -101,7 +103,6 @@ _int BugMorph::Tick(_double TimeDelta)
 		return _int();
 	}
 
-
 	GetTargetDistance();
 
 	if((_uint)ANIMATION_STATE::DEA_CRITICAL != m_pModelCom->GetCurrentAnimation() && FALSE == m_Burrow)
@@ -120,7 +121,9 @@ _int BugMorph::Tick(_double TimeDelta)
 
 	if(FALSE == m_Burrow || TRUE == m_IntroEnd)
 		HitCheck();
+
 	UpdateCollider(TimeDelta);
+	AttackCollision(TimeDelta);
 
 	return _int();
 }
@@ -134,23 +137,22 @@ _int BugMorph::LateTick(_double TimeDelta)
 	{
 		if ((_uint)ANIMATION_STATE::SPAWN == m_pModelCom->GetCurrentAnimation())
 			m_IntroEnd = TRUE;
-
 		else  if ((_uint)ANIMATION_STATE::ATT_BITE == m_pModelCom->GetCurrentAnimation())
+		{
 			m_Dodge = TRUE;
-
+			m_MeleeAttackIsCollisionCheck = FALSE;
+		}
 		else if ((_uint)ANIMATION_STATE::BURROW_ENTER == m_pModelCom->GetCurrentAnimation())
 		{
 			m_BurrowCount--;
 			m_BurrowLoop = TRUE;
 		}
-
 		else if ((_uint)ANIMATION_STATE::BURROW_EXIT == m_pModelCom->GetCurrentAnimation())
 		{
 			m_Burrow = FALSE;
 			m_BurrowTime = 0.0;
 			m_BurrowLoop = FALSE;
 		}
-
 		m_pModelCom->SetUp_AnimationIndex((_int)ANIMATION_STATE::RUN_F);
 	}
 
@@ -202,6 +204,31 @@ HRESULT BugMorph::Render()
 	return S_OK;
 }
 
+_bool BugMorph::Picked()
+{
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+	Calculator::CALCDESC CalDesc;
+	CalDesc._width = g_iWinCX;
+	CalDesc._height = g_iWinCY;
+	CalDesc._transformCom = m_pTransformCom;
+	CalDesc._hWnd = g_hWnd;
+
+	pGameInstance->CalcMousePos(&CalDesc);
+
+	CalDesc._rayPos = XMVector3TransformCoord(CalDesc._rayPos, m_pTransformCom->Get_WorldMatrix());
+	CalDesc._rayDir = XMVector3TransformNormal(CalDesc._rayDir, m_pTransformCom->Get_WorldMatrix());
+	CalDesc._rayDir = XMVector3Normalize(CalDesc._rayDir);
+
+	_float Distance = 0.f;
+
+	if (TRUE == m_ColliderCom->CollisionAABBToRay(CalDesc._rayPos, CalDesc._rayDir, Distance))
+	{
+		return TRUE;
+	}
+	return FALSE;
+}
+
 void BugMorph::HitCheck()
 {
 	if (TRUE == static_cast<SMG*>(m_TargetPlayerWeapon)->GetFireFrame())
@@ -224,7 +251,10 @@ void BugMorph::HitCheck()
 
 		if (TRUE == m_ColliderCom->CollisionAABBToRay(CalDesc._rayPos, CalDesc._rayDir, Distance))
 		{
-			m_HP -= 300;
+			_int AttDmg = static_cast<SMG*>(m_TargetPlayerWeapon)->GetAttackDamage();
+			CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+			m_HP -= AttDmg = pGameInstance->CalcRandom(AttDmg);
+			RELEASE_INSTANCE(CGameInstance);
 			/* ÇÇ°Ý ÀÌÆÑÆ® */
 		}
 		
@@ -240,11 +270,11 @@ void BugMorph::Animation(_double _TimeDelta)
 			m_FrameStart= TRUE;
 	}
 	else if(TRUE == m_FrameStart && TRUE == m_IntroEnd) {
-		if (7 >= m_TargetDistance && FALSE == m_Attack)
+		if (3 >= m_TargetDistance && FALSE == m_Attack)
 		{
 			Attack();
 		}
-		else if (7 < m_TargetDistance && FALSE == m_Attack)
+		else if (3 < m_TargetDistance && FALSE == m_Attack)
 			Moving(_TimeDelta);
 		else {
 			Dodge(_TimeDelta);
@@ -284,7 +314,7 @@ void BugMorph::UpdateCollider(_double TimeDelta)
 void BugMorph::Attack()
 {
 	m_pModelCom->SetUp_AnimationIndex((_uint)ANIMATION_STATE::ATT_BITE);
-	m_AttackPosition = m_MyPosition;
+	m_DodgeCount = 0.0;
 	m_Attack = TRUE;
 }
 
@@ -293,7 +323,7 @@ void BugMorph::Moving(_double _TimeDelta)
 	if ((_uint)ANIMATION_STATE::RUN_F == m_pModelCom->GetCurrentAnimation())
 	{
 		CTransform*		PlayerTransformCom = static_cast<CTransform*>(m_TargetPlayer->GetComponent(TEXT("Com_Transform")));
-		m_pTransformCom->Chase_Target(PlayerTransformCom, _TimeDelta * 0.5f);
+		m_pTransformCom->Chase_Target(PlayerTransformCom, _TimeDelta);
 	}
 }
 
@@ -304,17 +334,38 @@ void BugMorph::Dodge(_double _TimeDelta)
 	if (TRUE == m_Dodge)
 	{
 		m_pTransformCom->Rotation_Axis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(90.f));
+		m_Navigation->SettingDefaultIndex(m_pTransformCom);
 		m_Dodge = FALSE;
 	}
 	
-	
-	if (15 >= XMVectorGetX(XMVector3Length(m_AttackPosition - m_MyPosition)))
+	m_DodgeCount += _TimeDelta;
+	if (1.3 >= m_DodgeCount)
 	{
 		m_pTransformCom->Go_Straight(_TimeDelta, m_Navigation);
 	}
 	else {
 		m_AttackPosition = _vector();
 		m_Attack = FALSE;
+		m_DodgeCount = 0.0;
+	}
+}
+
+void BugMorph::AttackCollision(_double _TimeDelta)
+{
+	if (TRUE == m_MeleeAttackIsCollisionCheck)
+		return;
+
+	ANIMATION_STATE AnimationState = (ANIMATION_STATE)m_pModelCom->GetCurrentAnimation();
+
+	CCollider*		PlayerAABB = static_cast<CCollider*>(m_TargetPlayer->GetComponent(TEXT("Com_AABB")));
+
+	if (ANIMATION_STATE::ATT_BITE == AnimationState)
+	{
+		if (TRUE == m_ColliderLowerJaw->CollisionSphereToAABB(PlayerAABB))
+		{
+			m_MeleeAttackIsCollisionCheck = TRUE;
+			static_cast<CPlayer*>(m_TargetPlayer)->Hit(-50);
+		}
 	}
 }
 

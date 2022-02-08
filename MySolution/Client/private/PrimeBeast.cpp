@@ -43,7 +43,8 @@ HRESULT PrimeBeast::NativeConstruct(void * pArg)
 	m_pTransformCom->Set_State(CTransform::STATE_LOOK, TransformMatrix.r[2]);
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, TransformMatrix.r[3]);
 
-	m_HP = 3000;
+	m_MaxHP = 3000;
+	m_HP = m_MaxHP;
 	m_pModelCom->SetUp_AnimationIndex((_int)ANIMATION_STATE::SPAWN_WALLJUMP);
 	
 	m_rHand1Bone = m_pModelCom->Get_BoneMatrix("rHand1");
@@ -250,15 +251,19 @@ void PrimeBeast::HitCheck()
 
 		if (TRUE == m_ColliderCom->CollisionAABBToRay(CalDesc._rayPos, CalDesc._rayDir, Distance))
 		{
-			m_HP-=300;
+			_int AttDmg = static_cast<SMG*>(m_TargetPlayerWeapon)->GetAttackDamage();
+			CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+			m_HP-= AttDmg = pGameInstance->CalcRandom(AttDmg);
+			RELEASE_INSTANCE(CGameInstance);
+
 			m_Hit = TRUE;
 			HitBullet::EFFECTDESC EffectDesc;
 			ZeroMemory(&EffectDesc, sizeof(HitBullet::EFFECTDESC));
 			XMStoreFloat3(&EffectDesc.Position, CalDesc._rayPos + CalDesc._rayDir * Distance);
 			EffectDesc.Duration = 5.0;
-
+/*
 			if (FAILED(pGameInstance->Add_GameObjectToLayer(LEVEL_GAMEPLAY, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Effect_HitBullet"), &EffectDesc)))
-				MSGBOX("Failed to Create HitBullet Effect!!!");
+				MSGBOX("Failed to Create HitBullet Effect!!!");*/
 		}
 		
 		RELEASE_INSTANCE(CGameInstance);

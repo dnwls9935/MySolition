@@ -174,9 +174,7 @@ void CPlayer::Hit(_int _HP)
 	m_HP += _HP;
 
 	if (m_HP <= 0)
-	{
 		m_HP = 0;
-	}
 
 	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 	list<CGameObject*> pObjectList = pGameInstance->GetObjectList(LEVEL_GAMEPLAY, TEXT("Layer_UI"));
@@ -236,7 +234,8 @@ void CPlayer::KeyCheck(_double TimeDelta)
 				m_pModelCom->SetUp_AnimationIndex((_int)ANIMATION_STATE::RUN_R);
 			m_Move = MOVE_TYPE::RIGHT;
 		}
-		if (pGameInstance->Get_DIKeyState(DIK_R) & 0x80)
+		if ((_int)ANIMATION_STATE::SPRINT != m_pModelCom->GetCurrentAnimation() &&
+			pGameInstance->Get_DIKeyState(DIK_R) & 0x80)
 		{
 			m_pModelCom->SetUp_AnimationIndex((_int)ANIMATION_STATE::RE_HYPERION);
 		}
@@ -342,4 +341,6 @@ void CPlayer::Free()
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pRendererCom);
+	Safe_Release(m_ColliderSphereCom);
+	Safe_Release(m_Navigation);
 }

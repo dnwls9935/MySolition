@@ -73,6 +73,7 @@ public: /* For.Light_Manager */
 public: /* For.Calculator */
 	void		CalcMousePos(Calculator::CALCDESC* _calDesc);
 	_vector	GetWindowPos(ID3D11DeviceContext* _DeviceContext, _float _WindowX, _float _WindowY, _float _PositionX, _float _PositionY);
+	_int		CalcRandom(_int _Input);
 	
 private:
 	CGraphic_Device*			m_pGraphic_Device = nullptr;		
