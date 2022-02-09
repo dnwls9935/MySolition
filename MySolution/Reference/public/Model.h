@@ -44,14 +44,14 @@ public:
 	_bool	GetAnimationFinished();
 
 private:
-	const aiScene*		m_pScene = nullptr;
-	Assimp::Importer	m_Importer;
+	const aiScene*			m_pScene = nullptr;
+	Assimp::Importer		m_Importer;
 private:
-	char				m_szMeshFilePath[MAX_PATH] = "";
+	char								m_szMeshFilePath[MAX_PATH] = "";
 	FACEINDICES32*		m_pFaceIndices = nullptr;
-	_float4x4			m_PivotMatrix;
-	TYPE				m_eMeshType = TYPE_END;
-	_uint				m_iCurrentAnimation = 0;
+	_float4x4					m_PivotMatrix;
+	TYPE							m_eMeshType = TYPE_END;
+	_uint							m_iCurrentAnimation = 0;
 
 private:
 	vector<class CMeshContainer*>			m_MeshContainers;

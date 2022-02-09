@@ -8,6 +8,8 @@
 #include "Sky.h"
 #include "UI.h"
 
+#include <iostream>
+
 CPlayer::CPlayer(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
 {
@@ -61,6 +63,7 @@ _int CPlayer::Tick(_double TimeDelta)
 	SetCamAndSkyBox();
 	SetUpWeapon();
 
+
 	_vector Position = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(XMVectorGetX(Position), 0.f, XMVectorGetZ(Position), XMVectorGetW(Position)));
 
@@ -70,7 +73,12 @@ _int CPlayer::Tick(_double TimeDelta)
 _int CPlayer::LateTick(_double TimeDelta)
 {
 	if (nullptr != m_pRendererCom)
+	{
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
+#ifdef _DEBUG
+		m_pRendererCom->Add_RenderComGroup(CRenderer::RENDERCOM_COLLIDER, m_ColliderCom);
+#endif // !_DEBUG
+	}
 
 	if (m_pModelCom->GetAnimationFinished())
 	{
@@ -100,7 +108,7 @@ HRESULT CPlayer::Render()
 	}
 
 #ifdef _DEBUG
-	m_ColliderCom->Render();
+	//m_ColliderCom->Render();
 	m_Navigation->Render();
 #endif // _DEBUG
 

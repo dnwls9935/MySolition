@@ -9,6 +9,7 @@ class CTransform;
 class CModel;
 class CCollider;
 class Navigation;
+class HP;
 END
 
 BEGIN(Client)
@@ -53,24 +54,17 @@ private:
 	void		Attack();
 	void		Dodge(_double TimeDelta);
 
-	void		UpdateCollider(_double _TimeDelta);
-
 private:
 	CRenderer*				m_pRendererCom = nullptr;
 	CTransform*				m_pTransformCom = nullptr;
 	CModel*					m_pModelCom = nullptr;
 	CCollider*					m_ColliderCom = nullptr;
+	HP*								m_HpCom = nullptr;
 
 	CHierarchyNode*			m_rHand1Bone = nullptr;
 	CHierarchyNode*			m_rHand2Bone = nullptr;
 	CHierarchyNode*			m_lHand1Bone = nullptr;
 	CHierarchyNode*			m_lHand2Bone = nullptr;
-
-
-	CCollider*					m_ColliderSphere1 = nullptr;
-	CCollider*					m_ColliderSphere2 = nullptr;
-	CCollider*					m_ColliderSphere3 = nullptr;
-	CCollider*					m_ColliderSphere4 = nullptr;
 
 	Navigation*				m_Navigation = nullptr;
 

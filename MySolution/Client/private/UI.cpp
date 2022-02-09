@@ -50,7 +50,6 @@ _int UI::Tick(_double TimeDelta)
 
 _int UI::LateTick(_double TimeDelta)
 {	
-	
 	if (nullptr != m_pRendererCom)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_UI, this);
 

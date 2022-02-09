@@ -185,6 +185,7 @@
     <ClInclude Include="..\public\GameObject.h" />
     <ClInclude Include="..\public\Graphic_Device.h" />
     <ClInclude Include="..\public\HierarchyNode.h" />
+    <ClInclude Include="..\public\HP.h" />
     <ClInclude Include="..\public\Input_Device.h" />
     <ClInclude Include="..\public\Layer.h" />
     <ClInclude Include="..\public\Level.h" />
@@ -226,6 +227,7 @@
     <ClCompile Include="..\private\GameObject.cpp" />
     <ClCompile Include="..\private\Graphic_Device.cpp" />
     <ClCompile Include="..\private\HierarchyNode.cpp" />
+    <ClCompile Include="..\private\HP.cpp" />
     <ClCompile Include="..\private\Input_Device.cpp" />
     <ClCompile Include="..\private\Layer.cpp" />
     <ClCompile Include="..\private\Level.cpp" />

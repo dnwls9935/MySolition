@@ -19,6 +19,7 @@
 #include "GlacialFlowWall.h"
 #include "UI.h"
 #include "CrossSight.h"
+#include "HP.h"
 
 CLoader::CLoader(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: m_pDevice(pDevice)
@@ -104,7 +105,7 @@ HRESULT CLoader::Loading_ForGamePlay()
 		return E_FAIL;
 
 	wsprintf(m_szLoading, TEXT("텍스쳐를 생성한다. "));
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Cube"), CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Textures/SkyBox/burger%d.dds"), 4))))
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Cube"), CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Textures/SkyBox/ColdNight.dds")))))
 		return E_FAIL;
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Terrain"), CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Textures/Terrain/Snow_256_Dif.tga")))))
 		return E_FAIL;
@@ -160,6 +161,10 @@ HRESULT CLoader::Loading_ForGamePlay()
 	wsprintf(m_szLoading, TEXT("네비게이션을 생성한다. "));
 	/* For.Prototype_Component_Navigation */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Navigation"), Navigation::Create(m_pDevice, m_pDeviceContext))))  
+		return E_FAIL;
+	wsprintf(m_szLoading, TEXT("HP바를 생성한다. "));
+	/* For.Prototype_Component_Navigation */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_UI_HP"), HP::Create(m_pDevice, m_pDeviceContext))))
 		return E_FAIL;
 
 	wsprintf(m_szLoading, TEXT("모델불러오는중.... "));

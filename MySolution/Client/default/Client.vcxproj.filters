@@ -109,6 +109,9 @@
     <Filter Include="02.GameObject\UI\PlayerUI">
       <UniqueIdentifier>{a017ab54-a6d1-4c94-80e3-5c2c416a82ac}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\UI\EnemyUI">
+      <UniqueIdentifier>{28bf8e22-bf82-428e-a125-ce8aef64d48b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />

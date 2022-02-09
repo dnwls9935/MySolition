@@ -6,6 +6,7 @@
 #include "SMG.h"
 #include "PrimeBeastRock.h"
 #include "HitBullet.h"
+#include <iostream>
 
 PrimeBeast::PrimeBeast(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -43,7 +44,7 @@ HRESULT PrimeBeast::NativeConstruct(void * pArg)
 	m_pTransformCom->Set_State(CTransform::STATE_LOOK, TransformMatrix.r[2]);
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, TransformMatrix.r[3]);
 
-	m_MaxHP = 3000;
+	m_MaxHP = 1000;
 	m_HP = m_MaxHP;
 	m_pModelCom->SetUp_AnimationIndex((_int)ANIMATION_STATE::SPAWN_WALLJUMP);
 	
@@ -63,6 +64,7 @@ HRESULT PrimeBeast::NativeConstruct(void * pArg)
 
 	m_Terrain = pGameInstance->GetObjectList(LEVEL_GAMEPLAY, TEXT("Layer_Terrain")).front();
 
+
 	RELEASE_INSTANCE(CGameInstance);
 
 	m_Navigation->SettingDefaultIndex(m_pTransformCom);
@@ -72,6 +74,9 @@ HRESULT PrimeBeast::NativeConstruct(void * pArg)
 
 _int PrimeBeast::Tick(_double TimeDelta)
 {
+	_vector Position = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(XMVectorGetX(Position), 0.f, XMVectorGetZ(Position), XMVectorGetW(Position)));
+
 	if ((_uint)ANIMATION_STATE::DEA_CRITICAL == m_pModelCom->GetCurrentAnimation())
 	{
 		m_pModelCom->Update_CombinedTransformationMatrix(TimeDelta);
@@ -91,6 +96,7 @@ _int PrimeBeast::Tick(_double TimeDelta)
 	else
 		m_pModelCom->Update_CombinedTransformationMatrix(0.0);
 	m_ColliderCom->Update(m_pTransformCom->Get_WorldMatrix());
+	m_HpCom->Update(XMVectorSet(XMVectorGetX(Position), 2.5f, XMVectorGetZ(Position), 1.f), (_float)m_HP / (_float)m_MaxHP);
 
 	if ((_uint)ANIMATION_STATE::ATT_TR_V1 == m_pModelCom->GetCurrentAnimation() ||
 		(_uint)ANIMATION_STATE::DODGE_L == m_pModelCom->GetCurrentAnimation())
@@ -103,14 +109,20 @@ _int PrimeBeast::Tick(_double TimeDelta)
 	}
 
 	HitCheck();
-	UpdateCollider(TimeDelta);
+	
 	return _int();
 }
 
 _int PrimeBeast::LateTick(_double TimeDelta)
 {
 	if (nullptr != m_pRendererCom)
+	{
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
+		m_pRendererCom->Add_RenderComGroup(CRenderer::RENDERCOM::RENDERCOM_HP, m_HpCom);
+#ifdef _DEBUG
+		m_pRendererCom->Add_RenderComGroup(CRenderer::RENDERCOM_COLLIDER, m_ColliderCom);
+#endif // !_DEBUG
+	}
 
 	if (m_pModelCom->GetAnimationFinished())
 	{
@@ -164,11 +176,7 @@ HRESULT PrimeBeast::Render()
 	}
 
 #ifdef _DEBUG
-	m_ColliderCom->Render();
-	m_ColliderSphere1->Render();
-	m_ColliderSphere2->Render();
-	m_ColliderSphere3->Render();
-	m_ColliderSphere4->Render();
+	//m_ColliderCom->Render();
 #endif // _DEBUG
 
 	RELEASE_INSTANCE(CGameInstance);
@@ -333,41 +341,6 @@ void PrimeBeast::Dodge(_double TimeDelta)
 		m_pTransformCom->Chase_Target(static_cast<CTransform*>(m_TargetPlayer->GetComponent(TEXT("Com_Transform"))), TimeDelta);
 }
 
-void PrimeBeast::UpdateCollider(_double _TimeDelta)
-{
-#ifdef _DEBUG
-	_matrix BoneMatrix = XMMatrixIdentity();
-	_matrix Transform = XMMatrixIdentity();
-	_matrix OffsetMatrix = XMMatrixIdentity();
-	_matrix Combined = XMMatrixIdentity();
-	_matrix PivotMatrix = XMMatrixIdentity();
-	_matrix WorldMatrix = XMMatrixIdentity();
-
-	Transform = XMMatrixIdentity();
-	OffsetMatrix = m_rHand1Bone->Get_OffsetMatrix();
-	Combined = m_rHand1Bone->Get_CombinedMatrix();
-	PivotMatrix = m_pModelCom->Get_PivotMatrix();
-	WorldMatrix = m_pTransformCom->Get_WorldMatrix();
-
-	BoneMatrix = Transform * OffsetMatrix * Combined * PivotMatrix * XMMatrixRotationY(XMConvertToRadians(180.f)) * WorldMatrix;
-	m_ColliderSphere1->Update(BoneMatrix);
-
-	OffsetMatrix = m_rHand2Bone->Get_OffsetMatrix();
-	Combined = m_rHand2Bone->Get_CombinedMatrix();
-	BoneMatrix = Transform * OffsetMatrix * Combined * PivotMatrix * XMMatrixRotationY(XMConvertToRadians(180.f)) * WorldMatrix;
-	m_ColliderSphere2->Update(BoneMatrix);
-
-	OffsetMatrix = m_lHand1Bone->Get_OffsetMatrix();
-	Combined = m_lHand1Bone->Get_CombinedMatrix();
-	BoneMatrix = Transform * OffsetMatrix * Combined * PivotMatrix * XMMatrixRotationY(XMConvertToRadians(180.f)) * WorldMatrix;
-	m_ColliderSphere3->Update(BoneMatrix);
-
-	OffsetMatrix = m_lHand2Bone->Get_OffsetMatrix();
-	Combined = m_lHand2Bone->Get_CombinedMatrix();
-	BoneMatrix = Transform * OffsetMatrix * Combined * PivotMatrix * XMMatrixRotationY(XMConvertToRadians(180.f)) * WorldMatrix;
-	m_ColliderSphere4->Update(BoneMatrix);
-#endif // _DEBUG
-}
 
 HRESULT PrimeBeast::SetUp_Components()
 {
@@ -391,6 +364,10 @@ HRESULT PrimeBeast::SetUp_Components()
 	if (FAILED(__super::SetUp_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Navigation"), TEXT("Com_Navigation"), (CComponent**)&m_Navigation)))
 		return E_FAIL;
 
+	/* Com_HP*/
+	if (FAILED(__super::SetUp_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_UI_HP"), TEXT("Com_HP"), (CComponent**)&m_HpCom)))
+		return E_FAIL;
+
 
 	/* Com_Model */
 	CCollider::COLLISIONDESC CollisionDesc;
@@ -398,30 +375,6 @@ HRESULT PrimeBeast::SetUp_Components()
 	CollisionDesc.Scale = _float3(0.5f, 1.3f, 0.5f);
 	CollisionDesc.Position = _float3(0.f, 1.f, 0.0f);
 	if (FAILED(__super::SetUp_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_AABB"), TEXT("Com_Collider"), (CComponent**)&m_ColliderCom, &CollisionDesc)))
-		return E_FAIL;
-
-	ZeroMemory(&CollisionDesc, sizeof(CCollider::COLLISIONDESC));
-	CollisionDesc.Scale = _float3(1.0f, 1.0f, 1.0f);
-	CollisionDesc.Position = _float3(0.f, 0.f, 0.0f);
-	if (FAILED(__super::SetUp_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_Sphere"), TEXT("Com_Sphere1"), (CComponent**)&m_ColliderSphere1, &CollisionDesc)))
-		return E_FAIL;
-
-	ZeroMemory(&CollisionDesc, sizeof(CCollider::COLLISIONDESC));
-	CollisionDesc.Scale = _float3(1.0f, 1.0f, 1.0f);
-	CollisionDesc.Position = _float3(0.f, 0.f, 0.0f);
-	if (FAILED(__super::SetUp_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_Sphere"), TEXT("Com_Sphere2"), (CComponent**)&m_ColliderSphere2, &CollisionDesc)))
-		return E_FAIL;
-
-	ZeroMemory(&CollisionDesc, sizeof(CCollider::COLLISIONDESC));
-	CollisionDesc.Scale = _float3(1.0f, 1.0f, 1.0f);
-	CollisionDesc.Position = _float3(0.f, 0.f, 0.0f);
-	if (FAILED(__super::SetUp_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_Sphere"), TEXT("Com_Sphere3"), (CComponent**)&m_ColliderSphere3, &CollisionDesc)))
-		return E_FAIL;
-
-	ZeroMemory(&CollisionDesc, sizeof(CCollider::COLLISIONDESC));
-	CollisionDesc.Scale = _float3(1.0f, 1.0f, 1.0f);
-	CollisionDesc.Position = _float3(0.f, 0.f, 0.0f);
-	if (FAILED(__super::SetUp_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_Sphere"), TEXT("Com_Sphere4"), (CComponent**)&m_ColliderSphere4, &CollisionDesc)))
 		return E_FAIL;
 
 	return S_OK;
@@ -462,4 +415,5 @@ void PrimeBeast::Free()
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_Navigation);
+	Safe_Release(m_HpCom);
 }

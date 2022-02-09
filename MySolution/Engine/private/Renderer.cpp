@@ -3,6 +3,8 @@
 #include "TargetManager.h"
 #include "LightManager.h"
 #include "VIBuffer_RectViewPort.h"
+#include "Collider.h"
+#include "HP.h"
 
 CRenderer::CRenderer(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CComponent(pDevice, pDeviceContext)
@@ -82,6 +84,19 @@ HRESULT CRenderer::Add_RenderGroup(RENDER eRenderID, CGameObject* pGameObject)
 	return S_OK;
 }
 
+HRESULT CRenderer::Add_RenderComGroup(RENDERCOM eRenderID, CComponent * pComponent)
+{
+	if (nullptr == pComponent ||
+		eRenderID >= RENDERCOM_END)
+		return E_FAIL;
+
+	m_RenderComGroup[eRenderID].push_back(pComponent);
+
+	Safe_AddRef(pComponent);
+
+	return S_OK;
+}
+
 HRESULT CRenderer::Draw_RenderGroup()
 {
 	if (FAILED(Render_Priority()))
@@ -96,6 +111,10 @@ HRESULT CRenderer::Draw_RenderGroup()
 
 	if (FAILED(Render_Alpha()))
 		return E_FAIL;
+
+	if (FAILED(Render_Components()))
+		return E_FAIL;
+
 	if (FAILED(Render_UI()))
 		return E_FAIL;
 
@@ -207,6 +226,29 @@ HRESULT CRenderer::Render_Blend()
 	return S_OK;
 }
 
+HRESULT CRenderer::Render_Components()
+{
+	for (auto& pComponent : m_RenderComGroup[RENDERCOM::RENDERCOM_COLLIDER])
+	{
+		if (nullptr != pComponent)
+			static_cast<CCollider*>(pComponent)->Render();
+
+		Safe_Release(pComponent);
+	}
+	m_RenderComGroup[RENDERCOM_COLLIDER].clear();
+
+	for (auto& pHP : m_RenderComGroup[RENDERCOM::RENDERCOM_HP])
+	{
+		if (nullptr != pHP)
+			static_cast<HP*>(pHP)->Render();
+
+		Safe_Release(pHP);
+	}
+	m_RenderComGroup[RENDERCOM_HP].clear();
+
+	return S_OK;
+}
+
 CRenderer * CRenderer::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 {
 	CRenderer*		pInstance = new CRenderer(pDevice, pDeviceContext);
@@ -235,6 +277,14 @@ void CRenderer::Free()
 	{
 		for (auto& pGameObject : m_RenderGroup[i])
 			Safe_Release(pGameObject);
+
+		m_RenderGroup[i].clear();
+	}
+
+	for (_uint i = 0; i < RENDERCOM_END; ++i)
+	{
+		for (auto& pComponent : m_RenderComGroup[i])
+			Safe_Release(pComponent);
 
 		m_RenderGroup[i].clear();
 	}

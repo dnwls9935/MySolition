@@ -9,6 +9,7 @@ class CTransform;
 class CModel;
 class CCollider;
 class Navigation;
+class HP;
 END
 
 BEGIN(Client)
@@ -50,6 +51,7 @@ private:
 	CTransform*				m_pTransformCom = nullptr;
 	CModel*					m_pModelCom = nullptr;
 	CCollider*					m_ColliderCom = nullptr;
+	HP*								m_HpCom = nullptr;
 
 	CHierarchyNode*		m_LowerJawBone = nullptr;
 
@@ -76,7 +78,7 @@ private:
 	_bool					m_Burrow = FALSE;
 	_bool					m_BurrowLoop = FALSE;
 	_double				m_BurrowTime = 0.0;
-	_int						m_BurrowCount = 2;
+	_int						m_BurrowCount = 1;
 
 private:
 	_bool					m_MeleeAttackIsCollisionCheck = FALSE;

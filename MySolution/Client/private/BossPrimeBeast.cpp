@@ -7,8 +7,6 @@
 #include "BossPrimeBeastRock.h"
 #include "HitBullet.h"
 
-#include <iostream>
-
 BossPrimeBeast::BossPrimeBeast(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
 {
@@ -85,8 +83,6 @@ _int BossPrimeBeast::Tick(_double TimeDelta)
 		(_uint)ANIMATION_STATE::RUN_F_V1)
 		m_ChargeTime += TimeDelta * 3.f;
 
-	cout << m_HP << endl;
-
 	GetDistance();
 	Animation(TimeDelta);
 	BoneColliderTick(TimeDelta);
@@ -123,7 +119,18 @@ _int BossPrimeBeast::Tick(_double TimeDelta)
 _int BossPrimeBeast::LateTick(_double TimeDelta)
 {
 	if (nullptr != m_pRendererCom)
+	{
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
+
+#ifdef _DEBUG
+		m_pRendererCom->Add_RenderComGroup(CRenderer::RENDERCOM_COLLIDER, m_ColliderCom);
+		m_pRendererCom->Add_RenderComGroup(CRenderer::RENDERCOM_COLLIDER, m_HeadCollider);
+		m_pRendererCom->Add_RenderComGroup(CRenderer::RENDERCOM_COLLIDER, m_rHand1Collider);
+		m_pRendererCom->Add_RenderComGroup(CRenderer::RENDERCOM_COLLIDER, m_rHand2Collider);
+		m_pRendererCom->Add_RenderComGroup(CRenderer::RENDERCOM_COLLIDER, m_lHand1Collider);
+		m_pRendererCom->Add_RenderComGroup(CRenderer::RENDERCOM_COLLIDER, m_lHand2Collider);
+#endif // _DEBUG
+	}
 
 	
 	if (m_pModelCom->GetAnimationFinished())

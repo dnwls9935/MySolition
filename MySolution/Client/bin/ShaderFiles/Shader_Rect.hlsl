@@ -1,9 +1,5 @@
 #include "Shader_RenderState.hpp"
 
-
-/* 모든 전역변수들을 -> 상수테이블. */
-/* 클라이언트로부터 값을 전달받아올 수 있다. */
-
 cbuffer Matrices
 {
 	matrix		g_WorldMatrix  = (matrix)0;
@@ -33,6 +29,9 @@ cbuffer CrossIsCollision {
 	bool			g_CrossCollision;
 };
 
+cbuffer CameraDesc {
+	vector		g_vCamPosition;
+};
 
 /* 1. m_pDeviceContext->DrawIndexed() */
 /* 2. 인덱스가 가지고 있던 인덱스 세개에 해당하는 정점 세개를 정점버퍼로부터 얻어온다. */
@@ -144,6 +143,7 @@ PS_OUT PS_RIGHT(PS_IN In)
 
 	return Out;
 };
+
 PS_OUT PS_CROSS(PS_IN In)
 {
 	PS_OUT		Out = (PS_OUT)0;
@@ -155,6 +155,21 @@ PS_OUT PS_CROSS(PS_IN In)
 
 	if (true == g_CrossCollision)
 		Out.vColor.r += 0.5f;
+
+	return Out;
+};
+
+PS_OUT PS_ENEMY_HP(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	if (In.vTexUV.x > g_BarPercent)
+		discard;
+
+	Out.vColor = g_DiffuseTexture.Sample(DefaultSampler, In.vTexUV);
+
+	if (Out.vColor.a <= 0.5)
+		discard;
 
 	return Out;
 };
@@ -219,6 +234,17 @@ technique11			DefaultTechnique
 		VertexShader = compile vs_5_0 VS_MAIN();
 		GeometryShader = NULL;
 		PixelShader = compile ps_5_0  PS_CROSS();
+	}
+	pass EnemyUI
+	{
+		SetRasterizerState(CullMode_Default);
+		SetDepthStencilState(ZBuffer_Default, 0);
+		SetBlendState(BlendDisable, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		/* 진입점함수를 지정한다. */
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		PixelShader = compile ps_5_0  PS_ENEMY_HP();
 	}
 }
 

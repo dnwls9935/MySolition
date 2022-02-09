@@ -69,8 +69,12 @@ _int GlcialFlowWall::Tick(_double TimeDelta)
 _int GlcialFlowWall::LateTick(_double TimeDelta)
 {
 	if (nullptr != m_pRendererCom)
+	{
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
-
+#ifdef _DEBUG
+		m_pRendererCom->Add_RenderComGroup(CRenderer::RENDERCOM_COLLIDER, m_ColliderAABB);
+#endif // _DEBUG
+	}
 	return _int();
 }
 

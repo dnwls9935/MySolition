@@ -63,7 +63,7 @@ private:
 	CRenderer*				m_pRendererCom = nullptr;
 	CTransform*				m_pTransformCom = nullptr;
 	CModel*					m_pModelCom = nullptr;
-	CCollider*					m_ColliderCom = nullptr;
+	
 	Navigation*				m_NavigationCom = nullptr;
 
 	CHierarchyNode*			m_HeadBone = nullptr;
@@ -72,6 +72,7 @@ private:
 	CHierarchyNode*			m_lHand1Bone = nullptr;
 	CHierarchyNode*			m_lHand2Bone = nullptr;
 
+	CCollider*					m_ColliderCom = nullptr;
 	CCollider*					m_HeadCollider = nullptr;
 	CCollider*					m_rHand1Collider = nullptr;
 	CCollider*					m_rHand2Collider = nullptr;

@@ -80,6 +80,11 @@ HRESULT BugMorph::NativeConstruct(void * pArg)
 
 _int BugMorph::Tick(_double TimeDelta)
 {
+	_vector Position = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(XMVectorGetX(Position), 0.f, XMVectorGetZ(Position), XMVectorGetW(Position)));
+	m_HpCom->Update(XMVectorSet(XMVectorGetX(Position), 2.5f, XMVectorGetZ(Position), 1.f), (_float)m_HP / (_float)m_MaxHP);
+	if (FALSE == m_Burrow || TRUE == m_IntroEnd)
+		HitCheck();
 
 	if ((_uint)ANIMATION_STATE::DEA_CRITICAL == m_pModelCom->GetCurrentAnimation())
 	{
@@ -119,19 +124,23 @@ _int BugMorph::Tick(_double TimeDelta)
 		m_pModelCom->Update_CombinedTransformationMatrix(0.0);
 	m_ColliderCom->Update(m_pTransformCom->Get_WorldMatrix());
 
-	if(FALSE == m_Burrow || TRUE == m_IntroEnd)
-		HitCheck();
-
 	UpdateCollider(TimeDelta);
 	AttackCollision(TimeDelta);
-
+	
 	return _int();
 }
 
 _int BugMorph::LateTick(_double TimeDelta)
 {
 	if (nullptr != m_pRendererCom)
+	{
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
+		m_pRendererCom->Add_RenderComGroup(CRenderer::RENDERCOM_HP, m_HpCom);
+#ifdef _DEBUG
+		m_pRendererCom->Add_RenderComGroup(CRenderer::RENDERCOM_COLLIDER, m_ColliderCom);
+		m_pRendererCom->Add_RenderComGroup(CRenderer::RENDERCOM_COLLIDER, m_ColliderLowerJaw);
+#endif // !_DEBUG
+	}
 
 	if (m_pModelCom->GetAnimationFinished())
 	{
@@ -391,6 +400,10 @@ HRESULT BugMorph::SetUp_Components()
 	if (FAILED(__super::SetUp_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Navigation"), TEXT("Com_Navigation"), (CComponent**)&m_Navigation)))
 		return E_FAIL;
 
+	/* Com_HP*/
+	if (FAILED(__super::SetUp_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_UI_HP"), TEXT("Com_HP"), (CComponent**)&m_HpCom)))
+		return E_FAIL;
+
 	/* Com_Collider */
 	CCollider::COLLISIONDESC CollisionDesc;
 	ZeroMemory(&CollisionDesc, sizeof(CCollider::COLLISIONDESC));
@@ -444,4 +457,5 @@ void BugMorph::Free()
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_ColliderLowerJaw);
 	Safe_Release(m_Navigation);
+	Safe_Release(m_HpCom);
 }
