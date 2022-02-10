@@ -15,7 +15,7 @@ public:
 	const LIGHTDESC* Get_LightDesc(_uint iIndex = 0);
 
 public:
-	HRESULT Add_Light(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, const LIGHTDESC& LightDesc);
+	HRESULT Add_Light(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, const LIGHTDESC& LightDesc, class CLight** _OutLight = nullptr);
 	HRESULT Render_Lights();
 private:
 	list<class CLight*>				m_Lights;

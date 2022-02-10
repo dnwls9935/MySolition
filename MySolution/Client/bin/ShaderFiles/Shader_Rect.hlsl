@@ -174,16 +174,37 @@ PS_OUT PS_ENEMY_HP(PS_IN In)
 	return Out;
 };
 
+cbuffer UVControl {
+	float			g_X;
+	float			g_Y;
+};
+
+VS_OUT VS_HIT_EFFECT(VS_IN In)
+{
+	VS_OUT			Out = (VS_OUT)0;
+
+	matrix			matWV, matWVP;
+
+	matWV = mul(g_WorldMatrix, g_ViewMatrix);
+	matWVP = mul(matWV, g_ProjMatrix);
+
+	Out.vPosition = mul(vector(In.vPosition, 1.f), matWVP);
+
+	In.vTexUV.x = (In.vTexUV.x / 6) + (g_X * 0.16);
+	In.vTexUV.y = (In.vTexUV.y / 4) + (g_Y * 0.25);
+
+	Out.vTexUV = In.vTexUV;
+
+	return Out;
+}
+
 PS_OUT PS_HIT_EFFECT(PS_IN In)
 {
 	PS_OUT		Out = (PS_OUT)0;
 
-	if (In.vTexUV.x > g_BarPercent)
-		discard;
-
 	Out.vColor = g_DiffuseTexture.Sample(DefaultSampler, In.vTexUV);
 
-	if (Out.vColor.a <= 0.5)
+	if (Out.vColor.a <= 0.9)
 		discard;
 
 	return Out;
@@ -267,9 +288,9 @@ technique11			DefaultTechnique
 		SetBlendState(BlendDisable, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
 		/* 진입점함수를 지정한다. */
-		VertexShader = compile vs_5_0 VS_MAIN();
+		VertexShader = compile vs_5_0 VS_HIT_EFFECT();
 		GeometryShader = NULL;
-		PixelShader = compile ps_5_0  PS_HIE_EFFECT();
+		PixelShader = compile ps_5_0  PS_HIT_EFFECT();
 	}
 }
 

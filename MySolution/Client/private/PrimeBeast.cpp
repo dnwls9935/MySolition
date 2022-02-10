@@ -6,7 +6,6 @@
 #include "SMG.h"
 #include "PrimeBeastRock.h"
 #include "HitBullet.h"
-#include <iostream>
 
 PrimeBeast::PrimeBeast(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -203,8 +202,10 @@ _bool PrimeBeast::Picked()
 
 	if (TRUE == m_ColliderCom->CollisionAABBToRay(CalDesc._rayPos, CalDesc._rayDir, Distance))
 	{
+		m_HpCom->Picked(TRUE);
 		return TRUE;
 	}
+	m_HpCom->Picked(FALSE);
 	return FALSE;
 }
 
@@ -265,13 +266,10 @@ void PrimeBeast::HitCheck()
 			RELEASE_INSTANCE(CGameInstance);
 
 			m_Hit = TRUE;
-			HitBullet::EFFECTDESC EffectDesc;
-			ZeroMemory(&EffectDesc, sizeof(HitBullet::EFFECTDESC));
-			XMStoreFloat3(&EffectDesc.Position, CalDesc._rayPos + CalDesc._rayDir * Distance);
-			EffectDesc.Duration = 5.0;
-/*
-			if (FAILED(pGameInstance->Add_GameObjectToLayer(LEVEL_GAMEPLAY, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Effect_HitBullet"), &EffectDesc)))
-				MSGBOX("Failed to Create HitBullet Effect!!!");*/
+
+			_vector Position = CalDesc._rayPos + CalDesc._rayDir * Distance;
+			if (FAILED(pGameInstance->Add_GameObjectToLayer(LEVEL_GAMEPLAY, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Effect_HitBullet"), &Position)))
+				MSGBOX("Failed to Create HitBullet Effect!!!");
 		}
 		
 		RELEASE_INSTANCE(CGameInstance);
@@ -372,8 +370,8 @@ HRESULT PrimeBeast::SetUp_Components()
 	/* Com_Model */
 	CCollider::COLLISIONDESC CollisionDesc;
 	ZeroMemory(&CollisionDesc, sizeof(CCollider::COLLISIONDESC));
-	CollisionDesc.Scale = _float3(0.5f, 1.3f, 0.5f);
-	CollisionDesc.Position = _float3(0.f, 1.f, 0.0f);
+	CollisionDesc.Scale = _float3(1.f, 1.f, 1.f);
+	CollisionDesc.Position = _float3(0.f, 0.5f, 0.0f);
 	if (FAILED(__super::SetUp_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_AABB"), TEXT("Com_Collider"), (CComponent**)&m_ColliderCom, &CollisionDesc)))
 		return E_FAIL;
 

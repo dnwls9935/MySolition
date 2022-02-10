@@ -297,12 +297,12 @@ const LIGHTDESC* CGameInstance::Get_LightDesc(_uint iIndex)
 	return m_LightManager->Get_LightDesc(iIndex);
 }
 
-HRESULT CGameInstance::Add_Light(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, const LIGHTDESC & LightDesc)
+HRESULT CGameInstance::Add_Light(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, const LIGHTDESC & LightDesc, class CLight** _OutLight)
 {
 	if (nullptr == m_LightManager)
 		return E_FAIL;
 
-	return m_LightManager->Add_Light(pDevice, pDeviceContext, LightDesc);
+	return m_LightManager->Add_Light(pDevice, pDeviceContext, LightDesc, _OutLight);
 }
 void CGameInstance::CalcMousePos(Calculator::CALCDESC* _calDesc)
 {

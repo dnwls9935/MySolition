@@ -28,6 +28,9 @@ HRESULT CLight::NativeConstruct(const LIGHTDESC& LightDesc)
 
 HRESULT CLight::Render()
 {
+	if (FALSE == m_Lighting)
+		return S_OK;
+
 	CTarget_Manager*		pTarget_Manager = GET_INSTANCE(CTarget_Manager);
 	CGameInstance*			pGameInstance = GET_INSTANCE(CGameInstance);
 
@@ -84,6 +87,13 @@ HRESULT CLight::Render()
 
 
 	return S_OK;
+}
+
+_int CLight::Update(_vector _Position)
+{
+	XMStoreFloat3(&m_LightDesc.vPosition, _Position);
+
+	return _int();
 }
 
 CLight * CLight::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, const LIGHTDESC& LightDesc)

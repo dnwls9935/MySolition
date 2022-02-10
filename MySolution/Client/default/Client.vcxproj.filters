@@ -112,6 +112,9 @@
     <Filter Include="02.GameObject\UI\EnemyUI">
       <UniqueIdentifier>{28bf8e22-bf82-428e-a125-ce8aef64d48b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\Effect\Muzzle">
+      <UniqueIdentifier>{62711587-21fb-4d99-bf68-17486e5b9c1b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -207,6 +210,9 @@
     <ClInclude Include="..\public\CrossSight.h">
       <Filter>02.GameObject\UI\CrossSight</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Muzzle.h">
+      <Filter>02.GameObject\Effect\Muzzle</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -286,6 +292,9 @@
     </ClCompile>
     <ClCompile Include="..\private\CrossSIght.cpp">
       <Filter>02.GameObject\UI\CrossSight</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Muzzle.cpp">
+      <Filter>02.GameObject\Effect\Muzzle</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

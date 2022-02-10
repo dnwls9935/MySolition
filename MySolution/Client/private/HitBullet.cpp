@@ -32,6 +32,8 @@ HRESULT HitBullet::NativeConstruct(void * pArg)
 	memcpy(&Position, pArg, sizeof(_vector));
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, Position);
+
+	m_Count = 6/*가로*/ * 4/*세로*/;
 	
 	return S_OK;
 }
@@ -39,15 +41,28 @@ HRESULT HitBullet::NativeConstruct(void * pArg)
 _int HitBullet::Tick(_double TimeDelta)
 {
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
-
 	_matrix ViewMat = pGameInstance->Get_Transform(CPipeLine::D3DTS_VIEW);
 	_matrix ViewMatInv = XMMatrixInverse(nullptr, ViewMat);
 
 	m_pTransformCom->Set_State(CTransform::STATE_RIGHT, ViewMatInv.r[0]);
-	m_pTransformCom->Set_State(CTransform::STATE_RIGHT, ViewMatInv.r[2]);
-
+	m_pTransformCom->Set_State(CTransform::STATE_LOOK, ViewMatInv.r[2]);
 
 	RELEASE_INSTANCE(CGameInstance);
+
+	m_AnimationTimeAcc += TimeDelta * 100.f;
+
+	_int XFrame = m_AnimationTimeAcc;
+	_int	YFrame = m_AnimationTimeAcc / 6;
+
+	if (0 < YFrame)
+	{
+		m_Y++;
+		m_AnimationTimeAcc = 0.0;
+	}
+	else {
+		m_X = XFrame + 1;
+	}
+
 	return _int();
 }
 
@@ -56,7 +71,10 @@ _int HitBullet::LateTick(_double TimeDelta)
 	if (nullptr != m_pRendererCom)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_ALPHA, this);
 
-	return _int();
+	if (m_Y >= 5)
+		m_Dead = TRUE;
+
+	return m_Dead;
 }
 
 HRESULT HitBullet::Render()
@@ -66,8 +84,10 @@ HRESULT HitBullet::Render()
 	m_VIBufferCom->SetUp_ValueOnShader("g_WorldMatrix", &XMMatrixTranspose(m_pTransformCom->Get_WorldMatrix()), sizeof(_matrix));
 	m_VIBufferCom->SetUp_ValueOnShader("g_ViewMatrix", &XMMatrixTranspose(pGameInstance->Get_Transform(CPipeLine::D3DTS_VIEW)), sizeof(_matrix));
 	m_VIBufferCom->SetUp_ValueOnShader("g_ProjMatrix", &XMMatrixTranspose(pGameInstance->Get_Transform(CPipeLine::D3DTS_PROJECTION)), sizeof(_matrix));
+	m_VIBufferCom->SetUp_ValueOnShader("g_X", &m_X, sizeof(_float));
+	m_VIBufferCom->SetUp_ValueOnShader("g_Y", &m_Y, sizeof(_float));
 
-	m_VIBufferCom->SetUp_TextureOnShader("g_vDiffuseTexture", m_TextureCom, 0);
+	m_VIBufferCom->SetUp_TextureOnShader("g_DiffuseTexture", m_TextureCom, 0);
 
 
 	m_VIBufferCom->Render(6);
@@ -93,7 +113,7 @@ HRESULT HitBullet::SetUp_Components()
 	if (FAILED(__super::SetUp_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_HitBullet"), TEXT("Com_Texture"), (CComponent**)&m_TextureCom)))
 		return E_FAIL;
 
-	/* Com_Model */
+	/* Com_VIBuffer */
 	if (FAILED(__super::SetUp_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Rect"), TEXT("Com_Buffer"), (CComponent**)&m_VIBufferCom)))
 		return E_FAIL;
 
@@ -133,4 +153,5 @@ void HitBullet::Free()
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_VIBufferCom);
 	Safe_Release(m_pRendererCom);
+	Safe_Release(m_TextureCom);
 }

@@ -52,6 +52,8 @@ _int HP::Update(_vector Position, _float _Barpercent)
 
 HRESULT HP::Render()
 {
+	if (FALSE == m_Picked)
+		return S_OK;
 	CPipeLine*		PipeLine = GET_INSTANCE(CPipeLine);
 
 	m_pVIBufferCom->SetUp_ValueOnShader("g_WorldMatrix", &XMMatrixTranspose(m_pTransformCom->Get_WorldMatrix()), sizeof(_float) * 16);

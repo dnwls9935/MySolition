@@ -20,6 +20,7 @@
 #include "UI.h"
 #include "CrossSight.h"
 #include "HP.h"
+#include "Muzzle.h"
 
 CLoader::CLoader(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: m_pDevice(pDevice)
@@ -103,6 +104,8 @@ HRESULT CLoader::Loading_ForGamePlay()
 		return E_FAIL;
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Rect"), CVIBuffer_Rect::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/ShaderFiles/Shader_Rect.hlsl")))))
 		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Effect_Rect"), CVIBuffer_Rect::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/ShaderFiles/Shader_RectEffect.hlsl")))))
+		return E_FAIL;
 
 	wsprintf(m_szLoading, TEXT("텍스쳐를 생성한다. "));
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Cube"), CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Textures/SkyBox/ColdNight.dds")))))
@@ -150,6 +153,12 @@ HRESULT CLoader::Loading_ForGamePlay()
 	
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Hyperion_Sight_SMG"), CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Textures/UI/Textures/Tex_Hyperion_Sight_SMG.png")))))
 		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Muzzle"), CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Textures/Effect/MuzzleEffect/Muzzle%d.png"),4))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_MuzzleComp"), CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Textures/Effect/MuzzleEffect/MuzzleComp%d.png"), 4))))
+		return E_FAIL;
+	
 
 
 	wsprintf(m_szLoading, TEXT("콜라이더를 생성한다. "));
@@ -349,6 +358,8 @@ HRESULT CLoader::Loading_ForGamePlay()
 
 	// 이팩트들
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Effect_HitBullet"), HitBullet::Create(m_pDevice, m_pDeviceContext))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Effect_Muzzle"), Muzzle::Create(m_pDevice, m_pDeviceContext))))
 		return E_FAIL;
 
 	wsprintf(m_szLoading, TEXT("로딩이 완료되었습니다. "));

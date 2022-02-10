@@ -27,7 +27,11 @@ public:
 
 
 private:
-	_double						m_AnimationDuration = 0.0;
+	_int								m_Count = 0;
+	_double						m_AnimationTimeAcc = 0.0;
+
+	_float							m_X = 0.f; /* 0.16 */
+	_float							m_Y = 1.f; /* 0.25 */
 
 private:
 	CRenderer*				m_pRendererCom = nullptr;

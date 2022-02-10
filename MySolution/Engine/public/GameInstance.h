@@ -68,7 +68,7 @@ public: /* for.Input_Device */
 
 public: /* For.Light_Manager */
 	const LIGHTDESC* Get_LightDesc(_uint iIndex = 0);
-	HRESULT Add_Light(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, const LIGHTDESC& LightDesc);
+	HRESULT Add_Light(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, const LIGHTDESC& LightDesc, class CLight** _OutLight = nullptr);
 
 public: /* For.Calculator */
 	void		CalcMousePos(Calculator::CALCDESC* _calDesc);

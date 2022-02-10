@@ -4,7 +4,7 @@
 
 BEGIN(Engine)
 
-class CLight final : public CBase
+class ENGINE_DLL CLight final : public CBase
 {
 private:
 	explicit CLight(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
@@ -18,11 +18,18 @@ public:
 	HRESULT NativeConstruct(const LIGHTDESC& LightDesc);
 	HRESULT Render();
 
+public:
+	_int			Update(_vector _Position);
+	void			SetLighting(_bool _b) {
+		m_Lighting = _b;
+	}
+
 private:
 	ID3D11Device*				m_pDevice = nullptr;
 	ID3D11DeviceContext*		m_pDeviceContext = nullptr;
 
 private:
+	_bool								m_Lighting = TRUE;
 	LIGHTDESC						m_LightDesc;
 	class CVIBuffer_RectViewPort*	m_pVIBuffer = nullptr;
 

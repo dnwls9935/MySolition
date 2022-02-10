@@ -4,8 +4,8 @@
 #include "HierarchyNode.h"
 #include "GameInstance.h"
 #include "UI.h"
-
-#include <iostream>
+#include "Light.h"
+#include "Camera_Dynamic.h"
 
 SMG::SMG(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -37,7 +37,14 @@ HRESULT SMG::NativeConstruct(void * pArg)
 
 	CGameInstance*	pGameInstance = GET_INSTANCE(CGameInstance);
 	m_TargetObject = pGameInstance->GetObjectList(LEVEL_GAMEPLAY, TEXT("Layer_Player")).front();
+	m_CameraObject = pGameInstance->GetObjectList(LEVEL_GAMEPLAY, TEXT("Layer_Camera")).front();
+
+	m_BarrelBone = m_pModelCom->Get_BoneMatrix("Mag05");
+
 	RELEASE_INSTANCE(CGameInstance);
+
+	if (FAILED(SetLightPosition()))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -47,6 +54,21 @@ _int SMG::Tick(_double TimeDelta)
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 	KeyCheck();
 	m_BarPercent = (_float)m_Ammo / (_float)m_MaxAmmo;
+	if (TRUE == m_FireFrame)
+	{
+		m_BarrelLight->SetLighting(TRUE);
+
+		_vector Position = GetMuzzlePosition();
+		pGameInstance->Add_GameObjectToLayer(LEVEL_GAMEPLAY, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Effect_Muzzle"), &Position);
+
+		_float NumRand = 60 + ((rand() % 3) - 3);
+		static_cast<CCamera_Dynamic*>(m_CameraObject)->SetFOV(XMConvertToRadians(NumRand));
+	}
+	else
+	{
+		static_cast<CCamera_Dynamic*>(m_CameraObject)->SetFOV(XMConvertToRadians(60.f));
+		m_BarrelLight->SetLighting(FALSE);
+	}
 
 	list<CGameObject*> ObjectList = pGameInstance->GetObjectList(LEVEL_GAMEPLAY, TEXT("Layer_UI"));
 	for (auto& Object : ObjectList)
@@ -129,6 +151,7 @@ void SMG::SetUpWeapon(_fmatrix WeaponeBoneMatrix, _fmatrix PlayerWorldMatrix)
 	m_pTransformCom->Set_State(CTransform::STATE_LOOK, vLook);
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
 
+	m_BarrelLight->Update(GetMuzzlePosition());
 }
 
 void SMG::KeyCheck()
@@ -175,6 +198,44 @@ void SMG::Reloading()
 	m_Ammo = m_MaxAmmo;
 }
 
+HRESULT SMG::SetLightPosition()
+{
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+	//	m_BarrelRight
+	LIGHTDESC			LightDesc;
+	ZeroMemory(&LightDesc, sizeof(LIGHTDESC));
+	LightDesc.eType = LIGHTDESC::TYPE_POINT;
+	LightDesc.vPosition = _float3();
+	LightDesc.fRange = 35.f;
+	LightDesc.vDiffuse = _float4(1.f, 0.f, 0.f, 1.f);
+	LightDesc.vSpecular = _float4(0.f, 0.f, 0.f, 0.f);
+	LightDesc.vAmbient = _float4(0.f, 0.f, 0.f, 0.f);
+
+	if (FAILED(pGameInstance->Add_Light(m_pDevice, m_pDeviceContext, LightDesc, &m_BarrelLight)))
+		return E_FAIL;
+	RELEASE_INSTANCE(CGameInstance);
+
+	if (nullptr == m_BarrelLight)
+		return E_FAIL;
+
+	m_BarrelLight->SetLighting(FALSE);
+
+	return S_OK;
+}
+
+_vector SMG::GetMuzzlePosition()
+{
+	_matrix Transform = XMMatrixTranslation(-2000.f, -1300.f, 11000.f);
+	_matrix OffsetMatrix = m_BarrelBone->Get_OffsetMatrix();
+	_matrix CombinedMatrix = m_BarrelBone->Get_CombinedMatrix();
+	_matrix PivotMatrix = m_pModelCom->Get_PivotMatrix();
+	_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
+
+	_matrix BoneMatrix = Transform * OffsetMatrix * CombinedMatrix * PivotMatrix * WorldMatrix;
+
+	return BoneMatrix.r[3];
+}
 
 HRESULT SMG::SetUp_Components()
 {
@@ -230,4 +291,6 @@ void SMG::Free()
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pRendererCom);
+	Safe_Release(m_BarrelBone);
+	Safe_Release(m_BarrelLight);
 }

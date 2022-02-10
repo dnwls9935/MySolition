@@ -90,6 +90,11 @@ void CCamera_Dynamic::RotationXY(ROTATION_TYPE _type, _double TimeDelta)
 	}
 }
 
+void CCamera_Dynamic::SetFOV(_float _FOV)
+{
+	m_CameraDesc.fFovy = _FOV;
+}
+
 
 CCamera_Dynamic * CCamera_Dynamic::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 {

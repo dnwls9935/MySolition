@@ -27,6 +27,9 @@ private:
 	CRenderer*				m_pRenderer = nullptr;
 
 private:
+	_double					m_TimeAcc = 0.0;
+
+private:
 	HRESULT SetUp_StartLevel(LEVEL eLevel);
 
 	/* For. Level_static*/

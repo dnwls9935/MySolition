@@ -575,6 +575,9 @@ void BossPrimeBeast::HitCheck()
 			m_HP -= AttDmg = pGameInstance->CalcRandom(AttDmg);
 			RELEASE_INSTANCE(CGameInstance);
 			/* ÇÇ°Ý ÀÌÆÑÆ® */
+			_vector Position = CalDesc._rayPos + CalDesc._rayDir * Distance;
+			if (FAILED(pGameInstance->Add_GameObjectToLayer(LEVEL_GAMEPLAY, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Effect_HitBullet"), &Position)))
+				MSGBOX("Failed to Create HitBullet Effect!!!");
 		}
 
 		RELEASE_INSTANCE(CGameInstance);
@@ -606,7 +609,7 @@ HRESULT BossPrimeBeast::SetUp_Components()
 	/* Com_Collider */
 	CCollider::COLLISIONDESC CollisionDesc;
 	ZeroMemory(&CollisionDesc, sizeof(CCollider::COLLISIONDESC));
-	CollisionDesc.Scale = _float3(3.0f, 3.0f, 3.0f);
+	CollisionDesc.Scale = _float3(3.0f, 5.0f, 3.0f);
 	CollisionDesc.Position = _float3(0.f, 1.f, 0.0f);
 	if (FAILED(__super::SetUp_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_AABB"), TEXT("Com_Collider"), (CComponent**)&m_ColliderCom, &CollisionDesc)))
 		return E_FAIL;

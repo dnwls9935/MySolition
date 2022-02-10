@@ -13,6 +13,7 @@ cbuffer Matrices
 };
 
 texture2D	g_DiffuseTexture;
+texture2D	g_CompTexture;
 
 sampler DefaultSampler = sampler_state
 {		
@@ -77,11 +78,33 @@ PS_OUT PS_MAIN(PS_IN In)
 
 	Out.vColor = g_DiffuseTexture.Sample(DefaultSampler, In.vTexUV);
 
-	if (1 >= Out.vColor.a)
+	if (0 >= Out.vColor.a)
 		discard;
 	
 	return Out;	
 }
+
+PS_OUT PS_MAIN_BLEND(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	vector Diffuse = g_DiffuseTexture.Sample(DefaultSampler, In.vTexUV);
+	vector Compare = g_CompTexture.Sample(DefaultSampler, In.vTexUV);
+
+
+	Out.vColor = Diffuse;
+	if (Out.vColor.a <= 0.5)
+		discard;
+	/*Out.vColor = Diffuse + Compare * (1 - 0.2f);
+	if (Out.vColor.r <= 0.0 &&Out.vColor.g <= 0.0 && Out.vColor.b <= 0.0)
+		discard;
+
+	if (Out.vColor.a <= 0.3)
+		discard;*/
+	
+	return Out;
+}
+
 
 
 
@@ -99,6 +122,16 @@ technique11			DefaultTechnique
 		VertexShader = compile vs_5_0 VS_MAIN();
 		GeometryShader = NULL;
 		PixelShader = compile ps_5_0  PS_MAIN();
+	}
+	pass MuzzleEffect
+	{
+		SetRasterizerState(CullMode_Default);
+		SetDepthStencilState(ZBuffer_Default, 0);
+
+		/* 진입점함수를 지정한다. */
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		PixelShader = compile ps_5_0  PS_MAIN_BLEND();
 	}
 }
 

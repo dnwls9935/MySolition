@@ -153,13 +153,11 @@ PS_OUT_LIGHTACC PS_MAIN_LIGHTACC_POINT(PS_IN In)
 
 	float		fAtt = saturate((g_fRange - fDistance) / g_fRange);
 
-
 	/* 0 ~ 1*/
 	/* -1 ~ 1*/
 	vector		vNormal = vector(vNormalDesc.xyz * 2.f - 1.f, 0.f);
 	//Out.vShade = g_vLightDiffuse * (saturate(dot(normalize(vLightDir) * -1.f, vNormal)) + (g_vLightAmbient * g_vMtrlAmbient)) * fAtt;
 	//Out.vShade.a = 1.f;
-
 
 	float fShade = g_vLightDiffuse * (saturate(dot(normalize(vLightDir) * -1.f, vNormal)));
 	fShade = (ceil(fShade * 10.f) / 10.f) * fAtt;
@@ -188,9 +186,17 @@ PS_OUT_BLEND PS_MAIN_BLEND(PS_IN In)
 	vector		vDiffuseDesc = g_DiffuseTexture.Sample(DefaultSampler, In.vTexUV);
 	vector		vShadeDesc = g_ShadeTexture.Sample(DefaultSampler, In.vTexUV);
 	vector		vSpecularDesc = g_SpecularTexture.Sample(DefaultSampler, In.vTexUV);
-
+	vector		vDepthDesc  =g_DepthTexture.Sample(DefaultSampler, In.vTexUV);
+	float		ViewZ = vDepthDesc.y * 300.f;
 
 	Out.vColor = vDiffuseDesc * vShadeDesc + vSpecularDesc;
+
+	vector		FogColor = vector(0.2f, 0.2f, 0.3f, 0.f);
+	float		FogAtt = 1.f;
+	float		FogDistance = 3.f;
+
+	FogAtt = saturate(ViewZ - FogDistance) * 0.05f;
+	Out.vColor += FogColor * FogAtt;
 
 	if (Out.vColor.a == 0.f)
 		discard;

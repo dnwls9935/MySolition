@@ -17,6 +17,9 @@ public:
 public:
 	_int			Update(_vector Position, _float _Barpercent);
 	HRESULT		Render();
+	void				Picked(_bool _b) {
+		m_Picked = _b;
+	}
 
 private:
 	class CVIBuffer_Rect*		m_pVIBufferCom = nullptr;
@@ -24,6 +27,7 @@ private:
 	class CTransform*			m_pTransformCom = nullptr;
 private:
 	_float		m_Barpercent = 1.f;
+	_bool		m_Picked = FALSE;
 
 private:
 	virtual HRESULT SetUp_Components();

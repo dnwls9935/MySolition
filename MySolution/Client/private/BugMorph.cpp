@@ -5,8 +5,7 @@
 #include "Player.h"
 #include "SMG.h"
 #include "Player.h"
-
-#include <iostream>
+#include "UI.h"
 
 BugMorph::BugMorph(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -44,8 +43,8 @@ HRESULT BugMorph::NativeConstruct(void * pArg)
 	m_pTransformCom->Set_State(CTransform::STATE_LOOK, TransformMatrix.r[2]);
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, TransformMatrix.r[3]);
 
-	m_HP = 2000;
-	m_MaxHP = 2000;
+	m_MaxHP = 500;
+	m_HP = m_MaxHP;
 	m_pModelCom->SetUp_AnimationIndex((_int)ANIMATION_STATE::SPAWN);
 
 
@@ -95,7 +94,7 @@ _int BugMorph::Tick(_double TimeDelta)
 	if (TRUE == m_BurrowLoop)
 	{
 		m_pModelCom->SetUp_AnimationIndex((_uint)ANIMATION_STATE::BURROW_EXIT);
-		m_HP+= 50;
+		m_HP+= 10;
 		if (m_MaxHP <= m_HP)
 		{
 			m_HP = m_MaxHP;
@@ -233,8 +232,10 @@ _bool BugMorph::Picked()
 
 	if (TRUE == m_ColliderCom->CollisionAABBToRay(CalDesc._rayPos, CalDesc._rayDir, Distance))
 	{
+		m_HpCom->Picked(TRUE);
 		return TRUE;
 	}
+	m_HpCom->Picked(FALSE);
 	return FALSE;
 }
 
@@ -265,6 +266,9 @@ void BugMorph::HitCheck()
 			m_HP -= AttDmg = pGameInstance->CalcRandom(AttDmg);
 			RELEASE_INSTANCE(CGameInstance);
 			/* ÇÇ°Ý ÀÌÆÑÆ® */
+			_vector Position = CalDesc._rayPos + CalDesc._rayDir * Distance;
+			if (FAILED(pGameInstance->Add_GameObjectToLayer(LEVEL_GAMEPLAY, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Effect_HitBullet"), &Position)))
+				MSGBOX("Failed to Create HitBullet Effect!!!");
 		}
 		
 		RELEASE_INSTANCE(CGameInstance);
@@ -407,8 +411,8 @@ HRESULT BugMorph::SetUp_Components()
 	/* Com_Collider */
 	CCollider::COLLISIONDESC CollisionDesc;
 	ZeroMemory(&CollisionDesc, sizeof(CCollider::COLLISIONDESC));
-	CollisionDesc.Scale = _float3(0.3f, 1.3f, 0.3f);
-	CollisionDesc.Position = _float3(0.f, 1.f, 0.0f);
+	CollisionDesc.Scale = _float3(1.0f, 1.0f, 1.0f);
+	CollisionDesc.Position = _float3(0.f, 0.5f, 0.0f);
 	if (FAILED(__super::SetUp_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_AABB"), TEXT("Com_Collider"), (CComponent**)&m_ColliderCom, &CollisionDesc)))
 		return E_FAIL;
 

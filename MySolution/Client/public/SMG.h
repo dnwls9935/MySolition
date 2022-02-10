@@ -8,6 +8,8 @@ class CRenderer;
 class CTransform;
 class CModel;
 class CCollider;
+class CLight;
+class CHierarchyNode;
 END
 
 BEGIN(Client)
@@ -45,8 +47,11 @@ public:
 	}
 
 private:
-	void KeyCheck();
+	void		KeyCheck();
 	void		Reloading();
+	HRESULT		SetLightPosition();
+
+	_vector GetMuzzlePosition();
 	
 private:
 	_bool	m_AnimationPlay = FALSE;
@@ -68,7 +73,11 @@ private:
 	CTransform*				m_pTransformCom = nullptr;
 	CModel*					m_pModelCom = nullptr;
 
+	CLight*						m_BarrelLight = nullptr;
+	CHierarchyNode*		m_BarrelBone = nullptr;
+
 	class CGameObject* m_TargetObject = nullptr;
+	class CGameObject* m_CameraObject = nullptr;
 
 private:
 	virtual HRESULT SetUp_Components();

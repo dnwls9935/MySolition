@@ -184,6 +184,7 @@
     <ClInclude Include="..\public\Level_Logo.h" />
     <ClInclude Include="..\public\Loader.h" />
     <ClInclude Include="..\public\MainApp.h" />
+    <ClInclude Include="..\public\Muzzle.h" />
     <ClInclude Include="..\public\Player.h" />
     <ClInclude Include="..\public\PrimeBeast.h" />
     <ClInclude Include="..\public\PrimeBeastRock.h" />
@@ -214,6 +215,7 @@
     <ClCompile Include="..\private\Level_Logo.cpp" />
     <ClCompile Include="..\private\Loader.cpp" />
     <ClCompile Include="..\private\MainApp.cpp" />
+    <ClCompile Include="..\private\Muzzle.cpp" />
     <ClCompile Include="..\private\Player.cpp" />
     <ClCompile Include="..\private\PrimeBeast.cpp" />
     <ClCompile Include="..\private\PrimeBeastRock.cpp" />

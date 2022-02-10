@@ -24,7 +24,10 @@ public:
 
 	void	RotationXY(ROTATION_TYPE _type, _double MouseMove);
 
-	_matrix	Get_WorldMatrix() { return m_pTransform->Get_WorldMatrix(); };
+	_matrix	Get_WorldMatrix() {
+		return m_pTransform->Get_WorldMatrix(); 
+	};
+	void			SetFOV(_float _FOV);
 
 private:
 	_matrix		m_OriginWM = XMMatrixIdentity();
