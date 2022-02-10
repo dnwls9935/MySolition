@@ -174,6 +174,20 @@ PS_OUT PS_ENEMY_HP(PS_IN In)
 	return Out;
 };
 
+PS_OUT PS_HIT_EFFECT(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	if (In.vTexUV.x > g_BarPercent)
+		discard;
+
+	Out.vColor = g_DiffuseTexture.Sample(DefaultSampler, In.vTexUV);
+
+	if (Out.vColor.a <= 0.5)
+		discard;
+
+	return Out;
+};
 
 
 technique11			DefaultTechnique
@@ -245,6 +259,17 @@ technique11			DefaultTechnique
 		VertexShader = compile vs_5_0 VS_MAIN();
 		GeometryShader = NULL;
 		PixelShader = compile ps_5_0  PS_ENEMY_HP();
+	}
+	pass HitEffect
+	{
+		SetRasterizerState(CullMode_Default);
+		SetDepthStencilState(ZBuffer_Default, 0);
+		SetBlendState(BlendDisable, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		/* 진입점함수를 지정한다. */
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		PixelShader = compile ps_5_0  PS_HIE_EFFECT();
 	}
 }
 

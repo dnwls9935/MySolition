@@ -27,19 +27,27 @@ HRESULT HitBullet::NativeConstruct(void * pArg)
 
 	if (FAILED(SetUp_Components()))
 		return E_FAIL;
+	
+	_vector Position = XMVectorSet(0.f, 0.f, 0.f, 0.f);
+	memcpy(&Position, pArg, sizeof(_vector));
 
-	HitBullet::EFFECTDESC EffectDesc;
-	ZeroMemory(&EffectDesc, sizeof(HitBullet::EFFECTDESC));
-	memcpy(&EffectDesc, (HitBullet::EFFECTDESC*)pArg, sizeof(HitBullet::EFFECTDESC));
-
-	EffectDesc.Position;
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&EffectDesc.Position));
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, Position);
 	
 	return S_OK;
 }
 
 _int HitBullet::Tick(_double TimeDelta)
 {
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+	_matrix ViewMat = pGameInstance->Get_Transform(CPipeLine::D3DTS_VIEW);
+	_matrix ViewMatInv = XMMatrixInverse(nullptr, ViewMat);
+
+	m_pTransformCom->Set_State(CTransform::STATE_RIGHT, ViewMatInv.r[0]);
+	m_pTransformCom->Set_State(CTransform::STATE_RIGHT, ViewMatInv.r[2]);
+
+
+	RELEASE_INSTANCE(CGameInstance);
 	return _int();
 }
 
@@ -62,7 +70,7 @@ HRESULT HitBullet::Render()
 	m_VIBufferCom->SetUp_TextureOnShader("g_vDiffuseTexture", m_TextureCom, 0);
 
 
-	m_VIBufferCom->Render(0);
+	m_VIBufferCom->Render(6);
 
 	RELEASE_INSTANCE(CGameInstance);
 	return S_OK;

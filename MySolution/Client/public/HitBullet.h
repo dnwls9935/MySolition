@@ -14,16 +14,6 @@ BEGIN(Client)
 
 class HitBullet final : public CGameObject
 {
-public:
-	typedef struct tagEffectDesc {
-		_float3		Position;
-		_double		Duration;
-	}EFFECTDESC;
-	enum class ANIMATION_STATE {
-		ALL,
-		
-		ANIMATION_STATE_END
-	};
 protected:
 	explicit HitBullet(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	explicit HitBullet(const CGameObject& rhs);
@@ -34,6 +24,10 @@ public:
 	virtual _int Tick(_double TimeDelta) override;
 	virtual _int LateTick(_double TimeDelta) override;
 	virtual HRESULT Render() override;
+
+
+private:
+	_double						m_AnimationDuration = 0.0;
 
 private:
 	CRenderer*				m_pRendererCom = nullptr;
