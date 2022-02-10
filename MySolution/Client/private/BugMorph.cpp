@@ -244,7 +244,6 @@ void BugMorph::HitCheck()
 	if (TRUE == static_cast<SMG*>(m_TargetPlayerWeapon)->GetFireFrame())
 	{
 		CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
-
 		Calculator::CALCDESC CalDesc;
 		CalDesc._width = g_iWinCX;
 		CalDesc._height = g_iWinCY;

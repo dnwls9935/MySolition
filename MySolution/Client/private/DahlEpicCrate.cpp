@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "..\public\DahlEpicCrate.h"
 #include "GameInstance.h"
+#include "Player.h"
 
 DahlEpicCrate::DahlEpicCrate(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -39,6 +40,7 @@ HRESULT DahlEpicCrate::NativeConstruct(void * pArg)
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, TransformMatrix.r[3]);
 
 	m_pModelCom->SetUp_AnimationIndex((_int)ANIMATION_STATE::CLOSED_IDLE);
+
 	return S_OK;
 }
 
@@ -46,6 +48,9 @@ _int DahlEpicCrate::Tick(_double TimeDelta)
 {
 	m_pModelCom->Update_CombinedTransformationMatrix(TimeDelta);
 	m_ColliderCom->Update(m_pTransformCom->Get_WorldMatrix());
+
+	if((_uint)ANIMATION_STATE::CLOSED_IDLE == m_pModelCom->GetCurrentAnimation())
+		Picking();
 
 	return _int();
 }
@@ -59,6 +64,13 @@ _int DahlEpicCrate::LateTick(_double TimeDelta)
 		m_pRendererCom->Add_RenderComGroup(CRenderer::RENDERCOM_COLLIDER, m_ColliderCom);
 #endif // _DEBUG
 	}
+
+	if (TRUE == m_pModelCom->GetAnimationFinished())
+	{
+		if ((_uint)ANIMATION_STATE::OPEN == m_pModelCom->GetCurrentAnimation())
+			m_pModelCom->SetUp_AnimationIndex((_uint)ANIMATION_STATE::OPENED_IDLE);
+	}
+
 	return _int();
 }
 
@@ -80,12 +92,43 @@ HRESULT DahlEpicCrate::Render()
 		m_pModelCom->Render(i, 1);
 	}
 
-#ifdef _DEBUG
-	m_ColliderCom->Render();
-#endif // _DEBUG
-
 	RELEASE_INSTANCE(CGameInstance);
 	return S_OK;
+}
+
+void DahlEpicCrate::Picking()
+{
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+	CGameObject* Player = pGameInstance->GetObjectList(LEVEL_GAMEPLAY, TEXT("Layer_Player")).front();
+	RELEASE_INSTANCE(CGameInstance);
+
+	if (FALSE == static_cast<CPlayer*>(Player)->GetInteractPick())
+		return;
+
+	Calculator::CALCDESC CalDesc;
+	CalDesc._width = g_iWinCX;
+	CalDesc._height = g_iWinCY;
+	CalDesc._transformCom = m_pTransformCom;
+	CalDesc._hWnd = g_hWnd;
+
+	pGameInstance->CalcMousePos(&CalDesc);
+
+	CalDesc._rayPos = XMVector3TransformCoord(CalDesc._rayPos, m_pTransformCom->Get_WorldMatrix());
+	CalDesc._rayDir = XMVector3TransformNormal(CalDesc._rayDir, m_pTransformCom->Get_WorldMatrix());
+	CalDesc._rayDir = XMVector3Normalize(CalDesc._rayDir);
+
+	_float	Distance;
+
+	if (TRUE == m_ColliderCom->CollisionAABBToRay(CalDesc._rayPos, CalDesc._rayDir, Distance))
+	{
+		if (2.5 >= Distance)
+		{
+			m_pModelCom->SetUp_AnimationIndex((_uint)ANIMATION_STATE::OPEN);
+		}
+	}
+
+	RELEASE_INSTANCE(CGameInstance);
+
 }
 
 HRESULT DahlEpicCrate::SetUp_Components()
@@ -109,7 +152,7 @@ HRESULT DahlEpicCrate::SetUp_Components()
 	/* Com_Model */
 	CCollider::COLLISIONDESC CollisionDesc;
 	ZeroMemory(&CollisionDesc, sizeof(CCollider::COLLISIONDESC));
-	CollisionDesc.Scale = _float3(0.3f, 1.3f, 0.3f);
+	CollisionDesc.Scale = _float3(1.5f, 1.0f, 1.5);
 	CollisionDesc.Position = _float3(0.f, 1.f, 0.0f);
 	if (FAILED(__super::SetUp_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_AABB"), TEXT("Com_AABB"), (CComponent**)&m_ColliderCom, &CollisionDesc)))
 		return E_FAIL;

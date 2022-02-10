@@ -32,10 +32,16 @@ public:
 	virtual HRESULT Render() override;
 
 private:
+	void		Picking();
+
+private:
 	CRenderer*				m_pRendererCom = nullptr;
 	CTransform*				m_pTransformCom = nullptr;
 	CModel*					m_pModelCom = nullptr;
 	CCollider*					m_ColliderCom = nullptr;
+
+private:
+	_bool				m_Opend = FALSE;
 
 private:
 	virtual HRESULT SetUp_Components();

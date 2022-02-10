@@ -60,6 +60,9 @@ public:
 	};
 
 	void		Hit(_int	_HP);
+	_bool	GetInteractPick() {
+		return m_InteractPick;
+	}
 
 private:
 	void KeyCheck(_double TimeDelta);
@@ -85,6 +88,7 @@ private:
 
 private:
 	_bool		m_Shot = FALSE;
+	_bool		m_InteractPick = FALSE;
 
 private:
 	virtual HRESULT SetUp_Components();

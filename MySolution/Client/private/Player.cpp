@@ -200,6 +200,8 @@ void CPlayer::Hit(_int _HP)
 
 void CPlayer::KeyCheck(_double TimeDelta)
 {
+	m_InteractPick = FALSE;
+
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 
 	if ((_int)ANIMATION_STATE::RE_HYPERION != m_pModelCom->GetCurrentAnimation() &&
@@ -264,6 +266,9 @@ void CPlayer::KeyCheck(_double TimeDelta)
 		m_Rotation = ROTATION_TYPE::Y;
 		//static_cast<CCamera_Dynamic*>(pGameInstance->GetObjectList(LEVEL_GAMEPLAY, TEXT("Layer_Camera")).front())->RotationXY((CCamera_Dynamic::ROTATION_TYPE)m_Rotation, TimeDelta * MouseMove * 0.1f);
 	}
+
+	if (pGameInstance->Get_DIKeyState(DIK_E) & 0x80)
+		m_InteractPick = TRUE;
 
 	RELEASE_INSTANCE(CGameInstance);
 }
