@@ -86,6 +86,7 @@ PS_OUT PS_MAIN(PS_IN In)
 
 PS_OUT PS_MAIN_BLEND(PS_IN In)
 {
+
 	PS_OUT		Out = (PS_OUT)0;
 
 	vector Diffuse = g_DiffuseTexture.Sample(DefaultSampler, In.vTexUV);
@@ -93,8 +94,7 @@ PS_OUT PS_MAIN_BLEND(PS_IN In)
 
 
 	Out.vColor = Diffuse;
-	if (Out.vColor.a <= 0.5)
-		discard;
+	
 	/*Out.vColor = Diffuse + Compare * (1 - 0.2f);
 	if (Out.vColor.r <= 0.0 &&Out.vColor.g <= 0.0 && Out.vColor.b <= 0.0)
 		discard;
@@ -125,6 +125,7 @@ technique11			DefaultTechnique
 	}
 	pass MuzzleEffect
 	{
+		SetBlendState(AlphaBlending, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 		SetRasterizerState(CullMode_Default);
 		SetDepthStencilState(ZBuffer_Default, 0);
 

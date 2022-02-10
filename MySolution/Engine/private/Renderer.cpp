@@ -15,8 +15,6 @@ CRenderer::CRenderer(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContex
 
 HRESULT CRenderer::NativeConstruct_Prototype()
 {
-	return S_OK;
-
 	if (nullptr == m_pTarget_Manager)
 		return E_FAIL;
 
@@ -105,11 +103,11 @@ HRESULT CRenderer::Draw_RenderGroup()
 		return E_FAIL;
 	if (FAILED(Render_NonAlpha()))
 		return E_FAIL;
-/*
+
 	if (FAILED(Render_LightAcc()))
 		return E_FAIL;
 	if (FAILED(Render_Blend()))
-		return E_FAIL;*/
+		return E_FAIL;
 
 	if (FAILED(Render_Alpha()))
 		return E_FAIL;
@@ -120,7 +118,6 @@ HRESULT CRenderer::Draw_RenderGroup()
 	if (FAILED(Render_UI()))
 		return E_FAIL;
 
-	return S_OK;
 #ifdef _DEBUG
 	if (FAILED(m_pTarget_Manager->Render_Debug_Buffer(TEXT("MRT_Deferred"))))
 		return E_FAIL;
@@ -148,12 +145,12 @@ HRESULT CRenderer::Render_Priority()
 
 HRESULT CRenderer::Render_NonAlpha()
 {
-	//if (nullptr == m_pTarget_Manager)
-	//	return E_FAIL;
+	if (nullptr == m_pTarget_Manager)
+		return E_FAIL;
 
-	///*  Target_Diffuse + Target_Normal 를 장치에 바인드하였다. */
-	//if (FAILED(m_pTarget_Manager->Begin_MRT(m_pDeviceContext, TEXT("MRT_Deferred"))))
-	//	return E_FAIL;
+	/*  Target_Diffuse + Target_Normal 를 장치에 바인드하였다. */
+	if (FAILED(m_pTarget_Manager->Begin_MRT(m_pDeviceContext, TEXT("MRT_Deferred"))))
+		return E_FAIL;
 
 	for (auto& pGameObject : m_RenderGroup[RENDER_NONALPHA])
 	{
@@ -164,8 +161,8 @@ HRESULT CRenderer::Render_NonAlpha()
 	}
 	m_RenderGroup[RENDER_NONALPHA].clear();
 
-	//if (FAILED(m_pTarget_Manager->End_MRT(m_pDeviceContext)))
-	//	return E_FAIL;
+	if (FAILED(m_pTarget_Manager->End_MRT(m_pDeviceContext)))
+		return E_FAIL;
 
 	return S_OK;
 }
