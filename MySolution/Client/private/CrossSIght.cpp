@@ -43,7 +43,6 @@ HRESULT CrossSight::NativeConstruct(void * pArg)
 	m_pTransformCom->Set_State(CTransform::STATE_LOOK, XMVectorSet(0.f, 0.f, 0.f, 0.f));
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION,WindowPosition);
 
-
 	ShowCursor(FALSE);
 
 	m_EnemyObjectList = pGameInstance->GetObjectList(LEVEL_GAMEPLAY, TEXT("Layer_Enemy"));
@@ -75,7 +74,6 @@ _int CrossSight::Tick(_double TimeDelta)
 
 _int CrossSight::LateTick(_double TimeDelta)
 {	
-	
 	if (nullptr != m_pRendererCom)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_UI, this);
 

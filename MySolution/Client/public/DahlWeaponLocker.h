@@ -30,18 +30,30 @@ public:
 	virtual _int Tick(_double TimeDelta) override;
 	virtual _int LateTick(_double TimeDelta) override;
 	virtual HRESULT Render() override;
+	
+	_matrix		GetBoneMatrix();
 
+	_bool		GetOpend() {
+		return m_Opend;
+	}
+	_bool		GetIteShow() {
+		return m_ItemShow;
+	}
 private:
 	void		Picking();
-
+	HRESULT		SettingItem();
+	
 private:
 	CRenderer*				m_pRendererCom = nullptr;
 	CTransform*				m_pTransformCom = nullptr;
 	CModel*					m_pModelCom = nullptr;
 	CCollider*					m_ColliderCom = nullptr;
 
+	CHierarchyNode*			m_ItemPositionBone = nullptr;
+
 private:
 	_bool				m_Opend = FALSE;
+	_bool				m_ItemShow = TRUE;
 
 private:
 	virtual HRESULT SetUp_Components();

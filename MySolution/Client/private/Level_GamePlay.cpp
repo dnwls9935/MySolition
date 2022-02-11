@@ -231,6 +231,10 @@ HRESULT CLevel_GamePlay::Ready_Layer_UI(const _tchar * pLayerTag)
 
 	if (FAILED(pGameInstance->Add_GameObjectToLayer(LEVEL_GAMEPLAY, TEXT("Layer_UI"), TEXT("Prototype_GameObject_UI_CrossSight"))))
 		return E_FAIL;
+	if (FAILED(pGameInstance->Add_GameObjectToLayer(LEVEL_GAMEPLAY, TEXT("Layer_UI"), TEXT("Prototype_GameObject_UI_HIT"))))
+		return E_FAIL;
+
+
 
 	RELEASE_INSTANCE(CGameInstance);
 	return S_OK;

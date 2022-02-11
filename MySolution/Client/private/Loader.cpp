@@ -21,6 +21,8 @@
 #include "CrossSight.h"
 #include "HP.h"
 #include "Muzzle.h"
+#include "PickUps.h"
+#include "HITUI.h"
 
 CLoader::CLoader(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: m_pDevice(pDevice)
@@ -150,6 +152,9 @@ HRESULT CLoader::Loading_ForGamePlay()
 		return E_FAIL;
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Small"), CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Textures/UI/UI_HUD/Small.png")))))
 		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Hit"), CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Textures/UI/UI_HUD/Hit%d.png"), 3))))
+		return E_FAIL;
 	
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Hyperion_Sight_SMG"), CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Textures/UI/Textures/Tex_Hyperion_Sight_SMG.png")))))
 		return E_FAIL;
@@ -158,7 +163,23 @@ HRESULT CLoader::Loading_ForGamePlay()
 		return E_FAIL;
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_MuzzleComp"), CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Textures/Effect/MuzzleEffect/MuzzleComp%d.png"), 4))))
 		return E_FAIL;
-	
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_IceScreen"), CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Textures/Snow/Ice_Screen_Dif.png")))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_IceScreenNrm"), CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Textures/Snow/Ice_Screen_Nrm.png")))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_SnowDustDif"), CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Textures/Snow/Snow_Dust_Dif.png")))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_SnowFlakesDif"), CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Textures/Snow/Snow_Flakes_Dif.png")))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_SnowFlakesScreenDif"), CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Textures/Snow/Snow_FlakesScreen_Dif.png")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Tex_Crit"), CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Textures/Critical/Tex_Crit%d.png"), 2))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_UseMeAnimGrad"), CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Textures/Effect/Useme/UseMe_AnimGrad.png")))))
+		return E_FAIL;
+
 
 
 	wsprintf(m_szLoading, TEXT("콜라이더를 생성한다. "));
@@ -314,6 +335,17 @@ HRESULT CLoader::Loading_ForGamePlay()
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Wire3"), CModel::Create(m_pDevice, m_pDeviceContext, "../Bin/Resources/Meshes/Static/", "Wire3.FBX", TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), PivotMatrix, CModel::TYPE_STATIC))))
 		return E_FAIL;
 
+	PivotMatrix = XMMatrixScaling(100.f, 100.f, 100.f);
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_BoosterSheld"), CModel::Create(m_pDevice, m_pDeviceContext, "../Bin/Resources/Meshes/Static/PickUps/", "BoosterSheld.FBX", TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), PivotMatrix, CModel::TYPE_STATIC))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_HealthViral"), CModel::Create(m_pDevice, m_pDeviceContext, "../Bin/Resources/Meshes/Static/PickUps/", "HealthViral.FBX", TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), PivotMatrix, CModel::TYPE_STATIC))))
+		return E_FAIL;
+	PivotMatrix = XMMatrixScaling(200.f, 200.f, 200.f);
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_ShotgunAmmoPickUp"), CModel::Create(m_pDevice, m_pDeviceContext, "../Bin/Resources/Meshes/Static/PickUps/", "ShotgunAmmoPickUp.FBX", TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), PivotMatrix, CModel::TYPE_STATIC))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_SMGAmmoPickUp"), CModel::Create(m_pDevice, m_pDeviceContext, "../Bin/Resources/Meshes/Static/PickUps/", "SMGAmmoPickUp.FBX", TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), PivotMatrix, CModel::TYPE_STATIC))))
+		return E_FAIL;
+
 
 
 	/* 객체원형을 생성한다. */
@@ -348,6 +380,8 @@ HRESULT CLoader::Loading_ForGamePlay()
 		return E_FAIL;
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Model_GlacialFlowWall"), GlcialFlowWall::Create(m_pDevice, m_pDeviceContext))))
 		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Model_PickUps"), PickUps::Create(m_pDevice, m_pDeviceContext))))
+		return E_FAIL;
 
 
 	/* UI들 */
@@ -355,12 +389,15 @@ HRESULT CLoader::Loading_ForGamePlay()
 		return E_FAIL;
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_CrossSight"), CrossSight::Create(m_pDevice, m_pDeviceContext))))
 		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_HIT"), HITUI::Create(m_pDevice, m_pDeviceContext))))
+		return E_FAIL;
 
 	// 이팩트들
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Effect_HitBullet"), HitBullet::Create(m_pDevice, m_pDeviceContext))))
 		return E_FAIL;
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Effect_Muzzle"), Muzzle::Create(m_pDevice, m_pDeviceContext))))
 		return E_FAIL;
+
 
 	wsprintf(m_szLoading, TEXT("로딩이 완료되었습니다. "));
 

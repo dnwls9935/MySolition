@@ -2,6 +2,8 @@
 #include "..\public\DahlWeaponLocker.h"
 #include "GameInstance.h"
 #include "Player.h"
+#include "PickUps.h"
+#include "HierarchyNode.h"
 
 DahlWeaponLocker::DahlWeaponLocker(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -41,6 +43,9 @@ HRESULT DahlWeaponLocker::NativeConstruct(void * pArg)
 
 	m_pModelCom->SetUp_AnimationIndex((_int)ANIMATION_STATE::CLOSED_IDLE);
 
+	if (FAILED(SettingItem()))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -68,7 +73,11 @@ _int DahlWeaponLocker::LateTick(_double TimeDelta)
 	if (TRUE == m_pModelCom->GetAnimationFinished())
 	{
 		if ((_uint)ANIMATION_STATE::OPEN == m_pModelCom->GetCurrentAnimation())
+		{
 			m_pModelCom->SetUp_AnimationIndex((_uint)ANIMATION_STATE::OPENED_IDLE);
+			m_Opend = TRUE;
+		}
+		
 	}
 
 	return _int();
@@ -129,6 +138,38 @@ void DahlWeaponLocker::Picking()
 
 	RELEASE_INSTANCE(CGameInstance);
 
+}
+HRESULT DahlWeaponLocker::SettingItem()
+{
+	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+
+	m_ItemPositionBone = m_pModelCom->Get_BoneMatrix("Extension_Arm");
+	if (nullptr == m_ItemPositionBone)
+		return E_FAIL;
+
+	PickUps::PUDESC		PUDesc;
+	ZeroMemory(&PUDesc, sizeof(PickUps::PUDESC));
+	PUDesc.m_TypeID = PickUps::TYPE_ID::SMG_AMMO;
+	PUDesc.m_Parent = this;
+	PUDesc.m_WorldMatrix = GetBoneMatrix();
+
+	if (FAILED(pGameInstance->Add_GameObjectToLayer(LEVEL_GAMEPLAY, TEXT("Layer_Interact"), TEXT("Prototype_GameObject_Model_PickUps"), &PUDesc)))
+		return E_FAIL;
+
+	RELEASE_INSTANCE(CGameInstance);
+	return S_OK;
+}
+_matrix DahlWeaponLocker::GetBoneMatrix()
+{
+	_matrix TransformMatrix = XMMatrixTranslation(0.f, 1500.f,2800.f);
+	_matrix OffsetMatrix = m_ItemPositionBone->Get_OffsetMatrix();
+	_matrix CombinedMatrix = m_ItemPositionBone->Get_CombinedMatrix();
+	_matrix PivotMatrix = m_pModelCom->Get_PivotMatrix();
+	_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
+
+	_matrix BoneMatrix = TransformMatrix * OffsetMatrix * CombinedMatrix * PivotMatrix * WorldMatrix;
+
+	return BoneMatrix;
 }
 HRESULT DahlWeaponLocker::SetUp_Components()
 {

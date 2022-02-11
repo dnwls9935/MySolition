@@ -7,6 +7,8 @@
 #include "Light.h"
 #include "Camera_Dynamic.h"
 
+#include <iostream>
+
 SMG::SMG(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
 {
@@ -154,6 +156,11 @@ void SMG::SetUpWeapon(_fmatrix WeaponeBoneMatrix, _fmatrix PlayerWorldMatrix)
 	m_BarrelLight->Update(GetMuzzlePosition());
 }
 
+void SMG::PickUpAmmo()
+{
+	m_Magazine = m_MaxMagzine;
+}
+
 void SMG::KeyCheck()
 {
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
@@ -163,7 +170,8 @@ void SMG::KeyCheck()
 		return;
 
 	if (pGameInstance->Get_DIKeyState(DIK_R) & 0x80 &&
-		m_Ammo <= 25)
+		m_Ammo <= 25 && 
+		m_MaxAmmo >= 0)
 	{
 		m_AnimationPlay = TRUE;
 		m_FrameSpeed = 1.0;
@@ -194,8 +202,17 @@ void SMG::Reloading()
 {
 	_int Ammo = m_MaxAmmo - m_Ammo;
 
-	m_Magazine -= Ammo;
-	m_Ammo = m_MaxAmmo;
+	//m_Magazine -= Ammo;
+	_int Mag = m_Magazine - Ammo;
+
+	if (Mag <= 0)
+	{
+		m_Ammo = Ammo - Mag;
+		m_Magazine = 0;
+	}
+	else {
+		m_Ammo = m_MaxAmmo;
+	}
 }
 
 HRESULT SMG::SetLightPosition()

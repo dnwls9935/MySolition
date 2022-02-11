@@ -46,6 +46,8 @@ public:
 		return m_AttackDamage;
 	}
 
+	void		PickUpAmmo();
+
 private:
 	void		KeyCheck();
 	void		Reloading();
@@ -61,6 +63,7 @@ private:
 private:
 	_int			m_MaxAmmo = 35;
 	_int			m_Ammo = 35;
+	_int			m_MaxMagzine = 140;
 	_int			m_Magazine = 70;
 	_bool		m_Reload = FALSE;
 	_float		m_BarPercent = 0.f;

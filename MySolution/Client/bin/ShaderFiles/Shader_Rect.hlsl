@@ -91,9 +91,9 @@ PS_OUT PS_MAIN(PS_IN In)
 	PS_OUT		Out = (PS_OUT)0;
 
 	Out.vColor = g_DiffuseTexture.Sample(DefaultSampler, In.vTexUV);
-
+/*
 	if (Out.vColor.a <= 0.5)
-		discard;
+		discard;*/
 
 	return Out;	
 };
@@ -123,10 +123,10 @@ PS_OUT PS_LEFT(PS_IN In)
 		discard;
 
 	Out.vColor = g_DiffuseTexture.Sample(DefaultSampler, In.vTexUV);
-
+/*
 	if (Out.vColor.a <= 0.5)
 		discard;
-
+*/
 	return Out;
 };
 PS_OUT PS_RIGHT(PS_IN In)
@@ -137,9 +137,9 @@ PS_OUT PS_RIGHT(PS_IN In)
 		discard;
 
 	Out.vColor = g_DiffuseTexture.Sample(DefaultSampler, In.vTexUV);
-
+/*
 	if (Out.vColor.a <= 0.5)
-		discard;
+		discard;*/
 
 	return Out;
 };
@@ -219,7 +219,7 @@ technique11			DefaultTechnique
 	{
 		SetRasterizerState(CullMode_Default);
 		SetDepthStencilState(ZBuffer_Default, 0);
-		SetBlendState(BlendDisable, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		SetBlendState(AlphaBlending, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
 		/* 진입점함수를 지정한다. */
 		VertexShader = compile vs_5_0 VS_MAIN();
@@ -241,7 +241,7 @@ technique11			DefaultTechnique
 	{
 		SetRasterizerState(CullMode_Default);
 		SetDepthStencilState(ZBuffer_Default, 0);
-		SetBlendState(BlendDisable, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		SetBlendState(AlphaBlending, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
 		/* 진입점함수를 지정한다. */
 		VertexShader = compile vs_5_0 VS_MAIN();
@@ -252,7 +252,7 @@ technique11			DefaultTechnique
 	{
 		SetRasterizerState(CullMode_Default);
 		SetDepthStencilState(ZBuffer_Default, 0);
-		SetBlendState(BlendDisable, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		SetBlendState(AlphaBlending, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
 		/* 진입점함수를 지정한다. */
 		VertexShader = compile vs_5_0 VS_MAIN();

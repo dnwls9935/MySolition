@@ -178,6 +178,7 @@
     <ClInclude Include="..\public\EnvironmentObject.h" />
     <ClInclude Include="..\public\GlacialFlowWall.h" />
     <ClInclude Include="..\public\HitBullet.h" />
+    <ClInclude Include="..\public\HITUI.h" />
     <ClInclude Include="..\public\HyperionChest.h" />
     <ClInclude Include="..\public\Level_GamePlay.h" />
     <ClInclude Include="..\public\Level_Loading.h" />
@@ -185,6 +186,7 @@
     <ClInclude Include="..\public\Loader.h" />
     <ClInclude Include="..\public\MainApp.h" />
     <ClInclude Include="..\public\Muzzle.h" />
+    <ClInclude Include="..\public\PickUps.h" />
     <ClInclude Include="..\public\Player.h" />
     <ClInclude Include="..\public\PrimeBeast.h" />
     <ClInclude Include="..\public\PrimeBeastRock.h" />
@@ -209,6 +211,7 @@
     <ClCompile Include="..\private\EnvironmentObject.cpp" />
     <ClCompile Include="..\private\GlacialFlowWall.cpp" />
     <ClCompile Include="..\private\HitBullet.cpp" />
+    <ClCompile Include="..\private\HITUI.cpp" />
     <ClCompile Include="..\private\HyperionChest.cpp" />
     <ClCompile Include="..\private\Level_GamePlay.cpp" />
     <ClCompile Include="..\private\Level_Loading.cpp" />
@@ -216,6 +219,7 @@
     <ClCompile Include="..\private\Loader.cpp" />
     <ClCompile Include="..\private\MainApp.cpp" />
     <ClCompile Include="..\private\Muzzle.cpp" />
+    <ClCompile Include="..\private\PickUps.cpp" />
     <ClCompile Include="..\private\Player.cpp" />
     <ClCompile Include="..\private\PrimeBeast.cpp" />
     <ClCompile Include="..\private\PrimeBeastRock.cpp" />

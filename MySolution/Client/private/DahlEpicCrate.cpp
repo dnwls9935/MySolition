@@ -2,6 +2,8 @@
 #include "..\public\DahlEpicCrate.h"
 #include "GameInstance.h"
 #include "Player.h"
+#include "PickUps.h"
+#include "HierarchyNode.h"
 
 DahlEpicCrate::DahlEpicCrate(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -41,6 +43,9 @@ HRESULT DahlEpicCrate::NativeConstruct(void * pArg)
 
 	m_pModelCom->SetUp_AnimationIndex((_int)ANIMATION_STATE::CLOSED_IDLE);
 
+	if (FAILED(SettingItem()))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -68,8 +73,15 @@ _int DahlEpicCrate::LateTick(_double TimeDelta)
 	if (TRUE == m_pModelCom->GetAnimationFinished())
 	{
 		if ((_uint)ANIMATION_STATE::OPEN == m_pModelCom->GetCurrentAnimation())
+		{
 			m_pModelCom->SetUp_AnimationIndex((_uint)ANIMATION_STATE::OPENED_IDLE);
+			m_Opend = TRUE;
+		}
 	}
+
+	if ((_uint)ANIMATION_STATE::OPEN == m_pModelCom->GetCurrentAnimation() &&
+		57 == m_pModelCom->GetCurrentAnimationFrame())
+		m_ItemShow = TRUE;
 
 	return _int();
 }
@@ -128,7 +140,39 @@ void DahlEpicCrate::Picking()
 	}
 
 	RELEASE_INSTANCE(CGameInstance);
+}
+HRESULT DahlEpicCrate::SettingItem()
+{
+	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 
+	m_ItemPositionBone = m_pModelCom->Get_BoneMatrix("MainTray");
+	if (nullptr == m_ItemPositionBone)
+		return E_FAIL;
+
+	PickUps::PUDESC		PUDesc;
+	ZeroMemory(&PUDesc, sizeof(PickUps::PUDESC));
+	PUDesc.m_TypeID = PickUps::TYPE_ID::BOOSTER_SHILED;
+	PUDesc.m_Parent = this;
+	PUDesc.m_WorldMatrix = GetBoneMatrix();
+
+	if (FAILED(pGameInstance->Add_GameObjectToLayer(LEVEL_GAMEPLAY, TEXT("Layer_Interact"), TEXT("Prototype_GameObject_Model_PickUps"), &PUDesc)))
+		return E_FAIL;
+
+	RELEASE_INSTANCE(CGameInstance);
+	return S_OK;
+}
+
+_matrix DahlEpicCrate::GetBoneMatrix()
+{
+	_matrix TransformMatrix = XMMatrixTranslation(-100.f, 0.f, -2000.f);
+	_matrix OffsetMatrix = m_ItemPositionBone->Get_OffsetMatrix();
+	_matrix CombinedMatrix = m_ItemPositionBone->Get_CombinedMatrix();
+	_matrix PivotMatrix = m_pModelCom->Get_PivotMatrix();
+	_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
+
+	_matrix BoneMatrix = TransformMatrix * OffsetMatrix * CombinedMatrix * PivotMatrix * WorldMatrix;
+
+	return BoneMatrix;
 }
 
 HRESULT DahlEpicCrate::SetUp_Components()

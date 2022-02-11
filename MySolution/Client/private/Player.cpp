@@ -7,6 +7,7 @@
 #include "SMG.h"
 #include "Sky.h"
 #include "UI.h"
+#include "HITUI.h"
 
 #include <iostream>
 
@@ -52,6 +53,9 @@ HRESULT CPlayer::NativeConstruct(void * pArg)
 	m_MaxHP = 1000;
 	m_HP = m_MaxHP;
 
+	m_MaxShield = 500;
+	m_Shield = m_MaxShield;
+
 	return S_OK;
 }
 
@@ -63,10 +67,24 @@ _int CPlayer::Tick(_double TimeDelta)
 	SetCamAndSkyBox();
 	SetUpWeapon();
 
-
 	_vector Position = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(XMVectorGetX(Position), 0.f, XMVectorGetZ(Position), XMVectorGetW(Position)));
 
+	m_HPPercent = (_float)m_HP / (_float)m_MaxHP;
+	m_ShieldPercent = (_float)m_Shield / (_float)m_MaxShield;
+	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+	list<CGameObject*> pObjectList = pGameInstance->GetObjectList(LEVEL_GAMEPLAY, TEXT("Layer_UI"));
+	for (auto& pObject : pObjectList)
+	{
+		if (CGameObject::UITYPE_ID::PLAYER_HP == static_cast<UI*>(pObject)->GetUIDesc().m_UITypeID)
+		{
+			static_cast<UI*>(pObject)->SetLength(m_HPPercent, TRUE);
+		}else if (CGameObject::UITYPE_ID::PLAYER_SHILED == static_cast<UI*>(pObject)->GetUIDesc().m_UITypeID)
+		{
+			static_cast<UI*>(pObject)->SetLength(m_ShieldPercent, TRUE);
+		}
+	}
+	RELEASE_INSTANCE(CGameInstance);
 	return _int();
 }
 
@@ -176,26 +194,78 @@ CPlayer::RAY CPlayer::CreateRay()
 	return ray;
 }
 
+void CPlayer::PickUpHealth()
+{
+	m_HP = m_MaxHP;
+}
+
+void CPlayer::PickUpShield()
+{
+	m_Shield = m_MaxShield;
+}
+
+void CPlayer::PickUpSMGAmmo()
+{
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+	auto iter = pGameInstance->GetObjectList(LEVEL_GAMEPLAY, TEXT("Layer_Player")).begin();
+	advance(iter, 1);
+	RELEASE_INSTANCE(CGameInstance);
+
+	static_cast<SMG*>(*iter)->PickUpAmmo();
+}
+
+void CPlayer::PickUpShotGunAmmo()
+{
+}
+
 
 void CPlayer::Hit(_int _HP)
 {
-	m_HP += _HP;
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+	list<CGameObject*> UIs = pGameInstance->GetObjectList(LEVEL_GAMEPLAY, TEXT("Layer_UI"));
 
-	if (m_HP <= 0)
-		m_HP = 0;
+	if (0 < m_Shield) {
+		m_Shield += _HP;
 
-	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
-	list<CGameObject*> pObjectList = pGameInstance->GetObjectList(LEVEL_GAMEPLAY, TEXT("Layer_UI"));
-	_float Percent =0.f;
-	for (auto& pObject : pObjectList)
-	{
-		if (CGameObject::UITYPE_ID::PLAYER_HP == static_cast<UI*>(pObject)->GetUIDesc().m_UITypeID)
+		if (m_Shield <= 0)
+			m_Shield = 0;
+
+		for (auto& UI : UIs)
 		{
-			Percent = (_float)m_HP / (_float)m_MaxHP;
-			static_cast<UI*>(pObject)->SetLength(Percent, TRUE);
+			static_cast<HITUI*>(UI)->SetShow(HITUI::SHOW::SHIELD);
+		}
+	}
+	else {
+		m_HP += _HP;
+
+		if (m_HP <= 0)
+			m_HP = 0;
+
+		for (auto& UI : UIs)
+		{
+			static_cast<HITUI*>(UI)->SetShow(HITUI::SHOW::HP);
 		}
 	}
 	RELEASE_INSTANCE(CGameInstance);
+}
+
+void CPlayer::PickUp(PickUps::TYPE_ID _ID)
+{
+	switch (_ID)
+	{
+	case Client::PickUps::TYPE_ID::SMG_AMMO:
+		PickUpSMGAmmo();
+		break;
+	case Client::PickUps::TYPE_ID::SHOTGUN_AMMO:
+		PickUpShotGunAmmo();
+		break;
+	case Client::PickUps::TYPE_ID::HEALTH_VIRAL:
+		PickUpHealth();
+		break;
+	case Client::PickUps::TYPE_ID::BOOSTER_SHILED:
+		PickUpShield();
+		break;
+	}
 }
 
 void CPlayer::KeyCheck(_double TimeDelta)

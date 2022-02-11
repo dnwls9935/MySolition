@@ -3,6 +3,7 @@
 #include "Client_Defines.h"
 #include "GameObject.h"
 
+#include "PickUps.h"
 BEGIN(Engine)
 class CRenderer;
 class CTransform;
@@ -64,12 +65,20 @@ public:
 		return m_InteractPick;
 	}
 
+public:
+	void		PickUp(PickUps::TYPE_ID _ID);
+
 private:
 	void KeyCheck(_double TimeDelta);
 	void SetCamAndSkyBox();
-
-
 	RAY CreateRay();
+
+private:
+	void	 PickUpHealth();
+	void	 PickUpShield();
+	void	 PickUpSMGAmmo();
+	void	 PickUpShotGunAmmo();
+
 
 private:
 	CRenderer*				m_pRendererCom = nullptr;
@@ -89,6 +98,13 @@ private:
 private:
 	_bool		m_Shot = FALSE;
 	_bool		m_InteractPick = FALSE;
+
+	_float		m_HPPercent = 0.f;
+	_float		m_ShieldPercent = 0.f;
+
+private:
+	_int			m_Shield;
+	_int			m_MaxShield;
 
 private:
 	virtual HRESULT SetUp_Components();

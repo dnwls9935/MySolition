@@ -109,11 +109,14 @@
     <Filter Include="02.GameObject\UI\PlayerUI">
       <UniqueIdentifier>{a017ab54-a6d1-4c94-80e3-5c2c416a82ac}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\UI\EnemyUI">
-      <UniqueIdentifier>{28bf8e22-bf82-428e-a125-ce8aef64d48b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObject\Effect\Muzzle">
       <UniqueIdentifier>{62711587-21fb-4d99-bf68-17486e5b9c1b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\PickUps">
+      <UniqueIdentifier>{aa78ce07-d654-4bf4-b0f2-6d8f17d743f3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\UI\HitUI">
+      <UniqueIdentifier>{28bf8e22-bf82-428e-a125-ce8aef64d48b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -213,6 +216,12 @@
     <ClInclude Include="..\public\Muzzle.h">
       <Filter>02.GameObject\Effect\Muzzle</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\PickUps.h">
+      <Filter>02.GameObject\PickUps</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\HITUI.h">
+      <Filter>02.GameObject\UI\HitUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -295,6 +304,12 @@
     </ClCompile>
     <ClCompile Include="..\private\Muzzle.cpp">
       <Filter>02.GameObject\Effect\Muzzle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\PickUps.cpp">
+      <Filter>02.GameObject\PickUps</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\HITUI.cpp">
+      <Filter>02.GameObject\UI\HitUI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
