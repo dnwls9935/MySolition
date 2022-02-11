@@ -193,7 +193,7 @@ PS_OUT_BLEND PS_MAIN_BLEND(PS_IN In)
 
 	vector		FogColor = vector(0.2f, 0.2f, 0.3f, 0.f);
 	float		FogAtt = 1.f;
-	float		FogDistance = 3.f;
+	float		FogDistance = 0.5f;
 
 	FogAtt = saturate(ViewZ - FogDistance) * 0.05f;
 	Out.vColor += FogColor * FogAtt;
