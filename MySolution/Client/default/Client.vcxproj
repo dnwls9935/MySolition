@@ -192,6 +192,8 @@
     <ClInclude Include="..\public\PrimeBeastRock.h" />
     <ClInclude Include="..\public\Sky.h" />
     <ClInclude Include="..\public\SMG.h" />
+    <ClInclude Include="..\public\Snow.h" />
+    <ClInclude Include="..\public\SnowScreen.h" />
     <ClInclude Include="..\public\Terrain.h" />
     <ClInclude Include="..\public\UI.h" />
     <ClInclude Include="Client.h" />
@@ -225,6 +227,8 @@
     <ClCompile Include="..\private\PrimeBeastRock.cpp" />
     <ClCompile Include="..\private\Sky.cpp" />
     <ClCompile Include="..\private\SMG.cpp" />
+    <ClCompile Include="..\private\Snow.cpp" />
+    <ClCompile Include="..\private\SnowScreen.cpp" />
     <ClCompile Include="..\private\Terrain.cpp" />
     <ClCompile Include="..\private\UI.cpp" />
     <ClCompile Include="Client.cpp" />
@@ -248,6 +252,7 @@
     <FxCompile Include="..\bin\ShaderFiles\Shader_Loading.hlsl" />
     <FxCompile Include="..\bin\ShaderFiles\Shader_Mesh.hlsl" />
     <FxCompile Include="..\bin\ShaderFiles\Shader_Mesh_Tool.hlsl" />
+    <FxCompile Include="..\bin\ShaderFiles\Shader_PointInstance.hlsl" />
     <FxCompile Include="..\bin\ShaderFiles\Shader_Rect.hlsl" />
     <FxCompile Include="..\bin\ShaderFiles\Shader_RectEffect.hlsl" />
     <FxCompile Include="..\bin\ShaderFiles\Shader_Terrain.hlsl" />

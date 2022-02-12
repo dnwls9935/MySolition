@@ -64,6 +64,9 @@ public:
 	_bool	GetInteractPick() {
 		return m_InteractPick;
 	}
+	_bool	GetIsIn() {
+		return m_IsIn;
+	}
 
 public:
 	void		PickUp(PickUps::TYPE_ID _ID);
@@ -78,7 +81,6 @@ private:
 	void	 PickUpShield();
 	void	 PickUpSMGAmmo();
 	void	 PickUpShotGunAmmo();
-
 
 private:
 	CRenderer*				m_pRendererCom = nullptr;
@@ -105,6 +107,9 @@ private:
 private:
 	_int			m_Shield;
 	_int			m_MaxShield;
+
+
+	_bool		m_IsIn = TRUE;
 
 private:
 	virtual HRESULT SetUp_Components();

@@ -211,6 +211,45 @@ PS_OUT PS_HIT_EFFECT(PS_IN In)
 };
 
 
+cbuffer AlphaDesc {
+	float		g_AlphaValue;
+};
+
+VS_OUT VS_AAT(VS_IN In)
+{
+	VS_OUT			Out = (VS_OUT)0;
+
+	matrix			matWV, matWVP;
+
+	matWV = mul(g_WorldMatrix, g_ViewMatrix);
+	matWVP = mul(matWV, g_ProjMatrix);
+
+	Out.vPosition = mul(vector(In.vPosition, 1.f), matWVP);
+
+	In.vTexUV.x = (In.vTexUV.x / 4) + (0 * 0.25);
+	In.vTexUV.y = (In.vTexUV.y / 4) + (0 * 0.25);
+
+	Out.vTexUV = In.vTexUV;
+	return Out;
+}
+
+PS_OUT PS_AAT(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	Out.vColor = g_DiffuseTexture.Sample(DefaultSampler, In.vTexUV);
+
+	Out.vColor.a = (1 - g_AlphaValue);
+
+	if (Out.vColor.r < 0.1 ||
+		Out.vColor.b < 0.1 ||
+		Out.vColor.g < 0.1)
+		discard;
+
+	return Out;
+};
+
+
 technique11			DefaultTechnique
 {
 	/* 셰이더 기능의 캡슐화. */
@@ -292,8 +331,15 @@ technique11			DefaultTechnique
 		GeometryShader = NULL;
 		PixelShader = compile ps_5_0  PS_HIT_EFFECT();
 	}
+	pass AlphaAccTime
+	{
+		SetRasterizerState(CullMode_Default);
+		SetDepthStencilState(ZBuffer_Default, 0);
+		SetBlendState(AlphaBlending, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		/* 진입점함수를 지정한다. */
+		VertexShader = compile vs_5_0 VS_AAT();
+		GeometryShader = NULL;
+		PixelShader = compile ps_5_0  PS_AAT();
+	}
 }
-
-
-
-

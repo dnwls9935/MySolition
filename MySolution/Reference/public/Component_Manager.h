@@ -10,6 +10,7 @@
 #include "VIBuffer_Terrain.h"
 #include "VIBuffer_Cube.h"
 #include "VIBuffer_TriangleToLine.h"
+#include "VIBuffer_PointInstance.h"
 #include "HP.h"
 #include "ThreeWaySystem.h"
 

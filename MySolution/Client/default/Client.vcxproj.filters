@@ -118,6 +118,12 @@
     <Filter Include="02.GameObject\UI\HitUI">
       <UniqueIdentifier>{28bf8e22-bf82-428e-a125-ce8aef64d48b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\Effect\Snow">
+      <UniqueIdentifier>{66f30967-5fe0-4747-9b4a-a3ffdf99c335}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\UI\SnowScreen">
+      <UniqueIdentifier>{9abd01fc-7877-4fe1-b064-c0701b00b5d3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -222,6 +228,12 @@
     <ClInclude Include="..\public\HITUI.h">
       <Filter>02.GameObject\UI\HitUI</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Snow.h">
+      <Filter>02.GameObject\Effect\Snow</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\SnowScreen.h">
+      <Filter>02.GameObject\UI\SnowScreen</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -311,6 +323,12 @@
     <ClCompile Include="..\private\HITUI.cpp">
       <Filter>02.GameObject\UI\HitUI</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\Snow.cpp">
+      <Filter>02.GameObject\Effect\Snow</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\SnowScreen.cpp">
+      <Filter>02.GameObject\UI\SnowScreen</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -351,6 +369,9 @@
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\bin\ShaderFiles\Shader_RectEffect.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\bin\ShaderFiles\Shader_PointInstance.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

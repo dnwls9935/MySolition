@@ -69,6 +69,11 @@ namespace Engine
 		XMFLOAT2		vTexUV;
 	} VTXTEX;
 
+	typedef struct tagVertexPoint {
+		XMFLOAT3		vPosition;
+		XMFLOAT2		vPSize;
+	} VTXPOINT;
+
 	typedef struct tagVertex_Texture_Cube
 	{
 		XMFLOAT3		vPosition;

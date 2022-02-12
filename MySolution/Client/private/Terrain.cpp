@@ -164,7 +164,6 @@ HRESULT CTerrain::SetUp_Components()
 	if (FAILED(__super::SetUp_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_AABB"), TEXT("Com_BossColliderCom"), (CComponent**)&m_BossColliderCom, &CollisionDesc)))
 		return E_FAIL;
 
-
 	return S_OK;
 }
 

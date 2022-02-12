@@ -148,6 +148,9 @@
     <Filter Include="00.Utility\03. Component\Billboad\HP">
       <UniqueIdentifier>{59f3dd18-791b-4b01-9c42-0eccfc535dc5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="00.Utility\03. Component\VIBuffer\PointInstance">
+      <UniqueIdentifier>{adc9dc66-117c-45d0-9023-5574acbc4d8b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Base.h">
@@ -285,6 +288,9 @@
     <ClInclude Include="..\public\HP.h">
       <Filter>00.Utility\03. Component\Billboad\HP</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\VIBuffer_PointInstance.h">
+      <Filter>00.Utility\03. Component\VIBuffer\PointInstance</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
@@ -406,6 +412,9 @@
     </ClCompile>
     <ClCompile Include="..\private\HP.cpp">
       <Filter>00.Utility\03. Component\Billboad\HP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\VIBuffer_PointInstance.cpp">
+      <Filter>00.Utility\03. Component\VIBuffer\PointInstance</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
