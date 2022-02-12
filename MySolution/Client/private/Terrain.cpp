@@ -2,7 +2,6 @@
 #include "..\public\Terrain.h"
 
 #include "GameInstance.h"
-#include <iostream>
 
 CTerrain::CTerrain(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)

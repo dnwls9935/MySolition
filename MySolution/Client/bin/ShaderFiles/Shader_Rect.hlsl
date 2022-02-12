@@ -241,9 +241,9 @@ PS_OUT PS_AAT(PS_IN In)
 
 	Out.vColor.a = (1 - g_AlphaValue);
 
-	if (Out.vColor.r < 0.1 ||
-		Out.vColor.b < 0.1 ||
-		Out.vColor.g < 0.1)
+	if (Out.vColor.r == 1 &&
+		Out.vColor.b == 1 &&
+		Out.vColor.g == 1)
 		discard;
 
 	return Out;

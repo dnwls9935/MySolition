@@ -75,6 +75,7 @@ private:
 	void KeyCheck(_double TimeDelta);
 	void SetCamAndSkyBox();
 	RAY CreateRay();
+	void  IsIn(_vector _MyPosition);
 
 private:
 	void	 PickUpHealth();
@@ -108,8 +109,10 @@ private:
 	_int			m_Shield;
 	_int			m_MaxShield;
 
-
 	_bool		m_IsIn = TRUE;
+
+private:
+	class CCamera_Dynamic*		m_Camera = nullptr;
 
 private:
 	virtual HRESULT SetUp_Components();

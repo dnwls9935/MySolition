@@ -2,6 +2,7 @@
 #include "..\public\UI.h"
 
 #include "GameInstance.h"
+#include "Camera_Dynamic.h"
 
 UI::UI(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -39,6 +40,11 @@ HRESULT UI::NativeConstruct(void * pArg)
 	m_pTransformCom->Set_State(CTransform::STATE_LOOK, m_UIDesc.m_LoadMatrix.r[2]);
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_UIDesc.m_LoadMatrix.r[3]);
 
+
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+	m_Camera = static_cast<CCamera_Dynamic*>(pGameInstance->GetObjectList(LEVEL_GAMEPLAY, TEXT("Layer_Camera")).front());
+	RELEASE_INSTANCE(CGameInstance);
+
 	return S_OK;
 }
 
@@ -58,6 +64,10 @@ _int UI::LateTick(_double TimeDelta)
 
 HRESULT UI::Render()
 {
+	if (TRUE == m_Camera->GetFocus())
+		return S_OK;
+
+
 	m_pVIBufferCom->SetUp_ValueOnShader("g_WorldMatrix", &XMMatrixTranspose(m_pTransformCom->Get_WorldMatrix()), sizeof(_float) * 16);
 	m_pVIBufferCom->SetUp_ValueOnShader("g_ViewMatrix", &XMMatrixIdentity(), sizeof(_float) * 16);
 	m_pVIBufferCom->SetUp_ValueOnShader("g_ProjMatrix", &XMMatrixTranspose(m_ProjMatrix), sizeof(XMMATRIX));

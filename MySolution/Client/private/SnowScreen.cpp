@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "..\public\SnowScreen.h"
 #include "GameInstance.h"
+#include "Player.h"
+#include "Camera_Dynamic.h"
 
 SnowScreen::SnowScreen(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -30,16 +32,24 @@ HRESULT SnowScreen::NativeConstruct(void * pArg)
 	if (FAILED(SetUp_Components()))
 		return E_FAIL;
 
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+	m_Player = static_cast<CPlayer*>(pGameInstance->GetObjectList(LEVEL_GAMEPLAY, TEXT("Layer_Player")).front());
+	m_Camera = static_cast<CCamera_Dynamic*>(pGameInstance->GetObjectList(LEVEL_GAMEPLAY, TEXT("Layer_Camera")).front());
+	RELEASE_INSTANCE(CGameInstance);
 	return S_OK;
 }
 
 _int SnowScreen::Tick(_double TimeDelta)
 {
+	if (TRUE == static_cast<CPlayer*>(m_Player)->GetIsIn())
+		return _int();
+
 	m_AlphaValue += TimeDelta;
 
 	if (FALSE == m_Show)
 	{
 		CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
 		_float X = 0.f, Y = 0.f;
 		_float2 TextureSize = m_pTextureCom->GetTextureInfo(0);
 
@@ -48,17 +58,16 @@ _int SnowScreen::Tick(_double TimeDelta)
 
 		_vector	WindowPosition = pGameInstance->GetWindowPos(m_pDeviceContext, (_float)g_iWinCX, (_float)g_iWinCY, X , Y);
 
-		X = TextureSize.x;
-		Y = TextureSize.y;
+		X = TextureSize.x * 0.5f;
+		Y = TextureSize.y * 0.5f;
 
 		m_pTransformCom->Set_State(CTransform::STATE_RIGHT, XMVectorSet(X, 0.f, 0.f, 0.f));
 		m_pTransformCom->Set_State(CTransform::STATE_UP, XMVectorSet(0.f, Y, 0.f, 0.f));
 		m_pTransformCom->Set_State(CTransform::STATE_LOOK, XMVectorSet(0.f, 0.f, 0.f, 0.f));
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, WindowPosition);
 
+		m_Show = TRUE;	
 		RELEASE_INSTANCE(CGameInstance);
-		
-		m_Show = TRUE;
 	}
 
 
@@ -67,6 +76,9 @@ _int SnowScreen::Tick(_double TimeDelta)
 
 _int SnowScreen::LateTick(_double TimeDelta)
 {	
+	if (TRUE == static_cast<CPlayer*>(m_Player)->GetIsIn())
+		return _int();
+
 	if (nullptr != m_pRendererCom)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_UI, this);
 
@@ -81,7 +93,10 @@ _int SnowScreen::LateTick(_double TimeDelta)
 
 HRESULT SnowScreen::Render()
 {
-	if (FALSE == m_Show)
+	if (TRUE == m_Camera->GetFocus())
+		return S_OK;
+
+	if (FALSE == m_Show && TRUE == static_cast<CPlayer*>(m_Player)->GetIsIn())
 		return S_OK;
 
 	m_pVIBufferCom->SetUp_ValueOnShader("g_WorldMatrix", &XMMatrixTranspose(m_pTransformCom->Get_WorldMatrix()), sizeof(_float) * 16);

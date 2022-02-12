@@ -42,6 +42,8 @@ public:
 	virtual HRESULT Render() override;
 	virtual _bool		Picked() override;
 
+	void FocusCamera(_double _TimeDelta);
+
 private:
 	void		Animation(_double TimeDelta);
 	void		GetDistance();
@@ -56,8 +58,10 @@ private:
 
 	void		HitCheck();
 
+
 public:
 	_matrix	GetBoneMatrix(CHierarchyNode*	_HierachyNode);
+	_matrix	GetHeadBoneMatrix();
 
 private:
 	CRenderer*				m_pRendererCom = nullptr;
@@ -90,6 +94,9 @@ private:
 	_vector				m_PlayerPosition = _vector();
 	_vector				m_MyPosition = _vector();
 	_float					m_TargetDistance = 0.f;
+
+
+	_double				m_TimeDelta = 0;
 
 
 private:

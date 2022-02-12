@@ -2,6 +2,8 @@
 #include "..\public\Camera_Dynamic.h"
 #include "GameInstance.h"
 #include "Player.h"
+#include "Terrain.h"
+#include "BossPrimeBeast.h"
 
 
 CCamera_Dynamic::CCamera_Dynamic(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
@@ -33,6 +35,21 @@ HRESULT CCamera_Dynamic::NativeConstruct(void * pArg)
 
 _int CCamera_Dynamic::Tick(_double TimeDelta)
 {
+	if (TRUE == m_IntroEnd)
+		return _int();
+
+	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+
+	CCollider* BossCollider = static_cast<CCollider*>(pGameInstance->GetObjectList(LEVEL_GAMEPLAY, TEXT("Layer_Terrain")).front()->GetComponent(TEXT("Com_BossColliderCom")));
+	if (TRUE == BossCollider->GetIsCollision())
+		m_Focus = TRUE;
+	else
+		m_Focus = FALSE;
+	RELEASE_INSTANCE(CGameInstance);
+
+	if(TRUE == m_Focus)
+		ForcusCamera();
+
 
 	return CCamera::Tick(TimeDelta);
 }
@@ -56,6 +73,9 @@ HRESULT CCamera_Dynamic::Render()
 
 void CCamera_Dynamic::SetCameraPosition(_matrix camPos, _matrix _PWM)
 {
+	if (TRUE == m_Focus)
+		return;
+
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 	_vector		vPosition = camPos.r[3];
 	vPosition = XMVectorSetW(vPosition, 1.f);
@@ -92,7 +112,49 @@ void CCamera_Dynamic::RotationXY(ROTATION_TYPE _type, _double TimeDelta)
 
 void CCamera_Dynamic::SetFOV(_float _FOV)
 {
+	if (TRUE == m_Focus)
+		return;
+
 	m_CameraDesc.fFovy = _FOV;
+}
+
+void CCamera_Dynamic::ForcusCamera()
+{
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+	list<CGameObject*> EnemyList = pGameInstance->GetObjectList(LEVEL_GAMEPLAY, TEXT("Layer_Enemy"));
+	_matrix HeadBone = XMMatrixIdentity();
+
+	for (auto& Enemy : EnemyList)
+	{
+		if (CGameObject::OBJTYPE_ID::BOSS != Enemy->GetID())
+			continue;
+
+		HeadBone = static_cast<BossPrimeBeast*>(Enemy)->GetHeadBoneMatrix();
+
+		/*
+		_vector Up = m_pTransform->Get_State(CTransform::STATE_UP);
+		_vector Look = m_pTransform->Get_State(CTransform::STATE_LOOK);
+		*/
+		_vector Right = m_pTransform->Get_State(CTransform::STATE_RIGHT);
+		_vector Position = m_pTransform->Get_State(CTransform::STATE_POSITION);
+
+		_vector L = HeadBone.r[3] - Position;
+		L = XMVector3Normalize(L);
+
+
+		m_pTransform->Set_State(CTransform::STATE_LOOK, L);
+		m_pTransform->Set_State(CTransform::STATE_POSITION, Position);
+
+		if (TRUE == Enemy->GetIntroEnd())
+		{
+			m_Focus = FALSE;
+			m_IntroEnd = TRUE;
+		}
+
+	}
+
+
+	RELEASE_INSTANCE(CGameInstance);
 }
 
 

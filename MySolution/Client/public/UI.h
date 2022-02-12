@@ -46,6 +46,7 @@ private:
 	_float							m_BarPercent = 1.f;
 	_bool							m_LRCheck = FALSE;
 
+	class CCamera_Dynamic*		m_Camera = nullptr;
 private:
 	virtual HRESULT SetUp_Components();
 

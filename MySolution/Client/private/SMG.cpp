@@ -7,8 +7,6 @@
 #include "Light.h"
 #include "Camera_Dynamic.h"
 
-#include <iostream>
-
 SMG::SMG(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
 {
@@ -39,7 +37,7 @@ HRESULT SMG::NativeConstruct(void * pArg)
 
 	CGameInstance*	pGameInstance = GET_INSTANCE(CGameInstance);
 	m_TargetObject = pGameInstance->GetObjectList(LEVEL_GAMEPLAY, TEXT("Layer_Player")).front();
-	m_CameraObject = pGameInstance->GetObjectList(LEVEL_GAMEPLAY, TEXT("Layer_Camera")).front();
+	m_CameraObject = static_cast<CCamera_Dynamic*>(pGameInstance->GetObjectList(LEVEL_GAMEPLAY, TEXT("Layer_Camera")).front());
 
 	m_BarrelBone = m_pModelCom->Get_BoneMatrix("Mag05");
 
@@ -113,6 +111,8 @@ _int SMG::LateTick(_double TimeDelta)
 
 HRESULT SMG::Render()
 {
+	if (TRUE == m_CameraObject->GetFocus())
+		return S_OK;
 	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 
 	m_pModelCom->SetUp_ValueOnShader("g_WorldMatrix", &XMMatrixTranspose(m_pTransformCom->Get_WorldMatrix()), sizeof(_matrix));

@@ -30,12 +30,12 @@ private:
 	CTransform*			m_pTransformCom = nullptr;
 	CRenderer*				m_pRendererCom = nullptr;
 	CVIBuffer_Rect*			m_pVIBufferCom = nullptr;
-	
 	XMMATRIX				m_ProjMatrix;
-
 	list<CGameObject*>			m_EnemyObjectList;
-
 	_bool								m_IsCollision = FALSE;
+
+private:
+	class CCamera_Dynamic*		m_Camera = nullptr;
 
 private:
 	virtual HRESULT SetUp_Components();

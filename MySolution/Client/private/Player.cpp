@@ -9,7 +9,6 @@
 #include "UI.h"
 #include "HITUI.h"
 
-#include <iostream>
 
 CPlayer::CPlayer(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -56,11 +55,17 @@ HRESULT CPlayer::NativeConstruct(void * pArg)
 	m_MaxShield = 500;
 	m_Shield = m_MaxShield;
 
+
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+	m_Camera = static_cast<CCamera_Dynamic*>(pGameInstance->GetObjectList(LEVEL_GAMEPLAY, TEXT("Layer_Camera")).front());
+	RELEASE_INSTANCE(CGameInstance);
+
 	return S_OK;
 }
 
 _int CPlayer::Tick(_double TimeDelta)
 {
+
 	KeyCheck(TimeDelta);
 	m_pModelCom->Update_CombinedTransformationMatrix(TimeDelta);
 	m_ColliderCom->Update(m_pTransformCom->Get_WorldMatrix());
@@ -69,6 +74,7 @@ _int CPlayer::Tick(_double TimeDelta)
 
 	_vector Position = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(XMVectorGetX(Position), 0.f, XMVectorGetZ(Position), XMVectorGetW(Position)));
+	IsIn(Position);
 
 	m_HPPercent = (_float)m_HP / (_float)m_MaxHP;
 	m_ShieldPercent = (_float)m_Shield / (_float)m_MaxShield;
@@ -109,6 +115,9 @@ _int CPlayer::LateTick(_double TimeDelta)
 
 HRESULT CPlayer::Render()
 {
+	if (TRUE == m_Camera->GetFocus())
+		return S_OK;
+
 	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 
 	m_pModelCom->SetUp_ValueOnShader("g_WorldMatrix", &XMMatrixTranspose(m_pTransformCom->Get_WorldMatrix()), sizeof(_matrix));
@@ -194,6 +203,18 @@ CPlayer::RAY CPlayer::CreateRay()
 	return ray;
 }
 
+void CPlayer::IsIn(_vector _MyPosition)
+{
+	_vector	Spawn = XMVectorSet(37.f, 0.f, 21.f, 1.f);
+
+	_float Distance = XMVectorGetX(XMVector3Length(_MyPosition - Spawn));
+
+	if (8 >= Distance)
+		m_IsIn = TRUE;
+	else
+		m_IsIn = FALSE;
+}
+
 void CPlayer::PickUpHealth()
 {
 	m_HP = m_MaxHP;
@@ -217,7 +238,6 @@ void CPlayer::PickUpSMGAmmo()
 void CPlayer::PickUpShotGunAmmo()
 {
 }
-
 
 void CPlayer::Hit(_int _HP)
 {
@@ -327,14 +347,12 @@ void CPlayer::KeyCheck(_double TimeDelta)
 	{
 		m_pTransformCom->Rotation_Axis(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta * MouseMove * 0.1f);
 		m_Rotation = ROTATION_TYPE::X;
-		//static_cast<CCamera_Dynamic*>(pGameInstance->GetObjectList(LEVEL_GAMEPLAY, TEXT("Layer_Camera")).front())->RotationXY((CCamera_Dynamic::ROTATION_TYPE)m_Rotation, TimeDelta * MouseMove * 0.1f);
 	}
 
 	if (MouseMove = pGameInstance->Get_MouseMoveState(CInput_Device::MMS_Y))
 	{
 		m_pTransformCom->Rotation_Axis(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), TimeDelta * MouseMove * 0.1f);
 		m_Rotation = ROTATION_TYPE::Y;
-		//static_cast<CCamera_Dynamic*>(pGameInstance->GetObjectList(LEVEL_GAMEPLAY, TEXT("Layer_Camera")).front())->RotationXY((CCamera_Dynamic::ROTATION_TYPE)m_Rotation, TimeDelta * MouseMove * 0.1f);
 	}
 
 	if (pGameInstance->Get_DIKeyState(DIK_E) & 0x80)
@@ -346,7 +364,7 @@ void CPlayer::KeyCheck(_double TimeDelta)
 void CPlayer::SetCamAndSkyBox()
 {
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
-	static_cast<CCamera_Dynamic*>(pGameInstance->GetObjectList(LEVEL_GAMEPLAY, TEXT("Layer_Camera")).front())->SetCameraPosition(GetCameraMatrix(), m_pTransformCom->Get_WorldMatrix());
+	m_Camera->SetCameraPosition(GetCameraMatrix(), m_pTransformCom->Get_WorldMatrix());
 	static_cast<Sky*>(pGameInstance->GetObjectList(LEVEL_GAMEPLAY, TEXT("Layer_SkyBox")).front())->SetCamTransform();
 	RELEASE_INSTANCE(CGameInstance);
 }

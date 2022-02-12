@@ -80,7 +80,7 @@ private:
 	CHierarchyNode*		m_BarrelBone = nullptr;
 
 	class CGameObject* m_TargetObject = nullptr;
-	class CGameObject* m_CameraObject = nullptr;
+	class CCamera_Dynamic* m_CameraObject = nullptr;
 
 private:
 	virtual HRESULT SetUp_Components();

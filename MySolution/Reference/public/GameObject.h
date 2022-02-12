@@ -55,6 +55,9 @@ public:
 	_bool		GetIntroEnd() const {
 		return m_IntroEnd;
 	}
+	OBJTYPE_ID	GetID() const {
+		return m_Type;
+	}
 
 public:
 	class CComponent*		GetComponent(const _tchar* _componentTag);

@@ -80,6 +80,12 @@ struct GS_OUT
 void GS_MAIN(point GS_IN In[1], inout TriangleStream<GS_OUT> OutStream)
 {
 	GS_OUT		Out[6];
+	Out[0] = (GS_OUT)0;
+	Out[1] = (GS_OUT)0;
+	Out[2] = (GS_OUT)0;
+	Out[3] = (GS_OUT)0;
+	Out[4] = (GS_OUT)0;
+	Out[5] = (GS_OUT)0;
 
 	if (true == In[0].vShow)
 	{
@@ -147,6 +153,12 @@ PS_OUT PS_MAIN(PS_IN In)
 
 	Out.vColor = g_DiffuseTexture.Sample(DefaultSampler, In.vTexUV);
 
+/*
+	if (Out.vColor.r == 1 &&
+		Out.vColor.b == 1 &&
+		Out.vColor.g == 1)
+		discard;*/
+
 	return Out;
 }
 
@@ -156,7 +168,7 @@ technique11			DefaultTechnique
 	{
 		SetRasterizerState(CullMode_Default);
 		SetDepthStencilState(ZBuffer_Default, 0);
-		SetBlendState(BlendDisable, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		SetBlendState(AlphaBlending, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
 		VertexShader = compile vs_5_0 VS_MAIN();
 		GeometryShader = compile gs_5_0 GS_MAIN();

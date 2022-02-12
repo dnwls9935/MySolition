@@ -30,7 +30,7 @@ private:
 	CTransform*			m_pTransformCom = nullptr;
 	CRenderer*				m_pRendererCom = nullptr;
 	CVIBuffer_Rect*			m_pVIBufferCom = nullptr;
-	
+
 	XMMATRIX				m_ProjMatrix;
 
 private:
@@ -39,6 +39,10 @@ private:
 	_float							m_AlphaValue = 0.f;
 
 	_bool							m_Show = TRUE;
+
+	CGameObject*			m_Player = nullptr;
+	class CCamera_Dynamic*		m_Camera = nullptr;
+
 
 private:
 	virtual HRESULT SetUp_Components();

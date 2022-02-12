@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "..\public\CrossSight.h"
 #include "GameInstance.h"
+#include "Camera_Dynamic.h"
 
 CrossSight::CrossSight(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -46,7 +47,7 @@ HRESULT CrossSight::NativeConstruct(void * pArg)
 	ShowCursor(FALSE);
 
 	m_EnemyObjectList = pGameInstance->GetObjectList(LEVEL_GAMEPLAY, TEXT("Layer_Enemy"));
-
+	m_Camera = static_cast<CCamera_Dynamic*>(pGameInstance->GetObjectList(LEVEL_GAMEPLAY, TEXT("Layer_Camera")).front());
 	RELEASE_INSTANCE(CGameInstance);
 	return S_OK;
 }
@@ -82,6 +83,9 @@ _int CrossSight::LateTick(_double TimeDelta)
 
 HRESULT CrossSight::Render()
 {
+	if (TRUE == m_Camera->GetFocus())
+		return S_OK;
+
 	m_pVIBufferCom->SetUp_ValueOnShader("g_WorldMatrix", &XMMatrixTranspose(m_pTransformCom->Get_WorldMatrix()), sizeof(_float) * 16);
 	m_pVIBufferCom->SetUp_ValueOnShader("g_ViewMatrix", &XMMatrixIdentity(), sizeof(_float) * 16);
 	m_pVIBufferCom->SetUp_ValueOnShader("g_ProjMatrix", &XMMatrixTranspose(m_ProjMatrix), sizeof(XMMATRIX));

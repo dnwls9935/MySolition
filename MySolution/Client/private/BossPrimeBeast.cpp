@@ -37,6 +37,8 @@ HRESULT BossPrimeBeast::NativeConstruct(void * pArg)
 	ZeroMemory(&ToolObjDesc, sizeof(CGameObject::TOOLOBJDESC));
 	memcpy(&ToolObjDesc, (CGameObject::TOOLOBJDESC*)pArg, sizeof(CGameObject::TOOLOBJDESC));
 
+	m_Type = ToolObjDesc.m_Type;
+
 	_matrix TransformMatrix = XMLoadFloat4x4(&ToolObjDesc.m_pTransformMatrix);
 	m_pTransformCom->Set_State(CTransform::STATE_RIGHT, TransformMatrix.r[0]);
 	m_pTransformCom->Set_State(CTransform::STATE_UP, TransformMatrix.r[1]);
@@ -79,9 +81,13 @@ HRESULT BossPrimeBeast::NativeConstruct(void * pArg)
 
 _int BossPrimeBeast::Tick(_double TimeDelta)
 {
+	TimeDelta -= m_TimeDelta;
+
 	if(TRUE == m_FrameStart && 
 		(_uint)ANIMATION_STATE::RUN_F_V1)
 		m_ChargeTime += TimeDelta * 3.f;
+
+	FocusCamera(TimeDelta);
 
 	GetDistance();
 	Animation(TimeDelta);
@@ -136,6 +142,8 @@ _int BossPrimeBeast::LateTick(_double TimeDelta)
 	if (m_pModelCom->GetAnimationFinished())
 	{
 		if ((_uint)ANIMATION_STATE::SPAWN_CLIMBOVER == m_pModelCom->GetCurrentAnimation())
+			m_pModelCom->SetUp_AnimationIndex((_uint)ANIMATION_STATE::ROAR_V1);
+		else if ((_uint)ANIMATION_STATE::ROAR_V1 == m_pModelCom->GetCurrentAnimation())
 		{
 			m_IntroEnd = TRUE;
 			m_pModelCom->SetUp_AnimationIndex((_int)ANIMATION_STATE::RUN_F_V1);
@@ -227,6 +235,21 @@ _bool BossPrimeBeast::Picked()
 		return TRUE;
 	}
 	return FALSE;
+}
+
+void BossPrimeBeast::FocusCamera(_double _TimeDelta)
+{
+	if ((_uint)ANIMATION_STATE::ROAR_V1 != m_pModelCom->GetCurrentAnimation())
+		return;
+
+	if (34 == m_pModelCom->GetCurrentAnimationFrame())
+		m_TimeDelta = _TimeDelta;
+	else
+		m_TimeDelta = 0;
+
+	/* 
+	지금 이상태에선 진짜 눈에 안뛸정도로 멈췄다 시작함 이거 딜레이좀 주고, 보스 인트로 UI좀 띄우자
+	*/
 }
 
 void BossPrimeBeast::Animation(_double TimeDelta)
@@ -434,6 +457,11 @@ _matrix BossPrimeBeast::GetBoneMatrix(CHierarchyNode*	_HierachyNode)
 	_matrix World = m_pTransformCom->Get_WorldMatrix();
 
 	return Transform * Offset * Combined * Pivot * XMMatrixRotationY(XMConvertToRadians(180.f))  * World;
+}
+
+_matrix BossPrimeBeast::GetHeadBoneMatrix()
+{
+	return GetBoneMatrix(m_HeadBone);
 }
 
 void BossPrimeBeast::BoneColliderTick(_double TimeDelta)
@@ -683,6 +711,7 @@ void BossPrimeBeast::Free()
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_ColliderCom);
 	Safe_Release(m_NavigationCom);
+	Safe_Release(m_HeadBone);
 	Safe_Release(m_rHand1Bone);
 	Safe_Release(m_rHand2Bone);
 	Safe_Release(m_lHand1Bone);
