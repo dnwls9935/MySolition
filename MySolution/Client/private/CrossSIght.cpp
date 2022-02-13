@@ -63,7 +63,7 @@ _int CrossSight::Tick(_double TimeDelta)
 		if (FALSE == Enemy->GetIntroEnd())
 			continue;
 
-		if (TRUE == Enemy->Picked())
+		if (TRUE == Enemy->Picked() && FALSE == Enemy->GetDead())
 		{
 			m_IsCollision = TRUE;
 		}

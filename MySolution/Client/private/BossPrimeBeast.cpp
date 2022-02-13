@@ -81,8 +81,6 @@ HRESULT BossPrimeBeast::NativeConstruct(void * pArg)
 
 _int BossPrimeBeast::Tick(_double TimeDelta)
 {
-	TimeDelta -= m_TimeDelta;
-
 	if(TRUE == m_FrameStart && 
 		(_uint)ANIMATION_STATE::RUN_F_V1)
 		m_ChargeTime += TimeDelta * 3.f;
@@ -93,7 +91,7 @@ _int BossPrimeBeast::Tick(_double TimeDelta)
 	Animation(TimeDelta);
 	BoneColliderTick(TimeDelta);
 
-	if (TRUE == m_FrameStart)
+	if (TRUE == m_FrameStart && FALSE == m_Focus)
 		m_pModelCom->Update_CombinedTransformationMatrix(TimeDelta);
 	else
 		m_pModelCom->Update_CombinedTransformationMatrix(0.0);
@@ -242,14 +240,21 @@ void BossPrimeBeast::FocusCamera(_double _TimeDelta)
 	if ((_uint)ANIMATION_STATE::ROAR_V1 != m_pModelCom->GetCurrentAnimation())
 		return;
 
-	if (34 == m_pModelCom->GetCurrentAnimationFrame())
-		m_TimeDelta = _TimeDelta;
-	else
-		m_TimeDelta = 0;
+	
+	if (TRUE == m_Focus)
+	{
+		m_FocusAcc += _TimeDelta;
 
-	/* 
-	지금 이상태에선 진짜 눈에 안뛸정도로 멈췄다 시작함 이거 딜레이좀 주고, 보스 인트로 UI좀 띄우자
-	*/
+		if (2 <= m_FocusAcc)
+		{
+			m_FocusAcc = 0.0;
+			m_Focus = FALSE;
+			return;
+		}
+	}
+
+	if (34 == m_pModelCom->GetCurrentAnimationFrame())
+		m_Focus = TRUE;
 }
 
 void BossPrimeBeast::Animation(_double TimeDelta)

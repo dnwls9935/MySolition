@@ -63,6 +63,11 @@ public:
 	_matrix	GetBoneMatrix(CHierarchyNode*	_HierachyNode);
 	_matrix	GetHeadBoneMatrix();
 
+public:
+	_bool	GetFocus() {
+		return m_Focus;
+	}
+
 private:
 	CRenderer*				m_pRendererCom = nullptr;
 	CTransform*				m_pTransformCom = nullptr;
@@ -83,7 +88,6 @@ private:
 	CCollider*					m_lHand1Collider = nullptr;
 	CCollider*					m_lHand2Collider = nullptr;
 
-
 	_bool							m_FrameStart = FALSE;
 
 private:
@@ -95,9 +99,7 @@ private:
 	_vector				m_MyPosition = _vector();
 	_float					m_TargetDistance = 0.f;
 
-
 	_double				m_TimeDelta = 0;
-
 
 private:
 	_bool					m_ChargeATT = FALSE;
@@ -106,6 +108,10 @@ private:
 
 private:
 	_bool					m_MeleeAttackIsCollisionCheck = FALSE;
+	
+private:
+	_double				m_FocusAcc = 0.0;
+	_bool					m_Focus = FALSE;
 
 private:
 	virtual HRESULT SetUp_Components();

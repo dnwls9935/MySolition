@@ -25,6 +25,7 @@
 #include "HITUI.h"
 #include "Snow.h"
 #include "SnowScreen.h"
+#include "TitleCard.h"
 
 CLoader::CLoader(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: m_pDevice(pDevice)
@@ -183,7 +184,10 @@ HRESULT CLoader::Loading_ForGamePlay()
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_UseMeAnimGrad"), CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Textures/Effect/Useme/UseMe_AnimGrad.png")))))
 		return E_FAIL;
-
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Tex_TCBackgrounds_KnuckleDragger"), CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Textures/UI/TitleCard/Tex_TCBackgrounds_KnuckleDragger.png")))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Tex_TCNames_Knuckledragger"), CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Textures/UI/TitleCard/Tex_TCNames_Knuckledragger.png")))))
+		return E_FAIL;
 
 
 	wsprintf(m_szLoading, TEXT("콜라이더를 생성한다. "));
@@ -394,6 +398,8 @@ HRESULT CLoader::Loading_ForGamePlay()
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_CrossSight"), CrossSight::Create(m_pDevice, m_pDeviceContext))))
 		return E_FAIL;
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_HIT"), HITUI::Create(m_pDevice, m_pDeviceContext))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_TitleCard"), TitleCard::Create(m_pDevice, m_pDeviceContext))))
 		return E_FAIL;
 
 	// 이팩트들

@@ -96,7 +96,8 @@ HRESULT SnowScreen::Render()
 	if (TRUE == m_Camera->GetFocus())
 		return S_OK;
 
-	if (FALSE == m_Show && TRUE == static_cast<CPlayer*>(m_Player)->GetIsIn())
+	if (FALSE == m_Show ||
+		TRUE == static_cast<CPlayer*>(m_Player)->GetIsIn())
 		return S_OK;
 
 	m_pVIBufferCom->SetUp_ValueOnShader("g_WorldMatrix", &XMMatrixTranspose(m_pTransformCom->Get_WorldMatrix()), sizeof(_float) * 16);
@@ -108,7 +109,6 @@ HRESULT SnowScreen::Render()
 	m_pVIBufferCom->SetUp_ValueOnShader("g_X", &X, sizeof(_float));
 	m_pVIBufferCom->SetUp_ValueOnShader("g_Y", &Y, sizeof(_float));
 	m_pVIBufferCom->SetUp_ValueOnShader("g_AlphaValue", &m_AlphaValue, sizeof(_float));
-
 
 	m_pVIBufferCom->SetUp_TextureOnShader("g_DiffuseTexture", m_pTextureCom, 0);
 	m_pVIBufferCom->Render(7);

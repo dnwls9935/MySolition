@@ -154,6 +154,7 @@ _int BugMorph::LateTick(_double TimeDelta)
 		{
 			m_BurrowCount--;
 			m_BurrowLoop = TRUE;
+			m_pModelCom->SetUp_AnimationIndex((_uint)ANIMATION_STATE::BURROW_EXIT);
 		}
 		else if ((_uint)ANIMATION_STATE::BURROW_EXIT == m_pModelCom->GetCurrentAnimation())
 		{

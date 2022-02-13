@@ -124,6 +124,9 @@
     <Filter Include="02.GameObject\UI\SnowScreen">
       <UniqueIdentifier>{9abd01fc-7877-4fe1-b064-c0701b00b5d3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\UI\TitleCard">
+      <UniqueIdentifier>{551a59ab-7cdf-4efa-973a-1f85e2d27f0d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -234,6 +237,9 @@
     <ClInclude Include="..\public\SnowScreen.h">
       <Filter>02.GameObject\UI\SnowScreen</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\TitleCard.h">
+      <Filter>02.GameObject\UI\TitleCard</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -328,6 +334,9 @@
     </ClCompile>
     <ClCompile Include="..\private\SnowScreen.cpp">
       <Filter>02.GameObject\UI\SnowScreen</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\TitleCard.cpp">
+      <Filter>02.GameObject\UI\TitleCard</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
