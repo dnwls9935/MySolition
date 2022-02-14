@@ -42,6 +42,9 @@ private:
 	XMMATRIX				m_WorldMatrix;
 
 private:
+	_float						m_Size = 1.f;
+
+private:
 	virtual HRESULT SetUp_Components();
 
 public:

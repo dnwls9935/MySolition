@@ -3,7 +3,9 @@
 #include "GameInstance.h"
 #include "Terrain.h"
 #include "Camera_Dynamic.h"
+#include "Camera_Static.h"
 #include "Sky.h"
+#include "LogoSky.h"
 #include "Player.h"
 #include "SMG.h"
 #include "BugMorph.h"
@@ -26,6 +28,7 @@
 #include "Snow.h"
 #include "SnowScreen.h"
 #include "TitleCard.h"
+#include "ClapTrap.h"
 
 CLoader::CLoader(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: m_pDevice(pDevice)
@@ -78,22 +81,36 @@ HRESULT CLoader::NativeConstruct(LEVEL eNextLevel)
 
 HRESULT CLoader::Loading_ForLogo()
 {
+	CGameInstance*	pGameInstance = GET_INSTANCE(CGameInstance);
 	/* 컴포넌트 원형을 생성한다. */
 	wsprintf(m_szLoading, TEXT("버퍼를 생성한다. "));
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOGO, TEXT("Prototype_Component_VIBuffer_Cube"), CVIBuffer_Cube::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/ShaderFiles/Shader_Cube.hlsl")))))
+		return E_FAIL;
 
+	wsprintf(m_szLoading, TEXT("모델을 생성한다. "));
+	_matrix			PivotMatrix;
+	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(-130.f));
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOGO	, TEXT("Prototype_Component_Model_ClapTrap"), CModel::Create(m_pDevice, m_pDeviceContext, "../Bin/Resources/Meshes/ClapTrap/", "ClapTrap.FBX", TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), PivotMatrix, CModel::TYPE_ANIM))))
+		return E_FAIL;
 
 
 	wsprintf(m_szLoading, TEXT("텍스쳐를 생성한다. "));
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOGO, TEXT("Prototype_Component_Texture_Cube"), CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Textures/SkyBox/ColdNight.dds")))))
+		return E_FAIL;
 
 
-	/* 객체원형을 생성한다. */
+	wsprintf(m_szLoading, TEXT("객체원형을 생성한다. "));
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Model_CrapTrap"), ClapTrap::Create(m_pDevice, m_pDeviceContext))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_CameraStatic"), CCamera_Static::Create(m_pDevice, m_pDeviceContext))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_LogoCube"), LogoSky::Create(m_pDevice, m_pDeviceContext))))
+		return E_FAIL;
 	
-
-
 	wsprintf(m_szLoading, TEXT("로딩이 완료되었습니다. "));
-
 	m_isFinished = true;
 
+	RELEASE_INSTANCE(CGameInstance);
 	return S_OK;
 }
 
@@ -111,7 +128,7 @@ HRESULT CLoader::Loading_ForGamePlay()
 		return E_FAIL;
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Effect_Rect"), CVIBuffer_Rect::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/ShaderFiles/Shader_RectEffect.hlsl")))))
 		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_PointInstace"), CVIBuffer_PointInstance::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/ShaderFiles/Shader_PointInstance.hlsl"), 4000/*0*/))))
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_PointInstace"), CVIBuffer_PointInstance::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/ShaderFiles/Shader_PointInstance.hlsl"), 40000))))
 		return E_FAIL;
 
 	wsprintf(m_szLoading, TEXT("텍스쳐를 생성한다. "));
@@ -360,7 +377,7 @@ HRESULT CLoader::Loading_ForGamePlay()
 	wsprintf(m_szLoading, TEXT("객체를 생성한다. "));	
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Terrain"), CTerrain::Create(m_pDevice, m_pDeviceContext))))
 		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Camera"), CCamera_Dynamic::Create(m_pDevice, m_pDeviceContext))))
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_CameraDynamic"), CCamera_Dynamic::Create(m_pDevice, m_pDeviceContext))))
 		return E_FAIL;
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Cube"), Sky::Create(m_pDevice, m_pDeviceContext))))
 		return E_FAIL;

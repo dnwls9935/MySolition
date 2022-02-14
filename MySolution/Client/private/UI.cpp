@@ -50,7 +50,19 @@ HRESULT UI::NativeConstruct(void * pArg)
 
 _int UI::Tick(_double TimeDelta)
 {
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+	if (CGameObject::UITYPE_ID::PLAYER_HP == m_UIDesc.m_UITypeID) {
+		_float2 Pos;
+		Pos.x = XMVectorGetX(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+		Pos.y = XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
+		_tchar str[MAX_PATH];
+		swprintf_s(str, L"%d", m_HP);
+		pGameInstance->Render_Font(TEXT("Font_Arial"), Pos, XMVectorSet(1.f, 1.f, 1.f, 1.f), _float2(1.f, 1.f), str);
+	}
+
+
+	RELEASE_INSTANCE(CGameInstance);
 	return _int();
 }
 

@@ -39,6 +39,14 @@ HRESULT CLight_Manager::Render_Lights()
 	return S_OK;
 }
 
+HRESULT CLight_Manager::ReleaseLight()
+{
+	for (auto& Light : m_Lights)
+		Safe_Release(Light);
+
+	return S_OK;
+}
+
 void CLight_Manager::Free()
 {
 	for (auto& pLight : m_Lights)

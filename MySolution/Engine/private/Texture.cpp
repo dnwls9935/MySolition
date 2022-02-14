@@ -20,13 +20,9 @@ HRESULT CTexture::NativeConstruct_Prototype(const _tchar * pTextureFilePath, _ui
 		return E_FAIL;
 
 	_tchar		szFullPath[MAX_PATH] = TEXT("");
-
 	
 	DirectX::ScratchImage		ScratchImage;
-
 	HRESULT hr = 0;
-
-
 	for (_uint i = 0; i < iNumTextures; ++i)
 	{
 		_tchar		szExt[MAX_PATH] = TEXT("");

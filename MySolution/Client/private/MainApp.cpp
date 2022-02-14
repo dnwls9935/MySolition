@@ -26,6 +26,8 @@ HRESULT CMainApp::NativeConstruct()
 		return E_FAIL;
 	if (FAILED(Ready_GameObject_Prototype()))
 		return E_FAIL;
+	if (FAILED(Ready_Font()))
+		return E_FAIL;
 
 	if (FAILED(SetUp_StartLevel(LEVEL_LOGO)))
 		return E_FAIL;
@@ -123,6 +125,17 @@ HRESULT CMainApp::Ready_GameObject_Prototype()
 
 	/* For.Prototype_GameObject_BackGround */
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_BackGround"), CBackGround::Create(m_pDevice, m_pDeviceContext))))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CMainApp::Ready_Font()
+{
+	if (nullptr == m_pGameInstance)
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Font(m_pDevice, m_pDeviceContext, TEXT("Font_Arial"), TEXT("../Bin/Resources/Font/Arial.spritefont"))))
 		return E_FAIL;
 
 	return S_OK;

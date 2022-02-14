@@ -141,7 +141,6 @@ void CCamera_Dynamic::ForcusCamera()
 		_vector L = HeadBone.r[3] - Position;
 		L = XMVector3Normalize(L);
 
-
 		m_pTransform->Set_State(CTransform::STATE_LOOK, L);
 		m_pTransform->Set_State(CTransform::STATE_POSITION, Position);
 
@@ -150,10 +149,7 @@ void CCamera_Dynamic::ForcusCamera()
 			m_Focus = FALSE;
 			m_IntroEnd = TRUE;
 		}
-
 	}
-
-
 	RELEASE_INSTANCE(CGameInstance);
 }
 

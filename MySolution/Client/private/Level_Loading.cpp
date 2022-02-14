@@ -79,6 +79,18 @@ HRESULT CLevel_Loading::Ready_Layer_BackGround(const _tchar * pLayerTag)
 	return S_OK;
 }
 
+HRESULT CLevel_Loading::Ready_Layer_SkyBox(const _tchar * pLayerTag)
+{
+	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+
+	if (FAILED(pGameInstance->Add_GameObjectToLayer(LEVEL_LOGO, pLayerTag, TEXT("Prototype_GameObject_Cube"))))
+		return E_FAIL;
+
+	RELEASE_INSTANCE(CGameInstance);
+
+	return S_OK;
+}
+
 HRESULT CLevel_Loading::Ready_Layer_UI(const _tchar * pLayerTag)
 {
 	return S_OK;

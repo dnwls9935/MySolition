@@ -149,12 +149,12 @@ HRESULT CLevel_GamePlay::Ready_LightDesc()
 
 HRESULT CLevel_GamePlay::Ready_Layer_Enemy(const _tchar * pLayerTag)
 {
-	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+	/*CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 
 	if (FAILED(pGameInstance->Add_GameObjectToLayer(LEVEL_GAMEPLAY, pLayerTag, TEXT("Prototype_GameObject_MonsterTest"))))
 		return E_FAIL;
 
-	RELEASE_INSTANCE(CGameInstance);
+	RELEASE_INSTANCE(CGameInstance);*/
 	return S_OK;
 }
 
@@ -201,7 +201,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const _tchar * pLayerTag)
 	CameraDesc.TransformDesc.fRotationPerSec = XMConvertToRadians(120.0f);
 
 
-	if (FAILED(pGameInstance->Add_GameObjectToLayer(LEVEL_GAMEPLAY, pLayerTag, TEXT("Prototype_GameObject_Camera"), &CameraDesc)))
+	if (FAILED(pGameInstance->Add_GameObjectToLayer(LEVEL_GAMEPLAY, pLayerTag, TEXT("Prototype_GameObject_CameraDynamic"), &CameraDesc)))
 		return E_FAIL;
 
 	RELEASE_INSTANCE(CGameInstance);

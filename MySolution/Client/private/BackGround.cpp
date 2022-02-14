@@ -18,8 +18,6 @@ HRESULT CBackGround::NativeConstruct_Prototype()
 	if (FAILED(__super::NativeConstruct_Prototype()))
 		return E_FAIL;
 
-	/* AWS, PlayFab, GameBase, µÚ³¡(BackEnd) */
-
 	m_ProjMatrix = XMMatrixOrthographicLH((_float)g_iWinCX, (_float)g_iWinCY, 0.f, 1.f);
 	m_WorldMatrix = XMMatrixIdentity();
 
@@ -44,9 +42,25 @@ HRESULT CBackGround::NativeConstruct(void * pArg)
 
 _int CBackGround::Tick(_double TimeDelta)
 {
+	CGameInstance*	pGameInstance = GET_INSTANCE(CGameInstance);
+
+	if (LEVEL_GAMEPLAY == pGameInstance->GetNextLevelID())
+	{
+		m_Size = 1.f;
+		RELEASE_INSTANCE(CGameInstance)
+		return _int();
+	}
+
+	m_Size = pGameInstance->Lerp(m_Size, 1.5, TimeDelta);
+
+	m_WorldMatrix.r[0] = XMVectorSet((_float)g_iWinCX * m_Size, 0.f, 0.f, 0.f);
+	m_WorldMatrix.r[1] = XMVectorSet(0.0f, (_float)g_iWinCY * m_Size, 0.f, 0.f);
+
+	if (1.3 <= m_Size)
+		m_Size = 1.f;
 
 
-
+	RELEASE_INSTANCE(CGameInstance);
 	return _int();
 }
 

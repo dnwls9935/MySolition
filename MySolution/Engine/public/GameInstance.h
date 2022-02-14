@@ -10,6 +10,7 @@
  #include "LightManager.h"
 #include "PipeLine.h"
 #include "Calculator.h"
+#include "Font_Manager.h"
 
 BEGIN(Engine)
 
@@ -69,11 +70,17 @@ public: /* for.Input_Device */
 public: /* For.Light_Manager */
 	const LIGHTDESC* Get_LightDesc(_uint iIndex = 0);
 	HRESULT Add_Light(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, const LIGHTDESC& LightDesc, class CLight** _OutLight = nullptr);
+	HRESULT ReleaseLight();
 
 public: /* For.Calculator */
 	void		CalcMousePos(Calculator::CALCDESC* _calDesc);
 	_vector	GetWindowPos(ID3D11DeviceContext* _DeviceContext, _float _WindowX, _float _WindowY, _float _PositionX, _float _PositionY);
 	_int		CalcRandom(_int _Input);
+	_float Lerp(_float _From, _float _To, _float _DeltaTime, Lerp::EaseType _EaseType = Lerp::EaseType::EaseLiner);
+
+public: /* For.Fonts */
+	HRESULT Add_Font(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, const _tchar* pFontTag, const _tchar* pFontPath);
+	HRESULT Render_Font(const _tchar* pFontTag, _float2 _Position, _fvector vColor, _float2 _Scale, const _tchar* pString);
 	
 private:
 	CGraphic_Device*			m_pGraphic_Device = nullptr;		
@@ -85,6 +92,7 @@ private:
 	CInput_Device*				m_pInput_Device = nullptr;
 	CTarget_Manager*		m_RenderTargetManager = nullptr;
 	CLight_Manager*					m_LightManager = nullptr;
+	CFont_Manager*					m_FontManager = nullptr;
 public:
 
 	static void Release_Engine();

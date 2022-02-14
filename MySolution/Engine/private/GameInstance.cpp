@@ -13,7 +13,9 @@ CGameInstance::CGameInstance()
 	, m_pInput_Device(CInput_Device::GetInstance())
 	, m_RenderTargetManager(CTarget_Manager::GetInstance())
 	, m_LightManager(CLight_Manager::GetInstance())
+	, m_FontManager(CFont_Manager::GetInstance())
 {
+	Safe_AddRef(m_FontManager);
 	Safe_AddRef(m_LightManager);
 	Safe_AddRef(m_pInput_Device);
 	Safe_AddRef(m_pPipeLine);
@@ -304,6 +306,13 @@ HRESULT CGameInstance::Add_Light(ID3D11Device * pDevice, ID3D11DeviceContext * p
 
 	return m_LightManager->Add_Light(pDevice, pDeviceContext, LightDesc, _OutLight);
 }
+HRESULT CGameInstance::ReleaseLight()
+{
+	if (nullptr == m_LightManager)
+		return E_FAIL;
+
+	return m_LightManager->ReleaseLight();
+}
 void CGameInstance::CalcMousePos(Calculator::CALCDESC* _calDesc)
 {
 	Calculator::CalcMousePos(_calDesc);
@@ -317,6 +326,27 @@ _vector CGameInstance::GetWindowPos(ID3D11DeviceContext* _DeviceContext, _float 
 _int CGameInstance::CalcRandom(_int _Input)
 {
 	return Calculator::CalcRandom(_Input);
+}
+
+_float CGameInstance::Lerp(_float _From, _float _To, _float _DeltaTime, Lerp::EaseType _EaseType)
+{
+	return Calculator::Lerp(_From, _To, _DeltaTime, _EaseType);
+}
+
+HRESULT CGameInstance::Add_Font(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, const _tchar * pFontTag, const _tchar * pFontPath)
+{
+	if (nullptr == m_FontManager)
+		return E_FAIL;
+
+	return m_FontManager->Add_Font(pDevice, pDeviceContext, pFontTag, pFontPath);
+}
+
+HRESULT CGameInstance::Render_Font(const _tchar* pFontTag, _float2 _Position, _fvector vColor, _float2 _Scale, const _tchar* pString)
+{
+	if (nullptr == m_FontManager)
+		return E_FAIL;
+
+	return m_FontManager->Render_Font(pFontTag,_Position, vColor, _Scale,pString);
 }
 
 void CGameInstance::Release_Engine()
@@ -348,12 +378,16 @@ void CGameInstance::Release_Engine()
 	if (0 != CTarget_Manager::GetInstance()->DestroyInstance())
 		MSGBOX("Failed to Release RenderTargetManager");
 
+	if (0 != CFont_Manager::GetInstance()->DestroyInstance())
+		MSGBOX("Failed to Release CFont_Manager");
+
 	if (0 != CGraphic_Device::GetInstance()->DestroyInstance())
 		MSGBOX("Failed to Release CGraphic_Device");
 }
 
 void CGameInstance::Free()
 {
+	Safe_Release(m_FontManager);
 	Safe_Release(m_LightManager);
 	Safe_Release(m_pInput_Device);
 	Safe_Release(m_pPipeLine);

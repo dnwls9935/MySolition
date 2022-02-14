@@ -130,12 +130,6 @@
     <Filter Include="00.Utility\03. Component\Collider">
       <UniqueIdentifier>{47ed140b-7568-486b-bce8-4b308c826173}</UniqueIdentifier>
     </Filter>
-    <Filter Include="00.Utility\03. Component\Navigation">
-      <UniqueIdentifier>{e47a1839-75f0-4005-a8af-b7281db51db3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="00.Utility\03. Component\Navigation\Cell">
-      <UniqueIdentifier>{3ff4a857-d6a7-4d4f-b64e-f1cdf0df41c8}</UniqueIdentifier>
-    </Filter>
     <Filter Include="00.Utility\01. Level">
       <UniqueIdentifier>{06e1b7a1-aafa-4cb2-a0c0-be409f60773d}</UniqueIdentifier>
     </Filter>
@@ -150,6 +144,21 @@
     </Filter>
     <Filter Include="00.Utility\03. Component\VIBuffer\PointInstance">
       <UniqueIdentifier>{adc9dc66-117c-45d0-9023-5574acbc4d8b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.Utility\03. Component\Navigation">
+      <UniqueIdentifier>{e47a1839-75f0-4005-a8af-b7281db51db3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.Utility\03. Component\Navigation\Cell">
+      <UniqueIdentifier>{3ff4a857-d6a7-4d4f-b64e-f1cdf0df41c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.Utility\09. Fonts">
+      <UniqueIdentifier>{906d7d18-8d54-46d1-8d84-30055c0bb391}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.Utility\09. Fonts\FontFactory">
+      <UniqueIdentifier>{c74f0369-f6bc-4c84-bf3b-d810d8117e30}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.Utility\09. Fonts\Manager">
+      <UniqueIdentifier>{2e34e8f3-b94c-4a06-813e-89f9f06977ff}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -291,6 +300,15 @@
     <ClInclude Include="..\public\VIBuffer_PointInstance.h">
       <Filter>00.Utility\03. Component\VIBuffer\PointInstance</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\FontFactory.h">
+      <Filter>00.Utility\09. Fonts\FontFactory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\CustumFont.h">
+      <Filter>00.Utility\09. Fonts</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Font_Manager.h">
+      <Filter>00.Utility\09. Fonts\Manager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
@@ -415,6 +433,15 @@
     </ClCompile>
     <ClCompile Include="..\private\VIBuffer_PointInstance.cpp">
       <Filter>00.Utility\03. Component\VIBuffer\PointInstance</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\FontFactory.cpp">
+      <Filter>00.Utility\09. Fonts\FontFactory</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\CustumFont.cpp">
+      <Filter>00.Utility\09. Fonts</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Font_Manager.cpp">
+      <Filter>00.Utility\09. Fonts\Manager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

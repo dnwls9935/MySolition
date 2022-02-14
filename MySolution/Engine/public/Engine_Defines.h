@@ -23,6 +23,8 @@
 #include "DirectxTK/SpriteBatch.h"
 #include "DirectxTK/SpriteFont.h"
 
+#include <ft2build.h>
+#include <freetype\freetype.h>
 
 #include <vector>
 #include <map>

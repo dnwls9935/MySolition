@@ -107,6 +107,7 @@ namespace Engine
 	{
 		unsigned long		_0, _1, _2;
 	} FACEINDICES32;
+
 }
 
 

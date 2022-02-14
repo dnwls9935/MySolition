@@ -26,6 +26,7 @@ private:
 
 private:
 	HRESULT Ready_Layer_BackGround(const _tchar* pLayerTag);
+	HRESULT	 Ready_Layer_SkyBox(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_UI(const _tchar* pLayerTag);
 
 private:

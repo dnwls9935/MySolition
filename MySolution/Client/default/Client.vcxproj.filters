@@ -127,6 +127,21 @@
     <Filter Include="02.GameObject\UI\TitleCard">
       <UniqueIdentifier>{551a59ab-7cdf-4efa-973a-1f85e2d27f0d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\ClapTrap">
+      <UniqueIdentifier>{3f4481aa-5a42-4fb2-b2e5-d51886e68f63}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Camera\Dynamic">
+      <UniqueIdentifier>{15053e67-c530-44f4-b5ea-a1b6c5492300}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Camera\Static">
+      <UniqueIdentifier>{64c16f33-13c7-4bf5-8333-b7b09376a1cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Sky\LogoSky">
+      <UniqueIdentifier>{876d194e-aabf-4e13-82af-20b52216618d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Sky\GameSky">
+      <UniqueIdentifier>{b1f0193a-f3a1-4637-9337-83957c3720c0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -167,12 +182,6 @@
     </ClInclude>
     <ClInclude Include="..\public\Terrain.h">
       <Filter>02.GameObject\Terrain</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\Camera_Dynamic.h">
-      <Filter>02.GameObject\Camera</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\Sky.h">
-      <Filter>02.GameObject\Sky</Filter>
     </ClInclude>
     <ClInclude Include="..\bin\ShaderFiles\Shader_RenderState.hpp">
       <Filter>97.ShaderFiles</Filter>
@@ -240,6 +249,21 @@
     <ClInclude Include="..\public\TitleCard.h">
       <Filter>02.GameObject\UI\TitleCard</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\ClapTrap.h">
+      <Filter>02.GameObject\ClapTrap</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Camera_Dynamic.h">
+      <Filter>02.GameObject\Camera\Dynamic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Camera_Static.h">
+      <Filter>02.GameObject\Camera\Static</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Sky.h">
+      <Filter>02.GameObject\Sky\GameSky</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\LogoSky.h">
+      <Filter>02.GameObject\Sky\LogoSky</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -268,12 +292,6 @@
     </ClCompile>
     <ClCompile Include="..\private\Terrain.cpp">
       <Filter>02.GameObject\Terrain</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\Camera_Dynamic.cpp">
-      <Filter>02.GameObject\Camera</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\Sky.cpp">
-      <Filter>02.GameObject\Sky</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Player.cpp">
       <Filter>02.GameObject\Player</Filter>
@@ -337,6 +355,21 @@
     </ClCompile>
     <ClCompile Include="..\private\TitleCard.cpp">
       <Filter>02.GameObject\UI\TitleCard</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ClapTrap.cpp">
+      <Filter>02.GameObject\ClapTrap</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Camera_Dynamic.cpp">
+      <Filter>02.GameObject\Camera\Dynamic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Camera_Static.cpp">
+      <Filter>02.GameObject\Camera\Static</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Sky.cpp">
+      <Filter>02.GameObject\Sky\GameSky</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\LogoSky.cpp">
+      <Filter>02.GameObject\Sky\LogoSky</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

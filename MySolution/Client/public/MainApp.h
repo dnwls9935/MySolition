@@ -35,6 +35,7 @@ private:
 	/* For. Level_static*/
 	HRESULT Ready_Component_Prototype();
 	HRESULT Ready_GameObject_Prototype();
+	HRESULT Ready_Font();
 	
 public:
 	static CMainApp* Create();
