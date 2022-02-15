@@ -52,7 +52,7 @@ HRESULT CPlayer::NativeConstruct(void * pArg)
 	m_MaxHP = 1000;
 	m_HP = m_MaxHP;
 
-	m_MaxShield = 500;
+	m_MaxShield = 534;
 	m_Shield = m_MaxShield;
 
 
@@ -250,9 +250,9 @@ void CPlayer::Hit(_int _HP)
 		if (m_Shield <= 0)
 			m_Shield = 0;
 
-		for (auto& UI : UIs)
+		for (auto& Num : UIs)
 		{
-			static_cast<HITUI*>(UI)->SetShow(HITUI::SHOW::SHIELD);
+			static_cast<HITUI*>(Num)->SetShow(HITUI::SHOW::SHIELD);
 		}
 	}
 	else {
@@ -261,9 +261,9 @@ void CPlayer::Hit(_int _HP)
 		if (m_HP <= 0)
 			m_HP = 0;
 
-		for (auto& UI : UIs)
+		for (auto& Num : UIs)
 		{
-			static_cast<HITUI*>(UI)->SetShow(HITUI::SHOW::HP);
+			static_cast<HITUI*>(Num)->SetShow(HITUI::SHOW::HP);
 		}
 	}
 	RELEASE_INSTANCE(CGameInstance);

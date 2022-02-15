@@ -45,7 +45,7 @@ HRESULT BossPrimeBeast::NativeConstruct(void * pArg)
 	m_pTransformCom->Set_State(CTransform::STATE_LOOK, TransformMatrix.r[2]);
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, TransformMatrix.r[3]);
 
-	m_MaxHP = 10000;
+	m_MaxHP = 20000;
 	m_HP = m_MaxHP;
 
 	m_pModelCom->SetUp_AnimationIndex((_int)ANIMATION_STATE::SPAWN_CLIMBOVER);
@@ -111,7 +111,7 @@ _int BossPrimeBeast::Tick(_double TimeDelta)
 		m_pTransformCom->Set_State(CTransform::STATE_LOOK, Look);
 	}
 
-	if (TRUE == m_IntroEnd)
+	if (TRUE == m_IntroEnd || FALSE == m_ChargeATT)
 		HitCheck();
 
 	AttackBlockCreate(m_pModelCom->GetCurrentAnimation());

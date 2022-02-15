@@ -183,6 +183,9 @@ PS_OUT PS_BURROW(PS_IN In)
 
 	Out.vColor = g_DiffuseTexture.Sample(DefaultSampler, In.vTexUV);
 
+	Out.vColor.gb = 0.f;
+	Out.vColor.r = 1.f;
+
 	return Out;
 }
 

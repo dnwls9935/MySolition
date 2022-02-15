@@ -2,6 +2,8 @@
 #include "..\public\BurrowDust.h"
 #include "GameInstance.h"
 
+#include <iostream>
+
 BurrowDust::BurrowDust(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
 {
@@ -42,7 +44,11 @@ HRESULT BurrowDust::NativeConstruct(void * pArg)
 
 _int BurrowDust::Tick(_double TimeDelta)
 {
-	m_VIBufferCom->Update(TimeDelta);
+	_bool b = m_VIBufferCom->Update(TimeDelta);
+	if (TRUE == b)
+	{
+		cout << b << endl;
+	}
 
 	return _int();
 }

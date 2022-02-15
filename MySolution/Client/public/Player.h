@@ -67,6 +67,9 @@ public:
 	_bool	GetIsIn() {
 		return m_IsIn;
 	}
+	_int		GetShield() {
+		return m_Shield;
+	}
 
 public:
 	void		PickUp(PickUps::TYPE_ID _ID);

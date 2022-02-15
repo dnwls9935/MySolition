@@ -66,6 +66,8 @@ _int SnowScreen::Tick(_double TimeDelta)
 		m_pTransformCom->Set_State(CTransform::STATE_LOOK, XMVectorSet(0.f, 0.f, 0.f, 0.f));
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, WindowPosition);
 
+		m_X = rand() % 4, m_Y = rand() % 4;
+
 		m_Show = TRUE;	
 		RELEASE_INSTANCE(CGameInstance);
 	}
@@ -104,10 +106,8 @@ HRESULT SnowScreen::Render()
 	m_pVIBufferCom->SetUp_ValueOnShader("g_ViewMatrix", &XMMatrixIdentity(), sizeof(_float) * 16);
 	m_pVIBufferCom->SetUp_ValueOnShader("g_ProjMatrix", &XMMatrixTranspose(m_ProjMatrix), sizeof(XMMATRIX));
 
-	_float X = rand() %  4, Y = rand() % 4;
-
-	m_pVIBufferCom->SetUp_ValueOnShader("g_X", &X, sizeof(_float));
-	m_pVIBufferCom->SetUp_ValueOnShader("g_Y", &Y, sizeof(_float));
+	m_pVIBufferCom->SetUp_ValueOnShader("g_X", &m_X, sizeof(_float));
+	m_pVIBufferCom->SetUp_ValueOnShader("g_Y", &m_Y, sizeof(_float));
 	m_pVIBufferCom->SetUp_ValueOnShader("g_AlphaValue", &m_AlphaValue, sizeof(_float));
 
 	m_pVIBufferCom->SetUp_TextureOnShader("g_DiffuseTexture", m_pTextureCom, 0);

@@ -201,8 +201,6 @@ void SMG::KeyCheck()
 void SMG::Reloading()
 {
 	_int Ammo = m_MaxAmmo - m_Ammo;
-
-	//m_Magazine -= Ammo;
 	_int Mag = m_Magazine - Ammo;
 
 	if (Mag <= 0)
@@ -211,6 +209,7 @@ void SMG::Reloading()
 		m_Magazine = 0;
 	}
 	else {
+		m_Magazine -= Ammo;
 		m_Ammo = m_MaxAmmo;
 	}
 }

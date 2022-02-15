@@ -190,6 +190,7 @@
     <ClInclude Include="..\public\LogoSky.h" />
     <ClInclude Include="..\public\MainApp.h" />
     <ClInclude Include="..\public\Muzzle.h" />
+    <ClInclude Include="..\public\Num.h" />
     <ClInclude Include="..\public\PickUps.h" />
     <ClInclude Include="..\public\Player.h" />
     <ClInclude Include="..\public\PrimeBeast.h" />
@@ -230,6 +231,7 @@
     <ClCompile Include="..\private\LogoSky.cpp" />
     <ClCompile Include="..\private\MainApp.cpp" />
     <ClCompile Include="..\private\Muzzle.cpp" />
+    <ClCompile Include="..\private\Num.cpp" />
     <ClCompile Include="..\private\PickUps.cpp" />
     <ClCompile Include="..\private\Player.cpp" />
     <ClCompile Include="..\private\PrimeBeast.cpp" />

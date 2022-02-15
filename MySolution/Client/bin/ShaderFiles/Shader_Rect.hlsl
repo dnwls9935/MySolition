@@ -226,8 +226,8 @@ VS_OUT VS_AAT(VS_IN In)
 
 	Out.vPosition = mul(vector(In.vPosition, 1.f), matWVP);
 
-	In.vTexUV.x = (In.vTexUV.x / 4) + (0 * 0.25);
-	In.vTexUV.y = (In.vTexUV.y / 4) + (0 * 0.25);
+	In.vTexUV.x = (In.vTexUV.x / 4) + (g_X * 0.25);
+	In.vTexUV.y = (In.vTexUV.y / 4) + (g_Y * 0.25);
 
 	Out.vTexUV = In.vTexUV;
 	return Out;
@@ -263,6 +263,52 @@ PS_OUT PS_REDDISCARD(PS_IN In)
 	return Out;
 };
 
+
+VS_OUT VS_NUM(VS_IN In)
+{
+	VS_OUT			Out = (VS_OUT)0;
+
+	matrix			matWV, matWVP;
+
+	matWV = mul(g_WorldMatrix, g_ViewMatrix);
+	matWVP = mul(matWV, g_ProjMatrix);
+
+	Out.vPosition = mul(vector(In.vPosition, 1.f), matWVP);
+
+	In.vTexUV.x = (In.vTexUV.x / 5) + (g_X * 0.2);
+	In.vTexUV.y = (In.vTexUV.y / 2) + (g_Y * 0.5);
+
+	Out.vTexUV = In.vTexUV;
+	return Out;
+}
+
+PS_OUT PS_NUM(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	Out.vColor = g_DiffuseTexture.Sample(DefaultSampler, In.vTexUV);
+
+	Out.vColor.rgb = 1.f;
+
+	if (Out.vColor.a <= 0)
+		discard;
+
+	return Out;
+};
+
+PS_OUT PS_SLASH(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	Out.vColor = g_DiffuseTexture.Sample(DefaultSampler, In.vTexUV);
+
+	Out.vColor.rgb = 1.f;
+
+	if (Out.vColor.a <= 0)
+		discard;
+
+	return Out;
+};
 
 technique11			DefaultTechnique
 {
@@ -366,5 +412,27 @@ technique11			DefaultTechnique
 		VertexShader = compile vs_5_0 VS_MAIN();
 		GeometryShader = NULL;
 		PixelShader = compile ps_5_0  PS_REDDISCARD();
+	}
+	pass Num
+	{
+		SetRasterizerState(CullMode_Default);
+		SetDepthStencilState(ZBuffer_Default, 0);
+		SetBlendState(BlendDisable, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		/* 진입점함수를 지정한다. */
+		VertexShader = compile vs_5_0 VS_NUM();
+		GeometryShader = NULL;
+		PixelShader = compile ps_5_0  PS_NUM();
+	}
+	pass SLASH
+	{
+		SetRasterizerState(CullMode_Default);
+		SetDepthStencilState(ZBuffer_Default, 0);
+		SetBlendState(BlendDisable, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		/* 진입점함수를 지정한다. */
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		PixelShader = compile ps_5_0  PS_SLASH();
 	}
 }

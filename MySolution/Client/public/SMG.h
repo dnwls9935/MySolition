@@ -45,6 +45,12 @@ public:
 	_int		GetAttackDamage() const {
 		return m_AttackDamage;
 	}
+	_int		GetAmmo() {
+		return m_Ammo;
+	}
+	_int		GetMazine() {
+		return m_Magazine;
+	}
 
 	void		PickUpAmmo();
 
@@ -64,7 +70,7 @@ private:
 	_int			m_MaxAmmo = 35;
 	_int			m_Ammo = 35;
 	_int			m_MaxMagzine = 140;
-	_int			m_Magazine = 70;
+	_int			m_Magazine = 140;
 	_bool		m_Reload = FALSE;
 	_float		m_BarPercent = 0.f;
 

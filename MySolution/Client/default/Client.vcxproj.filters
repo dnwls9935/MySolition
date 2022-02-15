@@ -145,6 +145,9 @@
     <Filter Include="02.GameObject\Effect\BurrowDust">
       <UniqueIdentifier>{9f4ef3bf-556b-4f25-b15c-3ea1c2a9ee26}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\UI\PlayerUI\Num">
+      <UniqueIdentifier>{9ce7d43a-8e23-4950-99a8-f9d2d25761cc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -270,6 +273,9 @@
     <ClInclude Include="..\public\BurrowDust.h">
       <Filter>02.GameObject\Effect\BurrowDust</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Num.h">
+      <Filter>02.GameObject\UI\PlayerUI\Num</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -379,6 +385,9 @@
     </ClCompile>
     <ClCompile Include="..\private\BurrowDust.cpp">
       <Filter>02.GameObject\Effect\BurrowDust</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Num.cpp">
+      <Filter>02.GameObject\UI\PlayerUI\Num</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

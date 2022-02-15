@@ -34,6 +34,9 @@ private:
 	_uint					m_InstNumVertices = 0;
 
 	_vector*				m_Look = nullptr;
+	_double*				m_JTime = nullptr;
+	_float*				m_JHeight = nullptr;
+	_float*				m_JPower = nullptr;
 
 public:
 	static CVIBuffer_PointInstance_Dust* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, const _tchar* pShaderFilePath, _uint _NumInstance);

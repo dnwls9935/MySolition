@@ -15,7 +15,11 @@ CVIBuffer_PointInstance_Dust::CVIBuffer_PointInstance_Dust(const CVIBuffer_Point
 	, m_InstStride(rhs.m_InstStride)
 	, m_InstNumVertices(rhs.m_InstNumVertices)
 	, m_Look(rhs.m_Look)
+	, m_JTime(rhs.m_JTime)
+	, m_JHeight(rhs.m_JHeight)
+	, m_JPower(rhs.m_JPower)
 {
+
 	Safe_AddRef(m_VBInstance);
 }
 
@@ -107,6 +111,21 @@ HRESULT CVIBuffer_PointInstance_Dust::NativeConstruct_Prototype(const _tchar* pS
 		m_Look[i] = XMVectorSetZ(m_Look[i], random);
 	}
 
+	m_JTime = new _double[m_NumInstance];
+	for (_uint i = 0; i < m_NumInstance; i++) {
+		m_JTime[i] = 0;
+	}
+
+	m_JHeight = new _float[m_NumInstance];
+	for (_uint i = 0; i < m_NumInstance; i++) {
+		m_JHeight[i] = 0;
+	}
+
+	m_JPower = new _float[m_NumInstance];
+	for (_uint i = 0; i < m_NumInstance; i++) {
+		m_JPower[i] = (_double)(rand() * (_double)50 / ((_double)RAND_MAX) + (_double)(1));
+	}
+
 	return S_OK;
 }
 
@@ -159,9 +178,16 @@ _bool CVIBuffer_PointInstance_Dust::Update(_double _TimeDelta)
 
 	for (_uint i = 0; i < m_NumInstance; i++)
 	{
-		((VTXMATRIX*)SubResource.pData)[i].vPosition.x += XMVectorGetX(m_Look[i]);
-		((VTXMATRIX*)SubResource.pData)[i].vPosition.y += XMVectorGetY(m_Look[i]);
-		((VTXMATRIX*)SubResource.pData)[i].vPosition.z += XMVectorGetZ(m_Look[i]);
+		//m_JHeight[i] = (m_JTime[i] * m_JTime[i] - m_JPower[i] * m_JTime[i]) / 4.f;
+		//m_JTime[i] += _TimeDelta;
+
+		//((VTXMATRIX*)SubResource.pData)[i].vPosition.y = m_JHeight[i];
+		((VTXMATRIX*)SubResource.pData)[i].vPosition.y += XMVectorGetY(m_Look[i]) * 0.01f ;
+		/*((VTXMATRIX*)SubResource.pData)[i].vPosition.x += XMVectorGetX(m_Look[i]) * _TimeDelta;
+		((VTXMATRIX*)SubResource.pData)[i].vPosition.z += XMVectorGetZ(m_Look[i]) * _TimeDelta;*/
+
+		/*if (-0.5f <= ((VTXMATRIX*)SubResource.pData)[i].vPosition.y)
+			HitBottom = FALSE;*/
 	}
 
 	m_pDeviceContext->Unmap(m_VBInstance, 0);
@@ -219,7 +245,9 @@ void CVIBuffer_PointInstance_Dust::Free()
 	if (FALSE == m_isCloned)
 	{
 		Safe_Delete_Array(m_Look);
-		Safe_Delete_Array(m_Look);
+		Safe_Delete_Array(m_JTime);
+		Safe_Delete_Array(m_JPower);
+		Safe_Delete_Array(m_JHeight);
 	}
 
 	Safe_Release(m_VBInstance);

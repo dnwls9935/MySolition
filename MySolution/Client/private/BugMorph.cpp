@@ -145,8 +145,8 @@ _int BugMorph::LateTick(_double TimeDelta)
 	if (TRUE == m_FrameStart && FALSE == m_IntroEnd &&
 		(_uint)ANIMATION_STATE::SPAWN == m_pModelCom->GetCurrentAnimation())
 	{
-		if (FAILED(pGameInstance->Add_GameObjectToLayer(LEVEL_GAMEPLAY, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Effect_BurrowDust"), &m_MyPosition)))
-			return E_FAIL;
+		//if (FAILED(pGameInstance->Add_GameObjectToLayer(LEVEL_GAMEPLAY, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Effect_BurrowDust"), &m_MyPosition)))
+			//return E_FAIL;
 	}
 
 
@@ -164,6 +164,7 @@ _int BugMorph::LateTick(_double TimeDelta)
 			m_BurrowCount--;
 			m_BurrowLoop = TRUE;
 			m_pModelCom->SetUp_AnimationIndex((_uint)ANIMATION_STATE::BURROW_EXIT);
+			m_BurrowStart = TRUE;
 		}
 		else if ((_uint)ANIMATION_STATE::BURROW_EXIT == m_pModelCom->GetCurrentAnimation())
 		{
@@ -197,6 +198,11 @@ HRESULT BugMorph::Render()
 {
 	if (TRUE == m_Dead)
 		return S_OK;
+
+	if (TRUE == m_BurrowStart) {
+		m_BurrowStart = FALSE;
+		return S_OK;
+	}
 
 	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 
@@ -396,7 +402,7 @@ HRESULT BugMorph::SetUp_Components()
 {
 	/* Com_Transform */
 	CTransform::TRANSFORMDESC		TransformDesc;
-	TransformDesc.fSpeedPerSec = 15.f;
+	TransformDesc.fSpeedPerSec = 8.f;
 	TransformDesc.fRotationPerSec = XMConvertToRadians(120.0f);
 
 	if (FAILED(__super::SetUp_Components(LEVEL_STATIC, TEXT("Prototype_Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &TransformDesc)))

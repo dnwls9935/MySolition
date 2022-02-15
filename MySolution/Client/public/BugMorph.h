@@ -79,6 +79,7 @@ private:
 	_bool					m_BurrowLoop = FALSE;
 	_double				m_BurrowTime = 0.0;
 	_int						m_BurrowCount = 1;
+	_bool					m_BurrowStart = FALSE;
 
 private:
 	_bool					m_MeleeAttackIsCollisionCheck = FALSE;
