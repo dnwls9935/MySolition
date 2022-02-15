@@ -142,6 +142,9 @@
     <Filter Include="02.GameObject\Sky\GameSky">
       <UniqueIdentifier>{b1f0193a-f3a1-4637-9337-83957c3720c0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\Effect\BurrowDust">
+      <UniqueIdentifier>{9f4ef3bf-556b-4f25-b15c-3ea1c2a9ee26}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -264,6 +267,9 @@
     <ClInclude Include="..\public\LogoSky.h">
       <Filter>02.GameObject\Sky\LogoSky</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\BurrowDust.h">
+      <Filter>02.GameObject\Effect\BurrowDust</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -370,6 +376,9 @@
     </ClCompile>
     <ClCompile Include="..\private\LogoSky.cpp">
       <Filter>02.GameObject\Sky\LogoSky</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\BurrowDust.cpp">
+      <Filter>02.GameObject\Effect\BurrowDust</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

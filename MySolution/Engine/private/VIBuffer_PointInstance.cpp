@@ -16,6 +16,7 @@ CVIBuffer_PointInstance::CVIBuffer_PointInstance(const CVIBuffer_PointInstance &
 	, m_InstNumVertices(rhs.m_InstNumVertices)
 	, m_DropSpeed(rhs.m_DropSpeed)
 	, m_DropX(rhs.m_DropX)
+	, m_DropZ(rhs.m_DropZ)
 {
 	Safe_AddRef(m_VBInstance);
 }
@@ -108,6 +109,11 @@ HRESULT CVIBuffer_PointInstance::NativeConstruct_Prototype(const _tchar* pShader
 		m_DropX[i] = rand() % 20 + 20;
 	}
 
+	m_DropZ = new _double[m_NumInstance];
+	for (_uint i = 0; i < m_NumInstance; i++) {
+		m_DropZ[i] = rand() % 10 - 10;
+	}
+
 	return S_OK;
 }
 
@@ -160,11 +166,13 @@ void CVIBuffer_PointInstance::Update(_double _TimeDelta)
 	{
 		((VTXMATRIX*)SubResource.pData)[i].vPosition.y -= m_DropSpeed[i] * _TimeDelta;
 		((VTXMATRIX*)SubResource.pData)[i].vPosition.x -= m_DropX[i] * _TimeDelta;
+		((VTXMATRIX*)SubResource.pData)[i].vPosition.z -= m_DropZ[i] * _TimeDelta;
 
 		if (0 > ((VTXMATRIX*)SubResource.pData)[i].vPosition.y)
 		{
 			((VTXMATRIX*)SubResource.pData)[i].vPosition.y = 50.f;
 			((VTXMATRIX*)SubResource.pData)[i].vPosition.x = rand() % 200;
+			((VTXMATRIX*)SubResource.pData)[i].vPosition.z = rand() % 200;
 		}
 	}
 
@@ -202,10 +210,11 @@ void CVIBuffer_PointInstance::Free()
 	__super::Free();
 
 	if (FALSE == m_isCloned)
+	{
 		Safe_Delete_Array(m_DropSpeed);
-
-	if (FALSE == m_isCloned)
 		Safe_Delete_Array(m_DropX);
+		Safe_Delete_Array(m_DropZ);
+	}
 
 	Safe_Release(m_VBInstance);
 }

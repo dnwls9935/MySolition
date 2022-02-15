@@ -92,6 +92,7 @@ public:
 	static CModel* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, const char* pMeshFilePath, const char* pMeshFileName, const _tchar* pShaderFilePath, _fmatrix PivotMatrix, TYPE eMeshType);
 	virtual CComponent* Clone(void* pArg) override;
 	virtual void Free() override;
+
 };
 
 END

@@ -95,7 +95,7 @@ HRESULT CAnimation::Update_TransformationMatrix(_double TimeDelta)
 		/* 특정 키프레임과 키프=레임 사이에 있다.  */
 		else
 		{
-			if (m_TrackPositionAcc >= KeyFrames[iCurrentKeyFrameIndex + 1]->Time)
+			while (m_TrackPositionAcc >= KeyFrames[iCurrentKeyFrameIndex + 1]->Time)
 				m_Channels[i]->Set_CurrentKeyFrameIndex(++iCurrentKeyFrameIndex);
 
 			_float		fRatio = (_float)((m_TrackPositionAcc - KeyFrames[iCurrentKeyFrameIndex]->Time) /

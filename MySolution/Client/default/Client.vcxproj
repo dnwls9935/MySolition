@@ -170,6 +170,7 @@
     <ClInclude Include="..\public\BossPrimeBeast.h" />
     <ClInclude Include="..\public\BossPrimeBeastRock.h" />
     <ClInclude Include="..\public\BugMorph.h" />
+    <ClInclude Include="..\public\BurrowDust.h" />
     <ClInclude Include="..\public\Camera_Dynamic.h" />
     <ClInclude Include="..\public\Camera_Static.h" />
     <ClInclude Include="..\public\ClapTrap.h" />
@@ -210,6 +211,7 @@
     <ClCompile Include="..\private\BossPrimeBeast.cpp" />
     <ClCompile Include="..\private\BossPrimeBeastRock.cpp" />
     <ClCompile Include="..\private\BugMorph.cpp" />
+    <ClCompile Include="..\private\BurrowDust.cpp" />
     <ClCompile Include="..\private\Camera_Dynamic.cpp" />
     <ClCompile Include="..\private\Camera_Static.cpp" />
     <ClCompile Include="..\private\ClapTrap.cpp" />

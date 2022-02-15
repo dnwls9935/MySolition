@@ -31,6 +31,7 @@ private:
 	_uint					m_InstNumVertices = 0;
 	_double*			m_DropSpeed = nullptr;
 	_double*			m_DropX = nullptr;
+	_double*			m_DropZ = nullptr;
 
 public:
 	static CVIBuffer_PointInstance* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, const _tchar* pShaderFilePath, _uint _NumInstance);

@@ -160,6 +160,12 @@
     <Filter Include="00.Utility\09. Fonts\Manager">
       <UniqueIdentifier>{2e34e8f3-b94c-4a06-813e-89f9f06977ff}</UniqueIdentifier>
     </Filter>
+    <Filter Include="00.Utility\03. Component\VIBuffer\PointInstance\Snow">
+      <UniqueIdentifier>{afe44eff-3854-444a-b366-a946b11a83ea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.Utility\03. Component\VIBuffer\PointInstance\Dust">
+      <UniqueIdentifier>{f668faa8-8c62-44be-8fe5-2e55e94ab95b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Base.h">
@@ -297,9 +303,6 @@
     <ClInclude Include="..\public\HP.h">
       <Filter>00.Utility\03. Component\Billboad\HP</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\VIBuffer_PointInstance.h">
-      <Filter>00.Utility\03. Component\VIBuffer\PointInstance</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\FontFactory.h">
       <Filter>00.Utility\09. Fonts\FontFactory</Filter>
     </ClInclude>
@@ -308,6 +311,12 @@
     </ClInclude>
     <ClInclude Include="..\public\Font_Manager.h">
       <Filter>00.Utility\09. Fonts\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\VIBuffer_PointInstance.h">
+      <Filter>00.Utility\03. Component\VIBuffer\PointInstance\Snow</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\VIBuffer_PointInstance_Dust.h">
+      <Filter>00.Utility\03. Component\VIBuffer\PointInstance\Dust</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -431,9 +440,6 @@
     <ClCompile Include="..\private\HP.cpp">
       <Filter>00.Utility\03. Component\Billboad\HP</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\VIBuffer_PointInstance.cpp">
-      <Filter>00.Utility\03. Component\VIBuffer\PointInstance</Filter>
-    </ClCompile>
     <ClCompile Include="..\private\FontFactory.cpp">
       <Filter>00.Utility\09. Fonts\FontFactory</Filter>
     </ClCompile>
@@ -442,6 +448,12 @@
     </ClCompile>
     <ClCompile Include="..\private\Font_Manager.cpp">
       <Filter>00.Utility\09. Fonts\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\VIBuffer_PointInstance.cpp">
+      <Filter>00.Utility\03. Component\VIBuffer\PointInstance\Snow</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\VIBuffer_PointInstance_Dust.cpp">
+      <Filter>00.Utility\03. Component\VIBuffer\PointInstance\Dust</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

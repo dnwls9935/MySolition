@@ -131,6 +131,7 @@ _int BugMorph::Tick(_double TimeDelta)
 
 _int BugMorph::LateTick(_double TimeDelta)
 {
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 	if (nullptr != m_pRendererCom)
 	{
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
@@ -140,6 +141,14 @@ _int BugMorph::LateTick(_double TimeDelta)
 		m_pRendererCom->Add_RenderComGroup(CRenderer::RENDERCOM_COLLIDER, m_ColliderLowerJaw);
 #endif // !_DEBUG
 	}
+
+	if (TRUE == m_FrameStart && FALSE == m_IntroEnd &&
+		(_uint)ANIMATION_STATE::SPAWN == m_pModelCom->GetCurrentAnimation())
+	{
+		if (FAILED(pGameInstance->Add_GameObjectToLayer(LEVEL_GAMEPLAY, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Effect_BurrowDust"), &m_MyPosition)))
+			return E_FAIL;
+	}
+
 
 	if (m_pModelCom->GetAnimationFinished())
 	{
@@ -180,6 +189,7 @@ _int BugMorph::LateTick(_double TimeDelta)
 		m_pModelCom->SetUp_AnimationIndex((_uint)ANIMATION_STATE::BURROW_ENTER);
 	}
 
+	RELEASE_INSTANCE(CGameInstance);
 	return _int();
 }
 

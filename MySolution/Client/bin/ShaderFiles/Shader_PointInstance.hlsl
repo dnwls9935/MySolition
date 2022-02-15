@@ -162,9 +162,34 @@ PS_OUT PS_MAIN(PS_IN In)
 	return Out;
 }
 
+VS_OUT VS_BURROW(VS_IN In)
+{
+	VS_OUT	Out = (VS_OUT)0;
+
+	vector	vPosition = mul(vector(In.vPosition, 1.f), In.TransformMatrix);
+
+	Out.vPosition = mul(vPosition, g_WorldMatrix);
+	Out.vPSize = In.vPSize;
+
+	Out.vShow = true;
+
+	return Out;
+}
+
+
+PS_OUT PS_BURROW(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	Out.vColor = g_DiffuseTexture.Sample(DefaultSampler, In.vTexUV);
+
+	return Out;
+}
+
+
 technique11			DefaultTechnique
 {
-	pass Normal
+	pass Snow
 	{
 		SetRasterizerState(CullMode_Default);
 		SetDepthStencilState(ZBuffer_Default, 0);
@@ -173,6 +198,16 @@ technique11			DefaultTechnique
 		VertexShader = compile vs_5_0 VS_MAIN();
 		GeometryShader = compile gs_5_0 GS_MAIN();
 		PixelShader = compile ps_5_0  PS_MAIN();
+	}
+	pass BurrowDust
+	{
+		SetRasterizerState(CullMode_Default);
+		SetDepthStencilState(ZBuffer_Default, 0);
+		SetBlendState(AlphaBlending, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_BURROW();
+		GeometryShader = compile gs_5_0 GS_MAIN();
+		PixelShader = compile ps_5_0  PS_BURROW();
 	}
 }
 

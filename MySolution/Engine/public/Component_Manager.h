@@ -11,6 +11,7 @@
 #include "VIBuffer_Cube.h"
 #include "VIBuffer_TriangleToLine.h"
 #include "VIBuffer_PointInstance.h"
+#include "VIBuffer_PointInstance_Dust.h"
 #include "HP.h"
 #include "ThreeWaySystem.h"
 
