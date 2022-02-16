@@ -17,6 +17,10 @@ cbuffer	BoneMatricesBuffer
 	BoneMatrixArray		g_BoneMatrices;
 };
 
+cbuffer CamDesc {
+	vector g_vCamPosition = (vector)0;
+	bool g_RimLight = false;
+};
 
 texture2D	g_DiffuseTexture;
 
@@ -75,12 +79,10 @@ VS_OUT VS_MAIN_DYNAMIC(VS_IN In)
 
 	float		fWeightw = 1.f - (In.vBlendWeight.x + In.vBlendWeight.y + In.vBlendWeight.z);
 
-
 	matrix			BoneMatrix = g_BoneMatrices.Bone[In.vBlendIndex.x] * In.vBlendWeight.x +
 		g_BoneMatrices.Bone[In.vBlendIndex.y] * In.vBlendWeight.y +
 		g_BoneMatrices.Bone[In.vBlendIndex.z] * In.vBlendWeight.z +
 		g_BoneMatrices.Bone[In.vBlendIndex.w] * In.vBlendWeight.w;
-
 
 	matWV = mul(g_WorldMatrix, g_ViewMatrix);
 	matWVP = mul(matWV, g_ProjMatrix);
@@ -96,7 +98,6 @@ VS_OUT VS_MAIN_DYNAMIC(VS_IN In)
 	Out.vProjPos = Out.vPosition;
 
 	return Out;
-
 }
 
 struct PS_IN
@@ -119,6 +120,22 @@ PS_OUT PS_MAIN(PS_IN In)
 	PS_OUT		Out = (PS_OUT)0;
 
 	Out.vDiffuse = g_DiffuseTexture.Sample(DefaultSampler, In.vTexUV);
+
+	if (true == g_RimLight)
+	{
+		float3 CamDir = normalize(g_vCamPosition - In.vPosition);
+
+		float Rim = 1 - saturate(max(0, dot(In.vNormal, -CamDir)));
+		Rim = pow(Rim, 3.0f);
+
+		vector RimColor = { 0.8f, 0.2f, 0.1f ,1.f };
+
+		RimColor = Rim * RimColor;
+
+		Out.vDiffuse *= RimColor;
+	}
+
+
 	Out.vDiffuse.a = 1.f;
 
 	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);

@@ -187,6 +187,10 @@ HRESULT BossPrimeBeast::Render()
 	m_pModelCom->SetUp_ValueOnShader("g_ViewMatrix", &XMMatrixTranspose(pGameInstance->Get_Transform(CPipeLine::D3DTS_VIEW)), sizeof(_matrix));
 	m_pModelCom->SetUp_ValueOnShader("g_ProjMatrix", &XMMatrixTranspose(pGameInstance->Get_Transform(CPipeLine::D3DTS_PROJECTION)), sizeof(_matrix));
 
+	m_pModelCom->SetUp_ValueOnShader("g_vCamPosition", (void*)&pGameInstance->Get_CamPosition(), sizeof(_vector));
+	m_pModelCom->SetUp_ValueOnShader("g_RimLight", &m_ChargeATT, sizeof(_bool));
+
+
 	if (FAILED(m_pModelCom->Bind_Buffers()))
 		return E_FAIL;
 
