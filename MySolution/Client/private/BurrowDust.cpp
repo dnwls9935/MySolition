@@ -44,11 +44,7 @@ HRESULT BurrowDust::NativeConstruct(void * pArg)
 
 _int BurrowDust::Tick(_double TimeDelta)
 {
-	_bool b = m_VIBufferCom->Update(TimeDelta);
-	if (TRUE == b)
-	{
-		cout << b << endl;
-	}
+	m_VIBufferCom->Update(TimeDelta);
 
 	return _int();
 }
@@ -58,7 +54,7 @@ _int BurrowDust::LateTick(_double TimeDelta)
 	if (FALSE == m_Dead &&nullptr != m_pRendererCom)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_ALPHA, this);
 
-	return _int();
+	return m_Dead;
 }
 
 HRESULT BurrowDust::Render()
@@ -101,11 +97,11 @@ HRESULT BurrowDust::SetUp_Components()
 		return E_FAIL;
 
 	/* Com_Texture */
-	if (FAILED(__super::SetUp_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_SnowFlakesDif"), TEXT("Com_Texture"), (CComponent**)&m_TextureCom)))
+	if (FAILED(__super::SetUp_Components(LEVEL_LOGO, TEXT("Prototype_Component_Texture_SnowFlakesDif"), TEXT("Com_Texture"), (CComponent**)&m_TextureCom)))
 		return E_FAIL;
 
 	/* Com_VIBuffer */
-	if (FAILED(__super::SetUp_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_PointInstace_Dust"), TEXT("Com_Buffer"), (CComponent**)&m_VIBufferCom)))
+	if (FAILED(__super::SetUp_Components(LEVEL_LOGO, TEXT("Prototype_Component_VIBuffer_PointInstace_Dust"), TEXT("Com_Buffer"), (CComponent**)&m_VIBufferCom)))
 		return E_FAIL;
 
 	return S_OK;

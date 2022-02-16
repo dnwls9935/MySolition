@@ -48,6 +48,8 @@ struct VS_OUT
 	float4		vNormal : NORMAL;
 	float2		vTexUV : TEXCOORD0;
 	float4		vProjPos : TEXCOORD1;
+
+	float4		vRimPos : RIM;
 };
 
 VS_OUT VS_MAIN_STATIC(VS_IN In)
@@ -97,6 +99,10 @@ VS_OUT VS_MAIN_DYNAMIC(VS_IN In)
 	Out.vTexUV = In.vTexUV;
 	Out.vProjPos = Out.vPosition;
 
+	vector Rim = mul(vector(In.vPosition, 1.f), BoneMatrix);
+	Rim = mul(Rim, g_WorldMatrix);
+	Out.vRimPos = Rim;
+
 	return Out;
 }
 
@@ -106,6 +112,8 @@ struct PS_IN
 	float4		vNormal : NORMAL;
 	float2		vTexUV : TEXCOORD0;
 	float4		vProjPos : TEXCOORD1;
+
+	float4		vRimPos : RIM;
 };
 
 struct PS_OUT
@@ -123,16 +131,18 @@ PS_OUT PS_MAIN(PS_IN In)
 
 	if (true == g_RimLight)
 	{
-		float3 CamDir = normalize(g_vCamPosition - In.vPosition);
+		float Rim = 0;
+		vector ViewDir = normalize(g_vCamPosition - In.vRimPos);
 
-		float Rim = 1 - saturate(max(0, dot(In.vNormal, -CamDir)));
-		Rim = pow(Rim, 3.0f);
+		Rim = 1 - saturate(dot(In.vNormal, ViewDir));
 
-		vector RimColor = { 0.8f, 0.2f, 0.1f ,1.f };
+		Rim = pow(Rim, 2.f);
+
+		float3 RimColor = float3(0.8f, 0.2f, 0.1f);
 
 		RimColor = Rim * RimColor;
 
-		Out.vDiffuse *= RimColor;
+		Out.vDiffuse *= float4(RimColor, 1);
 	}
 
 

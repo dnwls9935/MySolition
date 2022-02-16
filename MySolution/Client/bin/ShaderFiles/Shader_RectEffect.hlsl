@@ -95,12 +95,9 @@ PS_OUT PS_MAIN_BLEND(PS_IN In)
 
 	Out.vColor = Diffuse;
 	
-	/*Out.vColor = Diffuse + Compare * (1 - 0.2f);
-	if (Out.vColor.r <= 0.0 &&Out.vColor.g <= 0.0 && Out.vColor.b <= 0.0)
-		discard;
 
-	if (Out.vColor.a <= 0.3)
-		discard;*/
+	if (Out.vColor.a <= 0.0)
+		discard;
 	
 	return Out;
 }

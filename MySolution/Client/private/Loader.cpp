@@ -108,6 +108,15 @@ HRESULT CLoader::Loading_ForLogo()
 		return E_FAIL;
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_LogoCube"), LogoSky::Create(m_pDevice, m_pDeviceContext))))
 		return E_FAIL;
+
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOGO, TEXT("Prototype_Component_VIBuffer_PointInstace_Dust"), CVIBuffer_PointInstance_Dust::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/ShaderFiles/Shader_PointInstance.hlsl"), 50))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOGO, TEXT("Prototype_Component_Texture_SnowFlakesDif"), CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Textures/Snow/Snow_Flakes_Dif.png")))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Effect_BurrowDust"), BurrowDust::Create(m_pDevice, m_pDeviceContext))))
+		return E_FAIL;
+
 	
 	wsprintf(m_szLoading, TEXT("로딩이 완료되었습니다. "));
 	m_isFinished = true;
@@ -132,7 +141,7 @@ HRESULT CLoader::Loading_ForGamePlay()
 		return E_FAIL;
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_PointInstace"), CVIBuffer_PointInstance::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/ShaderFiles/Shader_PointInstance.hlsl"), 4/*0000*/))))
 		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_PointInstace_Dust"), CVIBuffer_PointInstance_Dust::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/ShaderFiles/Shader_PointInstance.hlsl"), 4))))
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_PointInstace_Dust"), CVIBuffer_PointInstance_Dust::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/ShaderFiles/Shader_PointInstance.hlsl"), 30))))
 		return E_FAIL;
 
 	wsprintf(m_szLoading, TEXT("텍스쳐를 생성한다. "));

@@ -145,8 +145,8 @@ _int BugMorph::LateTick(_double TimeDelta)
 	if (TRUE == m_FrameStart && FALSE == m_IntroEnd &&
 		(_uint)ANIMATION_STATE::SPAWN == m_pModelCom->GetCurrentAnimation())
 	{
-		//if (FAILED(pGameInstance->Add_GameObjectToLayer(LEVEL_GAMEPLAY, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Effect_BurrowDust"), &m_MyPosition)))
-			//return E_FAIL;
+		if (FAILED(pGameInstance->Add_GameObjectToLayer(LEVEL_GAMEPLAY, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Effect_BurrowDust"), &m_MyPosition)))
+			return E_FAIL;
 	}
 
 

@@ -32,13 +32,27 @@ HRESULT ClapTrap::NativeConstruct(void * pArg)
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, 0.f, 0.f, 1.f));
 
+
+	RELEASE_INSTANCE(CGameInstance);
+
 	return S_OK;
 }
 
 _int ClapTrap::Tick(_double TimeDelta)
 {
 	m_pModelCom->Update_CombinedTransformationMatrix(TimeDelta);
-	
+
+
+	_vector m_MyPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+	if (pGameInstance->Get_DIKeyState(DIK_M) & 0x80)
+	{
+		if (FAILED(pGameInstance->Add_GameObjectToLayer(LEVEL_LOGO, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Effect_BurrowDust"), &m_MyPosition)))
+			return E_FAIL;
+	}
+
 	return _int();
 }
 
@@ -63,6 +77,7 @@ HRESULT ClapTrap::Render()
 	m_pModelCom->SetUp_ValueOnShader("g_WorldMatrix", &XMMatrixTranspose(m_pTransformCom->Get_WorldMatrix()), sizeof(_matrix));
 	m_pModelCom->SetUp_ValueOnShader("g_ViewMatrix", &XMMatrixTranspose(pGameInstance->Get_Transform(CPipeLine::D3DTS_VIEW)), sizeof(_matrix));
 	m_pModelCom->SetUp_ValueOnShader("g_ProjMatrix", &XMMatrixTranspose(pGameInstance->Get_Transform(CPipeLine::D3DTS_PROJECTION)), sizeof(_matrix));
+
 
 	if (FAILED(m_pModelCom->Bind_Buffers()))
 		return E_FAIL;

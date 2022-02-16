@@ -1,5 +1,7 @@
 #include "..\public\VIBuffer_PointInstance_Dust.h"
 
+#include "Calculator.h"
+
 CVIBuffer_PointInstance_Dust::CVIBuffer_PointInstance_Dust(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CVIBuffer(pDevice, pDeviceContext)
 {
@@ -14,10 +16,8 @@ CVIBuffer_PointInstance_Dust::CVIBuffer_PointInstance_Dust(const CVIBuffer_Point
 	, m_VBInstSubresourceData(rhs.m_VBInstSubresourceData)
 	, m_InstStride(rhs.m_InstStride)
 	, m_InstNumVertices(rhs.m_InstNumVertices)
-	, m_Look(rhs.m_Look)
-	, m_JTime(rhs.m_JTime)
-	, m_JHeight(rhs.m_JHeight)
-	, m_JPower(rhs.m_JPower)
+	, m_Dir(rhs.m_Dir)
+	, m_Speed(rhs.m_Speed)
 {
 
 	Safe_AddRef(m_VBInstance);
@@ -50,7 +50,7 @@ HRESULT CVIBuffer_PointInstance_Dust::NativeConstruct_Prototype(const _tchar* pS
 	for (_uint i = 0; i < m_iNumVertices; i++)
 	{
 		((VTXPOINT*)m_pVertices)[i].vPosition = _float3(0.0f, 0.0f, 0.0f);
-		((VTXPOINT*)m_pVertices)[i].vPSize = _float2(10.f, 10.f);
+		((VTXPOINT*)m_pVertices)[i].vPSize = _float2(1.f, 1.f);
 	}
 
 	m_VBSubresourceData.pSysMem = m_pVertices;
@@ -70,7 +70,8 @@ HRESULT CVIBuffer_PointInstance_Dust::NativeConstruct_Prototype(const _tchar* pS
 	m_VBInstDesc.MiscFlags = 0;
 	m_VBInstDesc.StructureByteStride = m_InstStride;
 
-	ZeroMemory(&m_VBInstSubresourceData, sizeof(D3D11_SUBRESOURCE_DATA));
+	/* 복사본일때 생성 */
+	/*ZeroMemory(&m_VBInstSubresourceData, sizeof(D3D11_SUBRESOURCE_DATA));
 	VTXMATRIX*		pVertices = new VTXMATRIX[m_InstNumVertices];
 	ZeroMemory(pVertices, sizeof(VTXMATRIX) * m_InstNumVertices);
 
@@ -85,7 +86,7 @@ HRESULT CVIBuffer_PointInstance_Dust::NativeConstruct_Prototype(const _tchar* pS
 	if (FAILED(m_pDevice->CreateBuffer(&m_VBInstDesc, &m_VBInstSubresourceData, &m_VBInstance)))
 		return E_FAIL;
 
-	Safe_Delete_Array(pVertices);
+	Safe_Delete_Array(pVertices);*/
 
 	D3D11_INPUT_ELEMENT_DESC		ElementDescs[] =
 	{
@@ -101,30 +102,21 @@ HRESULT CVIBuffer_PointInstance_Dust::NativeConstruct_Prototype(const _tchar* pS
 	if (FAILED(Compile_ShaderFiles(pShaderFilePath, ElementDescs, 6)))
 		return E_FAIL;
 
-	m_Look = new _vector[m_NumInstance];
+	m_Dir = new _vector[m_NumInstance];
 	for (_uint i = 0; i < m_NumInstance; i++) {
 		_double random = (_double)(rand() * (_double)1 / ((_double)RAND_MAX) + (_double)(1)) - 1;
-		m_Look[i] = XMVectorSetX(m_Look[i], random);
+		m_Dir[i] = XMVectorSetX(m_Dir[i], random);
+		random = (_double)(rand() * (_double)1 / ((_double)RAND_MAX) + (_double)(1)) + 1;
+		m_Dir[i] = XMVectorSetY(m_Dir[i], random);
 		random = (_double)(rand() * (_double)1 / ((_double)RAND_MAX) + (_double)(1)) - 1;
-		m_Look[i] = XMVectorSetY(m_Look[i], 0);
-		random = (_double)(rand() * (_double)1 / ((_double)RAND_MAX) + (_double)(1)) - 1;
-		m_Look[i] = XMVectorSetZ(m_Look[i], random);
+		m_Dir[i] = XMVectorSetZ(m_Dir[i], random);
 	}
 
-	m_JTime = new _double[m_NumInstance];
+	m_Speed = new _double[m_NumInstance];
 	for (_uint i = 0; i < m_NumInstance; i++) {
-		m_JTime[i] = 0;
+		m_Speed[i] = rand() % 20 + 20;
 	}
 
-	m_JHeight = new _float[m_NumInstance];
-	for (_uint i = 0; i < m_NumInstance; i++) {
-		m_JHeight[i] = 0;
-	}
-
-	m_JPower = new _float[m_NumInstance];
-	for (_uint i = 0; i < m_NumInstance; i++) {
-		m_JPower[i] = (_double)(rand() * (_double)50 / ((_double)RAND_MAX) + (_double)(1));
-	}
 
 	return S_OK;
 }
@@ -133,6 +125,23 @@ HRESULT CVIBuffer_PointInstance_Dust::NativeConstruct(void * pArg)
 {
 	if (FAILED(__super::NativeConstruct(pArg)))
 		return E_FAIL;
+
+	ZeroMemory(&m_VBInstSubresourceData, sizeof(D3D11_SUBRESOURCE_DATA));
+	VTXMATRIX*		pVertices = new VTXMATRIX[m_InstNumVertices];
+	ZeroMemory(pVertices, sizeof(VTXMATRIX) * m_InstNumVertices);
+
+	for (_uint i = 0; i < m_InstNumVertices; i++) {
+		pVertices[i].vRight = _float4(1.f, 0.f, 0.f, 0.f);
+		pVertices[i].vUp = _float4(0.f, 1.f, 0.f, 0.f);
+		pVertices[i].vLook = _float4(0.f, 0.f, 1.f, 0.f);
+		pVertices[i].vPosition = _float4(0.f, 0.f, 0.f, 1.f);
+	}
+	m_VBInstSubresourceData.pSysMem = pVertices;
+
+	if (FAILED(m_pDevice->CreateBuffer(&m_VBInstDesc, &m_VBInstSubresourceData, &m_VBInstance)))
+		return E_FAIL;
+
+	Safe_Delete_Array(pVertices); 
 
 	return S_OK;
 }
@@ -174,42 +183,26 @@ _bool CVIBuffer_PointInstance_Dust::Update(_double _TimeDelta)
 	D3D11_MAPPED_SUBRESOURCE		SubResource;
 	m_pDeviceContext->Map(m_VBInstance, 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &SubResource);
 
-	_bool HitBottom = TRUE;
+	_bool HitBottom = FALSE;
 
 	for (_uint i = 0; i < m_NumInstance; i++)
 	{
-		//m_JHeight[i] = (m_JTime[i] * m_JTime[i] - m_JPower[i] * m_JTime[i]) / 4.f;
-		//m_JTime[i] += _TimeDelta;
+		_vector Pos = XMLoadFloat4(&((VTXMATRIX*)SubResource.pData)[i].vPosition);
 
-		//((VTXMATRIX*)SubResource.pData)[i].vPosition.y = m_JHeight[i];
-		((VTXMATRIX*)SubResource.pData)[i].vPosition.y += XMVectorGetY(m_Look[i]) * 0.01f ;
-		/*((VTXMATRIX*)SubResource.pData)[i].vPosition.x += XMVectorGetX(m_Look[i]) * _TimeDelta;
-		((VTXMATRIX*)SubResource.pData)[i].vPosition.z += XMVectorGetZ(m_Look[i]) * _TimeDelta;*/
+		Pos += (XMVector3Normalize(m_Dir[i]) * m_Speed[i] * _TimeDelta);
 
-		/*if (-0.5f <= ((VTXMATRIX*)SubResource.pData)[i].vPosition.y)
-			HitBottom = FALSE;*/
+		((VTXMATRIX*)SubResource.pData)[i].vPosition.x = XMVectorGetX(Pos);
+		((VTXMATRIX*)SubResource.pData)[i].vPosition.y = XMVectorGetY(Pos);
+		((VTXMATRIX*)SubResource.pData)[i].vPosition.z = XMVectorGetZ(Pos);
+
+		if (2.0 <= XMVectorGetY(Pos))
+			((VTXMATRIX*)SubResource.pData)[i].vPosition.y = 0;
 	}
 
 	m_pDeviceContext->Unmap(m_VBInstance, 0);
+
 
 	return HitBottom;
-}
-
-HRESULT CVIBuffer_PointInstance_Dust::SettingPosition(_fvector _Position)
-{
-	D3D11_MAPPED_SUBRESOURCE		SubResource;
-	m_pDeviceContext->Map(m_VBInstance, 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &SubResource);
-
-	for (_uint i = 0; i < m_NumInstance; i++)
-	{
-		((VTXMATRIX*)SubResource.pData)[i].vPosition.x = XMVectorGetX(_Position);
-		((VTXMATRIX*)SubResource.pData)[i].vPosition.y = XMVectorGetY(_Position);
-		((VTXMATRIX*)SubResource.pData)[i].vPosition.z = XMVectorGetZ(_Position);
-	}
-
-	m_pDeviceContext->Unmap(m_VBInstance, 0);
-
-	return S_OK;
 }
 
 CVIBuffer_PointInstance_Dust * CVIBuffer_PointInstance_Dust::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, const _tchar* pShaderFilePath, _uint _NumInstance)
@@ -244,10 +237,8 @@ void CVIBuffer_PointInstance_Dust::Free()
 
 	if (FALSE == m_isCloned)
 	{
-		Safe_Delete_Array(m_Look);
-		Safe_Delete_Array(m_JTime);
-		Safe_Delete_Array(m_JPower);
-		Safe_Delete_Array(m_JHeight);
+		Safe_Delete_Array(m_Dir);
+		Safe_Delete_Array(m_Speed);
 	}
 
 	Safe_Release(m_VBInstance);
