@@ -209,6 +209,7 @@
     <ClInclude Include="..\public\Timer_Manager.h" />
     <ClInclude Include="..\public\Transform.h" />
     <ClInclude Include="..\public\VIBuffer_PointInstance.h" />
+    <ClInclude Include="..\public\VIBuffer_PointInstance_CollisionDust.h" />
     <ClInclude Include="..\public\VIBuffer_PointInstance_Dust.h" />
     <ClInclude Include="..\public\VIBuffer_RectViewPort.h" />
     <ClInclude Include="..\public\VIBuffer_TriangleToLine.h" />
@@ -256,6 +257,7 @@
     <ClCompile Include="..\private\Timer_Manager.cpp" />
     <ClCompile Include="..\private\Transform.cpp" />
     <ClCompile Include="..\private\VIBuffer_PointInstance.cpp" />
+    <ClCompile Include="..\private\VIBuffer_PointInstance_CollisionDust.cpp" />
     <ClCompile Include="..\private\VIBuffer_PointInstance_Dust.cpp" />
     <ClCompile Include="..\private\VIBuffer_RectViewPort.cpp" />
     <ClCompile Include="..\private\VIBuffer_TriangleToLine.cpp" />

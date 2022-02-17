@@ -40,7 +40,7 @@ private:
 	CCollider*												m_ColliderSphereCom = nullptr;
 
 private:
-	class BugMorph*						m_BugMorph = nullptr;
+	class BugMorph*						m_Boss = nullptr;
 
 private:
 	virtual HRESULT SetUp_Components();

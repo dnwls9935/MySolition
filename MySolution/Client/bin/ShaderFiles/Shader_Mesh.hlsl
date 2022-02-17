@@ -143,7 +143,7 @@ PS_OUT PS_MAIN(PS_IN In)
 
 		Rim = 1 - saturate(dot(In.vNormal, ViewDir));
 
-		Rim = pow(Rim, 2.f);
+		Rim = pow(Rim, 6.f);
 
 		float3 RimColor = float3(0.8f, 0.2f, 0.1f);
 

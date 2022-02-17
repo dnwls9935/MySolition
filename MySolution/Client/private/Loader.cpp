@@ -30,6 +30,7 @@
 #include "TitleCard.h"
 #include "ClapTrap.h"
 #include "BurrowDust.h"
+#include "CollisionDust.h"
 #include "Num.h"
 
 CLoader::CLoader(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
@@ -145,7 +146,9 @@ HRESULT CLoader::Loading_ForGamePlay()
 		return E_FAIL;
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_PointInstace"), CVIBuffer_PointInstance::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/ShaderFiles/Shader_PointInstance.hlsl"), 4/*0000*/))))
 		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_PointInstace_Dust"), CVIBuffer_PointInstance_Dust::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/ShaderFiles/Shader_PointInstance.hlsl"), 200))))
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_PointInstace_Dust"), CVIBuffer_PointInstance_Dust::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/ShaderFiles/Shader_PointInstance.hlsl"), 100))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_PointInstace_CollisionDust"), CVIBuffer_PointInstance_CollisionDust::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/ShaderFiles/Shader_PointInstance.hlsl"), 500))))
 		return E_FAIL;
 
 	wsprintf(m_szLoading, TEXT("텍스쳐를 생성한다. "));
@@ -227,6 +230,8 @@ HRESULT CLoader::Loading_ForGamePlay()
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Tex_Font_Slash"), CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Font/NumberSlash.png")))))
 		return E_FAIL;
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Tex_Burned"), CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Textures/Effect/Burned_Mask.png")))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Snow_Decal_Dif"), CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Textures/Effect/SnowDecal/SnowDecal_Dif.png")))))
 		return E_FAIL;
 
 
@@ -455,6 +460,8 @@ HRESULT CLoader::Loading_ForGamePlay()
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Effect_SnowScreen"), SnowScreen::Create(m_pDevice, m_pDeviceContext))))
 		return E_FAIL;
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Effect_BurrowDust"), BurrowDust::Create(m_pDevice, m_pDeviceContext))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Effect_CollisionDust"), CollisionDust::Create(m_pDevice, m_pDeviceContext))))
 		return E_FAIL;
 
 

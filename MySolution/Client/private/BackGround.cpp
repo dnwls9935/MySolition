@@ -29,7 +29,6 @@ HRESULT CBackGround::NativeConstruct(void * pArg)
 	if (FAILED(__super::NativeConstruct(pArg)))
 		return E_FAIL;
 
-
 	if (FAILED(SetUp_Components()))
 		return E_FAIL;
 
@@ -56,7 +55,7 @@ _int CBackGround::Tick(_double TimeDelta)
 	m_WorldMatrix.r[0] = XMVectorSet((_float)g_iWinCX * m_Size, 0.f, 0.f, 0.f);
 	m_WorldMatrix.r[1] = XMVectorSet(0.0f, (_float)g_iWinCY * m_Size, 0.f, 0.f);
 
-	if (1.3 <= m_Size)
+	if (1.4 <= m_Size)
 		m_Size = 1.f;
 
 

@@ -73,12 +73,12 @@ HRESULT BugMorph::NativeConstruct(void * pArg)
 
 	BurrowDust::BURROWDUST BurrowDustDesc;
 	ZeroMemory(&BurrowDustDesc,sizeof(BurrowDust::BURROWDUST));
-
+/*
 	BurrowDustDesc.Position = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 	BurrowDustDesc.Parent = this;
 	if (FAILED(pGameInstance->Add_GameObjectToLayer(LEVEL_GAMEPLAY, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Effect_BurrowDust"), &BurrowDustDesc)))
 		return E_FAIL;
-
+*/
 	m_BurnColor = { 0.749f, 1.f, 0.f };
 
 	RELEASE_INSTANCE(CGameInstance);

@@ -6,6 +6,8 @@
 #include "SMG.h"
 #include "BossPrimeBeastRock.h"
 #include "HitBullet.h"
+#include "BurrowDust.h"
+#include "Camera_Dynamic.h"
 
 BossPrimeBeast::BossPrimeBeast(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -71,6 +73,9 @@ HRESULT BossPrimeBeast::NativeConstruct(void * pArg)
 	m_TargetPlayerWeapon = *iter;
 
 	m_Terrain = pGameInstance->GetObjectList(LEVEL_GAMEPLAY, TEXT("Layer_Terrain")).front();
+
+	m_Camera = pGameInstance->GetObjectList(LEVEL_GAMEPLAY, TEXT("Layer_Camera")).front();
+
 	RELEASE_INSTANCE(CGameInstance);
 
 	m_BurnColor = { 1.f, 0.2f, 0.f };
@@ -124,6 +129,7 @@ _int BossPrimeBeast::Tick(_double TimeDelta)
 
 _int BossPrimeBeast::LateTick(_double TimeDelta)
 {
+	CGameInstance*	pGameInstance = GET_INSTANCE(CGameInstance);
 	if (nullptr != m_pRendererCom)
 	{
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
@@ -180,6 +186,17 @@ _int BossPrimeBeast::LateTick(_double TimeDelta)
 		}
 	}
 
+	if ((_uint)ANIMATION_STATE::ATT_C_LOOP == m_pModelCom->GetCurrentAnimation())
+	{
+		BurrowDust::BURROWDUST BurrowDustDesc;
+		ZeroMemory(&BurrowDustDesc, sizeof(BurrowDust::BURROWDUST));
+		BurrowDustDesc.Position = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+		BurrowDustDesc.Parent = this;
+		if (FAILED(pGameInstance->Add_GameObjectToLayer(LEVEL_GAMEPLAY, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Effect_BurrowDust"), &BurrowDustDesc)))
+			return E_FAIL;
+	}
+
+	RELEASE_INSTANCE(CGameInstance);
 	return _int();
 }
 
@@ -459,16 +476,29 @@ void BossPrimeBeast::ChargeAttack(_double _TimeDelta)
 	{
 		CGameInstance* GameInstance = GET_INSTANCE(CGameInstance);
 		CCollider* GlacialFlowWall = static_cast<CCollider*>(GameInstance->GetObjectList(LEVEL_GAMEPLAY, TEXT("Layer_Wall")).front()->GetComponent(TEXT("Com_AABB")));
-		RELEASE_INSTANCE(CGameInstance);
+	
 
 		if (FALSE == m_pTransformCom->Go_Straight(_TimeDelta * 4.f, m_NavigationCom))
 		{
 			m_pModelCom->SetUp_AnimationIndex((_uint)ANIMATION_STATE::ATT_C_HITWALL);
+
+			if (FAILED(GameInstance->Add_GameObjectToLayer(LEVEL_GAMEPLAY, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Effect_CollisionDust"), &m_MyPosition)))
+				return;
+
+			_float NumRand = 60 + ((rand() % 10) - 5);
+			static_cast<CCamera_Dynamic*>(m_Camera)->SetFOV(XMConvertToRadians(NumRand));
 		}
 		else if ( nullptr != GlacialFlowWall && TRUE == m_ColliderCom->CollisionAABB(GlacialFlowWall))
 		{
 			m_pModelCom->SetUp_AnimationIndex((_uint)ANIMATION_STATE::ATT_C_HITWALL);
+			if (FAILED(GameInstance->Add_GameObjectToLayer(LEVEL_GAMEPLAY, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Effect_CollisionDust"), &m_MyPosition)))
+				return;
+
+			_float NumRand = 60 + ((rand() % 10) - 5);
+			static_cast<CCamera_Dynamic*>(m_Camera)->SetFOV(XMConvertToRadians(NumRand));
 		}
+
+		RELEASE_INSTANCE(CGameInstance);
 	}
 }
 
@@ -749,5 +779,4 @@ void BossPrimeBeast::Free()
 	Safe_Release(m_lHand1Collider);
 	Safe_Release(m_lHand2Collider);
 	Safe_Release(m_HpCom);
-
 }

@@ -175,6 +175,7 @@
     <ClInclude Include="..\public\Camera_Static.h" />
     <ClInclude Include="..\public\ClapTrap.h" />
     <ClInclude Include="..\public\Client_Defines.h" />
+    <ClInclude Include="..\public\CollisionDust.h" />
     <ClInclude Include="..\public\CrossSight.h" />
     <ClInclude Include="..\public\DahlEpicCrate.h" />
     <ClInclude Include="..\public\DahlWeaponLocker.h" />
@@ -217,6 +218,7 @@
     <ClCompile Include="..\private\Camera_Dynamic.cpp" />
     <ClCompile Include="..\private\Camera_Static.cpp" />
     <ClCompile Include="..\private\ClapTrap.cpp" />
+    <ClCompile Include="..\private\CollisionDust.cpp" />
     <ClCompile Include="..\private\CrossSIght.cpp" />
     <ClCompile Include="..\private\DahlEpicCrate.cpp" />
     <ClCompile Include="..\private\DahlWeaponLocker.cpp" />

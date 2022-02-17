@@ -183,9 +183,9 @@ PS_OUT PS_BURROW(PS_IN In)
 
 	Out.vColor = g_DiffuseTexture.Sample(DefaultSampler, In.vTexUV);
 
-	if (Out.vColor.a <= 0.5)
+	if (Out.vColor.a == 0.f)
 		discard;
-
+	
 	return Out;
 }
 
@@ -206,7 +206,7 @@ technique11			DefaultTechnique
 	{
 		SetRasterizerState(CullMode_Default);
 		SetDepthStencilState(ZBuffer_Default, 0);
-		SetBlendState(AlphaBlending, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		SetBlendState(BlendDisable, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
 		VertexShader = compile vs_5_0 VS_BURROW();
 		GeometryShader = compile gs_5_0 GS_MAIN();

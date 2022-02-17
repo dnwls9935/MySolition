@@ -69,13 +69,13 @@ private:
 private:
 	_int			m_MaxAmmo = 35;
 	_int			m_Ammo = 35;
-	_int			m_MaxMagzine = 140;
-	_int			m_Magazine = 140;
+	_int			m_MaxMagzine = 245;
+	_int			m_Magazine = 0;
 	_bool		m_Reload = FALSE;
 	_float		m_BarPercent = 0.f;
 
 private:
-	_int			m_AttackDamage = 80;
+	_int			m_AttackDamage = 800;
 
 private:
 	CRenderer*				m_pRendererCom = nullptr;

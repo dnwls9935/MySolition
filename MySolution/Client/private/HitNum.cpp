@@ -85,34 +85,7 @@ HRESULT HitNum::Render()
 
 HRESULT HitNum::Render100()
 {
-	_float X = 0, Y = 0;
-	if (5 <= Num100) {
-		X = Num100 - 5;
-		Y = 1;
-	}
-	else {
-		X = Num100;
-		Y = 0;
-	}
-	if (0 == X && 0 == Y)
-		return S_OK;
 
-	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
-	_vector	WindowPosition = pGameInstance->GetWindowPos(m_pDeviceContext, (_float)g_iWinCX, (_float)g_iWinCY, HpPos.x, HpPos.y);
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, WindowPosition);
-
-	m_pVIBufferCom->SetUp_ValueOnShader("g_WorldMatrix", &XMMatrixTranspose(m_pTransformCom->Get_WorldMatrix()), sizeof(_float) * 16);
-	m_pVIBufferCom->SetUp_ValueOnShader("g_ViewMatrix", &XMMatrixIdentity(), sizeof(_float) * 16);
-	m_pVIBufferCom->SetUp_ValueOnShader("g_ProjMatrix", &XMMatrixTranspose(m_ProjMatrix), sizeof(XMMATRIX));
-
-	m_pVIBufferCom->SetUp_ValueOnShader("g_X", &X, sizeof(_float));
-	m_pVIBufferCom->SetUp_ValueOnShader("g_Y", &Y, sizeof(_float));
-
-	m_pVIBufferCom->SetUp_TextureOnShader("g_DiffuseTexture", m_pTextureCom, 0);
-
-	m_pVIBufferCom->Render(9);
-
-	RELEASE_INSTANCE(CGameInstance);
 	return S_OK;
 }
 

@@ -17,7 +17,7 @@ class HitNum final : public CGameObject
 public:
 	typedef struct tagHitNum {
 		_int Num = 0;
-		_vector Position = (_vector)0;
+		_vector Position = XMVectorSet(0.f, 0.f, 0.f, 1.f);
 	}HUDESC;
 
 protected:
@@ -50,6 +50,7 @@ private:
 	class CCamera_Dynamic*		m_Camera = nullptr;
 
 private:
+	_int Num = 0;
 	
 	_int Num100 = 0;
 	_int Num10 = 0;

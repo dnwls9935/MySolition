@@ -16,10 +16,11 @@ CVIBuffer_PointInstance_Dust::CVIBuffer_PointInstance_Dust(const CVIBuffer_Point
 	, m_VBInstSubresourceData(rhs.m_VBInstSubresourceData)
 	, m_InstStride(rhs.m_InstStride)
 	, m_InstNumVertices(rhs.m_InstNumVertices)
+	, m_Time(rhs.m_Time)
 	, m_Dir(rhs.m_Dir)
 	, m_Speed(rhs.m_Speed)
-	, m_Time(rhs.m_Time)
-	, m_TimeAcc(rhs.m_TimeAcc)
+	, m_Reverse(rhs.m_Reverse)
+	, m_H(rhs.m_H)
 {
 
 	Safe_AddRef(m_VBInstance);
@@ -52,7 +53,7 @@ HRESULT CVIBuffer_PointInstance_Dust::NativeConstruct_Prototype(const _tchar* pS
 	for (_uint i = 0; i < m_iNumVertices; i++)
 	{
 		((VTXPOINT*)m_pVertices)[i].vPosition = _float3(0.0f, 0.0f, 0.0f);
-		((VTXPOINT*)m_pVertices)[i].vPSize = _float2(10.f, 10.f);
+		((VTXPOINT*)m_pVertices)[i].vPSize = _float2(4.f, 4.f);
 	}
 
 	m_VBSubresourceData.pSysMem = m_pVertices;
@@ -104,44 +105,6 @@ HRESULT CVIBuffer_PointInstance_Dust::NativeConstruct_Prototype(const _tchar* pS
 	if (FAILED(Compile_ShaderFiles(pShaderFilePath, ElementDescs, 6)))
 		return E_FAIL;
 
-	m_Dir = new _vector[m_NumInstance];
-	for (_uint i = 0; i < m_NumInstance; i++) {
-		_double random = (_double)(rand() * (_double)1 / ((_double)RAND_MAX) + (_double)(1)) - 1;
-		_int Minus = rand() % 2;
-		if(0 == Minus)
-			m_Dir[i] = XMVectorSetX(m_Dir[i], -random);
-		else
-			m_Dir[i] = XMVectorSetX(m_Dir[i], random);
-
-		random = (_double)(rand() * (_double)1 / ((_double)RAND_MAX) + (_double)(1)) ;
-		m_Dir[i] = XMVectorSetY(m_Dir[i], random);
-
-
-		random = (_double)(rand() * (_double)1 / ((_double)RAND_MAX) + (_double)(1)) - 1;
-		Minus = rand() % 2;
-		if (0 == Minus)
-			m_Dir[i] = XMVectorSetZ(m_Dir[i], -random);
-		else
-			m_Dir[i] = XMVectorSetZ(m_Dir[i], random);
-	}
-
-	m_Speed = new _double[m_NumInstance];
-	for (_uint i = 0; i < m_NumInstance; i++) {
-		m_Speed[i] = rand() % 20 + 1;
-	}
-
-	m_Time = new _double[m_NumInstance];
-	for (_uint i = 0; i < m_NumInstance; i++) {
-		m_Time[i] = 0.0;
-	}
-
-
-	m_TimeAcc = new _double[m_NumInstance];
-	for (_uint i = 0; i < m_NumInstance; i++) {
-		m_TimeAcc[i] = (_double)(rand() * (_double)1 / ((_double)RAND_MAX) + (_double)(1));
-	}
-
-
 	return S_OK;
 }
 
@@ -166,6 +129,44 @@ HRESULT CVIBuffer_PointInstance_Dust::NativeConstruct(void * pArg)
 		return E_FAIL;
 
 	Safe_Delete_Array(pVertices); 
+
+	m_Time = new _double[m_NumInstance];
+	for (_uint i = 0; i < m_NumInstance; i++) {
+		m_Time[i] = 0;
+	}
+	m_Reverse = new _bool[m_NumInstance];
+	for (_uint i = 0; i < m_NumInstance; i++) {
+		m_Reverse[i] = FALSE;
+	}
+
+	m_Dir = new _vector[m_NumInstance];
+	for (_uint i = 0; i < m_NumInstance; i++) {
+		_double random = (_double)(rand() * (_double)1 / ((_double)RAND_MAX) + (_double)(1)) - 1;
+		_int Minus = rand() % 2;
+		if (0 == Minus)
+			m_Dir[i] = XMVectorSetX(m_Dir[i], -random);
+		else
+			m_Dir[i] = XMVectorSetX(m_Dir[i], random);
+
+		m_Dir[i] = XMVectorSetY(m_Dir[i], 0);
+
+		random = (_double)(rand() * (_double)1 / ((_double)RAND_MAX) + (_double)(1)) - 1;
+		Minus = rand() % 2;
+		if (0 == Minus)
+			m_Dir[i] = XMVectorSetZ(m_Dir[i], -random);
+		else
+			m_Dir[i] = XMVectorSetZ(m_Dir[i], random);
+	}
+
+	m_Speed = new _int[m_NumInstance];
+	for (_uint i = 0; i < m_NumInstance; i++) {
+		m_Speed[i] = rand() % 20 + 5;
+	}
+
+	m_H = new _float[m_NumInstance];
+	for (_uint i = 0; i < m_NumInstance; i++) {
+		m_H[i] = (_float)(rand() * (_float)2 / ((_float)RAND_MAX) + (_float)(2)) + 1;
+	}
 
 	return S_OK;
 }
@@ -196,7 +197,7 @@ HRESULT CVIBuffer_PointInstance_Dust::Render(_uint _PassIndex)
 
 	if (FAILED(m_EffectDescs[_PassIndex]->pPass->Apply(0, m_pDeviceContext)))
 		return E_FAIL;
-
+	                                                                                                                     
 	m_pDeviceContext->DrawInstanced(1, m_NumInstance, 0, 0);
 
 	return S_OK;
@@ -207,28 +208,43 @@ _bool CVIBuffer_PointInstance_Dust::Update(_double _TimeDelta)
 	D3D11_MAPPED_SUBRESOURCE		SubResource;
 	m_pDeviceContext->Map(m_VBInstance, 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &SubResource);
 
-	_bool HitBottom = FALSE;
+	_bool end = FALSE;
 
 	for (_uint i = 0; i < m_NumInstance; i++)
 	{
-		((VTXMATRIX*)SubResource.pData)[i].vPosition.x += XMVectorGetX(m_Dir[i]) * m_Speed[i] * _TimeDelta * 0.1f;
-		((VTXMATRIX*)SubResource.pData)[i].vPosition.z += XMVectorGetZ(m_Dir[i]) * m_Speed[i] * _TimeDelta * 0.1f;
-
-		m_Time[i] += _TimeDelta * 2.f;
-
-		if (m_TimeAcc[i] <= m_Time[i])
+		if(FALSE == m_Reverse[i])
 		{
-			((VTXMATRIX*)SubResource.pData)[i].vPosition.x = 0;
-			((VTXMATRIX*)SubResource.pData)[i].vPosition.z = 0;
-			m_Time[i] = 0;
-		}
+			((VTXMATRIX*)SubResource.pData)[i].vPosition.x += XMVectorGetX(m_Dir[i]) *  _TimeDelta * 10.f;
+			((VTXMATRIX*)SubResource.pData)[i].vPosition.z += XMVectorGetZ(m_Dir[i]) *  _TimeDelta * 10.f;
 
+			((VTXMATRIX*)SubResource.pData)[i].vPosition.y +=  m_Speed[i] * _TimeDelta;
+
+			m_Time[i] += _TimeDelta * m_Speed[i];
+			if (m_H[i] <= ((VTXMATRIX*)SubResource.pData)[i].vPosition.y)
+			{
+				m_Reverse[i] = TRUE;
+				m_Time[i] = 0.f;
+			}
+		}
+		else 
+		{
+			((VTXMATRIX*)SubResource.pData)[i].vPosition.x += XMVectorGetX(m_Dir[i]) *  _TimeDelta * 10.f;
+			((VTXMATRIX*)SubResource.pData)[i].vPosition.z += XMVectorGetZ(m_Dir[i]) *  _TimeDelta * 10.f;
+
+			((VTXMATRIX*)SubResource.pData)[i].vPosition.y -= m_Speed[i] * _TimeDelta;
+
+			m_Time[i] += _TimeDelta * m_Speed[i];
+			if (0.f >= ((VTXMATRIX*)SubResource.pData)[i].vPosition.y)
+			{
+				end = TRUE;
+				m_Time[i] = 0.f;
+			}
+		}
 	}
 
 	m_pDeviceContext->Unmap(m_VBInstance, 0);
 
-
-	return HitBottom;
+	return end;
 }
 
 CVIBuffer_PointInstance_Dust * CVIBuffer_PointInstance_Dust::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, const _tchar* pShaderFilePath, _uint _NumInstance)
@@ -261,13 +277,11 @@ void CVIBuffer_PointInstance_Dust::Free()
 {
 	__super::Free();
 
-	if (FALSE == m_isCloned)
-	{
-		Safe_Delete_Array(m_Dir);
-		Safe_Delete_Array(m_Speed);
-		Safe_Delete_Array(m_Time);
-		Safe_Delete_Array(m_TimeAcc);
-	}
+	Safe_Delete_Array(m_Dir);
+	Safe_Delete_Array(m_Speed);
+	Safe_Delete_Array(m_Time);
+	Safe_Delete_Array(m_Reverse);
+	Safe_Delete_Array(m_H);
 
 	Safe_Release(m_VBInstance);
 }

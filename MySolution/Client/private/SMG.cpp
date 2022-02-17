@@ -61,7 +61,7 @@ _int SMG::Tick(_double TimeDelta)
 		_vector Position = GetMuzzlePosition();
 		pGameInstance->Add_GameObjectToLayer(LEVEL_GAMEPLAY, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Effect_Muzzle"), &Position);
 
-		_float NumRand = 60 + ((rand() % 3) - 3);
+		_float NumRand = 60 + ((rand() % 10) - 5);
 		static_cast<CCamera_Dynamic*>(m_CameraObject)->SetFOV(XMConvertToRadians(NumRand));
 	}
 	else

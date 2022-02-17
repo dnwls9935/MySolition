@@ -38,8 +38,8 @@ HRESULT BurrowDust::NativeConstruct(void * pArg)
 
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, BurrowDust.Position);
 
-		m_BugMorph = static_cast<BugMorph*>(BurrowDust.Parent);
-		Safe_AddRef(m_BugMorph);
+		m_Boss = static_cast<BugMorph*>(BurrowDust.Parent);
+		Safe_AddRef(m_Boss);
 	}
 	
 	m_Dead = FALSE;
@@ -48,92 +48,35 @@ HRESULT BurrowDust::NativeConstruct(void * pArg)
 
 _int BurrowDust::Tick(_double TimeDelta)
 {
-	_vector vec = static_cast<CTransform*>(m_BugMorph->GetComponent(TEXT("Com_Transform")))->Get_State(CTransform::STATE_POSITION);
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vec);
-
-	if ((_uint)BugMorph::ANIMATION_STATE::SPAWN == static_cast<CModel*>(m_BugMorph->GetComponent(TEXT("Com_Model")))->GetCurrentAnimation() &&
-		TRUE == m_BugMorph->GetFrameStart())
-	{
-		m_VIBufferCom->Update(TimeDelta);
-	}
-	else if ( ((_uint)BugMorph::ANIMATION_STATE::BURROW_ENTER == static_cast<CModel*>(m_BugMorph->GetComponent(TEXT("Com_Model")))->GetCurrentAnimation() ||
-		((_uint)BugMorph::ANIMATION_STATE::BURROW_EXIT == static_cast<CModel*>(m_BugMorph->GetComponent(TEXT("Com_Model")))->GetCurrentAnimation())))
-	{
-		m_VIBufferCom->Update(TimeDelta);
-	}
-
+	m_Dead = m_VIBufferCom->Update(TimeDelta);
+	
 	return _int();
 }
 
 _int BurrowDust::LateTick(_double TimeDelta)
 {
-	if ((_uint)BugMorph::ANIMATION_STATE::SPAWN == static_cast<CModel*>(m_BugMorph->GetComponent(TEXT("Com_Model")))->GetCurrentAnimation() &&
-		TRUE == m_BugMorph->GetFrameStart())
-	{
-		if (FALSE == m_Dead &&nullptr != m_pRendererCom)
-			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
-	}
-	else if (((_uint)BugMorph::ANIMATION_STATE::BURROW_ENTER == static_cast<CModel*>(m_BugMorph->GetComponent(TEXT("Com_Model")))->GetCurrentAnimation() ||
-		((_uint)BugMorph::ANIMATION_STATE::BURROW_EXIT == static_cast<CModel*>(m_BugMorph->GetComponent(TEXT("Com_Model")))->GetCurrentAnimation())))
-	{
-		if (FALSE == m_Dead &&nullptr != m_pRendererCom)
-			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
-	}
-	return _int();
+	if(nullptr != m_pRendererCom)
+		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
+
+	return m_Dead;
 }
 
 HRESULT BurrowDust::Render()
 {
-	if ((_uint)BugMorph::ANIMATION_STATE::SPAWN == static_cast<CModel*>(m_BugMorph->GetComponent(TEXT("Com_Model")))->GetCurrentAnimation() &&
-		TRUE == m_BugMorph->GetFrameStart())
-	{
-		CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 
-		_int		X = rand() % 16 + 1;
-		_int		Y = rand() % 16 + 1;
 
-		X = 1;
-		Y = 1;
+	m_VIBufferCom->SetUp_ValueOnShader("g_WorldMatrix", &XMMatrixTranspose(m_pTransformCom->Get_WorldMatrix()), sizeof(_matrix));
+	m_VIBufferCom->SetUp_ValueOnShader("g_ViewMatrix", &XMMatrixTranspose(pGameInstance->Get_Transform(CPipeLine::D3DTS_VIEW)), sizeof(_matrix));
+	m_VIBufferCom->SetUp_ValueOnShader("g_ProjMatrix", &XMMatrixTranspose(pGameInstance->Get_Transform(CPipeLine::D3DTS_PROJECTION)), sizeof(_matrix));
 
-		m_VIBufferCom->SetUp_ValueOnShader("g_WorldMatrix", &XMMatrixTranspose(m_pTransformCom->Get_WorldMatrix()), sizeof(_matrix));
-		m_VIBufferCom->SetUp_ValueOnShader("g_ViewMatrix", &XMMatrixTranspose(pGameInstance->Get_Transform(CPipeLine::D3DTS_VIEW)), sizeof(_matrix));
-		m_VIBufferCom->SetUp_ValueOnShader("g_ProjMatrix", &XMMatrixTranspose(pGameInstance->Get_Transform(CPipeLine::D3DTS_PROJECTION)), sizeof(_matrix));
+	m_VIBufferCom->SetUp_ValueOnShader("g_vCamPosition", (void*)&pGameInstance->Get_CamPosition(), sizeof(_vector));
 
-		m_VIBufferCom->SetUp_ValueOnShader("g_vCamPosition", (void*)&pGameInstance->Get_CamPosition(), sizeof(_vector));
+	m_VIBufferCom->SetUp_TextureOnShader("g_DiffuseTexture", m_TextureCom, 0);
+	m_VIBufferCom->Render(1);
 
-		m_VIBufferCom->SetUp_ValueOnShader("g_X", &X, sizeof(_int));
-		m_VIBufferCom->SetUp_ValueOnShader("g_Y", &Y, sizeof(_int));
-
-		m_VIBufferCom->SetUp_TextureOnShader("g_DiffuseTexture", m_TextureCom, 0);
-		m_VIBufferCom->Render(1);
-
-		RELEASE_INSTANCE(CGameInstance);
-	}
-	else if (((_uint)BugMorph::ANIMATION_STATE::BURROW_ENTER == static_cast<CModel*>(m_BugMorph->GetComponent(TEXT("Com_Model")))->GetCurrentAnimation() ||
-		((_uint)BugMorph::ANIMATION_STATE::BURROW_EXIT == static_cast<CModel*>(m_BugMorph->GetComponent(TEXT("Com_Model")))->GetCurrentAnimation())))
-	{
-		CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
-
-		_int		X = rand() % 16 + 1;
-		_int		Y = rand() % 16 + 1;
-
-		X = 1;
-		Y = 1;
-
-		m_VIBufferCom->SetUp_ValueOnShader("g_WorldMatrix", &XMMatrixTranspose(m_pTransformCom->Get_WorldMatrix()), sizeof(_matrix));
-		m_VIBufferCom->SetUp_ValueOnShader("g_ViewMatrix", &XMMatrixTranspose(pGameInstance->Get_Transform(CPipeLine::D3DTS_VIEW)), sizeof(_matrix));
-		m_VIBufferCom->SetUp_ValueOnShader("g_ProjMatrix", &XMMatrixTranspose(pGameInstance->Get_Transform(CPipeLine::D3DTS_PROJECTION)), sizeof(_matrix));
-
-		m_VIBufferCom->SetUp_ValueOnShader("g_vCamPosition", (void*)&pGameInstance->Get_CamPosition(), sizeof(_vector));
-
-		m_VIBufferCom->SetUp_ValueOnShader("g_X", &X, sizeof(_int));
-		m_VIBufferCom->SetUp_ValueOnShader("g_Y", &Y, sizeof(_int));
-
-		m_VIBufferCom->SetUp_TextureOnShader("g_DiffuseTexture", m_TextureCom, 0);
-		m_VIBufferCom->Render(1);
-
-		RELEASE_INSTANCE(CGameInstance);
-	}
+	RELEASE_INSTANCE(CGameInstance);
+	
 	return S_OK;
 }
 
@@ -151,7 +94,7 @@ HRESULT BurrowDust::SetUp_Components()
 		return E_FAIL;
 
 	/* Com_Texture */
-	if (FAILED(__super::SetUp_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_SnowFlakesDif"), TEXT("Com_Texture"), (CComponent**)&m_TextureCom)))
+	if (FAILED(__super::SetUp_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Snow_Decal_Dif"), TEXT("Com_Texture"), (CComponent**)&m_TextureCom)))
 		return E_FAIL;
 
 	/* Com_VIBuffer */
@@ -195,6 +138,6 @@ void BurrowDust::Free()
 	Safe_Release(m_VIBufferCom);
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_TextureCom);
-	Safe_Release(m_BugMorph);
+	Safe_Release(m_Boss);
 
 }

@@ -151,6 +151,9 @@
     <Filter Include="02.GameObject\UI\HitUI\Num">
       <UniqueIdentifier>{46584666-b3bc-4dda-9abc-eee0a47c0a68}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\Effect\CollisionDust">
+      <UniqueIdentifier>{2814d28e-33f4-4012-8895-3dbf21fcdb69}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -282,6 +285,9 @@
     <ClInclude Include="..\public\HitNum.h">
       <Filter>02.GameObject\UI\HitUI\Num</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\CollisionDust.h">
+      <Filter>02.GameObject\Effect\CollisionDust</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -397,6 +403,9 @@
     </ClCompile>
     <ClCompile Include="..\private\HitNum.cpp">
       <Filter>02.GameObject\UI\HitUI\Num</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\CollisionDust.cpp">
+      <Filter>02.GameObject\Effect\CollisionDust</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

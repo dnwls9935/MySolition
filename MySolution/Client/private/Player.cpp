@@ -53,7 +53,7 @@ HRESULT CPlayer::NativeConstruct(void * pArg)
 	m_HP = m_MaxHP;
 
 	m_MaxShield = 534;
-	m_Shield = m_MaxShield;
+	m_Shield = 0;
 
 
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
