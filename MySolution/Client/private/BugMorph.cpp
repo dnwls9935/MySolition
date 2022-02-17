@@ -6,6 +6,7 @@
 #include "SMG.h"
 #include "Player.h"
 #include "UI.h"
+#include "BurrowDust.h"
 
 BugMorph::BugMorph(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -66,10 +67,19 @@ HRESULT BugMorph::NativeConstruct(void * pArg)
 	if (nullptr == m_TargetPlayerWeapon)
 		return E_FAIL;
 	
-
 	m_Terrain = pGameInstance->GetObjectList(LEVEL_GAMEPLAY,TEXT("Layer_Terrain")).front();
 	if (nullptr == m_Terrain)
 		return E_FAIL;
+
+	BurrowDust::BURROWDUST BurrowDustDesc;
+	ZeroMemory(&BurrowDustDesc,sizeof(BurrowDust::BURROWDUST));
+
+	BurrowDustDesc.Position = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	BurrowDustDesc.Parent = this;
+	if (FAILED(pGameInstance->Add_GameObjectToLayer(LEVEL_GAMEPLAY, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Effect_BurrowDust"), &BurrowDustDesc)))
+		return E_FAIL;
+
+	m_BurnColor = { 0.749f, 1.f, 0.f };
 
 	RELEASE_INSTANCE(CGameInstance);
 
@@ -142,12 +152,12 @@ _int BugMorph::LateTick(_double TimeDelta)
 #endif // !_DEBUG
 	}
 
-	if (TRUE == m_FrameStart && FALSE == m_IntroEnd &&
-		(_uint)ANIMATION_STATE::SPAWN == m_pModelCom->GetCurrentAnimation())
-	{
-		if (FAILED(pGameInstance->Add_GameObjectToLayer(LEVEL_GAMEPLAY, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Effect_BurrowDust"), &m_MyPosition)))
-			return E_FAIL;
-	}
+	//if (TRUE == m_FrameStart && FALSE == m_IntroEnd &&
+	//	(_uint)ANIMATION_STATE::SPAWN == m_pModelCom->GetCurrentAnimation())
+	//{
+	//	if (FAILED(pGameInstance->Add_GameObjectToLayer(LEVEL_GAMEPLAY, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Effect_BurrowDust"), &m_MyPosition)))
+	//		return E_FAIL;
+	//}
 
 
 	if (m_pModelCom->GetAnimationFinished())
@@ -181,6 +191,10 @@ _int BugMorph::LateTick(_double TimeDelta)
 	if (0 >= m_HP)
 	{
 		m_pModelCom->SetUp_AnimationIndex((_uint)ANIMATION_STATE::DEA_CRITICAL);
+
+		m_Burned = TRUE;
+		m_BurnedTime += TimeDelta;
+
 		if (m_pModelCom->GetAnimationFinished())
 		{
 			m_Dead = TRUE;
@@ -210,12 +224,18 @@ HRESULT BugMorph::Render()
 	m_pModelCom->SetUp_ValueOnShader("g_ViewMatrix", &XMMatrixTranspose(pGameInstance->Get_Transform(CPipeLine::D3DTS_VIEW)), sizeof(_matrix));
 	m_pModelCom->SetUp_ValueOnShader("g_ProjMatrix", &XMMatrixTranspose(pGameInstance->Get_Transform(CPipeLine::D3DTS_PROJECTION)), sizeof(_matrix));
 
+	m_pModelCom->SetUp_ValueOnShader("g_Burned", &m_Burned, sizeof(_bool));
+	m_pModelCom->SetUp_ValueOnShader("g_Time", &m_BurnedTime, sizeof(_float));
+	m_pModelCom->SetUp_ValueOnShader("g_BurnColor", &m_BurnColor, sizeof(_float3));
+
 	if (FAILED(m_pModelCom->Bind_Buffers()))
 		return E_FAIL;
 
 	for (_uint i = 0; i < m_pModelCom->Get_NumMeshContainer(); ++i)
 	{
 		m_pModelCom->SetUp_TextureOnShader("g_DiffuseTexture", i, aiTextureType_DIFFUSE);
+
+		m_pModelCom->SetUp_TextureOnShader("g_BurnedTexture", i, aiTextureType_OPACITY);
 
 		m_pModelCom->Render(i, 1);
 	}

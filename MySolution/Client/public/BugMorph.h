@@ -34,6 +34,11 @@ public:
 	virtual HRESULT Render() override;
 	virtual _bool		Picked() override;
 
+public:
+	_bool		GetFrameStart() {
+		return m_FrameStart;
+	}
+
 private:
 	void		HitCheck();
 	void		Animation(_double TimeDelta);
@@ -83,6 +88,11 @@ private:
 
 private:
 	_bool					m_MeleeAttackIsCollisionCheck = FALSE;
+
+private:
+	_bool							m_Burned = FALSE;
+	_float							m_BurnedTime = 0.f;
+	_float3						m_BurnColor;
 
 private:
 	virtual HRESULT SetUp_Components();

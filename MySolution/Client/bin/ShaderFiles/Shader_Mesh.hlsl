@@ -22,7 +22,14 @@ cbuffer CamDesc {
 	bool g_RimLight = false;
 };
 
+cbuffer BurnDesc {
+	bool g_Burned = false;
+	float g_Time = 0.f;
+	float3 g_BurnColor = (float3)0;
+};
+
 texture2D	g_DiffuseTexture;
+texture2D	g_BurnedTexture;
 
 sampler DefaultSampler = sampler_state
 {
@@ -128,7 +135,7 @@ PS_OUT PS_MAIN(PS_IN In)
 	PS_OUT		Out = (PS_OUT)0;
 
 	Out.vDiffuse = g_DiffuseTexture.Sample(DefaultSampler, In.vTexUV);
-
+	
 	if (true == g_RimLight)
 	{
 		float Rim = 0;
@@ -142,11 +149,23 @@ PS_OUT PS_MAIN(PS_IN In)
 
 		RimColor = Rim * RimColor;
 
-		Out.vDiffuse *= float4(RimColor, 1);
+		Out.vDiffuse += float4(RimColor, 1);
+		Out.vDiffuse.a = 1.f;
 	}
+	if (true == g_Burned)
+	{
+		vector Burned = g_BurnedTexture.Sample(DefaultSampler, In.vTexUV);
 
-
-	Out.vDiffuse.a = 1.f;
+		if (Burned.r <= g_Time + 0.2f)
+		{
+			Out.vDiffuse.r += g_BurnColor.r;
+			Out.vDiffuse.g += g_BurnColor.g;
+			Out.vDiffuse.b += g_BurnColor.b;
+		}
+		
+		if (Burned.r <= g_Time)
+			discard;
+	}
 
 	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
 	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 300.0f, 0.0f, 0.0f);

@@ -15,6 +15,12 @@ BEGIN(Client)
 
 class BurrowDust final : public CGameObject
 {
+public:
+	typedef struct tagBurrowDustDesc {
+		_vector Position = XMVectorSet(0.f, 0.f, 0.f, 1.f);
+		class CGameObject* Parent = nullptr;
+	}BURROWDUST;
+
 protected:
 	explicit BurrowDust(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	explicit BurrowDust(const CGameObject& rhs);
@@ -27,11 +33,14 @@ public:
 	virtual HRESULT Render() override;
 
 private:
-	CTexture*									m_TextureCom = nullptr;
-	CRenderer*								m_pRendererCom = nullptr;
-	CTransform*								m_pTransformCom = nullptr;
+	CTexture*												m_TextureCom = nullptr;
+	CRenderer*											m_pRendererCom = nullptr;
+	CTransform*											m_pTransformCom = nullptr;
 	CVIBuffer_PointInstance_Dust*		m_VIBufferCom = nullptr;
-	CCollider*									m_ColliderSphereCom = nullptr;
+	CCollider*												m_ColliderSphereCom = nullptr;
+
+private:
+	class BugMorph*						m_BugMorph = nullptr;
 
 private:
 	virtual HRESULT SetUp_Components();

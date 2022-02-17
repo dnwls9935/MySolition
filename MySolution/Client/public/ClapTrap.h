@@ -10,6 +10,7 @@ class CModel;
 class CCollider;
 class Navigation;
 class HP;
+class CTexture;
 END
 
 BEGIN(Client)
@@ -36,6 +37,11 @@ private:
 	CRenderer*				m_pRendererCom = nullptr;
 	CTransform*				m_pTransformCom = nullptr;
 	CModel*					m_pModelCom = nullptr;
+	CTexture*					m_pBurnedTextureCom = nullptr;
+
+private:
+	_bool							m_Burned = FALSE;
+	_float							m_BurnedTime = 0.f;
 
 private:
 	virtual HRESULT SetUp_Components();

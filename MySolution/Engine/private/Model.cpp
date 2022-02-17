@@ -124,6 +124,14 @@ HRESULT CModel::SetUp_TextureOnShader(const char * pConstantName, _uint iMeshCon
 	return S_OK;
 }
 
+HRESULT CModel::SetUp_TextureOnShader(const char * pConstantName, CTexture * _TextureCom, _int _TextureIndex)
+{
+	if (FAILED(__super::SetUp_TextureOnShader(pConstantName, _TextureCom, _TextureIndex)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
 void CModel::SetUp_AnimationIndex(_uint iAnimationIndex)
 {
 //	m_Animations[m_iCurrentAnimation]->SetTrackPositionAcc(0.0);
@@ -241,6 +249,13 @@ HRESULT CModel::Create_Materials()
 		for (_uint j = aiTextureType_DIFFUSE; j < AI_TEXTURE_TYPE_MAX; ++j)
 		{
 				aiString	strFilePath;
+
+				if (j == aiTextureType_OPACITY)
+				{
+					pMeshMaterial->pMeshTexture[j] = CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Textures/Effect/Burned_Mask.png"));
+					if (nullptr == pMeshMaterial->pMeshTexture[j])
+						return E_FAIL;
+				}
 
 			if (FAILED(pMaterial->GetTexture(aiTextureType(j), 0, &strFilePath)))
 				continue;

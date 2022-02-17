@@ -63,6 +63,7 @@ HRESULT PrimeBeast::NativeConstruct(void * pArg)
 
 	m_Terrain = pGameInstance->GetObjectList(LEVEL_GAMEPLAY, TEXT("Layer_Terrain")).front();
 
+	m_BurnColor = { 1.f, 0.49f, 0.f };
 
 	RELEASE_INSTANCE(CGameInstance);
 
@@ -144,6 +145,10 @@ _int PrimeBeast::LateTick(_double TimeDelta)
 	if (0 >= m_HP)
 	{
 		m_pModelCom->SetUp_AnimationIndex((_uint)ANIMATION_STATE::DEA_CRITICAL);
+
+		m_Burned = TRUE;
+		m_BurnedTime += TimeDelta;
+
 		if (m_pModelCom->GetAnimationFinished())
 		{
 			m_Dead = TRUE;
@@ -164,12 +169,18 @@ HRESULT PrimeBeast::Render()
 	m_pModelCom->SetUp_ValueOnShader("g_ViewMatrix", &XMMatrixTranspose(pGameInstance->Get_Transform(CPipeLine::D3DTS_VIEW)), sizeof(_matrix));
 	m_pModelCom->SetUp_ValueOnShader("g_ProjMatrix", &XMMatrixTranspose(pGameInstance->Get_Transform(CPipeLine::D3DTS_PROJECTION)), sizeof(_matrix));
 
+	m_pModelCom->SetUp_ValueOnShader("g_Burned", &m_Burned, sizeof(_bool));
+	m_pModelCom->SetUp_ValueOnShader("g_Time", &m_BurnedTime, sizeof(_float));
+	m_pModelCom->SetUp_ValueOnShader("g_BurnColor", &m_BurnColor, sizeof(_float3));
+
 	if (FAILED(m_pModelCom->Bind_Buffers()))
 		return E_FAIL;
 
 	for (_uint i = 0; i < m_pModelCom->Get_NumMeshContainer(); ++i)
 	{
 		m_pModelCom->SetUp_TextureOnShader("g_DiffuseTexture", i, aiTextureType_DIFFUSE);
+
+		m_pModelCom->SetUp_TextureOnShader("g_BurnedTexture", i, aiTextureType_OPACITY);
 
 		m_pModelCom->Render(i, 1);
 	}

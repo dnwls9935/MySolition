@@ -30,6 +30,7 @@ public:
 	HRESULT NativeConstruct(void* pArg);
 public:
 	HRESULT SetUp_TextureOnShader(const char* pConstantName, _uint iMeshContainerIndex, aiTextureType eType);
+	HRESULT SetUp_TextureOnShader(const char* pConstantName, class CTexture* _TextureCom, _int _TextureIndex = 0);
 	void SetUp_AnimationIndex(_uint iAnimationIndex);
 	_int	GetCurrentAnimation() const {
 		return m_iCurrentAnimation;

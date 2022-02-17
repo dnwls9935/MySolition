@@ -18,6 +18,8 @@ CVIBuffer_PointInstance_Dust::CVIBuffer_PointInstance_Dust(const CVIBuffer_Point
 	, m_InstNumVertices(rhs.m_InstNumVertices)
 	, m_Dir(rhs.m_Dir)
 	, m_Speed(rhs.m_Speed)
+	, m_Time(rhs.m_Time)
+	, m_TimeAcc(rhs.m_TimeAcc)
 {
 
 	Safe_AddRef(m_VBInstance);
@@ -50,7 +52,7 @@ HRESULT CVIBuffer_PointInstance_Dust::NativeConstruct_Prototype(const _tchar* pS
 	for (_uint i = 0; i < m_iNumVertices; i++)
 	{
 		((VTXPOINT*)m_pVertices)[i].vPosition = _float3(0.0f, 0.0f, 0.0f);
-		((VTXPOINT*)m_pVertices)[i].vPSize = _float2(1.f, 1.f);
+		((VTXPOINT*)m_pVertices)[i].vPSize = _float2(10.f, 10.f);
 	}
 
 	m_VBSubresourceData.pSysMem = m_pVertices;
@@ -105,16 +107,38 @@ HRESULT CVIBuffer_PointInstance_Dust::NativeConstruct_Prototype(const _tchar* pS
 	m_Dir = new _vector[m_NumInstance];
 	for (_uint i = 0; i < m_NumInstance; i++) {
 		_double random = (_double)(rand() * (_double)1 / ((_double)RAND_MAX) + (_double)(1)) - 1;
-		m_Dir[i] = XMVectorSetX(m_Dir[i], random);
-		random = (_double)(rand() * (_double)1 / ((_double)RAND_MAX) + (_double)(1)) + 1;
+		_int Minus = rand() % 2;
+		if(0 == Minus)
+			m_Dir[i] = XMVectorSetX(m_Dir[i], -random);
+		else
+			m_Dir[i] = XMVectorSetX(m_Dir[i], random);
+
+		random = (_double)(rand() * (_double)1 / ((_double)RAND_MAX) + (_double)(1)) ;
 		m_Dir[i] = XMVectorSetY(m_Dir[i], random);
+
+
 		random = (_double)(rand() * (_double)1 / ((_double)RAND_MAX) + (_double)(1)) - 1;
-		m_Dir[i] = XMVectorSetZ(m_Dir[i], random);
+		Minus = rand() % 2;
+		if (0 == Minus)
+			m_Dir[i] = XMVectorSetZ(m_Dir[i], -random);
+		else
+			m_Dir[i] = XMVectorSetZ(m_Dir[i], random);
 	}
 
 	m_Speed = new _double[m_NumInstance];
 	for (_uint i = 0; i < m_NumInstance; i++) {
-		m_Speed[i] = rand() % 20 + 20;
+		m_Speed[i] = rand() % 20 + 1;
+	}
+
+	m_Time = new _double[m_NumInstance];
+	for (_uint i = 0; i < m_NumInstance; i++) {
+		m_Time[i] = 0.0;
+	}
+
+
+	m_TimeAcc = new _double[m_NumInstance];
+	for (_uint i = 0; i < m_NumInstance; i++) {
+		m_TimeAcc[i] = (_double)(rand() * (_double)1 / ((_double)RAND_MAX) + (_double)(1));
 	}
 
 
@@ -134,7 +158,7 @@ HRESULT CVIBuffer_PointInstance_Dust::NativeConstruct(void * pArg)
 		pVertices[i].vRight = _float4(1.f, 0.f, 0.f, 0.f);
 		pVertices[i].vUp = _float4(0.f, 1.f, 0.f, 0.f);
 		pVertices[i].vLook = _float4(0.f, 0.f, 1.f, 0.f);
-		pVertices[i].vPosition = _float4(0.f, 0.f, 0.f, 1.f);
+		pVertices[i].vPosition = _float4(0.f, 0.1f, 0.f, 1.f);
 	}
 	m_VBInstSubresourceData.pSysMem = pVertices;
 
@@ -187,16 +211,18 @@ _bool CVIBuffer_PointInstance_Dust::Update(_double _TimeDelta)
 
 	for (_uint i = 0; i < m_NumInstance; i++)
 	{
-		_vector Pos = XMLoadFloat4(&((VTXMATRIX*)SubResource.pData)[i].vPosition);
+		((VTXMATRIX*)SubResource.pData)[i].vPosition.x += XMVectorGetX(m_Dir[i]) * m_Speed[i] * _TimeDelta * 0.1f;
+		((VTXMATRIX*)SubResource.pData)[i].vPosition.z += XMVectorGetZ(m_Dir[i]) * m_Speed[i] * _TimeDelta * 0.1f;
 
-		Pos += (XMVector3Normalize(m_Dir[i]) * m_Speed[i] * _TimeDelta);
+		m_Time[i] += _TimeDelta * 2.f;
 
-		((VTXMATRIX*)SubResource.pData)[i].vPosition.x = XMVectorGetX(Pos);
-		((VTXMATRIX*)SubResource.pData)[i].vPosition.y = XMVectorGetY(Pos);
-		((VTXMATRIX*)SubResource.pData)[i].vPosition.z = XMVectorGetZ(Pos);
+		if (m_TimeAcc[i] <= m_Time[i])
+		{
+			((VTXMATRIX*)SubResource.pData)[i].vPosition.x = 0;
+			((VTXMATRIX*)SubResource.pData)[i].vPosition.z = 0;
+			m_Time[i] = 0;
+		}
 
-		if (2.0 <= XMVectorGetY(Pos))
-			((VTXMATRIX*)SubResource.pData)[i].vPosition.y = 0;
 	}
 
 	m_pDeviceContext->Unmap(m_VBInstance, 0);
@@ -239,6 +265,8 @@ void CVIBuffer_PointInstance_Dust::Free()
 	{
 		Safe_Delete_Array(m_Dir);
 		Safe_Delete_Array(m_Speed);
+		Safe_Delete_Array(m_Time);
+		Safe_Delete_Array(m_TimeAcc);
 	}
 
 	Safe_Release(m_VBInstance);

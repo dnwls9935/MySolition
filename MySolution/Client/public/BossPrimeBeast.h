@@ -9,6 +9,7 @@ class CTransform;
 class CModel;
 class CCollider;
 class Navigation;
+class HP;
 END
 
 BEGIN(Client)
@@ -72,8 +73,8 @@ private:
 	CRenderer*				m_pRendererCom = nullptr;
 	CTransform*				m_pTransformCom = nullptr;
 	CModel*					m_pModelCom = nullptr;
-	
 	Navigation*				m_NavigationCom = nullptr;
+	HP*								m_HpCom = nullptr;
 
 	CHierarchyNode*			m_HeadBone = nullptr;
 	CHierarchyNode*			m_rHand1Bone = nullptr;
@@ -112,6 +113,11 @@ private:
 private:
 	_double				m_FocusAcc = 0.0;
 	_bool					m_Focus = FALSE;
+
+private:
+	_bool							m_Burned = FALSE;
+	_float							m_BurnedTime = 0.f;
+	_float3						m_BurnColor;
 
 private:
 	virtual HRESULT SetUp_Components();

@@ -31,6 +31,8 @@ private:
 	_uint					m_InstNumVertices = 0;
 
 	_vector*				m_Dir = nullptr;
+	_double*			m_Time = nullptr;
+	_double*			m_TimeAcc = nullptr;
 	_double*			m_Speed = nullptr;
 
 public:

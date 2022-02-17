@@ -27,7 +27,7 @@ HRESULT BossPrimeBeast::NativeConstruct_Prototype()
 
 HRESULT BossPrimeBeast::NativeConstruct(void * pArg)
 {
-	if (FAILED(__super::NativeConstruct(pArg)))
+	if (FAILED(__super::NativeConstruct(pArg))) 
 		return E_FAIL;
 
 	if (FAILED(SetUp_Components()))
@@ -73,7 +73,8 @@ HRESULT BossPrimeBeast::NativeConstruct(void * pArg)
 	m_Terrain = pGameInstance->GetObjectList(LEVEL_GAMEPLAY, TEXT("Layer_Terrain")).front();
 	RELEASE_INSTANCE(CGameInstance);
 
-	//
+	m_BurnColor = { 1.f, 0.2f, 0.f };
+
 	m_NavigationCom->SettingDefaultIndex(m_pTransformCom);
 
 	return S_OK;
@@ -116,7 +117,8 @@ _int BossPrimeBeast::Tick(_double TimeDelta)
 
 	AttackBlockCreate(m_pModelCom->GetCurrentAnimation());
 	AttackCollision(TimeDelta);
-
+	/*_vector Position = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	m_HpCom->Update(XMVectorSet(XMVectorGetX(Position), 6.5f, XMVectorGetZ(Position), 1.f), (_float)m_HP / (_float)m_MaxHP);*/
 	return _int();
 }
 
@@ -125,6 +127,7 @@ _int BossPrimeBeast::LateTick(_double TimeDelta)
 	if (nullptr != m_pRendererCom)
 	{
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
+		m_pRendererCom->Add_RenderComGroup(CRenderer::RENDERCOM_HP, m_HpCom);
 
 #ifdef _DEBUG
 		m_pRendererCom->Add_RenderComGroup(CRenderer::RENDERCOM_COLLIDER, m_ColliderCom);
@@ -167,6 +170,10 @@ _int BossPrimeBeast::LateTick(_double TimeDelta)
 	if (0 >= m_HP)
 	{
 		m_pModelCom->SetUp_AnimationIndex((_uint)ANIMATION_STATE::DEA_CRITICAL);
+
+		m_Burned = TRUE;
+		m_BurnedTime += TimeDelta;
+
 		if (m_pModelCom->GetAnimationFinished())
 		{
 			m_Dead = TRUE;
@@ -190,6 +197,10 @@ HRESULT BossPrimeBeast::Render()
 	m_pModelCom->SetUp_ValueOnShader("g_vCamPosition", (void*)&pGameInstance->Get_CamPosition(), sizeof(_vector));
 	m_pModelCom->SetUp_ValueOnShader("g_RimLight", &m_ChargeATT, sizeof(_bool));
 
+	m_pModelCom->SetUp_ValueOnShader("g_Burned", &m_Burned, sizeof(_bool));
+	m_pModelCom->SetUp_ValueOnShader("g_Time", &m_BurnedTime, sizeof(_float));
+	m_pModelCom->SetUp_ValueOnShader("g_BurnColor", &m_BurnColor, sizeof(_float3));
+
 
 	if (FAILED(m_pModelCom->Bind_Buffers()))
 		return E_FAIL;
@@ -197,6 +208,8 @@ HRESULT BossPrimeBeast::Render()
 	for (_uint i = 0; i < m_pModelCom->Get_NumMeshContainer(); ++i)
 	{
 		m_pModelCom->SetUp_TextureOnShader("g_DiffuseTexture", i, aiTextureType_DIFFUSE);
+
+		m_pModelCom->SetUp_TextureOnShader("g_BurnedTexture", i, aiTextureType_OPACITY);
 
 		m_pModelCom->Render(i, 1);
 	}
@@ -234,8 +247,10 @@ _bool BossPrimeBeast::Picked()
 
 	if (TRUE == m_ColliderCom->CollisionAABBToRay(CalDesc._rayPos, CalDesc._rayDir, Distance))
 	{
+		//m_HpCom->Picked(TRUE);
 		return TRUE;
 	}
+	//m_HpCom->Picked(FALSE);
 	return FALSE;
 }
 
@@ -650,6 +665,10 @@ HRESULT BossPrimeBeast::SetUp_Components()
 	CollisionDesc.Position = _float3(0.f, 1.f, 0.0f);
 	if (FAILED(__super::SetUp_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_AABB"), TEXT("Com_Collider"), (CComponent**)&m_ColliderCom, &CollisionDesc)))
 		return E_FAIL;
+
+	///* Com_HP*/
+	//if (FAILED(__super::SetUp_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_UI_HP"), TEXT("Com_HP"), (CComponent**)&m_HpCom)))
+	//	return E_FAIL;
 	
 
 	ZeroMemory(&CollisionDesc, sizeof(CCollider::COLLISIONDESC));
@@ -729,5 +748,6 @@ void BossPrimeBeast::Free()
 	Safe_Release(m_rHand2Collider);
 	Safe_Release(m_lHand1Collider);
 	Safe_Release(m_lHand2Collider);
+	Safe_Release(m_HpCom);
 
 }

@@ -32,9 +32,6 @@ HRESULT ClapTrap::NativeConstruct(void * pArg)
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, 0.f, 0.f, 1.f));
 
-
-	RELEASE_INSTANCE(CGameInstance);
-
 	return S_OK;
 }
 
@@ -42,16 +39,15 @@ _int ClapTrap::Tick(_double TimeDelta)
 {
 	m_pModelCom->Update_CombinedTransformationMatrix(TimeDelta);
 
-
-	_vector m_MyPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 
 	if (pGameInstance->Get_DIKeyState(DIK_M) & 0x80)
 	{
-		if (FAILED(pGameInstance->Add_GameObjectToLayer(LEVEL_LOGO, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Effect_BurrowDust"), &m_MyPosition)))
-			return E_FAIL;
+		m_Burned = TRUE;
+		m_BurnedTime += 0.01f;
 	}
+
+	RELEASE_INSTANCE(CGameInstance);
 
 	return _int();
 }
@@ -78,6 +74,8 @@ HRESULT ClapTrap::Render()
 	m_pModelCom->SetUp_ValueOnShader("g_ViewMatrix", &XMMatrixTranspose(pGameInstance->Get_Transform(CPipeLine::D3DTS_VIEW)), sizeof(_matrix));
 	m_pModelCom->SetUp_ValueOnShader("g_ProjMatrix", &XMMatrixTranspose(pGameInstance->Get_Transform(CPipeLine::D3DTS_PROJECTION)), sizeof(_matrix));
 
+	m_pModelCom->SetUp_ValueOnShader("g_Burned", &m_Burned, sizeof(_bool));
+	m_pModelCom->SetUp_ValueOnShader("g_Time", &m_BurnedTime, sizeof(_float));
 
 	if (FAILED(m_pModelCom->Bind_Buffers()))
 		return E_FAIL;
@@ -85,6 +83,8 @@ HRESULT ClapTrap::Render()
 	for (_uint i = 0; i < m_pModelCom->Get_NumMeshContainer(); ++i)
 	{
 		m_pModelCom->SetUp_TextureOnShader("g_DiffuseTexture", i, aiTextureType_DIFFUSE);
+
+		m_pModelCom->SetUp_TextureOnShader("g_BurnedTexture", i, aiTextureType_OPACITY);
 
 		m_pModelCom->Render(i, 1);
 	}
@@ -111,6 +111,9 @@ HRESULT ClapTrap::SetUp_Components()
 	if (FAILED(__super::SetUp_Components(LEVEL_LOGO, TEXT("Prototype_Component_Model_ClapTrap"), TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
 		return E_FAIL;
 
+	/* Com_Texture */
+	if (FAILED(__super::SetUp_Components(LEVEL_LOGO, TEXT("Prototype_Component_Texture_Tex_Burned"), TEXT("Com_BurnedTexture"), (CComponent**)&m_pBurnedTextureCom)))
+		return E_FAIL;
 	return S_OK;
 }
 
@@ -147,4 +150,5 @@ void ClapTrap::Free()
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pRendererCom);
+	Safe_Release(m_pBurnedTextureCom);
 }
