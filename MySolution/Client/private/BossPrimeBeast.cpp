@@ -112,7 +112,7 @@ _int BossPrimeBeast::Tick(_double TimeDelta)
 		m_pTransformCom->Set_State(CTransform::STATE_LOOK, Look);
 	}
 
-	if (TRUE == m_IntroEnd || FALSE == m_ChargeATT)
+	if (TRUE == m_IntroEnd && FALSE == m_ChargeATT)
 		HitCheck();
 
 	AttackBlockCreate(m_pModelCom->GetCurrentAnimation());

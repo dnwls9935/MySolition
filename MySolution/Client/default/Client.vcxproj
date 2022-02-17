@@ -181,6 +181,7 @@
     <ClInclude Include="..\public\EnvironmentObject.h" />
     <ClInclude Include="..\public\GlacialFlowWall.h" />
     <ClInclude Include="..\public\HitBullet.h" />
+    <ClInclude Include="..\public\HitNum.h" />
     <ClInclude Include="..\public\HITUI.h" />
     <ClInclude Include="..\public\HyperionChest.h" />
     <ClInclude Include="..\public\Level_GamePlay.h" />
@@ -222,6 +223,7 @@
     <ClCompile Include="..\private\EnvironmentObject.cpp" />
     <ClCompile Include="..\private\GlacialFlowWall.cpp" />
     <ClCompile Include="..\private\HitBullet.cpp" />
+    <ClCompile Include="..\private\HitNum.cpp" />
     <ClCompile Include="..\private\HITUI.cpp" />
     <ClCompile Include="..\private\HyperionChest.cpp" />
     <ClCompile Include="..\private\Level_GamePlay.cpp" />

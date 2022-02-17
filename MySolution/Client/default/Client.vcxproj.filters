@@ -148,6 +148,9 @@
     <Filter Include="02.GameObject\UI\PlayerUI\Num">
       <UniqueIdentifier>{9ce7d43a-8e23-4950-99a8-f9d2d25761cc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\UI\HitUI\Num">
+      <UniqueIdentifier>{46584666-b3bc-4dda-9abc-eee0a47c0a68}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -276,6 +279,9 @@
     <ClInclude Include="..\public\Num.h">
       <Filter>02.GameObject\UI\PlayerUI\Num</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\HitNum.h">
+      <Filter>02.GameObject\UI\HitUI\Num</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -388,6 +394,9 @@
     </ClCompile>
     <ClCompile Include="..\private\Num.cpp">
       <Filter>02.GameObject\UI\PlayerUI\Num</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\HitNum.cpp">
+      <Filter>02.GameObject\UI\HitUI\Num</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

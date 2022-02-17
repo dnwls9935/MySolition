@@ -42,7 +42,7 @@ private:
 private:
 	_bool							m_Burned = FALSE;
 	_float							m_BurnedTime = 0.f;
-
+	_float3						m_BurnColor;
 private:
 	virtual HRESULT SetUp_Components();
 public:

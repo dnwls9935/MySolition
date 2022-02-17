@@ -99,7 +99,7 @@ _int PrimeBeast::Tick(_double TimeDelta)
 	m_HpCom->Update(XMVectorSet(XMVectorGetX(Position), 2.5f, XMVectorGetZ(Position), 1.f), (_float)m_HP / (_float)m_MaxHP);
 
 	if ((_uint)ANIMATION_STATE::ATT_TR_V1 == m_pModelCom->GetCurrentAnimation() ||
-		(_uint)ANIMATION_STATE::DODGE_L == m_pModelCom->GetCurrentAnimation())
+		(_uint)ANIMATION_STATE::RUN_R == m_pModelCom->GetCurrentAnimation())
 	{
 		_vector Look = m_PlayerPosition - m_MyPosition;
 		Look = XMVector3Normalize(Look);
@@ -132,7 +132,7 @@ _int PrimeBeast::LateTick(_double TimeDelta)
 		//else if ((_uint)ANIMATION_STATE::ATT_TR_V1 == m_pModelCom->GetCurrentAnimation())
 			//m_Dodge = TRUE;
 
-		else if ((_uint)ANIMATION_STATE::DODGE_L == m_pModelCom->GetCurrentAnimation())
+		else if ((_uint)ANIMATION_STATE::RUN_R == m_pModelCom->GetCurrentAnimation())
 		{
 			m_Dodge = FALSE;
 			m_Hit = FALSE;
@@ -345,7 +345,7 @@ void PrimeBeast::Attack()
 void PrimeBeast::Dodge(_double TimeDelta)
 {
 	if (TRUE == m_pTransformCom->GoSideFDodge(TimeDelta * 2.5f, m_Navigation))
-		m_pModelCom->SetUp_AnimationIndex((_uint)ANIMATION_STATE::DODGE_L);
+		m_pModelCom->SetUp_AnimationIndex((_uint)ANIMATION_STATE::RUN_R);
 	else
 		m_pTransformCom->Chase_Target(static_cast<CTransform*>(m_TargetPlayer->GetComponent(TEXT("Com_Transform"))), TimeDelta);
 }

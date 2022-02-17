@@ -32,6 +32,9 @@ HRESULT ClapTrap::NativeConstruct(void * pArg)
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, 0.f, 0.f, 1.f));
 
+
+	m_BurnColor = { 1.f, 0.49f, 0.f };
+
 	return S_OK;
 }
 
@@ -74,8 +77,13 @@ HRESULT ClapTrap::Render()
 	m_pModelCom->SetUp_ValueOnShader("g_ViewMatrix", &XMMatrixTranspose(pGameInstance->Get_Transform(CPipeLine::D3DTS_VIEW)), sizeof(_matrix));
 	m_pModelCom->SetUp_ValueOnShader("g_ProjMatrix", &XMMatrixTranspose(pGameInstance->Get_Transform(CPipeLine::D3DTS_PROJECTION)), sizeof(_matrix));
 
+
 	m_pModelCom->SetUp_ValueOnShader("g_Burned", &m_Burned, sizeof(_bool));
 	m_pModelCom->SetUp_ValueOnShader("g_Time", &m_BurnedTime, sizeof(_float));
+	m_pModelCom->SetUp_ValueOnShader("g_BurnColor", &m_BurnColor, sizeof(_float3));
+
+	_bool b = TRUE;
+	m_pModelCom->SetUp_ValueOnShader("g_RimLight", &b, sizeof(_bool));
 
 	if (FAILED(m_pModelCom->Bind_Buffers()))
 		return E_FAIL;
