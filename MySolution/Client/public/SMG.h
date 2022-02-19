@@ -75,7 +75,7 @@ private:
 	_float		m_BarPercent = 0.f;
 
 private:
-	_int			m_AttackDamage = 800;
+	_int			m_AttackDamage = 600;
 
 private:
 	CRenderer*				m_pRendererCom = nullptr;

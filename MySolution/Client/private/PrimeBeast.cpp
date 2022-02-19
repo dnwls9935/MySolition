@@ -6,6 +6,7 @@
 #include "SMG.h"
 #include "PrimeBeastRock.h"
 #include "HitBullet.h"
+#include "HitNum.h"
 
 PrimeBeast::PrimeBeast(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -281,6 +282,15 @@ void PrimeBeast::HitCheck()
 			_vector Position = CalDesc._rayPos + CalDesc._rayDir * Distance;
 			if (FAILED(pGameInstance->Add_GameObjectToLayer(LEVEL_GAMEPLAY, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Effect_HitBullet"), &Position)))
 				MSGBOX("Failed to Create HitBullet Effect!!!");
+/*
+			HitNum::HUDESC HUD;
+			ZeroMemory(&HUD, sizeof(HUD));
+			HUD.Num = AttDmg;
+			HUD.Position = Position;
+			HUD.Parent = this;
+			if(FAILED(pGameInstance->Add_GameObjectToLayer(LEVEL_GAMEPLAY, TEXT("Layer_UI"), TEXT("Prototype_GameObject_UI_HitNumber"), &HUD)))
+				MSGBOX("Failed to Create HitNum!!!");
+*/
 		}
 		
 		RELEASE_INSTANCE(CGameInstance);
@@ -395,7 +405,7 @@ PrimeBeast * PrimeBeast::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pD
 
 	if (FAILED(pInstance->NativeConstruct_Prototype()))
 	{
-		MSGBOX("Failed to Creating CTerrain");
+		MSGBOX("Failed to Creating PrimeBeast");
 		Safe_Release(pInstance);
 	}
 
@@ -408,7 +418,7 @@ CGameObject * PrimeBeast::Clone(void * pArg)
 
 	if (FAILED(pInstance->NativeConstruct(pArg)))
 	{
-		MSGBOX("Failed to Creating CMainApp");
+		MSGBOX("Failed to Creating PrimeBeast");
 		Safe_Release(pInstance);
 	}
 

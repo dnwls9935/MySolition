@@ -32,14 +32,25 @@ public:
 		return m_Focus;
 	}
 
+	void			SetShaking(_bool _b) {
+		m_Shaking = _b;
+	}
+
 public:
 	void			SetFOV(_float _FOV);
 	void			ForcusCamera();
 
 private:
+	void			Shaking(_double _TimeDelta);
+
+private:
 	_matrix		m_OriginWM = XMMatrixIdentity();
 	_bool			m_Focus = FALSE;
 	_bool			m_IntroEnd = FALSE;
+
+	_bool			m_Shaking;
+	_double		m_ShakingTime = 0.0;
+	_int				m_ShakingPower = 0;
 	
 public:
 	static CCamera_Dynamic* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

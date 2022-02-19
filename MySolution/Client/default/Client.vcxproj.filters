@@ -154,6 +154,12 @@
     <Filter Include="02.GameObject\Effect\CollisionDust">
       <UniqueIdentifier>{2814d28e-33f4-4012-8895-3dbf21fcdb69}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\Effect\Blocked">
+      <UniqueIdentifier>{0982da53-6290-4151-accc-b894f89dd9d5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\UI\Play">
+      <UniqueIdentifier>{f9cf2dfe-3ca9-4e80-be06-0270667bdb73}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -288,6 +294,12 @@
     <ClInclude Include="..\public\CollisionDust.h">
       <Filter>02.GameObject\Effect\CollisionDust</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Blocked.h">
+      <Filter>02.GameObject\Effect\Blocked</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Play.h">
+      <Filter>02.GameObject\UI\Play</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -406,6 +418,12 @@
     </ClCompile>
     <ClCompile Include="..\private\CollisionDust.cpp">
       <Filter>02.GameObject\Effect\CollisionDust</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Blocked.cpp">
+      <Filter>02.GameObject\Effect\Blocked</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Play.cpp">
+      <Filter>02.GameObject\UI\Play</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

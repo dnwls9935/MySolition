@@ -18,6 +18,7 @@ public:
 	typedef struct tagHitNum {
 		_int Num = 0;
 		_vector Position = XMVectorSet(0.f, 0.f, 0.f, 1.f);
+		CGameObject*	Parent = nullptr;
 	}HUDESC;
 
 protected:
@@ -48,6 +49,8 @@ private:
 	XMMATRIX				m_ProjMatrix;
 
 	class CCamera_Dynamic*		m_Camera = nullptr;
+	CGameObject*							m_Parent = nullptr;
+
 
 private:
 	_int Num = 0;
@@ -55,6 +58,9 @@ private:
 	_int Num100 = 0;
 	_int Num10 = 0;
 	_int Num1 = 0;
+
+private:
+	_double			m_LifeTime = 0.0;
 
 private:
 	_double m_DeltaTime = 0.0;

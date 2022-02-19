@@ -86,7 +86,6 @@ PS_OUT PS_MAIN(PS_IN In)
 
 PS_OUT PS_MAIN_BLEND(PS_IN In)
 {
-
 	PS_OUT		Out = (PS_OUT)0;
 
 	vector Diffuse = g_DiffuseTexture.Sample(DefaultSampler, In.vTexUV);
@@ -99,6 +98,22 @@ PS_OUT PS_MAIN_BLEND(PS_IN In)
 	if (Out.vColor.a <= 0.0)
 		discard;
 	
+	return Out;
+}
+
+cbuffer AlphaDesc {
+	float g_Alpha = 0.f;
+};
+
+PS_OUT PS_BLOKCED(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	Out.vColor = g_DiffuseTexture.Sample(DefaultSampler, In.vTexUV);
+
+	if (Out.vColor.a <= g_Alpha)
+		discard;
+
 	return Out;
 }
 
@@ -130,6 +145,17 @@ technique11			DefaultTechnique
 		VertexShader = compile vs_5_0 VS_MAIN();
 		GeometryShader = NULL;
 		PixelShader = compile ps_5_0  PS_MAIN_BLEND();
+	}
+	pass Blocked
+	{
+		SetBlendState(BlendDisable, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		SetRasterizerState(CullMode_Default);
+		SetDepthStencilState(ZBuffer_Default, 0);
+
+		/* 진입점함수를 지정한다. */
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		PixelShader = compile ps_5_0  PS_BLOKCED();
 	}
 
 }

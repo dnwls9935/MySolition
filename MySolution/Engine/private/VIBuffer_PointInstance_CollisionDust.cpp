@@ -50,7 +50,7 @@ HRESULT CVIBuffer_PointInstance_CollisionDust::NativeConstruct_Prototype(const _
 	for (_uint i = 0; i < m_iNumVertices; i++)
 	{
 		((VTXPOINT*)m_pVertices)[i].vPosition = _float3(0.0f, 0.0f, 0.0f);
-		((VTXPOINT*)m_pVertices)[i].vPSize = _float2(15.f, 15.f);
+		((VTXPOINT*)m_pVertices)[i].vPSize = _float2(10.f, 10.f);
 	}
 
 	m_VBSubresourceData.pSysMem = m_pVertices;
@@ -122,7 +122,7 @@ HRESULT CVIBuffer_PointInstance_CollisionDust::NativeConstruct(void * pArg)
 		pVertices[i].vLook = _float4(0.f, 0.f, 1.f, 0.f);
 		pVertices[i].vPosition = _float4(
 			rand() % 6 - 3,
-			(_float)(rand() * (_float)7 / ((_float)RAND_MAX) + (_float)(7)),
+			(_float)(rand() * (_float)5 / ((_float)RAND_MAX) + (_float)(5)),
 			rand() % 6 - 3,
 			1.f);
 

@@ -5,6 +5,7 @@
 #include "Terrain.h"
 #include "BossPrimeBeast.h"
 
+#include <iostream>
 
 CCamera_Dynamic::CCamera_Dynamic(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CCamera(pDevice, pDeviceContext)
@@ -30,13 +31,23 @@ HRESULT CCamera_Dynamic::NativeConstruct(void * pArg)
 	if (FAILED(__super::NativeConstruct(pArg)))
 		return E_FAIL;
 
+	m_ShakingPower = 10;
+	m_Shaking = TRUE;
+
 	return S_OK;
 }
 
 _int CCamera_Dynamic::Tick(_double TimeDelta)
 {
+	SetFOV(XMConvertToRadians(60.f));
+
 	if (TRUE == m_IntroEnd)
+	{
+		if (TRUE == m_Shaking)
+			Shaking(TimeDelta);
+
 		return _int();
+	}
 
 	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 
@@ -50,19 +61,22 @@ _int CCamera_Dynamic::Tick(_double TimeDelta)
 	if(TRUE == m_Focus)
 		ForcusCamera();
 
-
 	return CCamera::Tick(TimeDelta);
 }
 
 _int CCamera_Dynamic::LateTick(_double TimeDelta)
 {	
 	CPipeLine*		pPipeLine = GET_INSTANCE(CPipeLine);
-
 	pPipeLine->Set_Transform(CPipeLine::D3DTS_VIEW, m_pTransform->Get_WorldMatrixInverse());
-
 	pPipeLine->Set_Transform(CPipeLine::D3DTS_PROJECTION, XMMatrixPerspectiveFovLH(m_CameraDesc.fFovy, m_CameraDesc.fAspect, m_CameraDesc.fNear, m_CameraDesc.fFar));
-
 	RELEASE_INSTANCE(CPipeLine);
+
+	if (0.8 <= m_ShakingTime)
+	{
+		m_ShakingTime = 0;
+		m_Shaking = FALSE;
+	}
+
 	return CCamera::LateTick(TimeDelta);
 }
 
@@ -151,6 +165,14 @@ void CCamera_Dynamic::ForcusCamera()
 		}
 	}
 	RELEASE_INSTANCE(CGameInstance);
+}
+
+void CCamera_Dynamic::Shaking(_double _TimeDelta)
+{
+	m_ShakingTime += _TimeDelta;
+	
+	_float NumRand = 60 + ((rand() % 10) - 5);
+	SetFOV(XMConvertToRadians(NumRand));
 }
 
 

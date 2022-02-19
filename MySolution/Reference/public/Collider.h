@@ -41,7 +41,7 @@ public:
 	_bool	CollisionOBB(CCollider* _targetCollider);
 	_bool	CollisionSPHERE(CCollider* _targetCollider);
 	_bool	CollisionAABBToRay(_fvector Ray, _fvector Dir, _float& _OutDistance);
-	_bool	CollisionSphereToRay(_fvector Ray, _fvector Dir);
+	_bool	CollisionSphereToRay(_fvector Ray, _fvector Dir, _float& _OutDistance);
 	_bool	CollisionSphereToAABB(CCollider* _TargetCollider);
 
 	void	IsCollision(_bool b) { m_IsCollision = b; };

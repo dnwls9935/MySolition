@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "..\public\Snow.h"
 #include "GameInstance.h"
+#include "BossPrimeBeast.h"
 
 Snow::Snow(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -27,14 +28,33 @@ HRESULT Snow::NativeConstruct(void * pArg)
 
 	if (FAILED(SetUp_Components()))
 		return E_FAIL;
-	
 
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);	
+
+	list<CGameObject*> Enemys = pGameInstance->GetObjectList(LEVEL_GAMEPLAY, TEXT("Layer_Enemy"));
+	for (auto& Enemy : Enemys)
+	{
+		if (CGameObject::OBJTYPE_ID::BOSS == Enemy->GetID())
+		{
+			m_Boss = static_cast<BossPrimeBeast*>(Enemy);
+			Safe_AddRef(m_Boss);
+		}
+	}
+	RELEASE_INSTANCE(CGameInstance);
 	return S_OK;
 }
 
 _int Snow::Tick(_double TimeDelta)
 {
-	m_VIBufferCom->Update(TimeDelta);
+	if (TRUE == m_Boss->GetFocus())
+		m_VIBufferCom->Update(0.0);
+	else
+	{
+		m_VIBufferCom->Update(TimeDelta);
+
+		m_X = rand() % 16 + 1;
+		m_Y = rand() % 16 + 1;
+	}
 
 	return _int();
 }
@@ -51,17 +71,14 @@ HRESULT Snow::Render()
 {
 	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 
-	_int		X = rand() % 16 + 1;
-	_int		Y = rand() % 16 + 1;
-
 	m_VIBufferCom->SetUp_ValueOnShader("g_WorldMatrix", &XMMatrixTranspose(m_pTransformCom->Get_WorldMatrix()), sizeof(_matrix));
 	m_VIBufferCom->SetUp_ValueOnShader("g_ViewMatrix", &XMMatrixTranspose(pGameInstance->Get_Transform(CPipeLine::D3DTS_VIEW)), sizeof(_matrix));
 	m_VIBufferCom->SetUp_ValueOnShader("g_ProjMatrix", &XMMatrixTranspose(pGameInstance->Get_Transform(CPipeLine::D3DTS_PROJECTION)), sizeof(_matrix));
 
 	m_VIBufferCom->SetUp_ValueOnShader("g_vCamPosition", (void*)&pGameInstance->Get_CamPosition(), sizeof(_vector));
 
-	m_VIBufferCom->SetUp_ValueOnShader("g_X", &X, sizeof(_int));
-	m_VIBufferCom->SetUp_ValueOnShader("g_Y", &Y, sizeof(_int));
+	m_VIBufferCom->SetUp_ValueOnShader("g_X", &m_X, sizeof(_int));
+	m_VIBufferCom->SetUp_ValueOnShader("g_Y", &m_Y, sizeof(_int));
 
 	m_VIBufferCom->SetUp_TextureOnShader("g_DiffuseTexture", m_TextureCom, 0);
 	m_VIBufferCom->Render(0);

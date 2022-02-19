@@ -66,7 +66,7 @@ _int SMG::Tick(_double TimeDelta)
 	}
 	else
 	{
-		static_cast<CCamera_Dynamic*>(m_CameraObject)->SetFOV(XMConvertToRadians(60.f));
+		//static_cast<CCamera_Dynamic*>(m_CameraObject)->SetFOV(XMConvertToRadians(60.f));
 		m_BarrelLight->SetLighting(FALSE);
 	}
 

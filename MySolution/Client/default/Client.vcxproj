@@ -167,6 +167,7 @@
   <ItemGroup>
     <ClInclude Include="..\bin\ShaderFiles\Shader_RenderState.hpp" />
     <ClInclude Include="..\public\BackGround.h" />
+    <ClInclude Include="..\public\Blocked.h" />
     <ClInclude Include="..\public\BossPrimeBeast.h" />
     <ClInclude Include="..\public\BossPrimeBeastRock.h" />
     <ClInclude Include="..\public\BugMorph.h" />
@@ -194,6 +195,7 @@
     <ClInclude Include="..\public\Muzzle.h" />
     <ClInclude Include="..\public\Num.h" />
     <ClInclude Include="..\public\PickUps.h" />
+    <ClInclude Include="..\public\Play.h" />
     <ClInclude Include="..\public\Player.h" />
     <ClInclude Include="..\public\PrimeBeast.h" />
     <ClInclude Include="..\public\PrimeBeastRock.h" />
@@ -211,6 +213,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\BackGround.cpp" />
+    <ClCompile Include="..\private\Blocked.cpp" />
     <ClCompile Include="..\private\BossPrimeBeast.cpp" />
     <ClCompile Include="..\private\BossPrimeBeastRock.cpp" />
     <ClCompile Include="..\private\BugMorph.cpp" />
@@ -237,6 +240,7 @@
     <ClCompile Include="..\private\Muzzle.cpp" />
     <ClCompile Include="..\private\Num.cpp" />
     <ClCompile Include="..\private\PickUps.cpp" />
+    <ClCompile Include="..\private\Play.cpp" />
     <ClCompile Include="..\private\Player.cpp" />
     <ClCompile Include="..\private\PrimeBeast.cpp" />
     <ClCompile Include="..\private\PrimeBeastRock.cpp" />

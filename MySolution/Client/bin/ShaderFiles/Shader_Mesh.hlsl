@@ -75,7 +75,6 @@ VS_OUT VS_MAIN_STATIC(VS_IN In)
 	Out.vProjPos = Out.vPosition;
 
 	return Out;
-
 }
 
 
@@ -143,9 +142,9 @@ PS_OUT PS_MAIN(PS_IN In)
 
 		Rim = 1 - saturate(dot(In.vNormal, ViewDir));
 
-		Rim = pow(Rim, 6.f);
+		Rim = pow(Rim, 10.f);
 
-		float3 RimColor = float3(0.8f, 0.2f, 0.1f);
+		float3 RimColor = float3(1.f, 0.0f, 0.0f);
 
 		RimColor = Rim * RimColor;
 
@@ -173,6 +172,70 @@ PS_OUT PS_MAIN(PS_IN In)
 	return Out;
 }
 
+cbuffer XYDesc {
+	float g_X;
+	float g_Y;
+};
+
+VS_OUT VS_EFFECT(VS_IN In)
+{
+	VS_OUT			Out = (VS_OUT)0;
+
+
+	matrix			matWV, matWVP;
+
+	matWV = mul(g_WorldMatrix, g_ViewMatrix);
+	matWVP = mul(matWV, g_ProjMatrix);
+
+	Out.vPosition = mul(vector(In.vPosition, 1.f), matWVP);
+	Out.vNormal = normalize(mul(vector(In.vNormal, 0.f), g_WorldMatrix));
+
+	In.vTexUV.y = g_Y;
+
+	Out.vTexUV = In.vTexUV;
+	Out.vProjPos = Out.vPosition;
+
+	return Out;
+}
+
+PS_OUT PS_EFFECT(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	vector Diffuse = g_DiffuseTexture.Sample(DefaultSampler, In.vTexUV);
+
+	//Out.vDiffuse.gb = 0.f;
+
+	if (true == g_Burned)
+	{
+		vector Burned = g_BurnedTexture.Sample(DefaultSampler, In.vTexUV);
+
+		if (Burned.r <= g_Time + 0.2f)
+		{
+			Out.vDiffuse.r += g_BurnColor.r;
+			Out.vDiffuse.g += g_BurnColor.g;
+			Out.vDiffuse.b += g_BurnColor.b;
+		}
+
+		if (Burned.r <= g_Time)
+			discard;
+	}
+
+	Out.vDiffuse = Diffuse;
+	Out.vDiffuse.gb = 0.2f;
+
+	Out.vDiffuse += 0.3f;
+
+	if (Out.vDiffuse.r <= 0.7)
+		discard;
+	
+
+	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
+	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 300.0f, 0.0f, 0.0f);
+
+	return Out;
+}
+
 
 technique11			DefaultTechnique
 {
@@ -187,7 +250,6 @@ technique11			DefaultTechnique
 		GeometryShader = NULL;
 		PixelShader = compile ps_5_0  PS_MAIN();
 	}
-
 	pass AnimMesh
 	{
 		SetRasterizerState(CullMode_Default);
@@ -198,5 +260,16 @@ technique11			DefaultTechnique
 		VertexShader = compile vs_5_0 VS_MAIN_DYNAMIC();
 		GeometryShader = NULL;
 		PixelShader = compile ps_5_0  PS_MAIN();
+	}
+	pass StaticEffectMash
+	{
+		SetRasterizerState(CullMode_Default);
+		SetDepthStencilState(ZBuffer_Default, 0);
+		SetBlendState(AlphaBlending, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		/* 진입점함수를 지정한다. */
+		VertexShader = compile vs_5_0 VS_EFFECT();
+		GeometryShader = NULL;
+		PixelShader = compile ps_5_0  PS_EFFECT();
 	}
 }

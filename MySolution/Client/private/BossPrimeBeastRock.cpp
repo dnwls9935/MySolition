@@ -152,7 +152,7 @@ HRESULT BossPrimeBeastRock::SetUp_Components()
 {
 	/* Com_Transform */
 	CTransform::TRANSFORMDESC		TransformDesc;
-	TransformDesc.fSpeedPerSec = 30.f;
+	TransformDesc.fSpeedPerSec = 45.f;
 	TransformDesc.fRotationPerSec = XMConvertToRadians(120.0f);
 
 	if (FAILED(__super::SetUp_Components(LEVEL_STATIC, TEXT("Prototype_Component_Transform"), TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &TransformDesc)))
@@ -169,7 +169,7 @@ HRESULT BossPrimeBeastRock::SetUp_Components()
 	/* Com_Collider*/
 	CCollider::COLLISIONDESC CollisionDesc;
 	ZeroMemory(&CollisionDesc, sizeof(CCollider::COLLISIONDESC));
-	CollisionDesc.Scale = _float3(3.0f, 3.0f, 3.0f);
+	CollisionDesc.Scale = _float3(4.0f, 4.0f, 4.0f);
 	CollisionDesc.Position = _float3(0.0f, 0.0f, 0.0f);
 	if (FAILED(__super::SetUp_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_Sphere"), TEXT("Com_Sphere"), (CComponent**)&m_ColliderCom, &CollisionDesc)))
 		return E_FAIL;

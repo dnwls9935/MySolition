@@ -32,6 +32,9 @@
 #include "BurrowDust.h"
 #include "CollisionDust.h"
 #include "Num.h"
+#include "HitNum.h"
+#include "Blocked.h"
+#include "Play.h"
 
 CLoader::CLoader(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: m_pDevice(pDevice)
@@ -100,6 +103,8 @@ HRESULT CLoader::Loading_ForLogo()
 	wsprintf(m_szLoading, TEXT("텍스쳐를 생성한다. "));
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOGO, TEXT("Prototype_Component_Texture_Cube"), CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Textures/SkyBox/ColdNight.dds")))))
 		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOGO, TEXT("Prototype_Component_Texture_Play"), CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Textures/UI/Play/Play%d.png"), 3))))
+		return E_FAIL;
 
 
 	wsprintf(m_szLoading, TEXT("객체원형을 생성한다. "));
@@ -108,6 +113,8 @@ HRESULT CLoader::Loading_ForLogo()
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_CameraStatic"), CCamera_Static::Create(m_pDevice, m_pDeviceContext))))
 		return E_FAIL;
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_LogoCube"), LogoSky::Create(m_pDevice, m_pDeviceContext))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_Play"), Play::Create(m_pDevice, m_pDeviceContext))))
 		return E_FAIL;
 
 
@@ -232,6 +239,8 @@ HRESULT CLoader::Loading_ForGamePlay()
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Tex_Burned"), CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Textures/Effect/Burned_Mask.png")))))
 		return E_FAIL;
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Snow_Decal_Dif"), CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Textures/Effect/SnowDecal/SnowDecal_Dif.png")))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_DustA"), CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Textures/Effect/CollisionDust/DustA%d.png"), 2))))
 		return E_FAIL;
 
 
@@ -400,6 +409,11 @@ HRESULT CLoader::Loading_ForGamePlay()
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_SMGAmmoPickUp"), CModel::Create(m_pDevice, m_pDeviceContext, "../Bin/Resources/Meshes/Static/PickUps/", "SMGAmmoPickUp.FBX", TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), PivotMatrix, CModel::TYPE_STATIC))))
 		return E_FAIL;
 
+	PivotMatrix = XMMatrixScaling(0.05f, 0.05f, 0.05f) * XMMatrixRotationX(XMConvertToRadians(90.f));
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Blocked"), CModel::Create(m_pDevice, m_pDeviceContext, "../Bin/Resources/Meshes/Blocked/", "Blocked.FBX", TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), PivotMatrix, CModel::TYPE_STATIC))))
+		return E_FAIL;
+
+
 
 
 	/* 객체원형을 생성한다. */
@@ -436,6 +450,8 @@ HRESULT CLoader::Loading_ForGamePlay()
 		return E_FAIL;
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Model_PickUps"), PickUps::Create(m_pDevice, m_pDeviceContext))))
 		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Model_Blocked"), Blocked::Create(m_pDevice, m_pDeviceContext))))
+		return E_FAIL;
 
 
 	/* UI들 */
@@ -448,6 +464,8 @@ HRESULT CLoader::Loading_ForGamePlay()
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_TitleCard"), TitleCard::Create(m_pDevice, m_pDeviceContext))))
 		return E_FAIL;
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_Number"), Num::Create(m_pDevice, m_pDeviceContext))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_HitNumber"), HitNum::Create(m_pDevice, m_pDeviceContext))))
 		return E_FAIL;
 
 	// 이팩트들

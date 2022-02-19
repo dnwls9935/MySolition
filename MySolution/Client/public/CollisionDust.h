@@ -43,6 +43,13 @@ private:
 	class BugMorph*						m_Boss = nullptr;
 
 private:
+	_double						m_AnimationTimeAcc = 0.0;
+
+	_int							m_X = 0.f;
+	_int							m_Y = 1.f; /* 0.25 */
+
+
+private:
 	virtual HRESULT SetUp_Components();
 public:
 	static CollisionDust* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

@@ -3,6 +3,7 @@
 #include "GameInstance.h"
 #include "Camera_Dynamic.h"
 #include "Level_Loading.h"
+#include "Play.h"
 
 
 CLevel_Logo::CLevel_Logo(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
@@ -34,22 +35,20 @@ _int CLevel_Logo::Tick(_double TimeDelta)
 	if (0 > (__super::Tick(TimeDelta)))
 		return -1;
 
-	if (GetKeyState(VK_SPACE) < 0)
-	{
-		CGameInstance*	pGameInstance = GET_INSTANCE(CGameInstance);
+	CGameInstance*	pGameInstance = GET_INSTANCE(CGameInstance);
 
+	_bool b = static_cast<Play*>(pGameInstance->GetObjectList(LEVEL_LOGO, TEXT("Layer_UI")).front())->GetPicked();
+
+	if (TRUE == b &&
+		pGameInstance->Get_MouseButtonState(CInput_Device::MBS_LBUTTON))
+	{
 		if (FAILED(pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pDeviceContext, LEVEL_GAMEPLAY), LEVEL_GAMEPLAY)))
 		{
 			RELEASE_INSTANCE(CGameInstance);
 			return -1;
 		}
-
-		RELEASE_INSTANCE(CGameInstance);
-		return 0;
 	}
-
-	
-
+	RELEASE_INSTANCE(CGameInstance);
 	return _int(0);
 }
 
@@ -132,6 +131,13 @@ HRESULT CLevel_Logo::Ready_Layer_Sky(const _tchar * pLayerTag)
 
 HRESULT CLevel_Logo::Ready_Layer_UI(const _tchar * pLayerTag)
 {
+	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+
+	if (FAILED(pGameInstance->Add_GameObjectToLayer(LEVEL_LOGO, pLayerTag, TEXT("Prototype_GameObject_UI_Play"))))
+		return E_FAIL;
+
+	RELEASE_INSTANCE(CGameInstance);
+
 	return S_OK;
 }
 

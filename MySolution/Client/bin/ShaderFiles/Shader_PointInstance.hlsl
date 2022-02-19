@@ -177,15 +177,92 @@ VS_OUT VS_BURROW(VS_IN In)
 }
 
 
+[maxvertexcount(6)]
+void GS_BURROW(point GS_IN In[1], inout TriangleStream<GS_OUT> OutStream)
+{
+	GS_OUT		Out[6];
+	Out[0] = (GS_OUT)0;
+	Out[1] = (GS_OUT)0;
+	Out[2] = (GS_OUT)0;
+	Out[3] = (GS_OUT)0;
+	Out[4] = (GS_OUT)0;
+	Out[5] = (GS_OUT)0;
+
+	if (true == In[0].vShow)
+	{
+		vector		vAxisY = vector(0.f, 1.f, 0.f, 0.f);
+
+		vector		vLook = normalize(g_vCamPosition - In[0].vPosition);
+		vector		vRight = vector(normalize(cross(vAxisY.xyz, vLook.xyz)), 0.f);
+		vector		vUp = vector(normalize(cross(vLook.xyz, vRight.xyz)), 0.f);
+
+		matrix		matVP = mul(g_ViewMatrix, g_ProjMatrix);
+
+		Out[0].vPosition = In[0].vPosition + (vRight * In[0].vPSize.x * 0.1f) +
+			(vUp * In[0].vPSize.y * 0.1f);
+		Out[0].vTexUV = float2((g_X - 1) * 0.125f, (g_Y - 1) * 0.25f);
+		Out[0].vPosition = mul(Out[0].vPosition, matVP);
+
+		Out[1].vPosition = In[0].vPosition + (vRight * In[0].vPSize.x * -0.1f) +
+			(vUp * In[0].vPSize.y * 0.1f);
+		Out[1].vTexUV = float2(g_X * 0.125f, (g_Y - 1) * 0.25f);
+		Out[1].vPosition = mul(Out[1].vPosition, matVP);
+
+		Out[2].vPosition = In[0].vPosition + (vRight * In[0].vPSize.x * -0.1f) +
+			(vUp * In[0].vPSize.y * -0.1f);
+		Out[2].vTexUV = float2(g_X * 0.125f, (g_Y * 0.25f));
+		Out[2].vPosition = mul(Out[2].vPosition, matVP);
+
+		OutStream.Append(Out[0]);
+		OutStream.Append(Out[1]);
+		OutStream.Append(Out[2]);
+		OutStream.RestartStrip();
+
+
+		Out[3] = Out[0];
+
+		Out[4] = Out[2];
+
+		Out[5].vPosition = In[0].vPosition + (vRight * In[0].vPSize.x * 0.1f) +
+			(vUp * In[0].vPSize.y * -0.1f);
+		Out[5].vTexUV = float2((g_X - 1) * 0.125f, (g_Y * 0.25f));
+		Out[5].vPosition = mul(Out[5].vPosition, matVP);
+
+		OutStream.Append(Out[3]);
+		OutStream.Append(Out[4]);
+		OutStream.Append(Out[5]);
+		OutStream.RestartStrip();
+	}
+}
+
+texture2D	g_BlendTexture;
+
 PS_OUT PS_BURROW(PS_IN In)
 {
 	PS_OUT		Out = (PS_OUT)0;
 
 	Out.vColor = g_DiffuseTexture.Sample(DefaultSampler, In.vTexUV);
 
-	if (Out.vColor.a == 0.f)
+	if (Out.vColor.a <= 0)
 		discard;
-	
+
+	return Out;
+}
+
+
+PS_OUT PS_COLLISION(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	vector Diffuse = g_DiffuseTexture.Sample(DefaultSampler, In.vTexUV);
+	vector Blend = g_BlendTexture.Sample(DefaultSampler, In.vTexUV);
+
+	Out.vColor = Diffuse + Blend;
+
+	if (Blend.r <= 0.0f)
+		discard;
+
+
 	return Out;
 }
 
@@ -211,6 +288,16 @@ technique11			DefaultTechnique
 		VertexShader = compile vs_5_0 VS_BURROW();
 		GeometryShader = compile gs_5_0 GS_MAIN();
 		PixelShader = compile ps_5_0  PS_BURROW();
+	}
+	pass CollisionDust
+	{
+		SetRasterizerState(CullMode_Default);
+		SetDepthStencilState(ZBuffer_Default, 0);
+		SetBlendState(BlendDisable, vector(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_BURROW();
+		GeometryShader = compile gs_5_0 GS_BURROW();
+		PixelShader = compile ps_5_0  PS_COLLISION();
 	}
 }
 

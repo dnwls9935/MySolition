@@ -6,6 +6,7 @@
 #include "SMG.h"
 #include "BossPrimeBeastRock.h"
 #include "HitBullet.h"
+#include "Blocked.h"
 #include "BurrowDust.h"
 #include "Camera_Dynamic.h"
 
@@ -117,7 +118,7 @@ _int BossPrimeBeast::Tick(_double TimeDelta)
 		m_pTransformCom->Set_State(CTransform::STATE_LOOK, Look);
 	}
 
-	if (TRUE == m_IntroEnd && FALSE == m_ChargeATT)
+	if (TRUE == m_IntroEnd)
 		HitCheck();
 
 	AttackBlockCreate(m_pModelCom->GetCurrentAnimation());
@@ -308,9 +309,7 @@ void BossPrimeBeast::Animation(_double TimeDelta)
 			m_ChargeTime = 0.0;
 		}
 		if (TRUE == m_ChargeATT)
-		{
 			ChargeAttack(TimeDelta);
-		}
 		else  if (10 >= m_TargetDistance)
 		{
 			if ((_uint)ANIMATION_STATE::RUN_F_V1 != m_pModelCom->GetCurrentAnimation() && FALSE == m_pModelCom->GetAnimationFinished())
@@ -322,9 +321,7 @@ void BossPrimeBeast::Animation(_double TimeDelta)
 				MeleeAttack(TimeDelta);
 		}
 		else
-		{
 			Moving(TimeDelta);
-		}
 	}
 }
 
@@ -469,7 +466,7 @@ void BossPrimeBeast::ChargeAttack(_double _TimeDelta)
 {
 	if ((_uint)ANIMATION_STATE::ATT_C_START == m_pModelCom->GetCurrentAnimation())
 	{
-		if (40 <= m_pModelCom->GetCurrentAnimationFrame())
+		if (37 <= m_pModelCom->GetCurrentAnimationFrame())
 			m_pTransformCom->Go_Straight(_TimeDelta * 2.f, m_NavigationCom);
 	}
 	else if ((_uint)ANIMATION_STATE::ATT_C_LOOP == m_pModelCom->GetCurrentAnimation())
@@ -485,8 +482,9 @@ void BossPrimeBeast::ChargeAttack(_double _TimeDelta)
 			if (FAILED(GameInstance->Add_GameObjectToLayer(LEVEL_GAMEPLAY, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Effect_CollisionDust"), &m_MyPosition)))
 				return;
 
-			_float NumRand = 60 + ((rand() % 10) - 5);
-			static_cast<CCamera_Dynamic*>(m_Camera)->SetFOV(XMConvertToRadians(NumRand));
+			/*_float NumRand = 60 + ((rand() % 10) - 5);
+			static_cast<CCamera_Dynamic*>(m_Camera)->SetFOV(XMConvertToRadians(NumRand));*/
+			static_cast<CCamera_Dynamic*>(m_Camera)->SetShaking(TRUE);
 		}
 		else if ( nullptr != GlacialFlowWall && TRUE == m_ColliderCom->CollisionAABB(GlacialFlowWall))
 		{
@@ -494,8 +492,9 @@ void BossPrimeBeast::ChargeAttack(_double _TimeDelta)
 			if (FAILED(GameInstance->Add_GameObjectToLayer(LEVEL_GAMEPLAY, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Effect_CollisionDust"), &m_MyPosition)))
 				return;
 
-			_float NumRand = 60 + ((rand() % 10) - 5);
-			static_cast<CCamera_Dynamic*>(m_Camera)->SetFOV(XMConvertToRadians(NumRand));
+			/*_float NumRand = 60 + ((rand() % 10) - 5);
+			static_cast<CCamera_Dynamic*>(m_Camera)->SetFOV(XMConvertToRadians(NumRand));*/
+			static_cast<CCamera_Dynamic*>(m_Camera)->SetShaking(TRUE);
 		}
 
 		RELEASE_INSTANCE(CGameInstance);
@@ -575,7 +574,7 @@ void BossPrimeBeast::AttackCollision(_double _TimeDelta)
 			TRUE == m_rHand2Collider->CollisionSphereToAABB(PlayerAABB))
 		{
 			m_MeleeAttackIsCollisionCheck = TRUE;
-			static_cast<CPlayer*>(m_TargetPlayer)->Hit(-45);
+			static_cast<CPlayer*>(m_TargetPlayer)->Hit(-65);
 		}
 		break;
 	case ANIMATION_STATE::ATT_P_V2:
@@ -584,7 +583,7 @@ void BossPrimeBeast::AttackCollision(_double _TimeDelta)
 			TRUE == m_lHand2Collider->CollisionSphereToAABB(PlayerAABB))
 		{
 			m_MeleeAttackIsCollisionCheck = TRUE;
-			static_cast<CPlayer*>(m_TargetPlayer)->Hit(-45);
+			static_cast<CPlayer*>(m_TargetPlayer)->Hit(-65);
 		}
 		break;
 	case ANIMATION_STATE::ATT_P_V3:
@@ -594,7 +593,7 @@ void BossPrimeBeast::AttackCollision(_double _TimeDelta)
 			TRUE == m_lHand2Collider->CollisionSphereToAABB(PlayerAABB))
 		{
 			m_MeleeAttackIsCollisionCheck = TRUE;
-			static_cast<CPlayer*>(m_TargetPlayer)->Hit(-45);
+			static_cast<CPlayer*>(m_TargetPlayer)->Hit(-65);
 		}
 		break;
 	case ANIMATION_STATE::ATT_P_V4:
@@ -602,7 +601,7 @@ void BossPrimeBeast::AttackCollision(_double _TimeDelta)
 			TRUE == m_lHand2Collider->CollisionSphereToAABB(PlayerAABB))
 		{
 			m_MeleeAttackIsCollisionCheck = TRUE;
-			static_cast<CPlayer*>(m_TargetPlayer)->Hit(-45);
+			static_cast<CPlayer*>(m_TargetPlayer)->Hit(-65);
 		}
 		break;
 	case ANIMATION_STATE::ATT_P_V5:
@@ -641,25 +640,45 @@ void BossPrimeBeast::HitCheck()
 		CalDesc._rayDir = XMVector3TransformNormal(CalDesc._rayDir, m_pTransformCom->Get_WorldMatrix());
 		CalDesc._rayDir = XMVector3Normalize(CalDesc._rayDir);
 
-		_float	Distance;
+		_float	Distance = 0.f;
 
-		if (TRUE == m_HeadCollider->CollisionSphereToRay(CalDesc._rayPos, CalDesc._rayDir))
+		if (TRUE == m_HeadCollider->CollisionSphereToRay(CalDesc._rayPos, CalDesc._rayDir, Distance))
 		{
-			_int AttDmg = static_cast<SMG*>(m_TargetPlayerWeapon)->GetAttackDamage();
-			CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
-			m_HP -= AttDmg = pGameInstance->CalcRandom(AttDmg * 1.5f);
-			RELEASE_INSTANCE(CGameInstance);
+			if (TRUE == m_ChargeATT)
+			{
+				/*_vector Position = CalDesc._rayPos + CalDesc._rayDir * Distance;
+				if (FAILED(pGameInstance->Add_GameObjectToLayer(LEVEL_GAMEPLAY, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Effect_Blocked"), &Position)))
+					MSGBOX("Failed to Create Blocked Effect!!!");*/
+			}
+			else
+			{
+				_int AttDmg = static_cast<SMG*>(m_TargetPlayerWeapon)->GetAttackDamage();
+				CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+				m_HP -= AttDmg = pGameInstance->CalcRandom(AttDmg * 1.5f);
+
+				_vector Position = CalDesc._rayPos + CalDesc._rayDir * Distance;
+				if (FAILED(pGameInstance->Add_GameObjectToLayer(LEVEL_GAMEPLAY, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Effect_HitBullet"), &Position)))
+					MSGBOX("Failed to Create HitBullet Effect!!!");
+			}
 		}
 		else if (TRUE == m_ColliderCom->CollisionAABBToRay(CalDesc._rayPos, CalDesc._rayDir, Distance))
 		{
-			_int AttDmg = static_cast<SMG*>(m_TargetPlayerWeapon)->GetAttackDamage();
-			CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
-			m_HP -= AttDmg = pGameInstance->CalcRandom(AttDmg);
-			RELEASE_INSTANCE(CGameInstance);
-			/* ÇÇ°Ý ÀÌÆÑÆ® */
-			_vector Position = CalDesc._rayPos + CalDesc._rayDir * Distance;
-			if (FAILED(pGameInstance->Add_GameObjectToLayer(LEVEL_GAMEPLAY, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Effect_HitBullet"), &Position)))
-				MSGBOX("Failed to Create HitBullet Effect!!!");
+			if (TRUE == m_ChargeATT)
+			{
+			/*	_vector Position = CalDesc._rayPos + CalDesc._rayDir * Distance;
+				if (FAILED(pGameInstance->Add_GameObjectToLayer(LEVEL_GAMEPLAY, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Effect_Blocked"), &Position)))
+					MSGBOX("Failed to Create Blocked Effect!!!");*/
+			}
+			else
+			{
+				_int AttDmg = static_cast<SMG*>(m_TargetPlayerWeapon)->GetAttackDamage();
+				CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+				m_HP -= AttDmg = pGameInstance->CalcRandom(AttDmg);
+				/* ÇÇ°Ý ÀÌÆÑÆ® */
+				_vector Position = CalDesc._rayPos + CalDesc._rayDir * Distance;
+				if (FAILED(pGameInstance->Add_GameObjectToLayer(LEVEL_GAMEPLAY, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Effect_HitBullet"), &Position)))
+					MSGBOX("Failed to Create HitBullet Effect!!!");
+			}
 		}
 
 		RELEASE_INSTANCE(CGameInstance);
@@ -691,7 +710,7 @@ HRESULT BossPrimeBeast::SetUp_Components()
 	/* Com_Collider */
 	CCollider::COLLISIONDESC CollisionDesc;
 	ZeroMemory(&CollisionDesc, sizeof(CCollider::COLLISIONDESC));
-	CollisionDesc.Scale = _float3(3.0f, 5.0f, 3.0f);
+	CollisionDesc.Scale = _float3(3.0f, 5.5f, 3.0f);
 	CollisionDesc.Position = _float3(0.f, 1.f, 0.0f);
 	if (FAILED(__super::SetUp_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_AABB"), TEXT("Com_Collider"), (CComponent**)&m_ColliderCom, &CollisionDesc)))
 		return E_FAIL;

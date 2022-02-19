@@ -43,7 +43,18 @@ HRESULT CollisionDust::NativeConstruct(void * pArg)
 _int CollisionDust::Tick(_double TimeDelta)
 {
 	m_Dead = m_VIBufferCom->Update(TimeDelta);
-	
+
+	m_AnimationTimeAcc += TimeDelta * 10.f;
+
+	m_X++;
+
+	if (8 <= m_X)
+	{
+		m_Y++;
+		m_X = 0.f;
+		m_AnimationTimeAcc = 0.0;
+	}
+
 	return _int();
 }
 
@@ -52,6 +63,12 @@ _int CollisionDust::LateTick(_double TimeDelta)
 	if(nullptr != m_pRendererCom)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
 
+	if (4 <= m_Y)
+	{
+		m_X = 0.f;
+		m_Y = 0.f;
+	}
+
 	return m_Dead;
 }
 
@@ -59,15 +76,19 @@ HRESULT CollisionDust::Render()
 {
 	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 
-
 	m_VIBufferCom->SetUp_ValueOnShader("g_WorldMatrix", &XMMatrixTranspose(m_pTransformCom->Get_WorldMatrix()), sizeof(_matrix));
 	m_VIBufferCom->SetUp_ValueOnShader("g_ViewMatrix", &XMMatrixTranspose(pGameInstance->Get_Transform(CPipeLine::D3DTS_VIEW)), sizeof(_matrix));
 	m_VIBufferCom->SetUp_ValueOnShader("g_ProjMatrix", &XMMatrixTranspose(pGameInstance->Get_Transform(CPipeLine::D3DTS_PROJECTION)), sizeof(_matrix));
 
+	m_VIBufferCom->SetUp_ValueOnShader("g_X", &m_X, sizeof(_float));
+	m_VIBufferCom->SetUp_ValueOnShader("g_Y", &m_Y, sizeof(_float));
+
 	m_VIBufferCom->SetUp_ValueOnShader("g_vCamPosition", (void*)&pGameInstance->Get_CamPosition(), sizeof(_vector));
 
 	m_VIBufferCom->SetUp_TextureOnShader("g_DiffuseTexture", m_TextureCom, 0);
-	m_VIBufferCom->Render(1);
+	m_VIBufferCom->SetUp_TextureOnShader("g_BlendTexture", m_TextureCom, 1);
+
+	m_VIBufferCom->Render(2);
 
 	RELEASE_INSTANCE(CGameInstance);
 	
@@ -88,7 +109,7 @@ HRESULT CollisionDust::SetUp_Components()
 		return E_FAIL;
 
 	/* Com_Texture */
-	if (FAILED(__super::SetUp_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Snow_Decal_Dif"), TEXT("Com_Texture"), (CComponent**)&m_TextureCom)))
+	if (FAILED(__super::SetUp_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_DustA"), TEXT("Com_Texture"), (CComponent**)&m_TextureCom)))
 		return E_FAIL;
 
 	/* Com_VIBuffer */

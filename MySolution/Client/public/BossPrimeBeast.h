@@ -68,6 +68,9 @@ public:
 	_bool	GetFocus() {
 		return m_Focus;
 	}
+	_bool	GetChargeATT() {
+		return m_ChargeATT;
+	}
 
 private:
 	CRenderer*				m_pRendererCom = nullptr;

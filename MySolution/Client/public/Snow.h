@@ -34,6 +34,12 @@ private:
 	CCollider*									m_ColliderSphereCom = nullptr;
 
 private:
+	_int				m_Y = 0;
+	_int				m_X = 0;
+
+	class BossPrimeBeast*		m_Boss = nullptr;
+
+private:
 	virtual HRESULT SetUp_Components();
 public:
 	static Snow* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

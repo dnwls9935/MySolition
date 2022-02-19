@@ -413,7 +413,7 @@ void BugMorph::AttackCollision(_double _TimeDelta)
 		if (TRUE == m_ColliderLowerJaw->CollisionSphereToAABB(PlayerAABB))
 		{
 			m_MeleeAttackIsCollisionCheck = TRUE;
-			static_cast<CPlayer*>(m_TargetPlayer)->Hit(-50);
+			static_cast<CPlayer*>(m_TargetPlayer)->Hit(-100);
 		}
 	}
 }
@@ -447,8 +447,8 @@ HRESULT BugMorph::SetUp_Components()
 	/* Com_Collider */
 	CCollider::COLLISIONDESC CollisionDesc;
 	ZeroMemory(&CollisionDesc, sizeof(CCollider::COLLISIONDESC));
-	CollisionDesc.Scale = _float3(1.0f, 1.0f, 1.0f);
-	CollisionDesc.Position = _float3(0.f, 0.5f, 0.0f);
+	CollisionDesc.Scale = _float3(1.5f, 1.5f, 1.5f);
+	CollisionDesc.Position = _float3(0.f, 1.f, 0.0f);
 	if (FAILED(__super::SetUp_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_AABB"), TEXT("Com_Collider"), (CComponent**)&m_ColliderCom, &CollisionDesc)))
 		return E_FAIL;
 

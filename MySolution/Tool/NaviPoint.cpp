@@ -48,7 +48,8 @@ HRESULT NaviPoint::Render()
 
 _bool NaviPoint::CollisionSphere(_fvector _MousePos, _fvector _MouseDir, NaviPoint** _NaviPoint)
 {
-	if (m_ColliderCom->CollisionSphereToRay(_MousePos, _MouseDir))
+	_float Distance;
+	if (m_ColliderCom->CollisionSphereToRay(_MousePos, _MouseDir, Distance))
 	{
 		*_NaviPoint = this;
 		return TRUE;
