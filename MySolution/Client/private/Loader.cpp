@@ -99,7 +99,6 @@ HRESULT CLoader::Loading_ForLogo()
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOGO	, TEXT("Prototype_Component_Model_ClapTrap"), CModel::Create(m_pDevice, m_pDeviceContext, "../Bin/Resources/Meshes/ClapTrap/", "ClapTrap.FBX", TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), PivotMatrix, CModel::TYPE_ANIM))))
 		return E_FAIL;
 
-
 	wsprintf(m_szLoading, TEXT("텍스쳐를 생성한다. "));
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOGO, TEXT("Prototype_Component_Texture_Cube"), CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Textures/SkyBox/ColdNight.dds")))))
 		return E_FAIL;
@@ -121,14 +120,6 @@ HRESULT CLoader::Loading_ForLogo()
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOGO, TEXT("Prototype_Component_Texture_Tex_Burned"), CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Textures/Effect/Burned_Mask.png")))))
 		return E_FAIL;
-/*
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOGO, TEXT("Prototype_Component_VIBuffer_PointInstace_Dust"), CVIBuffer_PointInstance_Dust::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/ShaderFiles/Shader_PointInstance.hlsl"), 50))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOGO, TEXT("Prototype_Component_Texture_SnowFlakesDif"), CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Textures/Snow/Snow_Flakes_Dif.png")))))
-		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Effect_BurrowDust"), BurrowDust::Create(m_pDevice, m_pDeviceContext))))
-		return E_FAIL;
-*/
 	
 	wsprintf(m_szLoading, TEXT("로딩이 완료되었습니다. "));
 	m_isFinished = true;
@@ -151,7 +142,7 @@ HRESULT CLoader::Loading_ForGamePlay()
 		return E_FAIL;
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Effect_Rect"), CVIBuffer_Rect::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/ShaderFiles/Shader_RectEffect.hlsl")))))
 		return E_FAIL;
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_PointInstace"), CVIBuffer_PointInstance::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/ShaderFiles/Shader_PointInstance.hlsl"), 4/*0000*/))))
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_PointInstace"), CVIBuffer_PointInstance::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/ShaderFiles/Shader_PointInstance.hlsl"), 40000))))
 		return E_FAIL;
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_PointInstace_Dust"), CVIBuffer_PointInstance_Dust::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/ShaderFiles/Shader_PointInstance.hlsl"), 100))))
 		return E_FAIL;
@@ -290,7 +281,7 @@ HRESULT CLoader::Loading_ForGamePlay()
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_SMG"), CModel::Create(m_pDevice, m_pDeviceContext, "../Bin/Resources/Meshes/Weapon/", "SMG.FBX", TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), PivotMatrix, CModel::TYPE_ANIM))))
 		return E_FAIL;
 
-	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationX(XMConvertToRadians(-90.0f));
+	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(90.f));
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Zero"), CModel::Create(m_pDevice, m_pDeviceContext, "../Bin/Resources/Meshes/Zero/", "Zero.FBX", TEXT("../Bin/ShaderFiles/Shader_Mesh.hlsl"), PivotMatrix, CModel::TYPE_ANIM))))
 		return E_FAIL;
 

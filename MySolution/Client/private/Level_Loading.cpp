@@ -83,7 +83,7 @@ HRESULT CLevel_Loading::Ready_Layer_SkyBox(const _tchar * pLayerTag)
 {
 	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 
-	if (FAILED(pGameInstance->Add_GameObjectToLayer(LEVEL_LOGO, pLayerTag, TEXT("Prototype_GameObject_Cube"))))
+	if (FAILED(pGameInstance->Add_GameObjectToLayer(LEVEL_LOADING, pLayerTag, TEXT("Prototype_GameObject_Cube"))))
 		return E_FAIL;
 
 	RELEASE_INSTANCE(CGameInstance);

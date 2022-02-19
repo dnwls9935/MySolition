@@ -73,6 +73,9 @@ HRESULT Num::NativeConstruct(void * pArg)
 
 _int Num::Tick(_double TimeDelta)
 {
+	if (TRUE == static_cast<CPlayer*>(m_Player)->GetChangeForm())
+		return _int();
+
 	TickHP();
 	TickShield();
 	TickAmmo();
@@ -83,6 +86,9 @@ _int Num::Tick(_double TimeDelta)
 
 _int Num::LateTick(_double TimeDelta)
 {	
+	if (TRUE == static_cast<CPlayer*>(m_Player)->GetChangeForm())
+		return _int();
+
 	if (nullptr != m_pRendererCom)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_UI, this);
 

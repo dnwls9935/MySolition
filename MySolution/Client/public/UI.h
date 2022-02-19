@@ -47,6 +47,8 @@ private:
 	_bool							m_LRCheck = FALSE;
 
 	class CCamera_Dynamic*		m_Camera = nullptr;
+	class CPlayer*							m_Player = nullptr;
+
 private:
 	virtual HRESULT SetUp_Components();
 

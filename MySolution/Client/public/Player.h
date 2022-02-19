@@ -70,6 +70,9 @@ public:
 	_int		GetShield() {
 		return m_Shield;
 	}
+	_bool	GetChangeForm() {
+		return m_ChangeForm;
+	}
 
 public:
 	void		PickUp(PickUps::TYPE_ID _ID);
@@ -89,7 +92,10 @@ private:
 private:
 	CRenderer*				m_pRendererCom = nullptr;
 	CTransform*				m_pTransformCom = nullptr;
+
 	CModel*					m_pModelCom = nullptr;
+	CModel*					m_pZeroCom = nullptr;
+
 	CCollider*					m_ColliderCom = nullptr;
 	CCollider*					m_ColliderSphereCom = nullptr;
 	Navigation*				m_Navigation = nullptr;
@@ -113,6 +119,10 @@ private:
 	_int			m_MaxShield;
 
 	_bool		m_IsIn = TRUE;
+
+private:
+	_bool		m_ChangeForm = FALSE;
+	_double		m_ChangeFormDelay = 0.0;
 
 private:
 	class CCamera_Dynamic*		m_Camera = nullptr;

@@ -51,6 +51,9 @@ HRESULT SMG::NativeConstruct(void * pArg)
 
 _int SMG::Tick(_double TimeDelta)
 {
+	if (TRUE == static_cast<CPlayer*>(m_TargetObject)->GetChangeForm())
+		return _int();
+
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 	KeyCheck();
 	m_BarPercent = (_float)m_Ammo / (_float)m_MaxAmmo;
@@ -88,6 +91,9 @@ _int SMG::Tick(_double TimeDelta)
 
 _int SMG::LateTick(_double TimeDelta)
 {
+	if (TRUE == static_cast<CPlayer*>(m_TargetObject)->GetChangeForm())
+		return _int();
+
 	m_FireFrame = FALSE;
 	if (nullptr != m_pRendererCom)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
@@ -111,6 +117,9 @@ _int SMG::LateTick(_double TimeDelta)
 
 HRESULT SMG::Render()
 {
+	if (TRUE == static_cast<CPlayer*>(m_TargetObject)->GetChangeForm())
+		return S_OK;
+
 	if (TRUE == m_CameraObject->GetFocus())
 		return S_OK;
 	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
@@ -170,8 +179,8 @@ void SMG::KeyCheck()
 		return;
 
 	if (pGameInstance->Get_DIKeyState(DIK_R) & 0x80 &&
-		m_Ammo <= 25 && 
-		m_MaxAmmo >= 0)
+		m_Ammo < m_MaxAmmo && 
+		m_Magazine > 0)
 	{
 		m_AnimationPlay = TRUE;
 		m_FrameSpeed = 1.0;

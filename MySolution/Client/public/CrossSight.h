@@ -36,6 +36,7 @@ private:
 
 private:
 	class CCamera_Dynamic*		m_Camera = nullptr;
+	class CPlayer*							m_Player = nullptr;
 
 private:
 	virtual HRESULT SetUp_Components();

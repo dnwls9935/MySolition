@@ -39,6 +39,11 @@ private:
 	CModel*					m_pModelCom = nullptr;
 	CTexture*					m_pBurnedTextureCom = nullptr;
 
+	CModel*					m_pZeroCom = nullptr;
+
+private:
+	_bool							m_Change = FALSE;
+
 private:
 	_bool							m_Burned = FALSE;
 	_float							m_BurnedTime = 0.f;

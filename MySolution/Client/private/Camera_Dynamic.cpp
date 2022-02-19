@@ -32,7 +32,7 @@ HRESULT CCamera_Dynamic::NativeConstruct(void * pArg)
 		return E_FAIL;
 
 	m_ShakingPower = 10;
-	m_Shaking = TRUE;
+	m_Shaking = FALSE;
 
 	return S_OK;
 }
@@ -40,6 +40,14 @@ HRESULT CCamera_Dynamic::NativeConstruct(void * pArg)
 _int CCamera_Dynamic::Tick(_double TimeDelta)
 {
 	SetFOV(XMConvertToRadians(60.f));
+
+	if (TRUE == PlayerChangeForm())
+	{
+		LookPlayer();
+		return _int();
+	}
+
+
 
 	if (TRUE == m_IntroEnd)
 	{
@@ -70,6 +78,7 @@ _int CCamera_Dynamic::LateTick(_double TimeDelta)
 	pPipeLine->Set_Transform(CPipeLine::D3DTS_VIEW, m_pTransform->Get_WorldMatrixInverse());
 	pPipeLine->Set_Transform(CPipeLine::D3DTS_PROJECTION, XMMatrixPerspectiveFovLH(m_CameraDesc.fFovy, m_CameraDesc.fAspect, m_CameraDesc.fNear, m_CameraDesc.fFar));
 	RELEASE_INSTANCE(CPipeLine);
+
 
 	if (0.8 <= m_ShakingTime)
 	{
@@ -173,6 +182,46 @@ void CCamera_Dynamic::Shaking(_double _TimeDelta)
 	
 	_float NumRand = 60 + ((rand() % 10) - 5);
 	SetFOV(XMConvertToRadians(NumRand));
+}
+
+_bool CCamera_Dynamic::PlayerChangeForm()
+{
+	CGameInstance*	pGameInstance = GET_INSTANCE(CGameInstance);
+	_bool b = static_cast<CPlayer*>(pGameInstance->GetObjectList(LEVEL_GAMEPLAY, TEXT("Layer_Player")).front())->GetChangeForm();
+	RELEASE_INSTANCE(CGameInstance);
+
+	return b;
+}
+
+void CCamera_Dynamic::LookPlayer()
+{
+	CGameInstance*	pGameInstance = GET_INSTANCE(CGameInstance);
+	_matrix CamBoneMatrix = static_cast<CPlayer*>(pGameInstance->GetObjectList(LEVEL_GAMEPLAY, TEXT("Layer_Player")).front())->GetCameraMatrix();
+	
+
+	_vector R = static_cast<CTransform*>(pGameInstance->GetObjectList(LEVEL_GAMEPLAY, TEXT("Layer_Player")).front()->GetComponent(TEXT("Com_Transform")))->Get_State(CTransform::STATE_RIGHT);
+	_vector U = static_cast<CTransform*>(pGameInstance->GetObjectList(LEVEL_GAMEPLAY, TEXT("Layer_Player")).front()->GetComponent(TEXT("Com_Transform")))->Get_State(CTransform::STATE_UP);
+	_vector L = static_cast<CTransform*>(pGameInstance->GetObjectList(LEVEL_GAMEPLAY, TEXT("Layer_Player")).front()->GetComponent(TEXT("Com_Transform")))->Get_State(CTransform::STATE_LOOK);
+	_vector P = CamBoneMatrix.r[3];
+
+	_vector		vPosition = P + XMVector3Normalize(L) * 3.f;
+	vPosition = XMVectorSetW(vPosition, 1.f);
+
+	_vector		vLook = P - vPosition;
+	vLook = XMVector3Normalize(vLook);
+
+	_vector		vRight = XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), vLook);
+	vRight = XMVector3Normalize(vRight);
+
+	_vector		vUp = XMVector3Cross(vLook, vRight);
+	vUp = XMVector3Normalize(vUp);
+
+	m_pTransform->Set_State(CTransform::STATE_RIGHT, vRight);
+	m_pTransform->Set_State(CTransform::STATE_UP, vUp);
+	m_pTransform->Set_State(CTransform::STATE_LOOK, vLook);
+	m_pTransform->Set_State(CTransform::STATE_POSITION, vPosition);
+
+	RELEASE_INSTANCE(CGameInstance);
 }
 
 

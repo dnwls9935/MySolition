@@ -42,6 +42,8 @@ public:
 
 private:
 	void			Shaking(_double _TimeDelta);
+	_bool		PlayerChangeForm();
+	void			LookPlayer();
 
 private:
 	_matrix		m_OriginWM = XMMatrixIdentity();

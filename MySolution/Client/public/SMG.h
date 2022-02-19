@@ -48,6 +48,10 @@ public:
 	_int		GetAmmo() {
 		return m_Ammo;
 	}
+	_int		GetMaxAmmo() {
+		return m_MaxAmmo;
+	}
+
 	_int		GetMazine() {
 		return m_Magazine;
 	}

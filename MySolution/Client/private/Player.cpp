@@ -65,8 +65,14 @@ HRESULT CPlayer::NativeConstruct(void * pArg)
 
 _int CPlayer::Tick(_double TimeDelta)
 {
-
 	KeyCheck(TimeDelta);
+
+	if (TRUE == m_ChangeForm)
+	{
+		m_pZeroCom->Update_CombinedTransformationMatrix(TimeDelta);
+		return _int();
+	}
+
 	m_pModelCom->Update_CombinedTransformationMatrix(TimeDelta);
 	m_ColliderCom->Update(m_pTransformCom->Get_WorldMatrix());
 	SetCamAndSkyBox();
@@ -96,6 +102,9 @@ _int CPlayer::Tick(_double TimeDelta)
 
 _int CPlayer::LateTick(_double TimeDelta)
 {
+	m_ChangeFormDelay += TimeDelta;
+
+	
 	if (nullptr != m_pRendererCom)
 	{
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
@@ -104,17 +113,40 @@ _int CPlayer::LateTick(_double TimeDelta)
 #endif // !_DEBUG
 	}
 
-	if (m_pModelCom->GetAnimationFinished())
-	{
-		m_pModelCom->SetUp_AnimationIndex((_int)ANIMATION_STATE::IDLE);
-	}
-		
+	if (TRUE == m_ChangeForm)
+		return _int();
 
+	if (m_pModelCom->GetAnimationFinished())
+		m_pModelCom->SetUp_AnimationIndex((_int)ANIMATION_STATE::IDLE);
+		
 	return _int();
 }
 
 HRESULT CPlayer::Render()
 {
+	if (TRUE == m_ChangeForm)
+	{
+		CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+
+		m_pZeroCom->SetUp_ValueOnShader("g_WorldMatrix", &XMMatrixTranspose(m_pTransformCom->Get_WorldMatrix()), sizeof(_matrix));
+		m_pZeroCom->SetUp_ValueOnShader("g_ViewMatrix", &XMMatrixTranspose(pGameInstance->Get_Transform(CPipeLine::D3DTS_VIEW)), sizeof(_matrix));
+		m_pZeroCom->SetUp_ValueOnShader("g_ProjMatrix", &XMMatrixTranspose(pGameInstance->Get_Transform(CPipeLine::D3DTS_PROJECTION)), sizeof(_matrix));
+
+		if (FAILED(m_pZeroCom->Bind_Buffers()))
+			return E_FAIL;
+
+		for (_uint i = 0; i < m_pZeroCom->Get_NumMeshContainer(); ++i)
+		{
+			m_pZeroCom->SetUp_TextureOnShader("g_DiffuseTexture", i, aiTextureType_DIFFUSE);
+
+			m_pZeroCom->Render(i, 1);
+		}
+
+		RELEASE_INSTANCE(CGameInstance);
+		return S_OK;
+	}
+
+
 	if (TRUE == m_Camera->GetFocus())
 		return S_OK;
 
@@ -294,6 +326,16 @@ void CPlayer::KeyCheck(_double TimeDelta)
 
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 
+	if (m_ChangeFormDelay >= 1.5 &&
+		pGameInstance->Get_DIKeyState(DIK_P) & 0x80)
+	{
+		m_ChangeForm = !m_ChangeForm;
+		m_ChangeFormDelay = 0.0;
+	}
+
+	if (TRUE == m_ChangeForm)
+		return;
+
 	if ((_int)ANIMATION_STATE::RE_HYPERION != m_pModelCom->GetCurrentAnimation() &&
 		pGameInstance->Get_DIKeyState(DIK_LSHIFT) & 0x80)
 	{
@@ -334,8 +376,19 @@ void CPlayer::KeyCheck(_double TimeDelta)
 				m_pModelCom->SetUp_AnimationIndex((_int)ANIMATION_STATE::RUN_R);
 			m_Move = MOVE_TYPE::RIGHT;
 		}
+
+		list<CGameObject*> Players = (pGameInstance->GetObjectList(LEVEL_GAMEPLAY, TEXT("Layer_Player")));
+		auto& iter = Players.begin();
+		advance(iter, 1);
+
+		_int Magazine = static_cast<SMG*>(*iter)->GetMazine();
+		_int Ammo = static_cast<SMG*>(*iter)->GetAmmo();
+		_int MaxAmmo = static_cast<SMG*>(*iter)->GetMaxAmmo();
+
 		if ((_int)ANIMATION_STATE::SPRINT != m_pModelCom->GetCurrentAnimation() &&
-			pGameInstance->Get_DIKeyState(DIK_R) & 0x80)
+			(pGameInstance->Get_DIKeyState(DIK_R) & 0x80) &&
+			0 < Magazine &&
+			Ammo < MaxAmmo)
 		{
 			m_pModelCom->SetUp_AnimationIndex((_int)ANIMATION_STATE::RE_HYPERION);
 		}
@@ -382,9 +435,12 @@ HRESULT CPlayer::SetUp_Components()
 	/* Com_Renderer */
 	if (FAILED(__super::SetUp_Components(LEVEL_STATIC, TEXT("Prototype_Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom)))
 		return E_FAIL;
-
+	
 	/* Com_Model */
 	if (FAILED(__super::SetUp_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Player"), TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
+		return E_FAIL;
+	/* Com_Model */
+	if (FAILED(__super::SetUp_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Zero"), TEXT("Com_Zero"), (CComponent**)&m_pZeroCom)))
 		return E_FAIL;
 
 	/* Com_Navigation*/

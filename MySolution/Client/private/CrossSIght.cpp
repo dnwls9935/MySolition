@@ -2,6 +2,7 @@
 #include "..\public\CrossSight.h"
 #include "GameInstance.h"
 #include "Camera_Dynamic.h"
+#include "Player.h"
 
 CrossSight::CrossSight(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -48,12 +49,17 @@ HRESULT CrossSight::NativeConstruct(void * pArg)
 
 	m_EnemyObjectList = pGameInstance->GetObjectList(LEVEL_GAMEPLAY, TEXT("Layer_Enemy"));
 	m_Camera = static_cast<CCamera_Dynamic*>(pGameInstance->GetObjectList(LEVEL_GAMEPLAY, TEXT("Layer_Camera")).front());
+	m_Player = static_cast<CPlayer*>(pGameInstance->GetObjectList(LEVEL_GAMEPLAY, TEXT("Layer_Player")).front());
+
 	RELEASE_INSTANCE(CGameInstance);
 	return S_OK;
 }
 
 _int CrossSight::Tick(_double TimeDelta)
 {
+	if (TRUE == m_Player->GetChangeForm())
+		return _int();
+
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 
 	m_IsCollision = FALSE;
@@ -74,7 +80,10 @@ _int CrossSight::Tick(_double TimeDelta)
 }
 
 _int CrossSight::LateTick(_double TimeDelta)
-{	
+{
+	if (TRUE == m_Player->GetChangeForm())
+		return _int();
+
 	if (nullptr != m_pRendererCom)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_UI, this);
 

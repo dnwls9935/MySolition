@@ -3,6 +3,7 @@
 
 #include "GameInstance.h"
 #include "Camera_Dynamic.h"
+#include "Player.h"
 
 UI::UI(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	: CGameObject(pDevice, pDeviceContext)
@@ -51,6 +52,13 @@ HRESULT UI::NativeConstruct(void * pArg)
 _int UI::Tick(_double TimeDelta)
 {
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+	m_Player = static_cast<CPlayer*>(pGameInstance->GetObjectList(LEVEL_GAMEPLAY, TEXT("Layer_Player")).front());
+	if (TRUE == m_Player->GetChangeForm())
+	{
+		RELEASE_INSTANCE(CGameInstance);
+		return _int();
+	}
+	
 	if (CGameObject::UITYPE_ID::PLAYER_HP == m_UIDesc.m_UITypeID) {
 		_float2 Pos;
 		Pos.x = XMVectorGetX(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
@@ -68,6 +76,13 @@ _int UI::Tick(_double TimeDelta)
 
 _int UI::LateTick(_double TimeDelta)
 {	
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+	m_Player = static_cast<CPlayer*>(pGameInstance->GetObjectList(LEVEL_GAMEPLAY, TEXT("Layer_Player")).front());
+	RELEASE_INSTANCE(CGameInstance);
+	if (TRUE == m_Player->GetChangeForm())
+		return _int();
+
+
 	if (nullptr != m_pRendererCom)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_UI, this);
 

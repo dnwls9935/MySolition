@@ -53,7 +53,7 @@ _int Blocked::Tick(_double TimeDelta)
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetY(Position, XMVectorGetY(Position) + 3.f));
 
 	_bool b= static_cast<BossPrimeBeast*>(m_Boss)->GetChargeATT();
-	_bool dead = static_cast<BossPrimeBeast*>(m_Boss)->GetChargeATT();
+	_bool dead = static_cast<BossPrimeBeast*>(m_Boss)->GetDead();
 
 	if (TRUE == dead)
 		m_Dead = TRUE;
@@ -93,8 +93,7 @@ _int Blocked::LateTick(_double TimeDelta)
 		}
 	}
 
-
-	return _int();
+	return m_Dead;
 }
 
 HRESULT Blocked::Render()
