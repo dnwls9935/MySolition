@@ -318,6 +318,10 @@ void CPlayer::PickUp(PickUps::TYPE_ID _ID)
 		PickUpShield();
 		break;
 	}
+
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+	pGameInstance->SoundPlay(TEXT("Item_Get"), 0.4f);
+	RELEASE_INSTANCE(CGameInstance);
 }
 
 void CPlayer::KeyCheck(_double TimeDelta)

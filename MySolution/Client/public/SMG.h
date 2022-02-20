@@ -93,6 +93,9 @@ private:
 	class CCamera_Dynamic* m_CameraObject = nullptr;
 
 private:
+	_bool						m_ReloadSoundTiming = FALSE;
+
+private:
 	virtual HRESULT SetUp_Components();
 public:
 	static SMG* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

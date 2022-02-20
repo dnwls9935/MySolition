@@ -66,6 +66,8 @@ _int SMG::Tick(_double TimeDelta)
 
 		_float NumRand = 60 + ((rand() % 10) - 5);
 		static_cast<CCamera_Dynamic*>(m_CameraObject)->SetFOV(XMConvertToRadians(NumRand));
+
+		pGameInstance->SoundPlay(TEXT("SMG_Shot"), 0.4f);
 	}
 	else
 	{
@@ -91,6 +93,7 @@ _int SMG::Tick(_double TimeDelta)
 
 _int SMG::LateTick(_double TimeDelta)
 {
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 	if (TRUE == static_cast<CPlayer*>(m_TargetObject)->GetChangeForm())
 		return _int();
 
@@ -102,7 +105,6 @@ _int SMG::LateTick(_double TimeDelta)
 		m_pModelCom->Update_CombinedTransformationMatrix(TimeDelta * m_FrameSpeed);
 	else
 		m_pModelCom->Update_CombinedTransformationMatrix(0.0);
-
 	if (m_pModelCom->GetAnimationFinished())
 	{
 		if ((_int)ANIMATION_STATE::RE_HYPERION == m_pModelCom->GetCurrentAnimation())
@@ -112,6 +114,17 @@ _int SMG::LateTick(_double TimeDelta)
 		}
 	}
 
+	if ((_uint)ANIMATION_STATE::RE_HYPERION == m_pModelCom->GetCurrentAnimation())
+	{
+		if (0 == m_pModelCom->GetCurrentAnimationFrame())
+			pGameInstance->SoundPlay(TEXT("SMG_Reload"), 0.5f);
+		else if(40 == m_pModelCom->GetCurrentAnimationFrame())
+			pGameInstance->SoundPlay(TEXT("SMG_Reload"), 0.5f);
+	}
+
+
+
+	RELEASE_INSTANCE(CGameInstance);
 	return _int();
 }
 
