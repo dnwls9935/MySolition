@@ -11,6 +11,7 @@
 #include "PipeLine.h"
 #include "Calculator.h"
 #include "Font_Manager.h"
+#include "SoundManager.h"
 
 BEGIN(Engine)
 
@@ -81,6 +82,13 @@ public: /* For.Calculator */
 public: /* For.Fonts */
 	HRESULT Add_Font(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, const _tchar* pFontTag, const _tchar* pFontPath);
 	HRESULT Render_Font(const _tchar* pFontTag, _float2 _Position, _fvector vColor, _float2 _Scale, const _tchar* pString);
+
+public: /* For.SoundManager */
+	void OnSuspending(); //종료
+	void OnResuming(); //재개 
+	void SoundPlay(TCHAR* pSoundKey, _float _Volume);
+	void PlayBGM(TCHAR* pSoundKey, _float _Volume, _int _BGMIdx =0);
+
 	
 private:
 	CGraphic_Device*			m_pGraphic_Device = nullptr;		
@@ -93,6 +101,7 @@ private:
 	CTarget_Manager*		m_RenderTargetManager = nullptr;
 	CLight_Manager*					m_LightManager = nullptr;
 	CFont_Manager*					m_FontManager = nullptr;
+	SoundManager*					m_SoundManager = nullptr;
 public:
 
 	static void Release_Engine();

@@ -354,6 +354,7 @@ void CPlayer::KeyCheck(_double TimeDelta)
 			if ((_int)ANIMATION_STATE::RE_HYPERION != m_pModelCom->GetCurrentAnimation())
 				m_pModelCom->SetUp_AnimationIndex((_int)ANIMATION_STATE::RUN_F);
 			m_Move = MOVE_TYPE::FRONT;
+			pGameInstance->SoundPlay(TEXT("Step"), 0.4f);
 		}
 		if (pGameInstance->Get_DIKeyState(DIK_S) & 0x8000)
 		{
@@ -361,6 +362,7 @@ void CPlayer::KeyCheck(_double TimeDelta)
 			if ((_int)ANIMATION_STATE::RE_HYPERION != m_pModelCom->GetCurrentAnimation())
 				m_pModelCom->SetUp_AnimationIndex((_int)ANIMATION_STATE::RUN_F);
 			m_Move = MOVE_TYPE::BACK;
+			pGameInstance->SoundPlay(TEXT("Step"), 0.4f);
 		}
 		if (pGameInstance->Get_DIKeyState(DIK_A) & 0x8000)
 		{
@@ -368,6 +370,7 @@ void CPlayer::KeyCheck(_double TimeDelta)
 			if ((_int)ANIMATION_STATE::RE_HYPERION != m_pModelCom->GetCurrentAnimation())
 				m_pModelCom->SetUp_AnimationIndex((_int)ANIMATION_STATE::RUN_L);
 			m_Move = MOVE_TYPE::LEFT;
+			pGameInstance->SoundPlay(TEXT("Step"), 0.4f);
 		}
 		if (pGameInstance->Get_DIKeyState(DIK_D) & 0x8000)
 		{
@@ -375,6 +378,7 @@ void CPlayer::KeyCheck(_double TimeDelta)
 			if ((_int)ANIMATION_STATE::RE_HYPERION != m_pModelCom->GetCurrentAnimation())
 				m_pModelCom->SetUp_AnimationIndex((_int)ANIMATION_STATE::RUN_R);
 			m_Move = MOVE_TYPE::RIGHT;
+			pGameInstance->SoundPlay(TEXT("Step"), 0.4f);
 		}
 
 		list<CGameObject*> Players = (pGameInstance->GetObjectList(LEVEL_GAMEPLAY, TEXT("Layer_Player")));

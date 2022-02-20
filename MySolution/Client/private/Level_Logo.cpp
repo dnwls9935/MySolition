@@ -27,6 +27,12 @@ HRESULT CLevel_Logo::NativeConstruct()
 	if (FAILED(Ready_Layer_UI(TEXT("Layer_UI"))))
 		return E_FAIL;
 
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+	pGameInstance->PlayBGM(TEXT("Music"), 0.2f);
+
+	RELEASE_INSTANCE(CGameInstance);
+
 	return S_OK;
 }
 
@@ -42,6 +48,7 @@ _int CLevel_Logo::Tick(_double TimeDelta)
 	if (TRUE == b &&
 		pGameInstance->Get_MouseButtonState(CInput_Device::MBS_LBUTTON))
 	{
+		pGameInstance->SoundPlay(TEXT("ButtonClick"), 0.3f);
 		if (FAILED(pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pDeviceContext, LEVEL_GAMEPLAY), LEVEL_GAMEPLAY)))
 		{
 			RELEASE_INSTANCE(CGameInstance);

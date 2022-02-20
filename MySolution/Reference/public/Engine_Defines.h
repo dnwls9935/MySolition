@@ -23,6 +23,12 @@
 #include "DirectxTK/SpriteBatch.h"
 #include "DirectxTK/SpriteFont.h"
 
+#include <io.h>
+#include <winsdkver.h> 
+//#define  _WIN32_WINNT  0x0A00
+#include <sdkddkver.h>
+#include "DirectxTK/Audio.h"
+
 #include <ft2build.h>
 #include <freetype\freetype.h>
 
@@ -52,6 +58,7 @@ using namespace DirectX::TriangleTests;
 #include "Engine_Typedef.h"
 #include "Engine_Function.h"
 #include "Engine_Struct.h"
+
 
 
 using namespace Engine;

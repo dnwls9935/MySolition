@@ -7,9 +7,6 @@
     <Filter Include="01.System">
       <UniqueIdentifier>{7dd0d7ba-edf3-447c-a85e-839d73cd9953}</UniqueIdentifier>
     </Filter>
-    <Filter Include="00.Utility\99.SuperClass">
-      <UniqueIdentifier>{4c7f682e-2c9e-4e45-8533-c0a44ec8b3dc}</UniqueIdentifier>
-    </Filter>
     <Filter Include="99.Defines">
       <UniqueIdentifier>{665a2748-01cb-40d8-9903-5bbba066d024}</UniqueIdentifier>
     </Filter>
@@ -169,10 +166,16 @@
     <Filter Include="00.Utility\03. Component\VIBuffer\PointInstance\RunDust">
       <UniqueIdentifier>{f668faa8-8c62-44be-8fe5-2e55e94ab95b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="00.Utility\99. SuperClass">
+      <UniqueIdentifier>{4c7f682e-2c9e-4e45-8533-c0a44ec8b3dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.Utility\10. Sound">
+      <UniqueIdentifier>{78e68456-af3c-40f5-bd4e-37ada7f9d238}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Base.h">
-      <Filter>00.Utility\99.SuperClass</Filter>
+      <Filter>00.Utility\99. SuperClass</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Engine_Defines.h">
       <Filter>99.Defines</Filter>
@@ -324,10 +327,13 @@
     <ClInclude Include="..\public\VIBuffer_PointInstance_CollisionDust.h">
       <Filter>00.Utility\03. Component\VIBuffer\PointInstance\CollisionDust</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\SoundManager.h">
+      <Filter>00.Utility\10. Sound</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
-      <Filter>00.Utility\99.SuperClass</Filter>
+      <Filter>00.Utility\99. SuperClass</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Graphic_Device.cpp">
       <Filter>01.System\00.Device\Graphic</Filter>
@@ -463,6 +469,9 @@
     </ClCompile>
     <ClCompile Include="..\private\VIBuffer_PointInstance_CollisionDust.cpp">
       <Filter>00.Utility\03. Component\VIBuffer\PointInstance\CollisionDust</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\SoundManager.cpp">
+      <Filter>00.Utility\10. Sound</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

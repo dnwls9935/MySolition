@@ -23,6 +23,19 @@ HRESULT CLevel_Loading::NativeConstruct(LEVEL eNextLevel)
 
 	m_eNextLevel = eNextLevel;
 
+
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+	switch (m_eNextLevel)
+	{
+	case LEVEL_LOGO:
+		pGameInstance->PlayBGM(TEXT("Menu"), 0.5f);
+		break;
+	case LEVEL_GAMEPLAY:
+		pGameInstance->PlayBGM(TEXT("Fridge"), 0.5f);
+		break;
+	}
+	RELEASE_INSTANCE(CGameInstance);
+
 	m_pLoader = CLoader::Create(m_pDevice, m_pDeviceContext, m_eNextLevel);
 	if (nullptr == m_pLoader)
 		return E_FAIL;

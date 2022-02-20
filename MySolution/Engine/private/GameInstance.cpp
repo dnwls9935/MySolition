@@ -14,6 +14,7 @@ CGameInstance::CGameInstance()
 	, m_RenderTargetManager(CTarget_Manager::GetInstance())
 	, m_LightManager(CLight_Manager::GetInstance())
 	, m_FontManager(CFont_Manager::GetInstance())
+	, m_SoundManager(SoundManager::GetInstance())
 {
 	Safe_AddRef(m_FontManager);
 	Safe_AddRef(m_LightManager);
@@ -25,6 +26,7 @@ CGameInstance::CGameInstance()
 	Safe_AddRef(m_pLevel_Manager);
 	Safe_AddRef(m_pGraphic_Device);
 	Safe_AddRef(m_RenderTargetManager);
+	Safe_AddRef(m_SoundManager);
 }
 
 HRESULT CGameInstance::Initialize_Engine(HINSTANCE hInst, HWND hWnd, _uint iNumLevel, CGraphic_Device::WINMODE eWinMode, _uint iWinCX, _uint iWinCY, ID3D11Device** ppDeviceOut, ID3D11DeviceContext** ppDeviceContextOut)
@@ -43,6 +45,9 @@ HRESULT CGameInstance::Initialize_Engine(HINSTANCE hInst, HWND hWnd, _uint iNumL
 		return E_FAIL;
 
 	if (FAILED(m_pInput_Device->Ready_Input_Device(hInst, hWnd)))
+		return E_FAIL;
+
+	if (FAILED(m_SoundManager->Ready_SoundMgr()))
 		return E_FAIL;
 
 	return S_OK;
@@ -349,6 +354,38 @@ HRESULT CGameInstance::Render_Font(const _tchar* pFontTag, _float2 _Position, _f
 	return m_FontManager->Render_Font(pFontTag,_Position, vColor, _Scale,pString);
 }
 
+void CGameInstance::OnSuspending()
+{
+	if (nullptr == m_SoundManager)
+		return;
+
+	return m_SoundManager->OnSuspending();
+}
+
+void CGameInstance::OnResuming()
+{
+	if (nullptr == m_SoundManager)
+		return;
+
+	return m_SoundManager->OnResuming();
+}
+
+void CGameInstance::SoundPlay(TCHAR * pSoundKey, _float _Volume)
+{
+	if (nullptr == m_SoundManager)
+		return;
+
+	return m_SoundManager->SoundPlay(pSoundKey, _Volume);
+}
+
+void CGameInstance::PlayBGM(TCHAR * pSoundKey, _float _Volume, _int _BGMIdx)
+{
+	if (nullptr == m_SoundManager)
+		return;
+
+	return m_SoundManager->PlayBGM(pSoundKey, _Volume, _BGMIdx);
+}
+
 void CGameInstance::Release_Engine()
 {
 	if (0 != CGameInstance::GetInstance()->DestroyInstance())
@@ -381,6 +418,9 @@ void CGameInstance::Release_Engine()
 	if (0 != CFont_Manager::GetInstance()->DestroyInstance())
 		MSGBOX("Failed to Release CFont_Manager");
 
+	if (0 != SoundManager::GetInstance()->DestroyInstance())
+		MSGBOX("Failed to Release SoundManager");
+
 	if (0 != CGraphic_Device::GetInstance()->DestroyInstance())
 		MSGBOX("Failed to Release CGraphic_Device");
 }
@@ -397,6 +437,7 @@ void CGameInstance::Free()
 	Safe_Release(m_RenderTargetManager);
 	Safe_Release(m_pLevel_Manager);
 	Safe_Release(m_pGraphic_Device);
+	Safe_Release(m_SoundManager);
 }
 
 

@@ -40,6 +40,7 @@ HRESULT Snow::NativeConstruct(void * pArg)
 			Safe_AddRef(m_Boss);
 		}
 	}
+
 	RELEASE_INSTANCE(CGameInstance);
 	return S_OK;
 }

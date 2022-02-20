@@ -34,6 +34,11 @@ HRESULT CLevel_GamePlay::NativeConstruct()
 	if (FAILED(Ready_Layer_UI(TEXT("Layer_UI"))))
 		return E_FAIL;
 
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+	pGameInstance->PlayBGM(TEXT("WindshearWaste"), 0.2f, 0);
+	pGameInstance->PlayBGM(TEXT("Wind"), 0.2f, 1);
+	RELEASE_INSTANCE(CGameInstance);
+
 	return S_OK;
 }
 
